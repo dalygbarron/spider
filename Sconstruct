@@ -1,0 +1,9 @@
+env = Environment()
+
+main = env.Program(
+    'main',
+    Glob('src/*.cc'),
+    LIBS=['sfml-graphics', 'sfml-system', 'sfml-audio', 'sfml-window', 'GL']
+)
+
+Default(main)
