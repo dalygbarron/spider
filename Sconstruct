@@ -2,7 +2,13 @@ import sys
 
 env = Environment()
 
-libs = ['sfml-graphics', 'sfml-system', 'sfml-audio', 'sfml-window']
+libs = [
+    'sfml-graphics',
+    'sfml-system',
+    'sfml-audio',
+    'sfml-window',
+    'c++experimental'
+]
 if sys.platform != 'darwin':
     libs.append('GL')
 
@@ -10,7 +16,8 @@ main = env.Program(
     'main',
     Glob('src/*.cc'),
     LIBS=libs,
-    FRAMEWORKS=['OpenGl']
+    FRAMEWORKS=['OpenGl'],
+    CCFLAGS=['-std=c++17']
 )
 
 Default(main)
