@@ -5,9 +5,8 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(640, 480), "");
+int main() {
+    sf::RenderWindow window(sf::VideoMode(640, 480), "Spider");
     window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
     ImGui::GetIO().IniFilename = NULL;
@@ -16,17 +15,11 @@ int main()
 
     float color[3] = { 0.f, 0.f, 0.f };
 
-    // let's use char array as buffer, see next part
-    // for instructions on using std::string with ImGui
-    char windowTitle[255] = "ImGui + SFML = <3";
-
-    window.setTitle(windowTitle);
     window.resetGLStates(); // call it if you only draw ImGui. Otherwise not needed.
     sf::Clock deltaClock;
 
     ImGui::FileBrowser fileDialog;
         
-    (optional) set browser properties
     fileDialog.SetTitle("bastard");
     fileDialog.SetTypeFilters({ ".h", ".cpp" });
 
@@ -44,8 +37,7 @@ int main()
         if(ImGui::Begin("dummy window"))
         {
             // open file dialog when user clicks this button
-            if(ImGui::Button("open file dialog"))
-                fileDialog.Open();
+            if(ImGui::Button("open file dialog")) fileDialog.Open();
         }
         ImGui::End();
         
@@ -53,11 +45,11 @@ int main()
         
         if(fileDialog.HasSelected())
         {
-            std::cout << "Selected filename" << fileDialog.GetSelected().string() << std::endl;
+            window.setTitle(fileDialog.GetSelected().string());
             fileDialog.ClearSelected();
         }
 
-        window.clear(bgColor); // fill background with color
+        window.clear(bgColor);
         ImGui::SFML::Render(window);
         window.display();
     }

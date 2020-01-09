@@ -1,0 +1,13 @@
+<level picture="pictures/bongo.png" script="scripts/bongo.lua">
+    <defines>
+        <define id="1" file="entities/oil1.xml" />
+    </defines>
+    <entities>
+        <instance id="1" lat="1" long="-1.23" scale="1" name="oil" />
+        <shape name="cavern">
+            <view
+
+
+        </shape>
+    </entities>
+</level>

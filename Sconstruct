@@ -7,7 +7,7 @@ libs = [
     'sfml-system',
     'sfml-audio',
     'sfml-window',
-    'c++experimental'
+    'stdc++fs'
 ]
 if sys.platform != 'darwin':
     libs.append('GL')
