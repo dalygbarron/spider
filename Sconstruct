@@ -6,18 +6,24 @@ libs = [
     'sfml-graphics',
     'sfml-system',
     'sfml-audio',
-    'sfml-window',
-    'stdc++fs'
+    'sfml-window'
 ]
+cflags = [
+    '-std=c++17',
+    '-stdlib=libc++'
+]
+
 if sys.platform != 'darwin':
     libs.append('GL')
+else:
+    cflags.append('-mmacosx-version-min=10.15')
 
 main = env.Program(
     'main',
     Glob('src/*.cc'),
     LIBS=libs,
     FRAMEWORKS=['OpenGl'],
-    CCFLAGS=['-std=c++17']
+    CXXFLAGS=cflags
 )
 
 Default(main)

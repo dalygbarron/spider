@@ -1,9 +1,10 @@
 ﻿#pragma once
 
+#include "filesystem.hh"
 #include <iostream>
 #include <array>
+#include <vector>
 #include <cstring>
-#include <experimental/filesystem>
 #include <functional>
 #include <memory>
 #include <string>
@@ -61,10 +62,10 @@ namespace ImGui
         bool HasSelected() const noexcept;
 
         // set current browsing directory
-        bool SetPwd(const std::experimental::filesystem::path &pwd = std::experimental::filesystem::current_path());
+        bool SetPwd(const ghc::filesystem::path &pwd = ghc::filesystem::current_path());
 
         // returns selected filename. make sense only when HasSelected returns true
-        std::experimental::filesystem::path GetSelected() const;
+        ghc::filesystem::path GetSelected() const;
 
         // set selected filename to empty
         void ClearSelected();
@@ -85,7 +86,7 @@ namespace ImGui
             ~ScopeGuard() { func_(); }
         };
 
-        void SetPwdUncatched(const std::experimental::filesystem::path &pwd);
+        void SetPwdUncatched(const ghc::filesystem::path &pwd);
 
 #ifdef _WIN32
         static std::uint32_t GetDrivesBitMask();
@@ -108,7 +109,7 @@ namespace ImGui
         std::vector<const char*> typeFilters_;
         int typeFilterIndex_;
 
-        std::experimental::filesystem::path pwd_;
+        ghc::filesystem::path pwd_;
         std::string selectedFilename_;
 
         struct FileRecord
@@ -143,7 +144,7 @@ inline ImGui::FileBrowser::FileBrowser(ImGuiFileBrowserFlags flags)
 
     inputNameBuf_->at(0) = '\0';
     SetTitle("file browser");
-    SetPwd(std::experimental::filesystem::current_path());
+    SetPwd(ghc::filesystem::current_path());
 
     typeFilters_.clear();
     typeFilterIndex_ = 0;
@@ -300,7 +301,7 @@ inline void ImGui::FileBrowser::Display()
     if(newPwdLastSecIdx >= 0)
     {
         int i = 0;
-        std::experimental::filesystem::path newPwd;
+        ghc::filesystem::path newPwd;
         for(auto &sec : pwd_)
         {
             if(i++ > newPwdLastSecIdx)
@@ -347,7 +348,7 @@ inline void ImGui::FileBrowser::Display()
     // browse files in a child window
 
     float reserveHeight = ImGui::GetFrameHeightWithSpacing();
-    std::experimental::filesystem::path newPwd; bool setNewPwd = false;
+    ghc::filesystem::path newPwd; bool setNewPwd = false;
     if(!(flags_ & ImGuiFileBrowserFlags_SelectDirectory) && (flags_ & ImGuiFileBrowserFlags_EnterNewFilename))
         reserveHeight += ImGui::GetFrameHeightWithSpacing();
     {
@@ -462,7 +463,7 @@ inline bool ImGui::FileBrowser::HasSelected() const noexcept
     return ok_;
 }
 
-inline bool ImGui::FileBrowser::SetPwd(const std::experimental::filesystem::path &pwd)
+inline bool ImGui::FileBrowser::SetPwd(const ghc::filesystem::path &pwd)
 {
     try
     {
@@ -478,11 +479,11 @@ inline bool ImGui::FileBrowser::SetPwd(const std::experimental::filesystem::path
         statusStr_ = "last error: unknown";
     }
 
-    SetPwdUncatched(std::experimental::filesystem::current_path());
+    SetPwdUncatched(ghc::filesystem::current_path());
     return false;
 }
 
-inline std::experimental::filesystem::path ImGui::FileBrowser::GetSelected() const
+inline ghc::filesystem::path ImGui::FileBrowser::GetSelected() const
 {
     return pwd_ / selectedFilename_;
 }
@@ -500,11 +501,11 @@ inline void ImGui::FileBrowser::SetTypeFilters(const std::vector<const char*> &t
     typeFilterIndex_ = 0;
 }
 
-inline void ImGui::FileBrowser::SetPwdUncatched(const std::experimental::filesystem::path &pwd)
+inline void ImGui::FileBrowser::SetPwdUncatched(const ghc::filesystem::path &pwd)
 {
     fileRecords_ = { FileRecord{ true, "..", "[D] ..", "" } };
 
-    for(auto &p : std::experimental::filesystem::directory_iterator(pwd))
+    for(auto &p : ghc::filesystem::directory_iterator(pwd))
     {
         FileRecord rcd;
 
