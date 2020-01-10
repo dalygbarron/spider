@@ -11,7 +11,7 @@ int main() {
     ImGui::SFML::Init(window);
     ImGui::GetIO().IniFilename = NULL;
 
-    sf::Color bgColor(100, 200, 255);
+    sf::Color bgColor(55, 155, 255);
 
     window.resetGLStates(); // call it if you only draw ImGui. Otherwise not needed.
     sf::Clock deltaClock;
