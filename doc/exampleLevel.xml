@@ -5,9 +5,9 @@
     <entities>
         <instance id="1" lat="1" long="-1.23" scale="1" name="oil" />
         <shape name="cavern">
-            <view
-
-
+            <view lat="3" long="-1" />
+            <view lat="2" long="2" />
+            <view lat="-2" long="0" />
         </shape>
     </entities>
 </level>

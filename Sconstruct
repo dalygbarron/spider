@@ -8,15 +8,13 @@ libs = [
     'sfml-audio',
     'sfml-window'
 ]
-cflags = [
-    '-std=c++17',
-    '-stdlib=libc++'
-]
+cflags = ['-std=c++17']
 
 if sys.platform != 'darwin':
     libs.append('GL')
 else:
     cflags.append('-mmacosx-version-min=10.15')
+    cflags.append('-stdlib=libc++')
 
 main = env.Program(
     'main',
