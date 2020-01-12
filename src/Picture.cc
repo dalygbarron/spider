@@ -6,5 +6,5 @@ Picture::Picture(sf::Texture *texture, char const *filename) {
 }
 
 Picture::~Picture() {
-
+    delete this->texture;
 }

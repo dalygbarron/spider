@@ -2,14 +2,19 @@
 #include "pugixml.hpp"
 #include <stdio.h>
 
-sf::Texture *textureFromFile(char const *filename) {
+Picture *Util::pictureFromFile(char const *filename) {
     sf::Texture *texture = new Texture();
     if (!texture->loadFromFile(filename)) {
         fprintf(STDERR, "Couldn't load a pic from '%s'", filename);
         delete texture;
         return NULL;
     }
-    return texture;
+    return new Picture(texture, filename);
+}
+
+Entity *Util::entityFromFile(char const *filename) {
+    // TODO: this.
+    return NULL;
 }
 
 Level *Util::levelFromFile(char const *filename) {
@@ -23,7 +28,20 @@ Level *Util::levelFromFile(char const *filename) {
     if (!node) {
         fprintf(STDERR, "File '%s' sadly does not contain a level.", filename);
     }
-    // load the bits now;
+    // Main bits.
+    Level *level = new Level(
+        pictureFromFile(node.attribute("picture").value())
+    );
+    level->name = filename;
+    level->script = node.attribute("script").value();
+    // Defines.
+    pugi::xml_node defines = node.child("defines");
+    for (pugi::xml_node define = defines.child("define"); define;
+        define = define.next_sibling("define")
+    ) {
+        
+    }
+    // Entities.
 
 }
 

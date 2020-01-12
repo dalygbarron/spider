@@ -11,12 +11,38 @@
  */
 class Level {
     public:
-        sf::Texture texture;
         std::string name;
         std::string script;
         std::unordered_map<std::string, Entity *> defines;
         std::unordered_map<std::string, Instance *> entities;
         std::unordered_map<std::string, std::vector<sf::Vector2f>> shapes;
+
+        /**
+         * Passes in the picture that the level is using.
+         * @param picture is the picture to use.
+         */
+        Level(Picture *picture);
+
+        /**
+         * Destroys the level's picture from memory.
+         */
+        ~Level();
+
+        /**
+         * Gives you the level's picture.
+         * @return a reference to the picture.
+         */
+        Picture &getPicture();
+
+        /**
+         * Sets the picture that the level should use and deletes the old one.
+         * @param picture is the picture to use which the level then takes
+         *        personal ownership of.
+         */
+        void setPicture(Picture *picture);
+
+    private:
+        Picture *picture;
 };
 
 #endif
