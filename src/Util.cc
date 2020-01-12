@@ -6,9 +6,10 @@ sf::Texture *textureFromFile(char const *filename) {
     sf::Texture *texture = new Texture();
     if (!texture->loadFromFile(filename)) {
         fprintf(STDERR, "Couldn't load a pic from '%s'", filename);
+        delete texture;
         return NULL;
     }
-
+    return texture;
 }
 
 Level *Util::levelFromFile(char const *filename) {
@@ -22,6 +23,7 @@ Level *Util::levelFromFile(char const *filename) {
     if (!node) {
         fprintf(STDERR, "File '%s' sadly does not contain a level.", filename);
     }
+    // load the bits now;
 
 }
 
