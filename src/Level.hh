@@ -1,7 +1,10 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include "Picture.hh"
 #include "Entity.hh"
+#include "Instance.hh"
+#include "filesystem.hh"
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include <vector>
@@ -11,7 +14,7 @@
  */
 class Level {
     public:
-        std::string name;
+        ghc::filesystem::path file;
         std::string script;
         std::unordered_map<std::string, Entity *> defines;
         std::unordered_map<std::string, Instance *> entities;

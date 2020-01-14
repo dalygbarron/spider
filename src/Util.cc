@@ -1,50 +1,68 @@
 #include "Util.hh"
+#include "filesystem.hh"
 #include "pugixml.hpp"
+#include <SFML/Graphics.hpp>
 #include <stdio.h>
 
-Picture *Util::pictureFromFile(char const *filename) {
-    sf::Texture *texture = new Texture();
-    if (!texture->loadFromFile(filename)) {
-        fprintf(STDERR, "Couldn't load a pic from '%s'", filename);
+Level *Util::parseLevel(pugi::xml_node &node) {
+   //// Main bits.
+   //Level *level = new Level(
+   //    pictureFromFile(node.attribute("picture").value())
+   //);
+   //level->script = node.attribute("script").value();
+   //// Defines.
+   //pugi::xml_node defines = node.child("defines");
+   //for (pugi::xml_node define = defines.child("define"); define;
+   //    define = define.next_sibling("define")
+   //) {
+   //}
+   //// Entities.
+   //// TODO: things.
+}
+
+Entity *Util::parseEntity(pugi::xml_node &node) {
+
+}
+
+Picture *Util::pictureFromFile(ghc::filesystem::path &path) {
+    sf::Texture *texture = new sf::Texture();
+    if (!texture->loadFromFile(path.c_str())) {
         delete texture;
         return NULL;
     }
-    return new Picture(texture, filename);
+    return new Picture(texture, path);
 }
 
-Entity *Util::entityFromFile(char const *filename) {
-    // TODO: this.
-    return NULL;
-}
+Level *Util::levelFromFile(ghc::filesystem::path &path) {
+    if (ghc::filesystem::exists(path)) {
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(path.c_str());
+        if (!result) {
+            fprintf(
+                stderr,
+                "File '%s' simply can NOT be opened.\n",
+                path.c_str()
+            );
+            return NULL;
+        }
+        pugi::xml_node node = doc.child("level");
+        if (!node) {
+            fprintf(
+                stderr,
+                "File '%s' sadly does not contain a level.\n",
+                path.c_str()
+            );
+        }
+        Level *level = Util::parseLevel(node);
 
-Level *Util::levelFromFile(char const *filename) {
-    pugi::xml_doc doc;
-    pugi::xml_parse_result result = doc.load_file(filename);
-    if (!result) {
-        fprintf(STDERR, "File '%s' simply can NOT be opened.", filename);
+        level->file = path;
+    } else {
+        printf("%s not exist\n", path.c_str());
         return NULL;
     }
-    pugi::xml_node node = doc.child("level");
-    if (!node) {
-        fprintf(STDERR, "File '%s' sadly does not contain a level.", filename);
-    }
-    // Main bits.
-    Level *level = new Level(
-        pictureFromFile(node.attribute("picture").value())
-    );
-    level->name = filename;
-    level->script = node.attribute("script").value();
-    // Defines.
-    pugi::xml_node defines = node.child("defines");
-    for (pugi::xml_node define = defines.child("define"); define;
-        define = define.next_sibling("define")
-    ) {
-        
-    }
-    // Entities.
-
 }
 
-Entity *Util::entityFromFile(char const *filename) {
-
+Entity *Util::entityFromFile(ghc::filesystem::path &path) {
+    // TODO: this.
+    return NULL;
 }

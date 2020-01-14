@@ -1,4 +1,5 @@
 #include "Level.hh"
+#include "Util.hh"
 
 Level::Level(Picture *picture) {
     this->picture = picture;

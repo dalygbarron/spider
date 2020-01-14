@@ -1,8 +1,8 @@
 #include "Picture.hh"
 
-Picture::Picture(sf::Texture *texture, char const *filename) {
+Picture::Picture(sf::Texture *texture, ghc::filesystem::path &path) {
     this->texture = texture;
-    this->filename = filename;
+    this->path = path;
 }
 
 Picture::~Picture() {

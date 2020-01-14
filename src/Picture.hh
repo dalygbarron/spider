@@ -1,13 +1,16 @@
 #ifndef PICTURE_H
 #define PICTURE_H
 
+#include "filesystem.hh"
+#include <SFML/Graphics.hpp>
+
 /**
  * Represents an sfml texture and the relative path from which it was loaded.
  */
 class Picture {
     public:
         sf::Texture *texture;
-        char const *filename;
+        ghc::filesystem::path path;
 
         /**
          * Creates the picture by passing in it's texture and it's filename.
@@ -16,9 +19,9 @@ class Picture {
          * @param texture  is the texture of the picture. It will from
          *                 henceforth belong to this object and will be deleted
          *                 when it is.
-         * @param filename is the filename of the texture to load.
+         * @param path     is the path to where it was loaded from.
          */
-        Picture(sf::Texture *texture, char const *filename);
+        Picture(sf::Texture *texture, ghc::filesystem::path &path);
 
         /**
          * Deletes the texture.
