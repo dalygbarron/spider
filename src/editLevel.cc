@@ -1,5 +1,7 @@
 #include "Level.hh"
 #include "Const.hh"
+#include "generated/sky.hh"
+#include "generated/vertex.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -13,8 +15,24 @@ int editLevel(sf::RenderWindow &window, Level &level) {
     fileDialog.SetTitle("bastard");
     fileDialog.SetTypeFilters({ ".h", ".cpp" });
     sf::Clock deltaClock;
+    sf::Vector2f camera(0, 0);
+    sf::Shader shader;
+    shader.setUniform("angle", camera);
+    shader.setUniform("picture", sf::Shader::CurrentTexture);
+    if (!shader.loadFromMemory(vertex, sf::Shader::Vertex)) {
+        fprintf(stderr, "Couldn't start the vert shader. goodbye.\n");
+        return 1;
+    }
+    if (!shader.loadFromMemory(sky, sf::Shader::Fragment)) {
+        fprintf(stderr, "Couldn't start the frag shader. goodbye.\n");
+        return 1;
+    }
+    sf::RectangleShape back(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
+    back.setTexture(level.getPicture()->texture);
+    sf::RenderStates state(&shader);
     // Main loop.
     while (window.isOpen()) {
+        camera.x += 0.01;
         sf::Event event;
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(event);
@@ -63,6 +81,8 @@ int editLevel(sf::RenderWindow &window, Level &level) {
             fileDialog.ClearSelected();
         }
         window.clear();
+        shader.setUniform("angle", camera);
+        window.draw(back, state);
         ImGui::SFML::Render(window);
         window.display();
     }

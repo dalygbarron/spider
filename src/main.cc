@@ -96,11 +96,16 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Filename must be given\n");
         return 1;
     }
+    // Validate the system can handle Spider.
+    if (!sf::Shader::isAvailable()) {
+        fprintf(stderr, "Shaders not available. Goodbye.\n");
+        return 1;
+    }
+    // Load the data
     ghc::filesystem::path root = options.file;
     ghc::filesystem::path filename = root.filename();
     root.remove_filename();
     ghc::filesystem::current_path(root);
-    // Load the data
     Level *level;
     Entity *entity;
     if (options.levelFlag) level = Util::levelFromFile(filename);

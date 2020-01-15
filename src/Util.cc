@@ -31,6 +31,7 @@ Picture *Util::pictureFromFile(ghc::filesystem::path &path) {
         delete texture;
         return NULL;
     }
+    texture->setSmooth(true);
     return new Picture(texture, path);
 }
 
