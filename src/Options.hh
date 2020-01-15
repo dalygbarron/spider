@@ -11,6 +11,7 @@ class Options {
         ghc::filesystem::path file;
         int levelFlag = true;
         int helpFlag = false;
+        int versionFlag = false;
 };
 
 #endif

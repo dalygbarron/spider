@@ -19,6 +19,7 @@ class Level {
         std::unordered_map<std::string, Entity *> defines;
         std::unordered_map<std::string, Instance *> entities;
         std::unordered_map<std::string, std::vector<sf::Vector2f>> shapes;
+        int clean = false;
 
         /**
          * Passes in the picture that the level is using.
@@ -35,7 +36,7 @@ class Level {
          * Gives you the level's picture.
          * @return a reference to the picture.
          */
-        Picture &getPicture();
+        Picture *getPicture();
 
         /**
          * Sets the picture that the level should use and deletes the old one.
@@ -45,7 +46,7 @@ class Level {
         void setPicture(Picture *picture);
 
     private:
-        Picture *picture;
+        Picture *picture = NULL;
 };
 
 #endif

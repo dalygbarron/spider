@@ -1,0 +1,2 @@
+Currently when you resize the window it just gets wider. I will need to bring
+in that viewport stretching thingo that I have got saved in the eel project.

@@ -9,8 +9,8 @@ Level::~Level() {
     delete this->picture;
 }
 
-Picture &Level::getPicture() {
-    return *(this->picture);
+Picture *Level::getPicture() {
+    return this->picture;
 }
 
 void Level::setPicture(Picture *picture) {

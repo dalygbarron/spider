@@ -5,19 +5,20 @@
 #include <stdio.h>
 
 Level *Util::parseLevel(pugi::xml_node &node) {
-   //// Main bits.
-   //Level *level = new Level(
-   //    pictureFromFile(node.attribute("picture").value())
-   //);
-   //level->script = node.attribute("script").value();
-   //// Defines.
-   //pugi::xml_node defines = node.child("defines");
-   //for (pugi::xml_node define = defines.child("define"); define;
-   //    define = define.next_sibling("define")
-   //) {
-   //}
-   //// Entities.
-   //// TODO: things.
+    // Main bits.
+    ghc::filesystem::path picture = node.attribute("picture").value();
+    Level *level = new Level(pictureFromFile(picture));
+    level->script = node.attribute("script").value();
+    level->clean = false;
+    // Defines.
+    pugi::xml_node defines = node.child("defines");
+    for (pugi::xml_node define = defines.child("define"); define;
+        define = define.next_sibling("define")
+    ) {
+    }
+    // Entities.
+    // TODO: things.
+    return level;
 }
 
 Entity *Util::parseEntity(pugi::xml_node &node) {
@@ -54,8 +55,8 @@ Level *Util::levelFromFile(ghc::filesystem::path &path) {
             );
         }
         Level *level = Util::parseLevel(node);
-
         level->file = path;
+        return level;
     } else {
         printf("%s not exist\n", path.c_str());
         return NULL;
