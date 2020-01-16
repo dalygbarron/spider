@@ -46,6 +46,15 @@ namespace Util {
      * @return the loaded entity or null if you gave a bad filename.
      */
     Entity *entityFromFile(ghc::filesystem::path &path);
+
+    /**
+     * Gives you a view that makes the screen letterbox so it scales stuff and
+     * does blah blah blah you know.
+     * @param view       is the view that was currently on.
+     * @param dimensions is the new dimensions of the screen.
+     * @return the new view to use.
+     */
+    sf::View getLetterboxView(sf::View view, sf::Vector2i dimensions);
 }
 
 #endif

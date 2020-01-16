@@ -1,28 +1,6 @@
 import sys
 
-def RawString(name):
-    def Impl(target, source, env):
-        content = source[0].get_text_contents()
-        with open(target[0].get_path(), 'w') as target_file:
-            target_file.write("std::string {} = R\"~~~~({})~~~~\";".format(
-                name,
-                content
-            ))
-        return 0
-    return Action(Impl, "Creating C++ raw string $TARGET from $SOURCE")
-
 env = Environment()
-
-skyShader = env.Command(
-    'src/generated/sky.hh',
-    'res/sky.frag',
-    RawString('sky')
-)
-vertexShader = env.Command(
-    'src/generated/vertex.hh',
-    'res/vertex.vert',
-    RawString('vertex')
-)
 
 libs = [
     'sfml-graphics',
@@ -45,7 +23,5 @@ main = env.Program(
     FRAMEWORKS=['OpenGl'],
     CXXFLAGS=cflags
 )
-
-env.Requires(main, [skyShader, vertexShader])
 
 Default(main)

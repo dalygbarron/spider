@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int editLevel(sf::RenderWindow &window, Level &level);
+int editLevel(sf::RenderWindow &window, sf::View view, Level &level);
 
 int editEntity(sf::RenderWindow &window, Entity &entity);
 
@@ -119,8 +119,11 @@ int main(int argc, char **argv) {
     ImGui::SFML::Init(window);
     ImGui::GetIO().IniFilename = NULL;
     window.resetGLStates();
+    sf::View view;
+    view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
+    view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
     // Run.
-    if (options.levelFlag) result = editLevel(window, *level);
+    if (options.levelFlag) result = editLevel(window, view, *level);
     else result = editEntity(window, *entity);
     // Clean up.
     ImGui::SFML::Shutdown();

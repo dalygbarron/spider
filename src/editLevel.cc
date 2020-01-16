@@ -1,7 +1,6 @@
 #include "Level.hh"
 #include "Const.hh"
-#include "generated/sky.hh"
-#include "generated/vertex.hh"
+#include "Util.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -9,7 +8,7 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 
-int editLevel(sf::RenderWindow &window, Level &level) {
+int editLevel(sf::RenderWindow &window, sf::View view, Level &level) {
     // Make some tihngies.
     ImGui::FileBrowser fileDialog;
     fileDialog.SetTitle("bastard");
@@ -19,12 +18,8 @@ int editLevel(sf::RenderWindow &window, Level &level) {
     sf::Shader shader;
     shader.setUniform("angle", camera);
     shader.setUniform("picture", sf::Shader::CurrentTexture);
-    if (!shader.loadFromMemory(vertex, sf::Shader::Vertex)) {
-        fprintf(stderr, "Couldn't start the vert shader. goodbye.\n");
-        return 1;
-    }
-    if (!shader.loadFromMemory(sky, sf::Shader::Fragment)) {
-        fprintf(stderr, "Couldn't start the frag shader. goodbye.\n");
+    if (!shader.loadFromMemory(Const::SKY_SHADER, sf::Shader::Fragment)) {
+        fprintf(stderr, "Couldn't start the sky shader. goodbye.\n");
         return 1;
     }
     sf::RectangleShape back(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
@@ -36,7 +31,14 @@ int editLevel(sf::RenderWindow &window, Level &level) {
         sf::Event event;
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(event);
-            if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            } else if (event.type == sf::Event::Resized) {
+                view = Util::getLetterboxView(
+                    view,
+                    sf::Vector2i(event.size.width, event.size.height)
+                );
+            } 
         }
         ImGui::SFML::Update(window, deltaClock.restart());
         // Now do the gui.
@@ -80,6 +82,8 @@ int editLevel(sf::RenderWindow &window, Level &level) {
             window.setTitle(fileDialog.GetSelected().string());
             fileDialog.ClearSelected();
         }
+        // Render.
+        window.setView(view);
         window.clear();
         shader.setUniform("angle", camera);
         window.draw(back, state);
