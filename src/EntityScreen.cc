@@ -4,7 +4,7 @@ EntityScreen::~EntityScreen() {
     // TODO: stuff I suppose.
 }
 
-Screen *EntityScreen::update(float delta) {
+Screen *EntityScreen::update(float delta, sf::Window &window) {
     // TODO: stuff.
 }
 

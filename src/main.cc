@@ -2,11 +2,11 @@
 #include "Entity.hh"
 #include "Options.hh"
 #include "Util.hh"
+#include "Screen.hh"
 #include "Const.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
-#include <SFML/Graphics/RenderWindow.hpp> #include <SFML/System/Clock.hpp>
-#include <SFML/Window/Event.hpp>
+#include <SFML/System.hpp>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -27,7 +27,7 @@ void version() {
  * Prints out the help documentation to stdouit.
  */
 void help() {
-    printf(Const::LOGO);
+    printf("%s\n", Const::LOGO);
     printf(
         "version %d.%d.%d\n",
         Const::VERSION_MAJOR,
@@ -76,12 +76,14 @@ int parseOptions(Options &options, int argc, char **argv) {
 
 /**
  * Runs the main loop of the program over and over.
+ * @param window is the window the program is running in.
+ * @param view   is the view to look with.
  * @param screen is the screen of the program to start on.
  * @return the result code the program should give after.
  */
-int process(Screen *screen) {
+int process(sf::RenderWindow &window, sf::View &view, Screen *screen) {
     sf::Clock deltaClock;
-    while (window.isOpen()) {
+    while (window.isOpen() && screen) {
         sf::Event event;
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(event);
@@ -94,6 +96,9 @@ int process(Screen *screen) {
                 );
             } 
         }
+        sf::Time delta = deltaClock.restart();
+        ImGui::SFML::Update(window, delta);
+        screen->update(delta.asSeconds(), window);
         // Render.
         window.setView(view);
         window.clear();
@@ -156,6 +161,7 @@ int main(int argc, char **argv) {
     Screen *screen = NULL;
     if (options.levelFlag) screen = new LevelScreen(level);
     else screen = new EntityScreen();
+    result = process(window, view, screen);
     // Clean up.
     ImGui::SFML::Shutdown();
     return result;

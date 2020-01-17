@@ -16,9 +16,9 @@ LevelScreen::LevelScreen(Level *level) {
     )) {
         fprintf(stderr, "Couldn't start the sky shader.\n");
     }
-    Picture *levelPicture = level->getPicture();
+    Picture const *levelPicture = level->getPicture();
     if (levelPicture) {
-        this->back.setTexture(levelPicture->texture);
+        this->back.setTexture(&(levelPicture->getTexture()));
     }
 }
 
@@ -26,17 +26,18 @@ LevelScreen::~LevelScreen() {
     delete this->level;
 }
 
-Screen *LevelScreen::update(float delta) {
-    camera.x += 0.01;
-    ImGui::SFML::Update(window, deltaClock.restart());
+Screen *LevelScreen::update(float delta, sf::Window &window) {
+    // fuck around with camera.
+    camera.x += delta;
+    this->shader.setUniform("angle", camera);
     // Now do the gui.
     if(ImGui::Begin(level->file.c_str())) {
-        if (ImGui::Button(level->clean ? "Save" : "+Save+")) {
+        if (ImGui::Button(level->getClean() ? "Save" : "+Save+")) {
             // TODO: stuff
         }
         if (ImGui::Button("Select Pic")) fileDialog.Open();
         ImGui::SameLine();
-        Picture *picture = level->getPicture();
+        Picture const *picture = level->getPicture();
         if (picture) {
             ImGui::Text(
                 "Current Picture: %s",
@@ -55,7 +56,10 @@ Screen *LevelScreen::update(float delta) {
         ImGui::EndChild();
         ImGui::SameLine();
         ImGui::BeginGroup();
-        ImGui::BeginChild("itemView",ImVec2(0, -ImGui::GetFrameHeightWithSpacing()));
+        ImGui::BeginChild("itemView",ImVec2(
+            0,
+            -ImGui::GetFrameHeightWithSpacing()
+        ));
         ImGui::Text("Number: %d", selected);
         ImGui::DragFloat("longitude", &longitude, 0.01f, -Const::PI, Const::PI, "%.2f");
         ImGui::DragFloat("latitude", &latitude, 0.01f, -Const::PI, Const::PI, "%.2f");
@@ -78,8 +82,7 @@ void LevelScreen::draw(
     sf::RenderStates states
 ) const {
     states.shader = &(this->shader);
-    shader.setUniform("angle", camera);
-    window.draw(back, state);
-    ImGui::SFML::Render(window);
+    target.draw(back, states);
+    ImGui::SFML::Render(target);
 }
 

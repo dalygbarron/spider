@@ -20,15 +20,17 @@ class Screen: public sf::Drawable {
 
         /**
          * Updates the status of the screen.
-         * @param delta is the amount of time's passage to take into
-         *              consideration.
+         * @param delta  is the amount of time's passage to take into
+         *               consideration.
+         * @param window is the window so that you can mess around with it and
+         *               get stuff that is needed.
          * @return the screen that the next frame should consist of, so
          *         normally it will return itself but sometimes it will return
          *         a different screen which should then be transitioned to. If
          *         it returns null then that means the program should now
          *         close.
          */
-        virtual Screen *update(float delta) = 0;
+        virtual Screen *update(float delta, sf::Window &window) = 0;
 
     private:
         virtual void draw(
@@ -55,7 +57,7 @@ class LevelScreen: public Screen {
          */
         virtual ~LevelScreen();
 
-        virtual Screen *update(float delta) override;
+        virtual Screen *update(float delta, sf::Window &window) override;
 
     private:
         Level *level;
@@ -80,7 +82,7 @@ class EntityScreen: public Screen {
          */
         virtual ~EntityScreen();
 
-        virtual Screen *update(float delta) override;
+        virtual Screen *update(float delta, sf::Window &window) override;
 
     private:
         virtual void draw(

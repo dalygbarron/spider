@@ -9,7 +9,6 @@ Level *Util::parseLevel(pugi::xml_node &node) {
     ghc::filesystem::path picture = node.attribute("picture").value();
     Level *level = new Level(pictureFromFile(picture));
     level->script = node.attribute("script").value();
-    level->clean = false;
     // Defines.
     pugi::xml_node defines = node.child("defines");
     for (pugi::xml_node define = defines.child("define"); define;
