@@ -5,16 +5,11 @@
 #include "Const.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Clock.hpp>
+#include <SFML/Graphics/RenderWindow.hpp> #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-
-int editLevel(sf::RenderWindow &window, sf::View view, Level &level);
-
-int editEntity(sf::RenderWindow &window, Entity &entity);
 
 /**
  * Prints out the version of the program to stdout.
@@ -32,8 +27,9 @@ void version() {
  * Prints out the help documentation to stdouit.
  */
 void help() {
+    printf(Const::LOGO);
     printf(
-        "Spider version %d.%d.%d\n",
+        "version %d.%d.%d\n",
         Const::VERSION_MAJOR,
         Const::VERSION_MINOR,
         Const::VERSION_REV
@@ -45,7 +41,6 @@ void help() {
     printf(" -e means edit file as entity rather than level.\n");
     printf(" file is the name of the file to edit. When h or v are used it is not needed.\n");
 }
-
 /**
  * Parses the commandline options.
  */
@@ -79,6 +74,41 @@ int parseOptions(Options &options, int argc, char **argv) {
     return 0;
 }
 
+/**
+ * Runs the main loop of the program over and over.
+ * @param screen is the screen of the program to start on.
+ * @return the result code the program should give after.
+ */
+int process(Screen *screen) {
+    sf::Clock deltaClock;
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            ImGui::SFML::ProcessEvent(event);
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            } else if (event.type == sf::Event::Resized) {
+                view = Util::getLetterboxView(
+                    view,
+                    sf::Vector2i(event.size.width, event.size.height)
+                );
+            } 
+        }
+        // Render.
+        window.setView(view);
+        window.clear();
+        window.draw(*screen);
+        window.display();
+    }
+}
+
+/**
+ * Start of the program.
+ * @param argc is the number of arguments.
+ * @param argv is the values of the arguments.
+ * @return 0 iff all went well and some other number if not, currently without
+ *           any meaning other than fail.
+ */
 int main(int argc, char **argv) {
     // Parse and validate arguments.
     Options options;
@@ -122,9 +152,10 @@ int main(int argc, char **argv) {
     sf::View view;
     view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
-    // Run.
-    if (options.levelFlag) result = editLevel(window, view, *level);
-    else result = editEntity(window, *entity);
+    // set up the first screen.
+    Screen *screen = NULL;
+    if (options.levelFlag) screen = new LevelScreen(level);
+    else screen = new EntityScreen();
     // Clean up.
     ImGui::SFML::Shutdown();
     return result;

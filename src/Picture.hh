@@ -9,7 +9,6 @@
  */
 class Picture {
     public:
-        sf::Texture *texture;
         ghc::filesystem::path path;
 
         /**
@@ -27,6 +26,15 @@ class Picture {
          * Deletes the texture.
          */
         ~Picture();
+
+        /**
+         * Gives you a reference to this picture's texture.
+         * @return a reference to the texture so that you know it is not null.
+         */
+        sf::Texture const &getTexture() const;
+
+    private:
+        sf::Texture *texture;
 };
 
 #endif

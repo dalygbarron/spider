@@ -9,11 +9,15 @@ Level::~Level() {
     delete this->picture;
 }
 
-Picture *Level::getPicture() {
+int Level::getClean() const {
+    return this->clean;
+}
+
+Picture const *Level::getPicture() const {
     return this->picture;
 }
 
 void Level::setPicture(Picture *picture) {
-    delete this->picture;
+    if (this->picture) delete this->picture;
     this->picture = picture;
 }
