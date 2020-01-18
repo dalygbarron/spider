@@ -1,2 +1,15 @@
-Currently when you resize the window it just gets wider. I will need to bring
-in that viewport stretching thingo that I have got saved in the eel project.
+I had forgotten, but SFML can open new windows which is quite handy for this
+line of work. However, it will require yet more refactoring since the whole
+thing right now is built around having a single window.
+
+Basically, what we can do is make it that a screen appears within a given
+window and it is the only thing that appears in that window and when that
+window is closed that scene dissappears, and also when that scene dissappears
+that window closes.
+
+So, what would be best would be that the screen object actually stores the
+window object and does all of the updating type stuff within that. The main
+loop just loops over all of the current screens and says update, and it will
+know to remove a given screen because it's window has been closed or whatever
+when it gets back a certain return value. Then when no screens are left active
+the program terminates.

@@ -169,11 +169,14 @@ int main(int argc, char **argv) {
     if (options.levelFlag) level = Util::levelFromFile(filename);
     else entity = Util::entityFromFile(filename);
     // Set up some bits.
+    sf::RenderWindow otherWindow(
+        sf::VideoMode(Const::WIDTH, Const::HEIGHT),
+        "bing bing wahooo"
+    );
     sf::RenderWindow window(
         sf::VideoMode(Const::WIDTH, Const::HEIGHT),
         Const::TITLE
     );
-    window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
     ImGui::GetIO().IniFilename = NULL;
     window.resetGLStates();

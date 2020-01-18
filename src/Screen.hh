@@ -49,6 +49,8 @@ class Screen: public sf::Drawable {
         );
 
     private:
+        sf::RenderWindow &window;
+
         virtual void draw(
             sf::RenderTarget &target,
             sf::RenderStates states

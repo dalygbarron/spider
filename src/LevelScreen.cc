@@ -3,11 +3,18 @@
 #include "Const.hh"
 #include <cmath>
 
-LevelScreen::LevelScreen(Level *level) {
+LevelScreen::LevelScreen(Level *level):
+    entitySelector(
+        ImGuiFileBrowserFlags_EnterNewFilename |
+        ImGuiFileBrowserFlags_EnterNewFilename
+    )
+{
     this->level = level;
     this->back.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
-    this->backgroundSelector.SetTitle("bastard");
-    this->backgroundSelector.SetTypeFilters({ ".png"});
+    this->backgroundSelector.SetTitle("Select level background image");
+    this->backgroundSelector.SetTypeFilters({".png"});
+    this->entitySelector.SetTitle("Select entity to include");
+    this->entitySelector.SetTypeFilters({".xml"});
     // TODO: this shader really ought to be kept and reused by other level
     //       screens since it is always the same stuff but I will do that
     //       later.
@@ -35,7 +42,7 @@ Screen *LevelScreen::update(float delta, sf::Window &window) {
         if (ImGui::Button(level->getClean() ? "Save" : "+Save+")) {
             // TODO: stuff
         }
-        if (ImGui::Button("Select Pic")) backgroundSelector.Open();
+        if (ImGui::Button("Select Pic")) this->backgroundSelector.Open();
         ImGui::SameLine();
         Picture const *picture = level->getPicture();
         if (picture) {
@@ -49,7 +56,7 @@ Screen *LevelScreen::update(float delta, sf::Window &window) {
         ImGui::SameLine();
         ImGui::Button("-");
         ImGui::SameLine();
-        ImGui::Button("+");
+        if (ImGui::Button("+")) this->entitySelector.Open();
         ImGui::BeginChild("EntityList", ImVec2(0, 100), true);
         for (int n = 0; n < 50; n++) {
             if (ImGui::Selectable("entities/mrBungle.xml", n == 3));
@@ -59,8 +66,6 @@ Screen *LevelScreen::update(float delta, sf::Window &window) {
         ImGui::Text("Instances");
         ImGui::SameLine();
         ImGui::Button("-");
-        ImGui::SameLine();
-        ImGui::Button("+entity");
         ImGui::SameLine();
         ImGui::Button("+shape");
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
@@ -100,15 +105,22 @@ Screen *LevelScreen::update(float delta, sf::Window &window) {
         ImGui::End();
     }
     // pic selector.
-    backgroundSelector.Display();
-    if (backgroundSelector.HasSelected()) {
-        ghc::filesystem::path pic = backgroundSelector.GetSelected().string();
+    this->backgroundSelector.Display();
+    if (this->backgroundSelector.HasSelected()) {
+        ghc::filesystem::path pic = this->backgroundSelector.GetSelected().string();
         Picture *levelPicture = Util::pictureFromFile(pic);
         this->level->setPicture(levelPicture);
         this->back.setTexture(&(levelPicture->getTexture()));
-        backgroundSelector.ClearSelected();
+        this->backgroundSelector.ClearSelected();
     }
     // entity selector
+    this->entitySelector.Display();
+    if (this->entitySelector.HasSelected()) {
+        ghc::filesystem::path file = this->entitySelector.GetSelected().string();
+        Entity *entity = Util::entityFromFile(file);
+        // TODO: more stuff.
+        this->entitySelector.ClearSelected();
+    }
     return this;
 }
 
