@@ -27,14 +27,12 @@ void version() {
  * Prints out the help documentation to stdouit.
  */
 void help() {
-    printf("%s\n", Const::LOGO);
     printf(
-        "version %d.%d.%d\n",
+        Const::LOGO,
         Const::VERSION_MAJOR,
         Const::VERSION_MINOR,
         Const::VERSION_REV
     );
-    printf("Created by Dany Burton\n");
     printf("Usage: spider [-h] [-v] [-e] file\n");
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
@@ -105,6 +103,7 @@ int process(sf::RenderWindow &window, sf::View &view, Screen *screen) {
         window.draw(*screen);
         window.display();
     }
+    return 0;
 }
 
 /**

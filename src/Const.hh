@@ -11,6 +11,7 @@ namespace Const {
     static int const WIDTH = 1024;
     static int const HEIGHT = 600;
     static float PI = 3.14159265359;
+    static float HALF_PI = 1.57079632679;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
           #######                          ##                       
@@ -29,10 +30,10 @@ namespace Const {
      /  ########/    #######     ### / ####/    ######/  ###        
     /     #####      ######       ##/   ###      #####    ###       
     |                ##                                             
-     \)              ##                                             
-                     ##                                             
-                      ##                                            
-    )~~~";
+     \)              ##       Version %d.%d.%d
+                     ##           Created By Dany Burton
+                      ##
+)~~~";
     static char const *SKY_SHADER = R"~~~(
         #define PI 3.14159265
         #define DEG2RAD 0.01745329251994329576923690768489

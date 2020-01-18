@@ -64,7 +64,8 @@ class LevelScreen: public Screen {
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;
-        ImGui::FileBrowser fileDialog;
+        ImGui::FileBrowser backgroundSelector;
+        ImGui::FileBrowser entitySelector;
 
         virtual void draw(
             sf::RenderTarget &target,
