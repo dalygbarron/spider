@@ -29,9 +29,6 @@ LevelScreen::~LevelScreen() {
 }
 
 Screen *LevelScreen::update(float delta, sf::Window &window) {
-    // fuck around with camera.
-    camera.x += delta;
-    camera.y = sin(camera.x);
     this->shader.setUniform("angle", camera);
     // Now do the gui.
     if(ImGui::Begin(level->file.c_str())) {
@@ -115,12 +112,23 @@ Screen *LevelScreen::update(float delta, sf::Window &window) {
     return this;
 }
 
+void LevelScreen::onClick(sf::Mouse::Button button) {
+}
+
+void LevelScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
+    if (button == sf::Mouse::Button::Right) {
+        this->camera.x -= delta.x * 0.003;
+        this->camera.y -= delta.y * 0.003;
+    }
+    if (this->camera.y > Const::HALF_PI) this->camera.y = Const::HALF_PI;
+    if (this->camera.y < -Const::HALF_PI) this->camera.y = -Const::HALF_PI;
+}
+
 void LevelScreen::draw(
     sf::RenderTarget &target,
     sf::RenderStates states
 ) const {
     states.shader = &(this->shader);
     target.draw(back, states);
-    ImGui::SFML::Render(target);
 }
 

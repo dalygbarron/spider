@@ -32,6 +32,22 @@ class Screen: public sf::Drawable {
          */
         virtual Screen *update(float delta, sf::Window &window) = 0;
 
+        /**
+         * Called when the user clicks on the screen.
+         * @param button is the button that they clicked.
+         */
+        virtual void onClick(sf::Mouse::Button button);
+
+        /**
+         * Called when the user drags the mouse on the screen.
+         * @param button is the button they are dragging with.
+         * @param delta  is the movement they have made with the mouse.
+         */
+        virtual void onDrag(
+            sf::Mouse::Mouse::Button button,
+            sf::Vector2f delta
+        );
+
     private:
         virtual void draw(
             sf::RenderTarget &target,
@@ -58,6 +74,13 @@ class LevelScreen: public Screen {
         virtual ~LevelScreen();
 
         virtual Screen *update(float delta, sf::Window &window) override;
+
+        virtual void onClick(sf::Mouse::Button button) override;
+
+        virtual void onDrag(
+            sf::Mouse::Button button,
+            sf::Vector2f delta
+        ) override;
 
     private:
         Level *level;
