@@ -96,22 +96,24 @@ int process(sf::RenderWindow &window, sf::View &view, Screen *screen) {
                     view,
                     sf::Vector2i(event.size.width, event.size.height)
                 );
-            } else if (event.type == sf::Event::MouseButtonPressed) {
-                screen->onClick(event.mouseButton.button);
-                buttons[event.mouseButton.button] = true;
-            } else if (event.type == sf::Event::MouseButtonReleased) {
-                buttons[event.mouseButton.button] = false;
-            } else if (event.type == sf::Event::MouseMoved) {
-                for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) {
-                    if (buttons[i]) {
-                        screen->onDrag((sf::Mouse::Button)i, sf::Vector2f(\
-                            event.mouseMove.x - mouse.x,
-                            event.mouseMove.y - mouse.y
-                        ));
+            } else if (!ImGui::GetIO().WantCaptureMouse) {
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    screen->onClick(event.mouseButton.button);
+                    buttons[event.mouseButton.button] = true;
+                } else if (event.type == sf::Event::MouseButtonReleased) {
+                    buttons[event.mouseButton.button] = false;
+                } else if (event.type == sf::Event::MouseMoved) {
+                    for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) {
+                        if (buttons[i]) {
+                            screen->onDrag((sf::Mouse::Button)i, sf::Vector2f(
+                                event.mouseMove.x - mouse.x,
+                                event.mouseMove.y - mouse.y
+                            ));
+                        }
                     }
+                    mouse.x = event.mouseMove.x;
+                    mouse.y = event.mouseMove.y;
                 }
-                mouse.x = event.mouseMove.x;
-                mouse.y = event.mouseMove.y;
             }
         }
         // Update Screen.
