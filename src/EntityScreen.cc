@@ -4,8 +4,8 @@ EntityScreen::~EntityScreen() {
     // TODO: stuff I suppose.
 }
 
-Screen *EntityScreen::update(float delta, sf::Window &window) {
-    // TODO: stuff.
+Screen::Transition EntityScreen::logic(float delta) {
+    return Screen::Transition(NULL, false);
 }
 
 void EntityScreen::draw(

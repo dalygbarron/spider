@@ -74,18 +74,17 @@ int parseOptions(Options &options, int argc, char **argv) {
 
 /**
  * Runs the main loop of the program over and over.
- * @param window is the window the program is running in.
- * @param view   is the view to look with.
  * @param screen is the screen of the program to start on.
  * @return the result code the program should give after.
  */
-int process(sf::RenderWindow &window, sf::View &view, Screen *screen) {
+int process(Screen *screen) {
     std::vector<Screen *> screens;
-    screens.add(screen);
+    screens.push_back(screen);
     while (screens.size() > 0) {
         std::vector<Screen *>::iterator iterator = screens.begin();
-        while (*it != screens.end()) {
-            Screen::Transition transition = screens[i].update();
+        std::vector<Screen *>::iterator end = screens.end();
+        while (iterator != end) {
+            Screen::Transition transition = (*iterator)->update();
             if (transition.screen) screens.push_back(transition.screen);
             if (transition.kill) iterator = screens.erase(iterator);
             else iterator++;
@@ -136,13 +135,9 @@ int main(int argc, char **argv) {
     Screen *screen = NULL;
     if (options.levelFlag) screen = new LevelScreen(level);
     else screen = new EntityScreen();
-    ImGui::SFML::Init(window);
+    ImGui::SFML::Init(screen->getWindow());
     ImGui::GetIO().IniFilename = NULL;
-    window.resetGLStates();
-    sf::View view;
-    view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
-    view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
-    result = process(window, view, screen);
+    result = process(screen);
     // Clean up.
     ImGui::SFML::Shutdown();
     return result;
