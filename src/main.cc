@@ -80,16 +80,52 @@ int parseOptions(Options &options, int argc, char **argv) {
  * @return the result code the program should give after.
  */
 int process(sf::RenderWindow &window, sf::View &view, Screen *screen) {
-    std::vector<Screen *> screens;
-    screens.add(screen);
-    while (screens.size() > 0) {
-        std::vector<Screen *>::iterator iterator = screens.begin();
-        while (*it != screens.end()) {
-            Screen::Transition transition = screens[i].update();
-            if (transition.screen) screens.push_back(transition.screen);
-            if (transition.kill) iterator = screens.erase(iterator);
-            else iterator++;
+    sf::Clock deltaClock;
+    sf::Vector2i mouse = sf::Mouse::getPosition();
+    int buttons[sf::Mouse::Button::ButtonCount];
+    for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) buttons[i] = 0;
+    while (window.isOpen() && screen) {
+        // Handle Events.
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            ImGui::SFML::ProcessEvent(event);
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            } else if (event.type == sf::Event::Resized) {
+                view = Util::getLetterboxView(
+                    view,
+                    sf::Vector2i(event.size.width, event.size.height)
+                );
+            } else if (!ImGui::GetIO().WantCaptureMouse) {
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    screen->onClick(event.mouseButton.button);
+                    buttons[event.mouseButton.button] = true;
+                } else if (event.type == sf::Event::MouseButtonReleased) {
+                    buttons[event.mouseButton.button] = false;
+                } else if (event.type == sf::Event::MouseMoved) {
+                    for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) {
+                        if (buttons[i]) {
+                            screen->onDrag((sf::Mouse::Button)i, sf::Vector2f(
+                                event.mouseMove.x - mouse.x,
+                                event.mouseMove.y - mouse.y
+                            ));
+                        }
+                    }
+                    mouse.x = event.mouseMove.x;
+                    mouse.y = event.mouseMove.y;
+                }
+            }
         }
+        // Update Screen.
+        sf::Time delta = deltaClock.restart();
+        ImGui::SFML::Update(window, delta);
+        screen->update(delta.asSeconds(), window);
+        // Render.
+        window.setView(view);
+        window.clear();
+        window.draw(*screen);
+        ImGui::SFML::Render(window);
+        window.display();
     }
     return 0;
 }
@@ -132,16 +168,25 @@ int main(int argc, char **argv) {
     Entity *entity;
     if (options.levelFlag) level = Util::levelFromFile(filename);
     else entity = Util::entityFromFile(filename);
-    // set up the first screen.
-    Screen *screen = NULL;
-    if (options.levelFlag) screen = new LevelScreen(level);
-    else screen = new EntityScreen();
+    // Set up some bits.
+    sf::RenderWindow otherWindow(
+        sf::VideoMode(Const::WIDTH, Const::HEIGHT),
+        "bing bing wahooo"
+    );
+    sf::RenderWindow window(
+        sf::VideoMode(Const::WIDTH, Const::HEIGHT),
+        Const::TITLE
+    );
     ImGui::SFML::Init(window);
     ImGui::GetIO().IniFilename = NULL;
     window.resetGLStates();
     sf::View view;
     view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
+    // set up the first screen.
+    Screen *screen = NULL;
+    if (options.levelFlag) screen = new LevelScreen(level);
+    else screen = new EntityScreen();
     result = process(window, view, screen);
     // Clean up.
     ImGui::SFML::Shutdown();

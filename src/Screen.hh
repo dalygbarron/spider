@@ -14,48 +14,23 @@
 class Screen: public sf::Drawable {
     public:
         /**
-         * Represents a message from this screen back to the main program
-         * telling it to do nothing or something to do with creating more
-         * screens and that.
-         */
-        class Transition {
-            public:
-                Screen *screen;
-                int kill;
-
-                /**
-                 * Creates a transition.
-                 * @param screen is the screen to create. Can be null to do
-                 *               nothing at all.
-                 * @param kill   means to kill this screen if true.
-                 */
-                Transition(Screen *screen, int kill);
-        };
-
-        /**
-         * Does stuff like initialising the window that the screen operates
-         * within.
-         */
-        Screen();
-
-        /**
          * lets the screen subtypes be deleted.
          */
         virtual ~Screen();
 
         /**
          * Updates the status of the screen.
-         * @return a transition object which can contain a new screen to create
-         *         or an instruction to remove this scene or whatever.
+         * @param delta  is the amount of time's passage to take into
+         *               consideration.
+         * @param window is the window so that you can mess around with it and
+         *               get stuff that is needed.
+         * @return the screen that the next frame should consist of, so
+         *         normally it will return itself but sometimes it will return
+         *         a different screen which should then be transitioned to. If
+         *         it returns null then that means the program should now
+         *         close.
          */
-        virtual Screen::Transition update();
-
-        /**
-         * This is where the screen implements it's actual logic.
-         * @param delta is the amount of time passing that it should simulate.
-         * @return a transition for what happens after this.
-         */
-        virtual Screen::Transition logic(float delta) = 0;
+        virtual Screen *update(float delta, sf::Window &window) = 0;
 
         /**
          * Called when the user clicks on the screen.
@@ -74,10 +49,12 @@ class Screen: public sf::Drawable {
         );
 
     private:
-        sf::Clock deltaClock;
-        sf::Vector2i mouse;
-        int buttons[sf::Mouse::Button::ButtonCount];
-        sf::RenderWindow window;
+        sf::RenderWindow &window;
+
+        virtual void draw(
+            sf::RenderTarget &target,
+            sf::RenderStates states
+        ) const override = 0;
 };
 
 /**
