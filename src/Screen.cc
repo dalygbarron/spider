@@ -1,11 +1,9 @@
 #include "Screen.hh"
-#include "Const.hh"
-#include "Util.hh"
 
 Screen::Transition::Transition(Screen *screen, int kill):
 screen(screen),
 kill(kill) {
-    // Does not very much.
+    // Does nothing else.
 }
 
 Screen::Screen():
@@ -14,17 +12,10 @@ window(sf::VideoMode(Const::WIDTH, Const::HEIGHT), "screne") {
     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) {
         this->buttons[i] = 0;
     }
-    this->view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
-    this->view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
-    this->window.resetGLStates();
 }
 
 Screen::~Screen() {
     // Does nothing.
-}
-
-sf::RenderWindow &Screen::getWindow() {
-    return this->window;
 }
 
 Screen::Transition Screen::update() {
@@ -36,20 +27,20 @@ Screen::Transition Screen::update() {
             this->window.close();
             return Screen::Transition(NULL, true);
         } else if (event.type == sf::Event::Resized) {
-            this->view = Util::getLetterboxView(
-                this->view,
+            view = Util::getLetterboxView(
+                view,
                 sf::Vector2i(event.size.width, event.size.height)
             );
         } else if (!ImGui::GetIO().WantCaptureMouse) {
             if (event.type == sf::Event::MouseButtonPressed) {
-                this->onClick(event.mouseButton.button);
+                screen->onClick(event.mouseButton.button);
                 buttons[event.mouseButton.button] = true;
             } else if (event.type == sf::Event::MouseButtonReleased) {
                 buttons[event.mouseButton.button] = false;
             } else if (event.type == sf::Event::MouseMoved) {
                 for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) {
                     if (buttons[i]) {
-                        this->onDrag((sf::Mouse::Button)i, sf::Vector2f(
+                        screen->onDrag((sf::Mouse::Button)i, sf::Vector2f(
                             event.mouseMove.x - mouse.x,
                             event.mouseMove.y - mouse.y
                         ));
@@ -63,14 +54,14 @@ Screen::Transition Screen::update() {
     // Update Screen.
     sf::Time delta = deltaClock.restart();
     ImGui::SFML::Update(window, delta);
-    Screen::Transition transition = this->logic(delta.asSeconds());
+    screen->update(delta.asSeconds(), window);
     // Render.
-    window.setView(this->view);
+    window.setView(view);
     window.clear();
-    window.draw(*this);
+    window.draw(*screen);
     ImGui::SFML::Render(window);
     window.display();
-    return transition;
+    return Transition(NULL, false);
 }
 
 void Screen::onClick(sf::Mouse::Button button) {

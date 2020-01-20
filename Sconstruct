@@ -8,7 +8,7 @@ libs = [
     'sfml-audio',
     'sfml-window'
 ]
-cflags = ['-std=c++17','-fcolor-diagnostics', '-g']
+cflags = ['-std=c++17']
 
 if sys.platform != 'darwin':
     libs.append('GL')

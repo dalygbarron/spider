@@ -44,24 +44,11 @@ class Screen: public sf::Drawable {
         virtual ~Screen();
 
         /**
-         * Gives you access to the screen's window.
-         * @return the window.
-         */
-        sf::RenderWindow &getWindow();
-
-        /**
          * Updates the status of the screen.
          * @return a transition object which can contain a new screen to create
          *         or an instruction to remove this scene or whatever.
          */
         virtual Screen::Transition update();
-
-    private:
-        sf::Clock deltaClock;
-        sf::Vector2i mouse;
-        int buttons[sf::Mouse::Button::ButtonCount];
-        sf::RenderWindow window;
-        sf::View view;
 
         /**
          * This is where the screen implements it's actual logic.
@@ -86,10 +73,11 @@ class Screen: public sf::Drawable {
             sf::Vector2f delta
         );
 
-        virtual void draw(
-            sf::RenderTarget &target,
-            sf::RenderStates states
-        ) const override = 0;
+    private:
+        sf::Clock deltaClock;
+        sf::Vector2i mouse;
+        int buttons[sf::Mouse::Button::ButtonCount];
+        sf::RenderWindow window;
 };
 
 /**
@@ -110,6 +98,15 @@ class LevelScreen: public Screen {
          */
         virtual ~LevelScreen();
 
+        virtual Screen *update(float delta, sf::Window &window) override;
+
+        virtual void onClick(sf::Mouse::Button button) override;
+
+        virtual void onDrag(
+            sf::Mouse::Button button,
+            sf::Vector2f delta
+        ) override;
+
     private:
         Level *level;
         sf::Vector2f camera;
@@ -118,19 +115,10 @@ class LevelScreen: public Screen {
         ImGui::FileBrowser backgroundSelector;
         ImGui::FileBrowser entitySelector;
 
-        virtual Screen::Transition logic(float delta) override;
-
         virtual void draw(
             sf::RenderTarget &target,
             sf::RenderStates states
         ) const override;
-
-        virtual void onClick(sf::Mouse::Button button) override;
-
-        virtual void onDrag(
-            sf::Mouse::Button button,
-            sf::Vector2f delta
-        ) override;
 };
 
 /**
@@ -143,9 +131,9 @@ class EntityScreen: public Screen {
          */
         virtual ~EntityScreen();
 
-    private:
-        virtual Screen::Transition logic(float delta) override;
+        virtual Screen *update(float delta, sf::Window &window) override;
 
+    private:
         virtual void draw(
             sf::RenderTarget &target,
             sf::RenderStates states

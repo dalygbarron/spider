@@ -35,8 +35,7 @@ LevelScreen::~LevelScreen() {
     delete this->level;
 }
 
-Screen::Transition LevelScreen::logic(float delta) {
-    Screen::Transition transition(NULL, false);
+Screen *LevelScreen::update(float delta, sf::Window &window) {
     this->shader.setUniform("angle", camera);
     // Now do the gui.
     if(ImGui::Begin(level->file.c_str())) {
@@ -68,9 +67,7 @@ Screen::Transition LevelScreen::logic(float delta) {
         ImGui::SameLine();
         ImGui::Button("-");
         ImGui::SameLine();
-        if (ImGui::Button("+shape")) {
-            transition.screen = new LevelScreen(Util::levelFromFile(this->level->file));
-        }
+        ImGui::Button("+shape");
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
         static int selected = -1;
         static float longitude = 0;
@@ -124,7 +121,7 @@ Screen::Transition LevelScreen::logic(float delta) {
         // TODO: more stuff.
         this->entitySelector.ClearSelected();
     }
-    return transition;
+    return this;
 }
 
 void LevelScreen::onClick(sf::Mouse::Button button) {
