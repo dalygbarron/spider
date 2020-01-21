@@ -109,6 +109,11 @@ class EntityScreen: public Screen {
         virtual Screen *update(float delta, sf::Window &window) override;
 
     private:
+        Entity *entity;
+        ImGui::FileBrowser picSelector;
+        std::vector<sf::CircleShape> points;
+        sf::ConvexShape outline;
+
         virtual void draw(
             sf::RenderTarget &target,
             sf::RenderStates states
