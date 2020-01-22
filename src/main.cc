@@ -33,18 +33,20 @@ void help() {
         Const::VERSION_MINOR,
         Const::VERSION_REV
     );
-    printf("Usage: spider [-h] [-v] [-e] file\n");
+    printf("Usage: spider [-h] [-v] -g=gameFile [-e=entityFile| -l=levelFile]\n");
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
-    printf(" -e means edit file as entity rather than level.\n");
-    printf(" file is the name of the file to edit. When h or v are used it is not needed.\n");
+    printf(" -g means game file, it is required.\n");
+    printf(" -e means entity file to edit, it cannot be used with -l.\n");
+    printf(" -l means level file to edit, it cannot be used with -e.\n");
+    printf("\nIf you run it and it says shaders are not available, it's fucked\n");
 }
 /**
  * Parses the commandline options.
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
-    while ((opt = getopt(argc, argv, "hev")) != -1) {
+    while ((opt = getopt(argc, argv, "hvg:e:l:")) != -1) {
         switch (opt) {
             case 'h':
                 options.helpFlag = true;
@@ -52,22 +54,21 @@ int parseOptions(Options &options, int argc, char **argv) {
             case 'v':
                 options.versionFlag = true;
                 return 0;
+            case 'g':
+                options.game = optarg;
+                break;
             case 'e':
-                options.levelFlag = false;
+                options.file = optarg;
+                options.entityFlag = true;
+                break;
+            case 'l':
+                options.file = optarg;
+                options.levelFlag = true;
                 break;
             default:
                 return 1;
         }
     }
-    int extras = argc - optind;
-    if (extras == 0) {
-        fprintf(stderr, "File name must be given. -h for help.\n");
-        return 1;
-    } else if (extras > 1) {
-        fprintf(stderr, "Too many arguments. -h for help.\n");
-        return 1;
-    }
-    options.file = argv[optind];
     options.command = argv[0];
     return 0;
 }
@@ -150,8 +151,12 @@ int main(int argc, char **argv) {
         version();
         return 0;
     }
+    if (options.game.empty()) {
+        fprintf(stderr, "Game file must be specified. -h for help.\n");
+        return 1;
+    }
     if (options.file.empty()) {
-        fprintf(stderr, "Filename must be given\n");
+        fprintf(stderr, "Filename must be given. -h for help.\n");
         return 1;
     }
     // Validate the system can handle Spider.
@@ -186,7 +191,7 @@ int main(int argc, char **argv) {
     // set up the first screen.
     Screen *screen = NULL;
     if (options.levelFlag) screen = new LevelScreen(level);
-    else screen = new EntityScreen();
+    else screen = new EntityScreen(entity);
     result = process(window, view, screen);
     // Clean up.
     ImGui::SFML::Shutdown();

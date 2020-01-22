@@ -1,5 +1,9 @@
 #include "Screen.hh"
 
+EntityScreen::EntityScreen(Entity *entity) {
+    this->entity = entity;
+}
+
 EntityScreen::~EntityScreen() {
     // TODO: stuff I suppose.
 }

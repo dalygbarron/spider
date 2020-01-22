@@ -8,8 +8,10 @@
 class Options {
     public:
         std::string command;
+        ghc::filesystem::path game;
         ghc::filesystem::path file;
-        int levelFlag = true;
+        int entityFlag = false;
+        int levelFlag = false;
         int helpFlag = false;
         int versionFlag = false;
 };

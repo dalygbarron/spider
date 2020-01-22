@@ -73,6 +73,18 @@ class LevelScreen: public Screen {
          */
         virtual ~LevelScreen();
 
+        /**
+         * Add an entity instance to the level.
+         * @param instance is the instance to add.
+         */
+        void addInstance(Instance *instance);
+
+        /**
+         * Remove an entity instance from the level and free it.
+         * @param index is the index of the entity to remove.
+         */
+        void removeInstance(int index);
+
         virtual Screen *update(float delta, sf::Window &window) override;
 
         virtual void onClick(sf::Mouse::Button button) override;
@@ -101,6 +113,12 @@ class LevelScreen: public Screen {
  */
 class EntityScreen: public Screen {
     public:
+        /**
+         * Creates the screen.
+         * @param entity is the entity that the screen shall edit.
+         */
+        EntityScreen(Entity *entity);
+
         /**
          * Frees the entity.
          */
