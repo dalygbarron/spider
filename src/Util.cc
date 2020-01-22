@@ -68,6 +68,10 @@ Entity *Util::entityFromFile(ghc::filesystem::path &path) {
     return NULL;
 }
 
+void Util::addRatsFromFile(RatPack &pack, ghc::filesystem::path &path) {
+    // TODO: load the xml file and parse it and all that stuff.
+}
+
 sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     float windowRatio = dimensions.x / (float)dimensions.y;
     float viewRatio = view.getSize().x / (float)view.getSize().y;

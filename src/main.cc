@@ -6,6 +6,9 @@
 #include "Const.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#include "spdlog/spdlog.h"
+#include "spdlog/rotating_file_sink.h"
 #include <SFML/System.hpp>
 #include <stdlib.h>
 #include <stdio.h>
@@ -146,21 +149,19 @@ int main(int argc, char **argv) {
     if (options.helpFlag) {
         help();
         return 0;
-    }
-    if (options.versionFlag) {
+    } else if (options.versionFlag) {
         version();
         return 0;
-    }
-    if (options.game.empty()) {
+    } else if (options.game.empty()) {
         fprintf(stderr, "Game file must be specified. -h for help.\n");
         return 1;
-    }
-    if (options.file.empty()) {
+    } else if (options.file.empty()) {
         fprintf(stderr, "Filename must be given. -h for help.\n");
         return 1;
-    }
-    // Validate the system can handle Spider.
-    if (!sf::Shader::isAvailable()) {
+    } else if (options.entityFlag && options.levelFlag) {
+        fprintf(stderr, "Cannot edit entity and level at same time.\n");
+        return 1;
+    } else if (!sf::Shader::isAvailable()) {
         fprintf(stderr, "Shaders not available. Goodbye.\n");
         return 1;
     }

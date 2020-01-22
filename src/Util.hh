@@ -25,13 +25,6 @@ namespace Util {
     Entity *parseEntity(pugi::xml_node &node);
 
     /**
-     * Loads a picture from a file and returns it.
-     * @param filename is the file name of the texture to open.
-     * @return the picture or null if it could not be loaded.
-     */
-    Picture *pictureFromFile(ghc::filesystem::path &path);
-
-    /**
      * Loads a level in from the given file, and if the file does not exist
      * then it creates a new blank level that uses that file.
      * @param filename is the name of the file from which to load.
@@ -48,6 +41,22 @@ namespace Util {
     Entity *entityFromFile(ghc::filesystem::path &path);
 
     /**
+     * Parses rats out of an xml node and puts them in the given ratpack.
+     * Yes I am aware this is weird since you must have already given it
+     * a texture but also I do not really care ha ha ha hah ah.
+     * @param
+     */
+    void parseRats(RatPack &pack, pugi::xml_node &node);
+
+    /**
+     * Opens up a rat pack xml file and adds all the nodes from it into a rat
+     * pack object.
+     * @param pack is the existing pack to add the rats to.
+     * @param path is the path at which to load the ratpack xml file.
+     */
+    void addRatsFromFile(RatPack &pack, ghc::filesystem::path &path);
+
+    /**
      * Gives you a view that makes the screen letterbox so it scales stuff and
      * does blah blah blah you know.
      * @param view       is the view that was currently on.
@@ -55,6 +64,7 @@ namespace Util {
      * @return the new view to use.
      */
     sf::View getLetterboxView(sf::View view, sf::Vector2i dimensions);
+
 }
 
 #endif
