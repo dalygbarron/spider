@@ -1,0 +1,22 @@
+I am starting to think that a repository class is not actually necessary for
+this program or for the game itself. Let us think about this.
+
+TextureRepository: this is not needed because the level textures will be
+massive and should not reside in memory the whole time. On the other hand, all
+other textures will be in a single sprite sheet which is one texture. So no
+need for saving textures at all.
+
+RatPackRepository: only one in the game.
+
+SoundRepository: We probably should cache sounds even if we are not handing out
+references to them everywhere.
+
+EntityRepository: We should indeed have this one, also the level repository
+will have a dependency on it since they contain instances which are references
+to entities.
+
+LevelRepository: could be useful actually. What we could do is rather than
+returning immutable references, we should return mutable copies. Well, or just
+return immutable references and let people make their own copy.
+
+Ok well the end of the story is we actually should have repositories. :(

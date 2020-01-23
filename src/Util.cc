@@ -6,8 +6,7 @@
 
 Level *Util::parseLevel(pugi::xml_node &node) {
     // Main bits.
-    ghc::filesystem::path picture = node.attribute("picture").value();
-    Level *level = new Level(pictureFromFile(picture));
+    Level *level = new Level();
     level->script = node.attribute("script").value();
     // Defines.
     pugi::xml_node defines = node.child("defines");
@@ -22,16 +21,6 @@ Level *Util::parseLevel(pugi::xml_node &node) {
 
 Entity *Util::parseEntity(pugi::xml_node &node) {
 
-}
-
-Picture *Util::pictureFromFile(ghc::filesystem::path &path) {
-    sf::Texture *texture = new sf::Texture();
-    if (!texture->loadFromFile(path.c_str())) {
-        delete texture;
-        return NULL;
-    }
-    texture->setSmooth(true);
-    return new Picture(texture, path);
 }
 
 Level *Util::levelFromFile(ghc::filesystem::path &path) {

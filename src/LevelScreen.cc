@@ -25,10 +25,6 @@ LevelScreen::LevelScreen(Level *level):
     )) {
         fprintf(stderr, "Couldn't start the sky shader.\n");
     }
-    Picture const *levelPicture = level->getPicture();
-    if (levelPicture) {
-        this->back.setTexture(&(levelPicture->getTexture()));
-    }
 }
 
 LevelScreen::~LevelScreen() {
@@ -44,13 +40,6 @@ Screen *LevelScreen::update(float delta, sf::Window &window) {
         }
         if (ImGui::Button("Select Pic")) this->backgroundSelector.Open();
         ImGui::SameLine();
-        Picture const *picture = level->getPicture();
-        if (picture) {
-            ImGui::Text(
-                "Current Picture: %s",
-                picture->path.c_str()
-            );
-        }
         ImGui::Separator();
         ImGui::Text("Entities");
         ImGui::SameLine();
@@ -108,9 +97,6 @@ Screen *LevelScreen::update(float delta, sf::Window &window) {
     this->backgroundSelector.Display();
     if (this->backgroundSelector.HasSelected()) {
         ghc::filesystem::path pic = this->backgroundSelector.GetSelected().string();
-        Picture *levelPicture = Util::pictureFromFile(pic);
-        this->level->setPicture(levelPicture);
-        this->back.setTexture(&(levelPicture->getTexture()));
         this->backgroundSelector.ClearSelected();
     }
     // entity selector

@@ -1,7 +1,6 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-#include "Picture.hh"
 #include "Entity.hh"
 #include "Instance.hh"
 #include "filesystem.hh"
@@ -22,9 +21,8 @@ class Level {
 
         /**
          * Passes in the picture that the level is using.
-         * @param picture is the picture to use.
          */
-        Level(Picture *picture);
+        Level();
 
         /**
          * Destroys the level's picture from memory.
@@ -38,22 +36,8 @@ class Level {
          */
         int getClean() const;
 
-        /**
-         * Gives you the level's picture.
-         * @return a reference to the picture.
-         */
-        Picture const *getPicture() const;
-
-        /**
-         * Sets the picture that the level should use and deletes the old one.
-         * @param picture is the picture to use which the level then takes
-         *        sole ownership of.
-         */
-        void setPicture(Picture *picture);
-
     private:
         int clean = false;
-        Picture *picture = NULL;
 };
 
 #endif

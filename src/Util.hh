@@ -1,9 +1,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include "Picture.hh"
 #include "Level.hh"
 #include "Entity.hh"
+#include "RatPack.hh"
 #include "pugixml.hpp"
 
 /**

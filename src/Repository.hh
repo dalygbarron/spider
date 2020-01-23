@@ -45,4 +45,30 @@ class Repository<T> {
         std::unordered_map<std::string, T *> items;
 };
 
+/**
+ * Repository for sounds.
+ */
+class SoundRepository: public Repository<sf::Sound> {
+    public:
+        virtual sf::Sound *load(char const *key) const override;
+};
+
+/**
+ * Repository for entities.
+ */
+class EntityRepository: public Repository<Entity> {
+    public:
+        virtual Entity *load(char const *key) const override;
+};
+
+/**
+ * Repository for levels.
+ */
+class LevelRepository: public Repository<Level> {
+    public:
+        virtual Level *load(char const *key) const override;
+};
+
+
+
 #endif

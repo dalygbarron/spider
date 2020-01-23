@@ -11,13 +11,11 @@
 class RatPack {
     public:
         /**
-         * Creates the initial rat pack object by putting in it's texture but
-         * without the rats yet as they must be added one by one with
-         * a function call.
-         * @param texture is the pack's texture which is not const because it
-         *                needs to be editable.
+         * Loads in the rat pack from a given file.
+         * @param filename is the name of the file to load from.
+         * @return true only if all was well.
          */
-        RatPack(sf::Texture &texture);
+        int loadFromFile(char const *filename);
 
         /**
          * Gives you immutable access to the rat pack's texture so you can draw
@@ -42,7 +40,7 @@ class RatPack {
 
     private:
         std::unordered_map<std::string, sf::FloatRect> rats;
-        sf::Texture &texture;
+        sf::Texture texture;
 };
 
 #endif
