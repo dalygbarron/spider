@@ -1,12 +1,16 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
+#include "Entity.hh"
+#include "Level.hh"
+#include "spdlog/spdlog.h"
+#include <SFML/Audio.hpp>
 #include <unordered_map>
 
 /**
  * Loads and then stores assets.
  */
-class Repository<T> {
+template <class T> class Repository {
     public:
         /**
          * Frees all the assets.
@@ -48,9 +52,9 @@ class Repository<T> {
 /**
  * Repository for sounds.
  */
-class SoundRepository: public Repository<sf::Sound> {
+class SoundBufferRepository: public Repository<sf::SoundBuffer> {
     public:
-        virtual sf::Sound *load(char const *key) const override;
+        virtual sf::SoundBuffer *load(char const *key) const override;
 };
 
 /**
