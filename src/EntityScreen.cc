@@ -1,7 +1,7 @@
 #include "Screen.hh"
 
-EntityScreen::EntityScreen(Entity *entity) {
-    this->entity = entity;
+EntityScreen::EntityScreen(Entity &entity): entity(entity) {
+    // Does nothing else I think.
 }
 
 EntityScreen::~EntityScreen() {
@@ -16,6 +16,6 @@ void EntityScreen::draw(
     sf::RenderTarget &target,
     sf::RenderStates states
 ) const {
-    // TODO: stuff.
+    target.draw(this->picture, states);
 }
 

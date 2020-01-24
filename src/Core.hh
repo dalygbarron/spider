@@ -6,10 +6,14 @@
  */
 class Core {
     public:
+        SoundBufferRepository soundBufferRepository;
+        EntityRepository entityRepository;
+        LevelRepository levelRepository;
+
+        RatPack const &getRatPack();
+
+    private:
         RatPack spritesheet;
-
-
-
 };
 
 

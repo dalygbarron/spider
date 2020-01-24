@@ -115,9 +115,12 @@ class EntityScreen: public Screen {
     public:
         /**
          * Creates the screen.
-         * @param entity is the entity that the screen shall edit.
+         * @param entity is the entity that the screen shall edit. It is
+         *               a reference because it is owned somewhere else and you
+         *               shall not be required to delete it or anything like
+         *               that.
          */
-        EntityScreen(Entity *entity);
+        EntityScreen(Entity &entity);
 
         /**
          * Frees the entity.
@@ -127,7 +130,7 @@ class EntityScreen: public Screen {
         virtual Screen *update(float delta, sf::Window &window) override;
 
     private:
-        Entity *entity;
+        Entity &entity;
         ImGui::FileBrowser picSelector;
         std::vector<sf::CircleShape> points;
         sf::ConvexShape outline;

@@ -39,6 +39,15 @@ template <class T> class Repository {
         }
 
         /**
+         * Deletes something out of the cache so that the next time it is
+         * requested it will be loaded from scratch.
+         * @param key is the key to the thing to be removed.
+         */
+        void clear(char const *key) {
+            this->items.erase(key);
+        }
+
+        /**
          * Load an asset with the given key.
          * @param key is the key of what to load.
          * @return the loaded item or null if it could not be loaded.

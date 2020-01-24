@@ -13,21 +13,12 @@ class Entity {
             GENERIC,
             ITEM
         } type;
+        ghc::filesystem::path file;
         std::string name;
         std::string itemType;
+        std::string sprite;
         sf::Vector2f origin;
         std::vector<sf::Vector2f> shape;
-
-        /**
-         * Creates the entity and gives it a picture.
-         * @param picture is the entity's picture.
-         */
-        Entity();
-
-        /**
-         * Destroy's the entity and it's picture.
-         */
-        ~Entity();
 };
 
 #endif
