@@ -170,10 +170,6 @@ int main(int argc, char **argv) {
     ghc::filesystem::path filename = root.filename();
     root.remove_filename();
     ghc::filesystem::current_path(root);
-    Level *level;
-    Entity *entity;
-    if (options.levelFlag) level = Util::levelFromFile(filename);
-    else entity = Util::entityFromFile(filename);
     // Set up some bits.
     sf::RenderWindow window(
         sf::VideoMode(Const::WIDTH, Const::HEIGHT),
@@ -186,9 +182,12 @@ int main(int argc, char **argv) {
     view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
     // set up the first screen.
+    Core core;
     Screen *screen = NULL;
-    if (options.levelFlag) screen = new LevelScreen(level);
-    else screen = new EntityScreen(entity);
+    Level *level = NULL;
+    Entity *entity = NULL;
+    if (options.levelFlag) screen = new LevelScreen(core, level);
+    else screen = new EntityScreen(core, entity);
     result = process(window, view, screen);
     // Clean up.
     ImGui::SFML::Shutdown();

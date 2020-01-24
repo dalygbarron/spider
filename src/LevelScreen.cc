@@ -3,7 +3,8 @@
 #include "Const.hh"
 #include <cmath>
 
-LevelScreen::LevelScreen(Level *level):
+LevelScreen::LevelScreen(Core &core, Level *level):
+    core(core),
     entitySelector(
         ImGuiFileBrowserFlags_EnterNewFilename |
         ImGuiFileBrowserFlags_EnterNewFilename

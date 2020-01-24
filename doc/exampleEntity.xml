@@ -1,4 +1,7 @@
-<entity>
+<entity name="aini"
+    sprite="aini"
+    origin-x="43"
+    origin-y"19">
     <point x="12" y="45" />
     <point x="12" y="45" />
     <point x="12" y="45" />

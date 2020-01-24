@@ -1,6 +1,9 @@
 #include "Screen.hh"
 
-EntityScreen::EntityScreen(Entity &entity): entity(entity) {
+EntityScreen::EntityScreen(Core &core, Entity &entity):
+    screen(core),
+    entity(entity)
+{
     // Does nothing else I think.
 }
 
@@ -9,7 +12,6 @@ EntityScreen::~EntityScreen() {
 }
 
 Screen *EntityScreen::update(float delta, sf::Window &window) {
-    // TODO: stuff.
 }
 
 void EntityScreen::draw(

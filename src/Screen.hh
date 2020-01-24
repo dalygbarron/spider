@@ -14,6 +14,12 @@
 class Screen: public sf::Drawable {
     public:
         /**
+         * Creates the screen and puts in it's main dependencies.
+         * @param core contains the main dependencies.
+         */
+        Screen(Core &core);
+
+        /**
          * lets the screen subtypes be deleted.
          */
         virtual ~Screen();
@@ -48,6 +54,9 @@ class Screen: public sf::Drawable {
             sf::Vector2f delta
         );
 
+    protected:
+        Core &core;
+
     private:
         virtual void draw(
             sf::RenderTarget &target,
@@ -63,10 +72,11 @@ class LevelScreen: public Screen {
         /**
          * Creates the level screen and gives it it's level. It then becomes
          * responsible for this level and destoys it when it is done.
+         * @param core  is the main dependencies of screens.
          * @param level is the level to edit. It should not be null. Also, the
          *              level will delete it when it is deleted.
          */
-        LevelScreen(Level *level);
+        LevelScreen(Core &core, Level *level);
 
         /**
          * Frees the levelscreen's shit for example the level itself.
@@ -115,12 +125,13 @@ class EntityScreen: public Screen {
     public:
         /**
          * Creates the screen.
+         * @param core  is the main dependencies of screens.
          * @param entity is the entity that the screen shall edit. It is
          *               a reference because it is owned somewhere else and you
          *               shall not be required to delete it or anything like
          *               that.
          */
-        EntityScreen(Entity &entity);
+        EntityScreen(Core &core, Entity &entity);
 
         /**
          * Frees the entity.
@@ -134,6 +145,15 @@ class EntityScreen: public Screen {
         ImGui::FileBrowser picSelector;
         std::vector<sf::CircleShape> points;
         sf::ConvexShape outline;
+        sf::RectangleShape picture;
+
+        setOffset(sf::Vector2f offset);
+
+        /**
+         * Sets the entity's sprite and does the nice.
+         * @param sprite is the name of the sprite to use.
+         */
+        setSprite(std::string const &sprite);
 
         virtual void draw(
             sf::RenderTarget &target,

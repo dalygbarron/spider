@@ -1,5 +1,9 @@
 #include "Screen.hh"
 
+Screen::Screen(Core &core): core(core) {
+    // Does nothing else.
+}
+
 Screen::~Screen() {
     // Does nothing.
 }
