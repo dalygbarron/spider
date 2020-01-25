@@ -3,14 +3,14 @@
 #include "Const.hh"
 #include <cmath>
 
-LevelScreen::LevelScreen(Core &core, Level *level):
-    core(core),
+LevelScreen::LevelScreen(Core &core, Level &level):
+    Screen(core),
+    level(level),
     entitySelector(
         ImGuiFileBrowserFlags_EnterNewFilename |
         ImGuiFileBrowserFlags_EnterNewFilename
     )
 {
-    this->level = level;
     this->back.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     this->backgroundSelector.SetTitle("Select level background image");
     this->backgroundSelector.SetTypeFilters({".png"});
@@ -29,14 +29,14 @@ LevelScreen::LevelScreen(Core &core, Level *level):
 }
 
 LevelScreen::~LevelScreen() {
-    delete this->level;
+    // Doesn othingg.
 }
 
 Screen *LevelScreen::update(float delta, sf::Window &window) {
     this->shader.setUniform("angle", camera);
     // Now do the gui.
-    if(ImGui::Begin(level->file.c_str())) {
-        if (ImGui::Button(level->getClean() ? "Save" : "+Save+")) {
+    if(ImGui::Begin(this->level.file.c_str())) {
+        if (ImGui::Button(this->level.getClean() ? "Save" : "+Save+")) {
             // TODO: stuff
         }
         if (ImGui::Button("Select Pic")) this->backgroundSelector.Open();

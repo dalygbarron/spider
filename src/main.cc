@@ -1,3 +1,4 @@
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #include "Level.hh"
 #include "Entity.hh"
 #include "Options.hh"
@@ -6,7 +7,6 @@
 #include "Const.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #include "spdlog/spdlog.h"
 #include "spdlog/rotating_file_sink.h"
 #include <SFML/System.hpp>
@@ -36,12 +36,13 @@ void help() {
         Const::VERSION_MINOR,
         Const::VERSION_REV
     );
-    printf("Usage: spider [-h] [-v] -g=gameFile [-e=entityFile| -l=levelFile]\n");
+    printf("Usage: spider [-h] [-v] [-r] -g=gameFile [-e=entityFile| -l=levelFile]\n");
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
     printf(" -g means game file, it is required.\n");
     printf(" -e means entity file to edit, it cannot be used with -l.\n");
     printf(" -l means level file to edit, it cannot be used with -e.\n");
+    printf(" -r means consider the file path of -e or -l relative to the game file\n");
     printf("\nIf you run it and it says shaders are not available, it's fucked\n");
 }
 /**
@@ -49,7 +50,7 @@ void help() {
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
-    while ((opt = getopt(argc, argv, "hvg:e:l:")) != -1) {
+    while ((opt = getopt(argc, argv, "hvrg:e:l:")) != -1) {
         switch (opt) {
             case 'h':
                 options.helpFlag = true;
@@ -57,6 +58,9 @@ int parseOptions(Options &options, int argc, char **argv) {
             case 'v':
                 options.versionFlag = true;
                 return 0;
+            case 'r':
+                options.relativeFlag = true;
+                break;
             case 'g':
                 options.game = optarg;
                 break;
@@ -72,7 +76,6 @@ int parseOptions(Options &options, int argc, char **argv) {
                 return 1;
         }
     }
-    options.command = argv[0];
     return 0;
 }
 
@@ -166,7 +169,13 @@ int main(int argc, char **argv) {
         return 1;
     }
     // Load the data
-    ghc::filesystem::path root = options.file;
+    Level *level = NULL;
+    Entity *entity = NULL;
+    Core *core = Util::coreFromFile(options.game);
+    if (!core) {
+        return 1;
+    }
+    ghc::filesystem::path root = options.game;
     ghc::filesystem::path filename = root.filename();
     root.remove_filename();
     ghc::filesystem::current_path(root);
@@ -182,12 +191,9 @@ int main(int argc, char **argv) {
     view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
     // set up the first screen.
-    Core core;
     Screen *screen = NULL;
-    Level *level = NULL;
-    Entity *entity = NULL;
-    if (options.levelFlag) screen = new LevelScreen(core, level);
-    else screen = new EntityScreen(core, entity);
+    if (options.levelFlag) screen = new LevelScreen(*core, *level);
+    else screen = new EntityScreen(*core, *entity);
     result = process(window, view, screen);
     // Clean up.
     ImGui::SFML::Shutdown();

@@ -7,11 +7,11 @@
  */
 class Options {
     public:
-        std::string command;
-        ghc::filesystem::path game;
+        ghc::filesystem::path game = "game.xml";
         ghc::filesystem::path file;
         int entityFlag = false;
         int levelFlag = false;
+        int relativeFlag = false;
         int helpFlag = false;
         int versionFlag = false;
 };

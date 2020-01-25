@@ -1,10 +1,12 @@
 #include "Screen.hh"
+#include "Const.hh"
 
 EntityScreen::EntityScreen(Core &core, Entity &entity):
-    screen(core),
+    Screen(core),
     entity(entity)
 {
-    // Does nothing else I think.
+    this->picture.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
+    this->picture.setFillColor(sf::Color(123, 231, 31, 255));
 }
 
 EntityScreen::~EntityScreen() {

@@ -41,6 +41,15 @@ namespace Util {
     Entity *entityFromFile(ghc::filesystem::path &path);
 
     /**
+     * Loads a core thingo from the given file, and if the file does not exist
+     * then it creates a new blank one.
+     * @return the created core. There should not really be a situation where
+     *         it is not created, but we return it as a pointer because you
+     *         will delete it one day.
+     */
+    Core *coreFromFile(ghc::filesystem::path &path);
+
+    /**
      * Parses rats out of an xml node and puts them in the given ratpack.
      * Yes I am aware this is weird since you must have already given it
      * a texture but also I do not really care ha ha ha hah ah.
@@ -64,7 +73,6 @@ namespace Util {
      * @return the new view to use.
      */
     sf::View getLetterboxView(sf::View view, sf::Vector2i dimensions);
-
 }
 
 #endif

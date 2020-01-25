@@ -57,6 +57,27 @@ Entity *Util::entityFromFile(ghc::filesystem::path &path) {
     return NULL;
 }
 
+Core *Util::coreFromFile(ghc::filesystem::path &path) {
+    if (!ghc::filesystem::exists(path)) {
+        spdlog::info("Creating new game core at '{}'", path.c_str());
+        Core *core = new Core();
+        core->filename = path;
+        core->name = path;
+        return core;
+    }
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = dox.load_file(path.c_str());
+    if (!result) {
+        spdlog::error(
+            "'{}' does not work as an xml file: {}",
+            path.c_str(),
+            result.description()
+        );
+        return NULL;
+    }
+    // TODO: load in the file and parse the xml.
+}
+
 void Util::addRatsFromFile(RatPack &pack, ghc::filesystem::path &path) {
     // TODO: load the xml file and parse it and all that stuff.
 }

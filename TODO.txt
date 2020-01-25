@@ -1,15 +1,47 @@
-I had forgotten, but SFML can open new windows which is quite handy for this
-line of work. However, it will require yet more refactoring since the whole
-thing right now is built around having a single window.
+Loading Core
+    Core is the class that represents the contents of game.xml, and it also
+    stores stuff like the game's spritesheet and repositories, and it is the
+    common dependency to all screens. We need to add the code that loads it and
+    spritesheet in from xml.
 
-Basically, what we can do is make it that a screen appears within a given
-window and it is the only thing that appears in that window and when that
-window is closed that scene dissappears, and also when that scene dissappears
-that window closes.
+Initial Entity Screen
+    To start with the entity screen requires showing the entity's image, and
+    allowing the user to pan with some key, and zoom in and out with the scroll
+    wheel. Should also be allowed to press a button on the menu to recenter
+    everything. Should also be a dialogue on the menu to choose the picture or
+    choose a new picture. When no picture has yet been chosen it should just
+    show a nice white square. ALSO, you should be able to press a button to
+    save the entity file and it should save.
 
-So, what would be best would be that the screen object actually stores the
-window object and does all of the updating type stuff within that. The main
-loop just loops over all of the current screens and says update, and it will
-know to remove a given screen because it's window has been closed or whatever
-when it gets back a certain return value. Then when no screens are left active
-the program terminates.
+Concave Shape
+    I either need to steal or otherwise get my hands on a concave shape
+    implementation which can be visualised one way or the other, and which can
+    tell whether or not a point is inside the shape. The visualisation should
+    probably be done seperately, now I think of it, because when we use it in
+    the level screen it is going to be deformed so the built in representation
+    is not going to work anway.
+    As well as being able to tell you if a point is within the shape, it should
+    probably also be able to take a point and tell you if that point is close
+    enough to a node or an edge to be over that node or edge for the purposes
+    of manipulating the shape.
+    We should probably have tests for all that stuff also since it sounds
+    compliocated.
+
+Sprite Batcher
+    Yeah so we are going to use a sprite batcher I think since it makes things
+    pretty easy to work with compared to intentionally storing everything in
+    vertex buffers and all that stuff. That sprite batcher I saw online looked
+    like a good place to start stealing code.
+    We will probably want to integrate this code with the rat pack code so that
+    the rats that the rat pack gives out are the type of object the sprite
+    batcher considers to be a sprite. In fact, the sprite batcher could
+    actually be the rat pack class.
+
+Renderer
+    We will need to have some special rendering functions which make use of
+    assets that are contained in the rat pack and elsewhere, so we will need to
+    have an xml configured renderer class. The only thing I can think of that
+    it will need off the top of my head is a function to render a collection of
+    points as a convex shape, which will require the xml configuration of
+    a shape node graphic and a shape edge graphic. Also possibly a selected
+    node and edge graphic but we will see how it all works.
