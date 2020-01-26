@@ -65,6 +65,13 @@ namespace Util {
      * @return the new view to use.
      */
     sf::View getLetterboxView(sf::View view, sf::Vector2i dimensions);
+
+    /**
+     * Converts radians to degrees.
+     * @param radians is the amount of radians to convert.
+     * @return that amount in degrees.
+     */
+    float degrees(float radians);
 }
 
 #endif

@@ -165,6 +165,25 @@ class EntityScreen: public Screen {
 class RatScreen: public Screen {
     public:
         /**
+         * A little test class that moves about.
+         */
+        class Rat {
+            public:
+                float rotation;
+                float angularVelocity;
+                sf::IntRect sprite;
+                sf::Vector2f position;
+                sf::Vector2f velocity;
+                sf::Vector2f gravity;
+
+                /**
+                 * Updates the velocity and position.
+                 * @param delta is the amount of time to move along.
+                 */
+                void update(float delta);
+        };
+
+        /**
          * Creates the screen.
          * @param core is the core stuff which contains the ratpack.
          */
@@ -173,6 +192,8 @@ class RatScreen: public Screen {
         virtual Screen *update(float delta, sf::Window &window) override;
 
     private:
+        std::vector<Rat> rats;
+
         virtual void draw(
             sf::RenderTarget &target,
             sf::RenderStates states

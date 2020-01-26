@@ -85,13 +85,24 @@ int parseOptions(Options &options, int argc, char **argv) {
 
 /**
  * Runs the main loop of the program over and over.
- * @param window is the window the program is running in.
- * @param view   is the view to look with.
  * @param screen is the screen of the program to start on.
  * @return the result code the program should give after.
  */
-int process(sf::RenderWindow &window, sf::View &view, Screen *screen) {
+int process(Screen *screen) {
+    sf::RenderWindow window(
+        sf::VideoMode(Const::WIDTH, Const::HEIGHT),
+        Const::TITLE
+    );
+    window.setVerticalSyncEnabled(true);
+    ImGui::SFML::Init(window);
+    ImGui::GetIO().IniFilename = NULL;
+    window.resetGLStates();
+    sf::View view;
+    view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
+    view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
     sf::Clock deltaClock;
+    sf::Clock fps;
+    int frame = 0;
     sf::Vector2i mouse = sf::Mouse::getPosition();
     int buttons[sf::Mouse::Button::ButtonCount];
     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) buttons[i] = 0;
@@ -133,10 +144,16 @@ int process(sf::RenderWindow &window, sf::View &view, Screen *screen) {
         screen->update(delta.asSeconds(), window);
         // Render.
         window.setView(view);
-        window.clear();
         window.draw(*screen);
         ImGui::SFML::Render(window);
         window.display();
+        // frame rate.
+        frame++;
+        if (fps.getElapsedTime().asSeconds() > 4) {
+            spdlog::info("FPS: {}", (float)frame / 4);
+            fps.restart();
+            frame = 0;
+        }
     }
     return 0;
 }
@@ -166,24 +183,13 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Shaders not available. Goodbye.\n");
         return 1;
     }
-    // Load the data
+    // Change directory to be at game core file.
+    ghc::filesystem::path root = options.game;
+    ghc::filesystem::path coreFile = options.game.filename();
+    root.remove_filename();
+    ghc::filesystem::current_path(root);
     Core core;
-    Util::initCoreFromFile(core, options.game);
-    // ghc::filesystem::path root = options.game;
-    // ghc::filesystem::path filename = root.filename();
-    // root.remove_filename();
-    // ghc::filesystem::current_path(root);
-    // Set up some bits.
-    sf::RenderWindow window(
-        sf::VideoMode(Const::WIDTH, Const::HEIGHT),
-        Const::TITLE
-    );
-    ImGui::SFML::Init(window);
-    ImGui::GetIO().IniFilename = NULL;
-    window.resetGLStates();
-    sf::View view;
-    view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
-    view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
+    Util::initCoreFromFile(core, coreFile);
     // set up the first screen.
     Screen *screen = NULL;
     Level *level = NULL;
@@ -191,7 +197,7 @@ int main(int argc, char **argv) {
     if (options.ratFlag) screen = new RatScreen(core);
     else if (options.levelFlag) screen = new LevelScreen(core, *level);
     else screen = new EntityScreen(core, *entity);
-    result = process(window, view, screen);
+    result = process(screen);
     // Clean up.
     ImGui::SFML::Shutdown();
     return result;

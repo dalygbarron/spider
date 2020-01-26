@@ -30,21 +30,42 @@ class RatPack {
          * @param shape is the position and size of the rat within the overall
          *        texture.
          */
-        void add(const char *name, sf::FloatRect shape);
+        void add(const char *name, sf::IntRect shape);
 
         /**
          * Gives you the dimensions of the given rat.
          * @return a rectangle that covers it.
          */
-        sf::FloatRect get(const char *name) const;
+        sf::IntRect get(const char *name) const;
 
         /**
          * Gets rid of all the rats.
          */
         void clear();
 
+        /**
+         * Tells you the number of rats currently in the pack.
+         * @return the number of rats currently in the pack.
+         */
+        int count() const;
+
+        /**
+         * Gives you an iterator to the first rat.
+         * @return constant iterator to the first rat.
+         */
+        std::unordered_map<std::string, sf::IntRect>::const_iterator begin(
+        ) const;
+
+        /**
+         * Gives you an iterator to the last rat.
+         * @return constant iterator to the last rat.
+         */
+        std::unordered_map<std::string, sf::IntRect>::const_iterator end(
+        ) const;
+
+
     private:
-        std::unordered_map<std::string, sf::FloatRect> rats;
+        std::unordered_map<std::string, sf::IntRect> rats;
         sf::Texture texture;
 };
 

@@ -1,4 +1,5 @@
 #include "Util.hh"
+#include "Const.hh"
 #include "filesystem.hh"
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
@@ -87,11 +88,15 @@ void Util::initRatPackFromFile(
         return;
     }
     pugi::xml_attribute image = node.attribute("image");
-    if (image) pack.getTextureMutable().loadFromFile(image.value());
+    if (image) {
+        sf::Texture &texture = pack.getTextureMutable();
+        texture.loadFromFile(image.value());
+        texture.setSmooth(true);
+    }
     for (pugi::xml_node rat = node.child("rat"); rat;
         rat = rat.next_sibling("rat")
     ) {
-        pack.add(rat.attribute("name").value(), sf::FloatRect(
+        pack.add(rat.attribute("name").value(), sf::IntRect(
             rat.attribute("x").as_int(),
             rat.attribute("y").as_int(),
             rat.attribute("w").as_int(),
@@ -145,5 +150,8 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     }
     view.setViewport(sf::FloatRect(posX, posY, sizeX, sizeY));
     return view;
+}
 
+float Util::degrees(float radians) {
+    return fmod(radians, Const::DOUBLE_PI) * Const::RADIAN_CONVERT;
 }

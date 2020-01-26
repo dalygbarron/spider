@@ -11,7 +11,9 @@ namespace Const {
     static int const WIDTH = 1024;
     static int const HEIGHT = 600;
     static float PI = 3.14159265359;
+    static float DOUBLE_PI = 6.28318530718;
     static float HALF_PI = 1.57079632679;
+    static float RADIAN_CONVERT = 57.2957795131;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
           #######                          ##                       
