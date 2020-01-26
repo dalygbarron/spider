@@ -4,6 +4,16 @@ Loading Core
     common dependency to all screens. We need to add the code that loads it and
     spritesheet in from xml.
 
+Finally get directories under control
+    Yeah so currently I have no idea how the directory structure is meant to be
+    working in terms of which files are supposed to be referenced relative to
+    what directory. I guess all the references that are within files will have
+    to be relative to that file. Anyway I need to get that under control so
+    that things load properly not matter where they are relative to one
+    another. Particularly, I need to make it that the ratpack can be found and
+    loaded from the game, and then from there, the ratpack texture must be
+    loaded from the ratpack.
+
 Sprite Batcher
     Yeah so we are going to use a sprite batcher I think since it makes things
     pretty easy to work with compared to intentionally storing everything in

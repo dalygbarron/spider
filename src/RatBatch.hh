@@ -1,0 +1,43 @@
+#ifndef RAT_BATCH_H
+#define RAT_BATCH_H
+
+#include <SFML/Graphics.hpp>
+
+class RatBatch: public sf::Drawable {
+    public:
+        /**
+         * Create the rat batch by telling it what texture to draw with.
+         * @param texture is the texture that the given sprites will belong to.
+         */
+        RatBatch(sf::Texture const &texture);
+
+        /**
+         * Clear everything off the batch.
+         */
+        void clear();
+
+        /**
+         * Draw the given sprite with it's normal size centred on the given
+         * spot.
+         * @param sprite is the portion of the batch's texture to draw.
+         * @param pos    is the point on the screen to draw it.
+         */
+        void draw(sf::IntRect sprite, sf::Vector2f pos);
+
+        /**
+         * Draw the given sprite into the given rectangle on the screen with
+         * stretching if necessary.
+         * @param sprite is the portion of the batch's texture to draw.
+         * @param pos    is the rectangle to fit it in on the screen.
+         */
+        void draw(sf::IntRect sprite, sf::FloatRect pos);
+
+    private:
+        int n;
+        sf::Texture const &texture;
+        std::vector<sf::Vertex> vertices;
+
+        void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+};
+
+#endif

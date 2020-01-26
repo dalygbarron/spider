@@ -121,7 +121,7 @@ void Util::initCoreFromFile(Core &core, ghc::filesystem::path const &path) {
         spdlog::error("File '{}' has no game in it", path.c_str());
         return;
     }
-    pugi::xml_attribute ratPack = node.attribute("sprites");
+    pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) Util::initRatPackFromFile(core.spritesheet, ratPack.value());
     core.name = node.attribute("name").value();
     // TODO: probably other stuff to do later as well.

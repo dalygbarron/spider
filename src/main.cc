@@ -159,9 +159,6 @@ int main(int argc, char **argv) {
     } else if (options.versionFlag) {
         version();
         return 0;
-    } else if (options.file.empty()) {
-        fprintf(stderr, "Filename must be given. -h for help.\n");
-        return 1;
     } else if (options.entityFlag && options.levelFlag) {
         fprintf(stderr, "Cannot edit entity and level at same time.\n");
         return 1;
@@ -189,6 +186,8 @@ int main(int argc, char **argv) {
     view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
     // set up the first screen.
     Screen *screen = NULL;
+    Level *level = NULL;
+    Entity *entity = NULL;
     if (options.ratFlag) screen = new RatScreen(core);
     else if (options.levelFlag) screen = new LevelScreen(core, *level);
     else screen = new EntityScreen(core, *entity);
