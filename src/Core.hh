@@ -10,20 +10,11 @@
 class Core {
     public:
         std::string name;
-        std::filename;
+        ghc::filesystem::path filename;
+        RatPack spritesheet;
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
         LevelRepository levelRepository;
-
-        /**
-         * Gives you a constant reference to the core's spritesheet.
-         * @return the spritesheet.
-         */
-        RatPack const &getSpritesheet();
-
-    private:
-        RatPack spritesheet;
 };
-
 
 #endif

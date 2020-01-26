@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
 
-Level *Util::parseLevel(pugi::xml_node &node) {
+Level *Util::parseLevel(pugi::xml_node const &node) {
     // Main bits.
     Level *level = new Level();
     level->script = node.attribute("script").value();
@@ -19,11 +19,11 @@ Level *Util::parseLevel(pugi::xml_node &node) {
     return level;
 }
 
-Entity *Util::parseEntity(pugi::xml_node &node) {
+Entity *Util::parseEntity(pugi::xml_node const &node) {
 
 }
 
-Level *Util::levelFromFile(ghc::filesystem::path &path) {
+Level *Util::levelFromFile(ghc::filesystem::path const &path) {
     if (ghc::filesystem::exists(path)) {
         pugi::xml_document doc;
         pugi::xml_parse_result result = doc.load_file(path.c_str());
@@ -52,34 +52,79 @@ Level *Util::levelFromFile(ghc::filesystem::path &path) {
     }
 }
 
-Entity *Util::entityFromFile(ghc::filesystem::path &path) {
+Entity *Util::entityFromFile(ghc::filesystem::path const &path) {
     // TODO: this.
     return NULL;
 }
 
-Core *Util::coreFromFile(ghc::filesystem::path &path) {
+void Util::initRatPackFromFile(
+    RatPack &pack,
+    ghc::filesystem::path const &path
+) {
+    // TODO: I am thinking just now that the path to the image in the rat pack
+    //       is going to be relative to the rat pack. Therefore, we are
+    //       possibly going to want to change the current working directory to
+    //       the directory of the pack or something like that. I will figure
+    //       out a cohesive way of dealing with this issue later.
+    pack.clear();
     if (!ghc::filesystem::exists(path)) {
-        spdlog::info("Creating new game core at '{}'", path.c_str());
-        Core *core = new Core();
-        core->filename = path;
-        core->name = path;
-        return core;
+        spdlog::error("No Rat Pack at '{}'", path.c_str());
+        return;
     }
     pugi::xml_document doc;
-    pugi::xml_parse_result result = dox.load_file(path.c_str());
+    pugi::xml_parse_result result = doc.load_file(path.c_str());
     if (!result) {
         spdlog::error(
             "'{}' does not work as an xml file: {}",
             path.c_str(),
             result.description()
         );
-        return NULL;
+        return;
     }
-    // TODO: load in the file and parse the xml.
+    pugi::xml_node node = doc.child("pack");
+    if (!node) {
+        spdlog::error("File '{}' has no ratpack", path.c_str());
+        return;
+    }
+    pugi::xml_attribute image = node.attribute("image");
+    if (image) pack.getTextureMutable().loadFromFile(image.value());
+    for (pugi::xml_node rat = node.child("rat"); rat;
+        rat = rat.next_sibling("rat")
+    ) {
+        pack.add(rat.attribute("name").value(), sf::FloatRect(
+            rat.attribute("x").as_int(),
+            rat.attribute("y").as_int(),
+            rat.attribute("w").as_int(),
+            rat.attribute("h").as_int()
+        ));
+    }
 }
 
-void Util::addRatsFromFile(RatPack &pack, ghc::filesystem::path &path) {
-    // TODO: load the xml file and parse it and all that stuff.
+void Util::initCoreFromFile(Core &core, ghc::filesystem::path const &path) {
+    core.filename = path;
+    if (!ghc::filesystem::exists(path)) {
+        spdlog::info("Creating new game core at '{}'", path.c_str());
+        return;
+    }
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file(path.c_str());
+    if (!result) {
+        spdlog::error(
+            "'{}' does not work as an xml file: {}",
+            path.c_str(),
+            result.description()
+        );
+        return;
+    }
+    pugi::xml_node node = doc.child("game");
+    if (!node) {
+        spdlog::error("File '{}' has no game in it", path.c_str());
+        return;
+    }
+    pugi::xml_attribute ratPack = node.attribute("sprites");
+    if (ratPack) Util::initRatPackFromFile(core.spritesheet, ratPack.value());
+    core.name = node.attribute("name").value();
+    // TODO: probably other stuff to do later as well.
 }
 
 sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {

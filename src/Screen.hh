@@ -158,4 +158,25 @@ class EntityScreen: public Screen {
         ) const override;
 };
 
+/**
+ * Screen that shows a bunch of stuff from the ratpack onto the screen just for
+ * a nice little test.
+ */
+class RatScreen: public Screen {
+    public:
+        /**
+         * Creates the screen.
+         * @param core is the core stuff which contains the ratpack.
+         */
+        RatScreen(Core &core);
+
+        virtual Screen *update(float delta, sf::Window &window) override;
+
+    private:
+        virtual void draw(
+            sf::RenderTarget &target,
+            sf::RenderStates states
+        ) const override;
+};
+
 #endif

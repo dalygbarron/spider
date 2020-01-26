@@ -36,13 +36,14 @@ void help() {
         Const::VERSION_MINOR,
         Const::VERSION_REV
     );
-    printf("Usage: spider [-h] [-v] [-r] -g=gameFile [-e=entityFile| -l=levelFile]\n");
+    printf("Usage: spider [-h] [-v] [-r] [-g=gameFile] -R|-e=entityFile|-l=levelFile\n");
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
     printf(" -g means game file, it is required.\n");
     printf(" -e means entity file to edit, it cannot be used with -l.\n");
     printf(" -l means level file to edit, it cannot be used with -e.\n");
     printf(" -r means consider the file path of -e or -l relative to the game file\n");
+    printf(" -R means open in rat mode.\n");
     printf("\nIf you run it and it says shaders are not available, it's fucked\n");
 }
 /**
@@ -50,7 +51,7 @@ void help() {
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
-    while ((opt = getopt(argc, argv, "hvrg:e:l:")) != -1) {
+    while ((opt = getopt(argc, argv, "hvRrg:e:l:")) != -1) {
         switch (opt) {
             case 'h':
                 options.helpFlag = true;
@@ -58,6 +59,9 @@ int parseOptions(Options &options, int argc, char **argv) {
             case 'v':
                 options.versionFlag = true;
                 return 0;
+            case 'R':
+                options.ratFlag = true;
+                break;
             case 'r':
                 options.relativeFlag = true;
                 break;
@@ -155,9 +159,6 @@ int main(int argc, char **argv) {
     } else if (options.versionFlag) {
         version();
         return 0;
-    } else if (options.game.empty()) {
-        fprintf(stderr, "Game file must be specified. -h for help.\n");
-        return 1;
     } else if (options.file.empty()) {
         fprintf(stderr, "Filename must be given. -h for help.\n");
         return 1;
@@ -169,16 +170,12 @@ int main(int argc, char **argv) {
         return 1;
     }
     // Load the data
-    Level *level = NULL;
-    Entity *entity = NULL;
-    Core *core = Util::coreFromFile(options.game);
-    if (!core) {
-        return 1;
-    }
-    ghc::filesystem::path root = options.game;
-    ghc::filesystem::path filename = root.filename();
-    root.remove_filename();
-    ghc::filesystem::current_path(root);
+    Core core;
+    Util::initCoreFromFile(core, options.game);
+    // ghc::filesystem::path root = options.game;
+    // ghc::filesystem::path filename = root.filename();
+    // root.remove_filename();
+    // ghc::filesystem::current_path(root);
     // Set up some bits.
     sf::RenderWindow window(
         sf::VideoMode(Const::WIDTH, Const::HEIGHT),
@@ -192,8 +189,9 @@ int main(int argc, char **argv) {
     view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
     // set up the first screen.
     Screen *screen = NULL;
-    if (options.levelFlag) screen = new LevelScreen(*core, *level);
-    else screen = new EntityScreen(*core, *entity);
+    if (options.ratFlag) screen = new RatScreen(core);
+    else if (options.levelFlag) screen = new LevelScreen(core, *level);
+    else screen = new EntityScreen(core, *entity);
     result = process(window, view, screen);
     // Clean up.
     ImGui::SFML::Shutdown();

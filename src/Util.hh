@@ -4,6 +4,7 @@
 #include "Level.hh"
 #include "Entity.hh"
 #include "RatPack.hh"
+#include "Core.hh"
 #include "pugixml.hpp"
 
 /**
@@ -15,14 +16,14 @@ namespace Util {
      * @param node is the top level node of the level.
      * @return the parsed level or null if it could not be done.
      */
-    Level *parseLevel(pugi::xml_node &node);
+    Level *parseLevel(pugi::xml_node const &node);
 
     /**
      * Parses an xml node into an entity.
      * @param node is the top level node of the entity.
      * @return the parsed entity or null if it could not be done.
      */
-    Entity *parseEntity(pugi::xml_node &node);
+    Entity *parseEntity(pugi::xml_node const &node);
 
     /**
      * Loads a level in from the given file, and if the file does not exist
@@ -30,7 +31,7 @@ namespace Util {
      * @param filename is the name of the file from which to load.
      * @return the loaded level or null if you gave a bad filename.
      */
-    Level *levelFromFile(ghc::filesystem::path &path);
+    Level *levelFromFile(ghc::filesystem::path const &path);
 
     /**
      * Loads an entity in from the given file, and if the file does not exist
@@ -38,32 +39,23 @@ namespace Util {
      * @param filename is the name of the file from which to load.
      * @return the loaded entity or null if you gave a bad filename.
      */
-    Entity *entityFromFile(ghc::filesystem::path &path);
-
-    /**
-     * Loads a core thingo from the given file, and if the file does not exist
-     * then it creates a new blank one.
-     * @return the created core. There should not really be a situation where
-     *         it is not created, but we return it as a pointer because you
-     *         will delete it one day.
-     */
-    Core *coreFromFile(ghc::filesystem::path &path);
-
-    /**
-     * Parses rats out of an xml node and puts them in the given ratpack.
-     * Yes I am aware this is weird since you must have already given it
-     * a texture but also I do not really care ha ha ha hah ah.
-     * @param
-     */
-    void parseRats(RatPack &pack, pugi::xml_node &node);
+    Entity *entityFromFile(ghc::filesystem::path const &path);
 
     /**
      * Opens up a rat pack xml file and adds all the nodes from it into a rat
-     * pack object.
+     * pack object. Also if it has existing stuff that will be cleared.
      * @param pack is the existing pack to add the rats to.
      * @param path is the path at which to load the ratpack xml file.
      */
-    void addRatsFromFile(RatPack &pack, ghc::filesystem::path &path);
+    void initRatPackFromFile(RatPack &pack, ghc::filesystem::path const &path);
+
+    /**
+     * Opens up a game xml file and adds all the info in it to the given core
+     * objct, including loading a ratpack if necessary.
+     * @param core is the core object to init.
+     * @param path is the path to the file to load.
+     */
+    void initCoreFromFile(Core &core, ghc::filesystem::path const &path);
 
     /**
      * Gives you a view that makes the screen letterbox so it scales stuff and

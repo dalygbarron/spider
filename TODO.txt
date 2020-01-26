@@ -4,14 +4,31 @@ Loading Core
     common dependency to all screens. We need to add the code that loads it and
     spritesheet in from xml.
 
+Sprite Batcher
+    Yeah so we are going to use a sprite batcher I think since it makes things
+    pretty easy to work with compared to intentionally storing everything in
+    vertex buffers and all that stuff. That sprite batcher I saw online looked
+    like a good place to start stealing code.
+    We will probably want to integrate this code with the rat pack code so that
+    the rats that the rat pack gives out are the type of object the sprite
+    batcher considers to be a sprite. In fact, the sprite batcher could
+    actually be the rat pack class.
+    Along with this we will create a ratpack testing scene which displays every
+    single rat in the pack similar to the example of that moony spritesheet.
+
 Initial Entity Screen
     To start with the entity screen requires showing the entity's image, and
     allowing the user to pan with some key, and zoom in and out with the scroll
     wheel. Should also be allowed to press a button on the menu to recenter
     everything. Should also be a dialogue on the menu to choose the picture or
-    choose a new picture. When no picture has yet been chosen it should just
-    show a nice white square. ALSO, you should be able to press a button to
-    save the entity file and it should save.
+    choose a new picture (which is a sprite in the ratpack remember).
+    When no picture has yet been chosen it should just show a nice white
+    square or nothing. ALSO, you should be able to press a button to save the
+    entity file and it should save.
+    For the sprite selecting bit, it would be nice if it gave a list of the
+    names of all of the sprites, and then let you narrow the list by typing in
+    the start of the name of the sprite you want or something like that. Might
+    be a bitch in the ass though so maybe don't bother.
 
 Concave Shape
     I either need to steal or otherwise get my hands on a concave shape
@@ -26,16 +43,6 @@ Concave Shape
     of manipulating the shape.
     We should probably have tests for all that stuff also since it sounds
     compliocated.
-
-Sprite Batcher
-    Yeah so we are going to use a sprite batcher I think since it makes things
-    pretty easy to work with compared to intentionally storing everything in
-    vertex buffers and all that stuff. That sprite batcher I saw online looked
-    like a good place to start stealing code.
-    We will probably want to integrate this code with the rat pack code so that
-    the rats that the rat pack gives out are the type of object the sprite
-    batcher considers to be a sprite. In fact, the sprite batcher could
-    actually be the rat pack class.
 
 Renderer
     We will need to have some special rendering functions which make use of

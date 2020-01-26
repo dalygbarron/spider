@@ -11,11 +11,11 @@
 class RatPack {
     public:
         /**
-         * Loads in the rat pack from a given file.
-         * @param filename is the name of the file to load from.
-         * @return true only if all was well.
+         * Gives you mutable access to the rat pack's texture so that you can
+         * change it and stuff.
+         * @return a mutable reference to the texture.
          */
-        int loadFromFile(char const *filename);
+        sf::Texture &getTextureMutable();
 
         /**
          * Gives you immutable access to the rat pack's texture so you can draw
@@ -25,18 +25,23 @@ class RatPack {
         sf::Texture const &getTexture() const;
 
         /**
-         * Gives you the dimensions of the given rat.
-         * @return a rectangle that covers it.
-         */
-        sf::FloatRect getRat(char const *name) const;
-
-        /**
          * Adds another rat to the rat pack.
          * @param name is the name of the added rat.
          * @param shape is the position and size of the rat within the overall
          *        texture.
          */
-        void addRat(char const *name, sf::FloatRect shape);
+        void add(const char *name, sf::FloatRect shape);
+
+        /**
+         * Gives you the dimensions of the given rat.
+         * @return a rectangle that covers it.
+         */
+        sf::FloatRect get(const char *name) const;
+
+        /**
+         * Gets rid of all the rats.
+         */
+        void clear();
 
     private:
         std::unordered_map<std::string, sf::FloatRect> rats;
