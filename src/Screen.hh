@@ -37,7 +37,7 @@ class Screen: public sf::Drawable {
          *         it returns null then that means the program should now
          *         close.
          */
-        virtual Screen *update(float delta, sf::Window &window) = 0;
+        virtual Screen *update(float delta, sf::RenderWindow &window) = 0;
 
         /**
          * Called when the user clicks on the screen.
@@ -95,7 +95,7 @@ class LevelScreen: public Screen {
          */
         void removeInstance(int index);
 
-        virtual Screen *update(float delta, sf::Window &window) override;
+        virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
         virtual void onClick(sf::Mouse::Button button) override;
 
@@ -135,7 +135,7 @@ class EntityScreen: public Screen {
          */
         virtual ~EntityScreen();
 
-        virtual Screen *update(float delta, sf::Window &window) override;
+        virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
     private:
         Entity &entity;
@@ -190,7 +190,7 @@ class RatScreen: public Screen {
          */
         RatScreen(Core &core);
 
-        virtual Screen *update(float delta, sf::Window &window) override;
+        virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
     private:
         std::vector<Rat> rats;

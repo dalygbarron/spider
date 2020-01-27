@@ -140,12 +140,10 @@ int process(Screen *screen) {
         }
         // Update Screen.
         sf::Time delta = deltaClock.restart();
-        ImGui::SFML::Update(window, delta);
         screen->update(delta.asSeconds(), window);
         // Render.
         window.setView(view);
         window.draw(*screen);
-        ImGui::SFML::Render(window);
         window.display();
         // frame rate.
         frame++;

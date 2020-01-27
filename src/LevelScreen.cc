@@ -32,7 +32,7 @@ LevelScreen::~LevelScreen() {
     // Doesn othingg.
 }
 
-Screen *LevelScreen::update(float delta, sf::Window &window) {
+Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     this->shader.setUniform("angle", camera);
     // Now do the gui.
     if(ImGui::Begin(this->level.file.c_str())) {

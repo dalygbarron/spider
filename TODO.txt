@@ -34,6 +34,10 @@ Renderer
     points as a convex shape, which will require the xml configuration of
     a shape node graphic and a shape edge graphic. Also possibly a selected
     node and edge graphic but we will see how it all works.
+    Also will want to implement in game gui rendering functions, which will
+    possibly require the creation of a 9patch class. Will want to make it that
+    the 9patches are also configured in the renderer xml file and stored by the
+    renderer object.
 
 Proper Entity Screen
     Same as before but it must now also allow you to manipulate the entity's

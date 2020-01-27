@@ -32,7 +32,7 @@ RatScreen::RatScreen(Core &core): Screen(core) {
         float moveAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
         float gravityAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
         float rotationAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
-        float scale = (float)(rand() % 100) / 30;
+        float scale = (float)(rand() % 100) / 80;
         this->rats[i].velocity.x = 65 * scale * cos(moveAngle);
         this->rats[i].velocity.y = 65 * scale * sin(moveAngle);
         this->rats[i].gravity.x = 12 * scale * cos(gravityAngle);
@@ -51,7 +51,7 @@ RatScreen::RatScreen(Core &core): Screen(core) {
     );
 }
 
-Screen *RatScreen::update(float delta, sf::Window &window) {
+Screen *RatScreen::update(float delta, sf::RenderWindow &window) {
     for (int i = 0; i < this->rats.size(); i++) {
         this->rats[i].update(delta);
     }
