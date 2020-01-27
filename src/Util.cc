@@ -91,7 +91,6 @@ void Util::initRatPackFromFile(
     if (image) {
         sf::Texture &texture = pack.getTextureMutable();
         texture.loadFromFile(image.value());
-        texture.setSmooth(true);
     }
     for (pugi::xml_node rat = node.child("rat"); rat;
         rat = rat.next_sibling("rat")

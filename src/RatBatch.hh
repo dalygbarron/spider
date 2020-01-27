@@ -25,13 +25,18 @@ class RatBatch: public sf::Drawable {
         void draw(sf::IntRect sprite, sf::Vector2f pos);
 
         /**
-         * Draw the given sprite with it's normal size centred on the given
-         * spot and rotated around.
-         * @param sprite is the portion of the batch's texture to draw.
-         * @param pos    is the point on the screen to draw it.
-         * @param rot    is the rotation to the give the sprite.
+         * Draw the given sprite with a given scale on the given spot.
+         * @param sprite is the sprite to draw.
+         * @param pos    is the point for the middle of the sprite to be.
+         * @param rot    is the rotation with which to draw the sprite.
+         * @param scale  is the scale at which to draw the sprite.
          */
-        void draw(sf::IntRect sprite, sf::Vector2f pos, float rot);
+        void draw(
+            sf::IntRect sprite,
+            sf::Vector2f pos,
+            float rot,
+            sf::Vector2f scale
+        );
 
         /**
          * Draw the given sprite into the given rectangle on the screen with

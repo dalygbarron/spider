@@ -175,6 +175,7 @@ class RatScreen: public Screen {
                 sf::Vector2f position;
                 sf::Vector2f velocity;
                 sf::Vector2f gravity;
+                sf::Vector2f scale;
 
                 /**
                  * Updates the velocity and position.

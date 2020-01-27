@@ -19,9 +19,14 @@ void RatBatch::draw(sf::IntRect sprite, sf::Vector2f pos) {
     this->draw(sprite, box);
 }
 
-void RatBatch::draw(sf::IntRect sprite, sf::Vector2f pos, float rot) {
+void RatBatch::draw(
+    sf::IntRect sprite,
+    sf::Vector2f pos,
+    float rot,
+    sf::Vector2f scale
+) {
     sf::Transform transform;
-    transform.translate(pos).rotate(Util::degrees(rot));
+    transform.translate(pos).rotate(Util::degrees(rot)).scale(scale);
     int nVertices = this->n * 4;
     if (nVertices + 4 > this->vertices.size()) {
         this->vertices.resize(this->vertices.size() + 4);

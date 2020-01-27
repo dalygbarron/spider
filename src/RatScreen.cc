@@ -20,23 +20,23 @@ RatScreen::RatScreen(Core &core): Screen(core) {
         it != this->core.spritesheet.end();
         it++
     ) {
-        for (int j = 0; j < 15; j++) {
-            sf::IntRect sprite = it->second;
-            this->rats[i].sprite.left = sprite.left;
-            this->rats[i].sprite.top = sprite.top;
-            this->rats[i].sprite.width = sprite.width;
-            this->rats[i].sprite.height = sprite.height;
-            float moveAngle = fmod(rand(), Const::DOUBLE_PI);
-            float gravityAngle = fmod(rand(), Const::DOUBLE_PI);
-            float rotationAngle = fmod(rand(), Const::DOUBLE_PI);
-            this->rats[i].velocity.x = 55 * cos(moveAngle);
-            this->rats[i].velocity.y = 55 * sin(moveAngle);
-            this->rats[i].gravity.x = 3 * cos(gravityAngle);
-            this->rats[i].gravity.y = 3 * sin(gravityAngle);
-            this->rats[i].rotation = rotationAngle;
-            this->rats[i].angularVelocity = (float)(rand() % 30) / 5 - 3;
-            i++;
-        }
+        sf::IntRect sprite = it->second;
+        this->rats[i].sprite.left = sprite.left;
+        this->rats[i].sprite.top = sprite.top;
+        this->rats[i].sprite.width = sprite.width;
+        this->rats[i].sprite.height = sprite.height;
+        float moveAngle = fmod(rand(), Const::DOUBLE_PI);
+        float gravityAngle = fmod(rand(), Const::DOUBLE_PI);
+        float rotationAngle = fmod(rand(), Const::DOUBLE_PI);
+        this->rats[i].velocity.x = 55 * cos(moveAngle);
+        this->rats[i].velocity.y = 55 * sin(moveAngle);
+        this->rats[i].gravity.x = 3 * cos(gravityAngle);
+        this->rats[i].gravity.y = 3 * sin(gravityAngle);
+        this->rats[i].rotation = rotationAngle;
+        this->rats[i].angularVelocity = (float)(rand() % 30) / 5 - 3;
+        this->rats[i].scale.x = (float)(rand() % 5) - 2.5;
+        this->rats[i].scale.y = (float)(rand() % 5) - 2.5;
+        i++;
     }
 }
 
@@ -54,7 +54,8 @@ void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
         this->core.batch.draw(
             this->rats[i].sprite,
             this->rats[i].position,
-            this->rats[i].rotation
+            this->rats[i].rotation,
+            this->rats[i].scale
         );
     }
     target.draw(this->core.batch);
