@@ -13,7 +13,11 @@ void RatScreen::Rat::update(float delta) {
 }
 
 RatScreen::RatScreen(Core &core): Screen(core) {
-    this->rats.resize(this->core.spritesheet.count() * 15);
+    spdlog::info(
+        "Creating rat screen with {} rats",
+        this->core.spritesheet.count()
+    );
+    this->rats.resize(this->core.spritesheet.count());
     int i = 0;
     for (std::unordered_map<std::string, sf::IntRect>::const_iterator it =
         this->core.spritesheet.begin();
@@ -25,19 +29,26 @@ RatScreen::RatScreen(Core &core): Screen(core) {
         this->rats[i].sprite.top = sprite.top;
         this->rats[i].sprite.width = sprite.width;
         this->rats[i].sprite.height = sprite.height;
-        float moveAngle = fmod(rand(), Const::DOUBLE_PI);
-        float gravityAngle = fmod(rand(), Const::DOUBLE_PI);
-        float rotationAngle = fmod(rand(), Const::DOUBLE_PI);
-        this->rats[i].velocity.x = 55 * cos(moveAngle);
-        this->rats[i].velocity.y = 55 * sin(moveAngle);
-        this->rats[i].gravity.x = 3 * cos(gravityAngle);
-        this->rats[i].gravity.y = 3 * sin(gravityAngle);
+        float moveAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
+        float gravityAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
+        float rotationAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
+        float scale = (float)(rand() % 100) / 30;
+        this->rats[i].velocity.x = 65 * scale * cos(moveAngle);
+        this->rats[i].velocity.y = 65 * scale * sin(moveAngle);
+        this->rats[i].gravity.x = 12 * scale * cos(gravityAngle);
+        this->rats[i].gravity.y = 12 * scale * sin(gravityAngle);
         this->rats[i].rotation = rotationAngle;
         this->rats[i].angularVelocity = (float)(rand() % 30) / 5 - 3;
-        this->rats[i].scale.x = (float)(rand() % 5) - 2.5;
-        this->rats[i].scale.y = (float)(rand() % 5) - 2.5;
+        this->rats[i].scale = sf::Vector2f(scale, scale);
         i++;
     }
+    std::sort(
+        this->rats.begin(),
+        this->rats.end(),
+        [](Rat const &a, Rat const &b) -> int {
+            return a.scale.x < b.scale.x;
+        }
+    );
 }
 
 Screen *RatScreen::update(float delta, sf::Window &window) {
@@ -48,7 +59,7 @@ Screen *RatScreen::update(float delta, sf::Window &window) {
 }
 
 void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    target.clear(sf::Color(252, 194, 3));
+    target.clear(sf::Color::Cyan);
     this->core.batch.clear();
     for (int i = 0; i < this->rats.size(); i++) {
         this->core.batch.draw(

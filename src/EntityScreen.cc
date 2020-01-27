@@ -20,6 +20,7 @@ void EntityScreen::draw(
     sf::RenderTarget &target,
     sf::RenderStates states
 ) const {
+    target.clear();
     target.draw(this->picture, states);
 }
 
