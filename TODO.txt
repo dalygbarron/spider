@@ -24,7 +24,7 @@ Concave Shape
     enough to a node or an edge to be over that node or edge for the purposes
     of manipulating the shape.
     We should probably have tests for all that stuff also since it sounds
-    compliocated.
+    compliocated and painful to manually test.
 
 Renderer
     We will need to have some special rendering functions which make use of
@@ -34,3 +34,17 @@ Renderer
     points as a convex shape, which will require the xml configuration of
     a shape node graphic and a shape edge graphic. Also possibly a selected
     node and edge graphic but we will see how it all works.
+
+Proper Entity Screen
+    Same as before but it must now also allow you to manipulate the entity's
+    wireframe and save it into the file.
+
+Level Screen
+    Must be able to set the background and pan around in 3d, entities must
+    place themselves in the 3d joint and also rotate thus that it looks right,
+    which also means I need to figure that out. Should be able to select entity
+    files to add into the level
+
+Look into built in editor
+    Would be handy to have for level screen but I am not sure how hard it would
+    be to get it to work so maybe no.
