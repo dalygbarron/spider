@@ -10,8 +10,6 @@
 class Renderer: public sf::Drawable {
     public:
         RatBatch spriteBatch;
-        RatBatch fontBatch;
-        RatBatch bigFontBatch;
 
         /**
          * Passes in the textures of the three sprite things.
@@ -26,6 +24,10 @@ class Renderer: public sf::Drawable {
         );
 
     private:
+        sf::Font *font;
+        RatBatch fontBatch;
+        RatBatch bigFontBatch;
+
         void draw(sf::RenderTarget &target, sf::RenderStates states) const;
 };
 
