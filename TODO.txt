@@ -52,3 +52,12 @@ Level Screen
 Look into built in editor
     Would be handy to have for level screen but I am not sure how hard it would
     be to get it to work so maybe no.
+
+Render text with the sprite batcher
+    I am not going to add fonts to the ratpack because it would be a thankless
+    pain in the balls. It is a bit weird but I think what I will do is add
+    another RatBatch for every font.
+
+game gui
+    Should be ripped off from the gui I developed for snowpea, that was great.
+    Won't support keyboard only or gamepad but who gives a fuck? Not me.

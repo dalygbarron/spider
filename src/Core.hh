@@ -3,6 +3,7 @@
 
 #include "Repository.hh"
 #include "RatPack.hh"
+#include "Renderer.hh"
 #include "RatBatch.hh"
 
 /**
@@ -13,15 +14,23 @@ class Core {
         std::string name;
         ghc::filesystem::path filename;
         RatPack spritesheet;
-        RatBatch batch;
+        Renderer renderer;
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
         LevelRepository levelRepository;
+        sf::Font *font;
 
         /**
-         * Initialises the core.
+         * Initialises the core. Fonts must be passed in because they don't
+         * work until they have been loaded.
+         * @param font    is the main font the game will use.
          */
-        Core();
+        Core(sf::Font *font);
+
+        /**
+         * Deletes stuff.
+         */
+        ~Core();
 };
 
 #endif

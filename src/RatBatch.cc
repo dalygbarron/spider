@@ -3,6 +3,7 @@
 #include "spdlog/spdlog.h"
 
 RatBatch::RatBatch(sf::Texture const &texture): texture(texture) {
+    printf("%u\n", &texture);
     this->clear();
 }
 
@@ -107,6 +108,7 @@ void RatBatch::draw(sf::IntRect sprite, sf::FloatRect pos) {
 
 void RatBatch::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     states.texture = &this->texture;
+    sf::Vector2u size = this->texture.getSize();
     target.draw(
         this->vertices.data(),
         this->n * 4,

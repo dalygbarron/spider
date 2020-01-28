@@ -186,17 +186,17 @@ int main(int argc, char **argv) {
     ghc::filesystem::path coreFile = options.game.filename();
     root.remove_filename();
     ghc::filesystem::current_path(root);
-    Core core;
-    Util::initCoreFromFile(core, coreFile);
+    Core *core = Util::loadCoreFromFile(coreFile);
     // set up the first screen.
     Screen *screen = NULL;
     Level *level = NULL;
     Entity *entity = NULL;
-    if (options.ratFlag) screen = new RatScreen(core);
-    else if (options.levelFlag) screen = new LevelScreen(core, *level);
-    else screen = new EntityScreen(core, *entity);
+    if (options.ratFlag) screen = new RatScreen(*core);
+    else if (options.levelFlag) screen = new LevelScreen(*core, *level);
+    else screen = new EntityScreen(*core, *entity);
     result = process(screen);
     // Clean up.
     ImGui::SFML::Shutdown();
+    delete core;
     return result;
 }

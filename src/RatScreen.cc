@@ -60,14 +60,18 @@ Screen *RatScreen::update(float delta, sf::RenderWindow &window) {
 
 void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.clear(sf::Color::Cyan);
-    this->core.batch.clear();
+    this->core.renderer.spriteBatch.clear();
     for (int i = 0; i < this->rats.size(); i++) {
-        this->core.batch.draw(
+        this->core.renderer.spriteBatch.draw(
             this->rats[i].sprite,
             this->rats[i].position,
             this->rats[i].rotation,
             this->rats[i].scale
         );
     }
-    target.draw(this->core.batch);
+    this->core.renderer.fontBatch.draw(
+        this->core.font->getGlyph('@', 20, false).textureRect,
+        sf::Vector2f(100, 100)
+    );
+    target.draw(this->core.renderer);
 }

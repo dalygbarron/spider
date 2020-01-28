@@ -52,10 +52,10 @@ namespace Util {
     /**
      * Opens up a game xml file and adds all the info in it to the given core
      * objct, including loading a ratpack if necessary.
-     * @param core is the core object to init.
      * @param path is the path to the file to load.
+     * @return the new core.
      */
-    void initCoreFromFile(Core &core, ghc::filesystem::path const &path);
+    Core *loadCoreFromFile(ghc::filesystem::path const &path);
 
     /**
      * Gives you a view that makes the screen letterbox so it scales stuff and

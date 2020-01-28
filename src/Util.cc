@@ -104,11 +104,13 @@ void Util::initRatPackFromFile(
     }
 }
 
-void Util::initCoreFromFile(Core &core, ghc::filesystem::path const &path) {
-    core.filename = path;
+Core *Util::loadCoreFromFile(ghc::filesystem::path const &path) {
     if (!ghc::filesystem::exists(path)) {
         spdlog::info("Creating new game core at '{}'", path.c_str());
-        return;
+        // TODO: is this still ok?
+        Core *core = new Core(NULL);
+        core->filename = path;
+        return core;
     }
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(path.c_str());
@@ -118,17 +120,22 @@ void Util::initCoreFromFile(Core &core, ghc::filesystem::path const &path) {
             path.c_str(),
             result.description()
         );
-        return;
+        return NULL;
     }
     pugi::xml_node node = doc.child("game");
     if (!node) {
         spdlog::error("File '{}' has no game in it", path.c_str());
-        return;
+        return NULL;
     }
+    sf::Font *font = new sf::Font();
+    font->loadFromFile(node.attribute("font").value());
+    Core *core = new Core(font);
+    core->filename = path;
+    core->name = node.attribute("name").value();
+    // Check some optional things.
     pugi::xml_attribute ratPack = node.attribute("rat");
-    if (ratPack) Util::initRatPackFromFile(core.spritesheet, ratPack.value());
-    core.name = node.attribute("name").value();
-    // TODO: probably other stuff to do later as well.
+    if (ratPack) Util::initRatPackFromFile(core->spritesheet, ratPack.value());
+    return core;
 }
 
 sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
