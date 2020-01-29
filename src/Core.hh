@@ -18,12 +18,11 @@ class Core {
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
         LevelRepository levelRepository;
-        sf::Font *font;
 
         /**
          * Initialises the core. Fonts must be passed in because they don't
          * work until they have been loaded.
-         * @param font    is the main font the game will use.
+         * @param font             is the main font the game will use.
          */
         Core(sf::Font *font);
 
@@ -31,6 +30,15 @@ class Core {
          * Deletes stuff.
          */
         ~Core();
+
+        /**
+         * Gives you the font.
+         * @return the font.
+         */
+        sf::Font &getFont();
+
+    private:
+        sf::Font *font;
 };
 
 #endif

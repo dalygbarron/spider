@@ -48,6 +48,7 @@ class RatBatch: public sf::Drawable {
 
     private:
         int n;
+        mutable int clean;
         sf::Texture const &texture;
         std::vector<sf::Vertex> vertices;
 

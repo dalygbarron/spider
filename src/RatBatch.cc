@@ -3,12 +3,12 @@
 #include "spdlog/spdlog.h"
 
 RatBatch::RatBatch(sf::Texture const &texture): texture(texture) {
-    printf("%u\n", &texture);
     this->clear();
 }
 
 void RatBatch::clear() {
     this->n = 0;
+    this->clean = true;
 }
 
 void RatBatch::draw(sf::IntRect sprite, sf::Vector2f pos) {
@@ -107,6 +107,11 @@ void RatBatch::draw(sf::IntRect sprite, sf::FloatRect pos) {
 }
 
 void RatBatch::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    if (!this->clean) {
+        spdlog::critical("RatBatch not cleared between draw calls. Abort.");
+        exit(1);
+    }
+    this->clean = false;
     states.texture = &this->texture;
     sf::Vector2u size = this->texture.getSize();
     target.draw(

@@ -105,6 +105,11 @@ void Util::initRatPackFromFile(
 }
 
 Core *Util::loadCoreFromFile(ghc::filesystem::path const &path) {
+    sf::IntRect pointRat(0, 0, 0, 0);
+    sf::IntRect nodeRat(0, 0, 0, 0);
+    sf::IntRect nodeHighlightRat(0, 0, 0, 0);
+    sf::IntRect boxRat(0, 0, 0, 0);
+    sf::IntRect boxHighlightRat(0, 0, 0, 0);
     if (!ghc::filesystem::exists(path)) {
         spdlog::info("Creating new game core at '{}'", path.c_str());
         // TODO: is this still ok?
@@ -127,6 +132,7 @@ Core *Util::loadCoreFromFile(ghc::filesystem::path const &path) {
         spdlog::error("File '{}' has no game in it", path.c_str());
         return NULL;
     }
+    // Load names of sprites.
     sf::Font *font = new sf::Font();
     font->loadFromFile(node.attribute("font").value());
     Core *core = new Core(font);
@@ -135,6 +141,22 @@ Core *Util::loadCoreFromFile(ghc::filesystem::path const &path) {
     // Check some optional things.
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) Util::initRatPackFromFile(core->spritesheet, ratPack.value());
+    // now set the gui bits
+    core->renderer.setPointRat(core->spritesheet.get(
+        node.attribute("point").value())
+    );
+    core->renderer.setNodeRat(core->spritesheet.get(
+        node.attribute("node").value()
+    ));
+    core->renderer.setNodeHighlightRat(core->spritesheet.get(
+        node.attribute("nodeHighlight").value()
+    ));
+    core->renderer.setBoxRat(core->spritesheet.get(
+        node.attribute("box").value()
+    ));
+    core->renderer.setBoxHighlightRat(core->spritesheet.get(
+        node.attribute("boxHighlight").value()
+    ));
     return core;
 }
 
