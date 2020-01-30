@@ -5,9 +5,7 @@ EntityScreen::EntityScreen(Core &core, Entity &entity):
     Screen(core),
     entity(entity)
 {
-    this->camera.x = Const::WIDTH / 2;
-    this->camera.y = Const::WIDTH / 2;
-    this->camera.z = 1;
+    this->refocus();
 }
 
 EntityScreen::~EntityScreen() {
@@ -20,6 +18,7 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
         if (ImGui::Button("save")) {
             spdlog::info("Pressed the button hell yeah man");
         }
+        if (ImGui::Button("refocus")) this->refocus();
         ImGui::InputText("Sprite", this->spriteBuffer, SPRITE_BUFFER_SIZE);
         ImGui::SameLine();
         if (ImGui::Button("update")) {
@@ -38,6 +37,13 @@ void EntityScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
 
 void EntityScreen::onScroll(int delta) {
     this->camera.z += delta * 0.1;
+}
+
+
+void EntityScreen::refocus() {
+    this->camera.x = Const::WIDTH / 2;
+    this->camera.y = Const::WIDTH / 2;
+    this->camera.z = 1;
 }
 
 void EntityScreen::draw(
@@ -61,4 +67,3 @@ void EntityScreen::draw(
     target.draw(this->core.renderer.batch);
     ImGui::SFML::Render(target);
 }
-

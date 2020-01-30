@@ -160,6 +160,12 @@ class EntityScreen: public Screen {
         std::vector<sf::CircleShape> points;
         sf::ConvexShape outline;
 
+        /**
+         * Put the entity back in the middle of the screen at normal size.
+         */
+        void refocus();
+
+
         virtual void draw(
             sf::RenderTarget &target,
             sf::RenderStates states
