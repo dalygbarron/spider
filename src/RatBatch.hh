@@ -1,6 +1,7 @@
 #ifndef RAT_BATCH_H
 #define RAT_BATCH_H
 
+#include "Patch.hh"
 #include <SFML/Graphics.hpp>
 
 class RatBatch: public sf::Drawable {
@@ -37,6 +38,13 @@ class RatBatch: public sf::Drawable {
             float rot,
             sf::Vector2f scale
         );
+
+        /**
+         * Draw a patch somewhere.
+         * @param patch is the patch to darw.
+         * @param pos   is where to draw it.
+         */
+        void draw(Patch const &patch, sf::FloatRect pos);
 
         /**
          * Draw the given sprite into the given rectangle on the screen with

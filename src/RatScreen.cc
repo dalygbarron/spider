@@ -68,14 +68,14 @@ void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
             this->rats[i].rotation,
             this->rats[i].scale
         );
-    this->core.renderer.point(this->rats[i].position);
-    sf::FloatRect box(
-        this->rats[i].position.x - this->rats[i].sprite.width / 2,
-        this->rats[i].position.y - this->rats[i].sprite.height / 2,
-        this->rats[i].sprite.width,
-        this->rats[i].sprite.height
-    );
-    this->core.renderer.box(box, false);
+        this->core.renderer.point(this->rats[i].position);
+        sf::FloatRect box(
+            this->rats[i].position.x - this->rats[i].sprite.width / 2,
+            this->rats[i].position.y - this->rats[i].sprite.height / 2,
+            this->rats[i].sprite.width,
+            this->rats[i].sprite.height
+        );
+        this->core.renderer.box(box, false);
     }
     target.draw(this->core.renderer);
 }

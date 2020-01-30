@@ -2,6 +2,7 @@
 #define RENDERER_H
 
 #include "RatBatch.hh"
+#include "Patch.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -39,16 +40,16 @@ class Renderer: public sf::Drawable {
         void setNodeHighlightRat(sf::IntRect rat);
 
         /**
-         * Sets the rat to use to draw boxes.
-         * @param rat is the rat to use.
+         * Sets the 9 patch to use to draw boxes.
+         * @param patch is the patch to use.
          */
-        void setBoxRat(sf::IntRect rat);
+        void setBoxPatch(Patch patch);
 
         /**
-         * Sets the rat to use to draw highlighted boxes.
-         * @param rat is the rat to use.
+         * Sets the 9 patch to use to draw highlighted boxes.
+         * @param patch is the rat to use.
          */
-        void setBoxHighlightRat(sf::IntRect rat);
+        void setBoxHighlightPatch(Patch patch);
 
         /**
          * Draw a crosshair over the given point on the screen.
@@ -74,8 +75,8 @@ class Renderer: public sf::Drawable {
         sf::IntRect pointRat;
         sf::IntRect nodeRat;
         sf::IntRect nodeHighlightRat;
-        sf::IntRect boxRat;
-        sf::IntRect boxHighlightRat;
+        Patch boxPatch;
+        Patch boxHighlightPatch;
 
         void draw(
             sf::RenderTarget &target,

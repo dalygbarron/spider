@@ -3,14 +3,25 @@
 
 #include "Level.hh"
 #include "Entity.hh"
+#include "Patch.hh"
 #include "RatPack.hh"
 #include "Core.hh"
 #include "pugixml.hpp"
 
 /**
  * Contains random utility functions for your pleasure.
+ * TODO: so much of this is loading stuff in, maybe I should have a different
+ *       file just for loading related stuff.
  */
 namespace Util {
+    /**
+     * Parses an xml node into a 9patch and put it into the given renderer in
+     * the correct spot depending on what role it says it fills.
+     * @param core     is the core to put the patch into.
+     * @param node     is the node to parse it from.
+     */
+    void parsePatch(Core &core, pugi::xml_node const &node);
+
     /**
      * Parses an xml node into a level.
      * @param node is the top level node of the level.

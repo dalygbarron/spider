@@ -6,3 +6,4 @@ main
 imgui.ini
 example/*
 .DS_STORE
+doc/*

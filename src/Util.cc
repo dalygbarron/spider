@@ -5,6 +5,25 @@
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
 
+void Util::parsePatch(Core &core, pugi::xml_node const &node) {
+    Patch patch;
+    patch.fill(
+        core.spritesheet.get(node.attribute("rat").value()),
+        node.attribute("left").as_int(),
+        node.attribute("top").as_int(),
+        node.attribute("right").as_int(),
+        node.attribute("bottom").as_int()
+    );
+    char const *role = node.attribute("role").value();
+    if (strcmp(role, "box") == 0) {
+        core.renderer.setBoxPatch(patch);
+    } else if (strcmp(role, "boxHighlight") == 0) {
+        core.renderer.setBoxHighlightPatch(patch);
+    } else {
+        spdlog::error("No such role in gui for patch as '{}'", role);
+    }
+}
+
 Level *Util::parseLevel(pugi::xml_node const &node) {
     // Main bits.
     Level *level = new Level();
@@ -151,12 +170,14 @@ Core *Util::loadCoreFromFile(ghc::filesystem::path const &path) {
     core->renderer.setNodeHighlightRat(core->spritesheet.get(
         node.attribute("nodeHighlight").value()
     ));
-    core->renderer.setBoxRat(core->spritesheet.get(
-        node.attribute("box").value()
-    ));
-    core->renderer.setBoxHighlightRat(core->spritesheet.get(
-        node.attribute("boxHighlight").value()
-    ));
+    // Now look for child nodes to deal with.
+    for (pugi::xml_node child: node.children()) {
+        char const *type = child.name();
+        if (strcmp(type, "patch") == 0) {
+            Util::parsePatch(*core, child);
+        }
+        // TODO: other types of child node.
+    }
     return core;
 }
 

@@ -16,12 +16,12 @@ void Renderer::setNodeHighlightRat(sf::IntRect rat) {
     this->nodeHighlightRat = rat;
 }
 
-void Renderer::setBoxRat(sf::IntRect rat) {
-    this->boxRat = rat;
+void Renderer::setBoxPatch(Patch patch) {
+    this->boxPatch = patch;
 }
 
-void Renderer::setBoxHighlightRat(sf::IntRect rat) {
-    this->boxHighlightRat = rat;
+void Renderer::setBoxHighlightPatch(Patch patch) {
+    this->boxHighlightPatch = patch;
 }
 
 void Renderer::point(sf::Vector2f pos) {
@@ -37,7 +37,7 @@ void Renderer::node(sf::Vector2f pos, int highlight) {
 
 void Renderer::box(sf::FloatRect pos, int highlight) {
     this->batch.draw(
-        highlight ? this->boxHighlightRat : this->boxRat,
+        highlight ? this->boxHighlightPatch : this->boxPatch,
         pos
     );
 }

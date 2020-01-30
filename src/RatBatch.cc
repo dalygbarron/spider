@@ -68,6 +68,63 @@ void RatBatch::draw(
     this->n++;
 }
 
+void RatBatch::draw(Patch const &patch, sf::FloatRect pos) {
+    this->draw(patch.topLeft, sf::FloatRect(
+        pos.left,
+        pos.top,
+        patch.topLeft.width,
+        patch.topLeft.height
+    ));
+    this->draw(patch.top, sf::FloatRect(
+        pos.left + patch.topLeft.width,
+        pos.top,
+        pos.width - (patch.topLeft.width + patch.topRight.width),
+        patch.top.height
+    ));
+    this->draw(patch.topRight, sf::FloatRect(
+        pos.left + pos.width - patch.topRight.width,
+        pos.top,
+        patch.topRight.width,
+        patch.topRight.height
+    ));
+    this->draw(patch.right, sf::FloatRect(
+        pos.left + pos.width - patch.right.width,
+        pos.top + patch.topRight.height,
+        patch.right.width,
+        pos.height - (patch.topRight.height + patch.topLeft.height)
+    ));
+    this->draw(patch.bottomRight, sf::FloatRect(
+        pos.left + pos.width - patch.right.width,
+        pos.top + pos.height - patch.bottomRight.height,
+        patch.bottomRight.width,
+        patch.bottomRight.height
+    ));
+    this->draw(patch.bottom, sf::FloatRect(
+        pos.left + patch.bottomLeft.width,
+        pos.top + pos.height - patch.bottom.height,
+        pos.width - (patch.bottomLeft.width + patch.bottomRight.width),
+        patch.bottom.height
+    ));
+    this->draw(patch.bottomLeft, sf::FloatRect(
+        pos.left,
+        pos.top + pos.height - patch.bottomLeft.height,
+        patch.bottomLeft.width,
+        patch.bottomLeft.height
+    ));
+    this->draw(patch.left, sf::FloatRect(
+        pos.left,
+        pos.top + patch.topLeft.height,
+        patch.left.width,
+        pos.height - (patch.topLeft.height + patch.bottomLeft.height)
+    ));
+    this->draw(patch.middle, sf::FloatRect(
+        pos.left + patch.left.width,
+        pos.top + patch.top.height,
+        pos.width - (patch.left.width + patch.right.width),
+        pos.height - (patch.top.height + patch.bottom.height)
+    ));
+}
+
 void RatBatch::draw(sf::IntRect sprite, sf::FloatRect pos) {
     int nVertices = this->n * 4;
     if (nVertices + 4 > this->vertices.size()) {
