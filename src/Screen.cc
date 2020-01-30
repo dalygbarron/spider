@@ -15,3 +15,7 @@ void Screen::onClick(sf::Mouse::Button button) {
 void Screen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
     // Do nothing by default.
 }
+
+void Screen::onScroll(int delta) {
+    // Do nothing by default.
+}

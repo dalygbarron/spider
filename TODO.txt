@@ -1,20 +1,3 @@
-Initial Renderer
-    We will need to have some special rendering functions which make use of
-    assets that are contained in the rat pack and elsewhere, so we will need to
-    have an xml configured renderer class. The only thing I can think of that
-    it will need off the top of my head is a function to render a collection of
-    points as a convex shape, which will require the xml configuration of
-    a shape node graphic and a shape edge graphic. Also possibly a selected
-    node and edge graphic but we will see how it all works.
-    Also will want to implement in game gui rendering functions, which will
-    possibly require the creation of a 9patch class. Will want to make it that
-    the 9patches are also configured in the renderer xml file and stored by the
-    renderer object.
-    For the initial entity screen we need to be able to render boxes and
-    points with a crosshair type of thing. I will add a point function that
-    renders a crosshair, and a node function that renders some kind of circular
-    thing.
-
 Initial Entity Screen
     To start with the entity screen requires showing the entity's image, and
     allowing the user to pan with some key, and zoom in and out with the scroll

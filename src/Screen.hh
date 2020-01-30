@@ -55,6 +55,12 @@ class Screen: public sf::Drawable {
             sf::Vector2f delta
         );
 
+        /**
+         * Called when the user does the scrolling.
+         * @param delta is the number of clicks they have clicked.
+         */
+        virtual void onScroll(int delta);
+
     protected:
         Core &core;
 
@@ -123,6 +129,8 @@ class LevelScreen: public Screen {
  */
 class EntityScreen: public Screen {
     public:
+        static int const SPRITE_BUFFER_SIZE = 128;
+
         /**
          * Creates the screen.
          * @param core  is the main dependencies of screens.
@@ -137,20 +145,20 @@ class EntityScreen: public Screen {
 
         virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
+        virtual void onDrag(
+            sf::Mouse::Button button,
+            sf::Vector2f delta
+        ) override;
+
+        virtual void onScroll(int delta) override;
+
     private:
+        char spriteBuffer[EntityScreen::SPRITE_BUFFER_SIZE];
         Entity &entity;
-        ImGui::FileBrowser picSelector;
+        sf::Vector3f camera;
+        sf::IntRect sprite;
         std::vector<sf::CircleShape> points;
         sf::ConvexShape outline;
-        sf::RectangleShape picture;
-
-        void setOffset(sf::Vector2f offset);
-
-        /**
-         * Sets the entity's sprite and does the nice.
-         * @param sprite is the name of the sprite to use.
-         */
-        void setSprite(std::string const &sprite);
 
         virtual void draw(
             sf::RenderTarget &target,
