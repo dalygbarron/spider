@@ -71,3 +71,6 @@ Battle Screen
 
 Improve core parsing core
     It sucks ASS
+
+EntityScreen zooming
+    Make it that the zoom centres around the current middle of the screen.

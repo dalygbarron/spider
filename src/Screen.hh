@@ -159,6 +159,7 @@ class EntityScreen: public Screen {
         sf::IntRect sprite;
         std::vector<sf::CircleShape> points;
         sf::ConvexShape outline;
+        sf::Color background;
 
         /**
          * Put the entity back in the middle of the screen at normal size.

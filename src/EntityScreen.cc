@@ -1,11 +1,14 @@
 #include "Screen.hh"
 #include "Const.hh"
+#include "FileIO.hh"
 
 EntityScreen::EntityScreen(Core &core, Entity &entity):
     Screen(core),
     entity(entity)
 {
     this->refocus();
+    this->background = sf::Color(rand() % 255, rand() % 255, rand() % 255);
+    this->spriteBuffer[0] = 0;
 }
 
 EntityScreen::~EntityScreen() {
@@ -16,14 +19,33 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin("Entity")) {
         if (ImGui::Button("save")) {
-            spdlog::info("Pressed the button hell yeah man");
+            FileIO::saveEntity(this->entity);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Change Background")) {
+            this->background = sf::Color(
+                rand() % 255,
+                rand() % 255,
+                rand() % 255
+            );
         }
         if (ImGui::Button("refocus")) this->refocus();
         ImGui::InputText("Sprite", this->spriteBuffer, SPRITE_BUFFER_SIZE);
-        ImGui::SameLine();
-        if (ImGui::Button("update")) {
-            this->sprite = this->core.spritesheet.get(this->spriteBuffer);
+        ImGui::BeginChild("Sprites");
+        for (std::unordered_map<std::string, sf::IntRect>::const_iterator it =
+            this->core.spritesheet.begin(); it != this->core.spritesheet.end();
+            it++
+        ) {
+            if (!this->spriteBuffer[0] ||
+                it->first.find(this->spriteBuffer) != std::string::npos
+            ) {
+                if (ImGui::Button(it->first.c_str())) {
+                    this->entity.sprite = it->first;
+                    this->sprite = it->second;
+                }
+            }
         }
+        ImGui::EndChild();
     }
     ImGui::End();
 }
@@ -39,7 +61,6 @@ void EntityScreen::onScroll(int delta) {
     this->camera.z += delta * 0.1;
 }
 
-
 void EntityScreen::refocus() {
     this->camera.x = Const::WIDTH / 2;
     this->camera.y = Const::WIDTH / 2;
@@ -50,7 +71,7 @@ void EntityScreen::draw(
     sf::RenderTarget &target,
     sf::RenderStates states
 ) const {
-    target.clear(sf::Color::White);
+    target.clear(this->background);
     this->core.renderer.batch.clear();
     this->core.renderer.batch.draw(
         this->sprite,

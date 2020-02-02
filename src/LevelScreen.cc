@@ -1,7 +1,6 @@
 #include "Screen.hh"
-#include "Util.hh"
+#include "FileIO.hh"
 #include "Const.hh"
-#include <cmath>
 
 LevelScreen::LevelScreen(Core &core, Level &level):
     Screen(core),
@@ -104,7 +103,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     this->entitySelector.Display();
     if (this->entitySelector.HasSelected()) {
         ghc::filesystem::path file = this->entitySelector.GetSelected().string();
-        Entity *entity = Util::entityFromFile(file);
+        Entity *entity = FileIO::entityFromFile(file);
         // TODO: more stuff.
         this->entitySelector.ClearSelected();
     }
