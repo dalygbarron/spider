@@ -1,6 +1,7 @@
 #include "Screen.hh"
 #include "Const.hh"
 #include "FileIO.hh"
+#include "Mesh.hh"
 #include <string.h>
 
 EntityScreen::EntityScreen(Core &core, Entity &entity):
