@@ -43,3 +43,17 @@ Initial Renderer
     renders a crosshair, and a node function that renders some kind of circular
     thing.
 
+Initial Entity Screen
+    To start with the entity screen requires showing the entity's image, and
+    allowing the user to pan with some key, and zoom in and out with the scroll
+    wheel. Should also be allowed to press a button on the menu to recenter
+    everything. Should also be a dialogue on the menu to choose the picture or
+    choose a new picture (which is a sprite in the ratpack remember).
+    When no picture has yet been chosen it should just show a nice white
+    square or nothing. ALSO, you should be able to press a button to save the
+    entity file and it should save.
+    For the sprite selecting bit, it would be nice if it gave a list of the
+    names of all of the sprites, and then let you narrow the list by typing in
+    the start of the name of the sprite you want or something like that. Might
+    be a bitch in the ass though so maybe don't bother.
+

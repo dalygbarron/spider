@@ -1,4 +1,5 @@
 #include "FileIO.hh"
+#include <iostream>
 
 void FileIO::parsePatch(Core &core, pugi::xml_node const &node) {
     Patch patch;
@@ -57,6 +58,7 @@ Level *FileIO::levelFromFile(ghc::filesystem::path const &path) {
                 "File '%s' sadly does not contain a level.\n",
                 path.c_str()
             );
+            return NULL;
         }
         Level *level = FileIO::parseLevel(node);
         level->file = path;
@@ -68,9 +70,29 @@ Level *FileIO::levelFromFile(ghc::filesystem::path const &path) {
 }
 
 Entity *FileIO::entityFromFile(ghc::filesystem::path const &path) {
+    if (ghc::filesystem::exists(path)) {
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(path.c_str());
+        if (!result) {
+            spdlog::error("File '{}' cannot be opened", path.c_str());
+            return NULL;
+        }
+        pugi::xml_node node = doc.child("entity");
+        if (!node) {
+            spdlog::error("file '{}' contains no entity", path.c_str());
+            return NULL;
+        }
+        Entity *entity = new Entity();
+        entity->file = path;
+        entity->name = node.attribute("name").value();
+        entity->item = node.attribute("item").value();
+        entity->sprite = node.attribute("rat").value();
+        entity->origin.x = node.attribute("origin-x").as_float();
+        entity->origin.y = node.attribute("origin-y").as_float();
+        return entity;
+    }
     Entity *entity = new Entity();
     entity->file = path;
-    // TODO: more.
     return entity;
 }
 
@@ -82,7 +104,13 @@ void FileIO::saveEntity(Entity const &entity) {
     node.append_attribute("rat") = entity.sprite.c_str();
     node.append_attribute("origin-x") = entity.origin.x;
     node.append_attribute("origin-y") = entity.origin.y;
-    doc.save_file(entity.file.c_str());
+    int success = doc.save_file(entity.file.c_str());
+    if (!success) {
+        spdlog::error(
+            "Could not save entity to file {}. Does folder exist?",
+            entity.file.c_str()
+        );
+    }
 }
 
 void FileIO::initRatPackFromFile(

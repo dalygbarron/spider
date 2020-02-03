@@ -129,7 +129,7 @@ class LevelScreen: public Screen {
  */
 class EntityScreen: public Screen {
     public:
-        static int const SPRITE_BUFFER_SIZE = 128;
+        static int const BUFFER_SIZE = 128;
 
         /**
          * Creates the screen.
@@ -153,7 +153,8 @@ class EntityScreen: public Screen {
         virtual void onScroll(int delta) override;
 
     private:
-        char spriteBuffer[EntityScreen::SPRITE_BUFFER_SIZE];
+        char nameBuffer[EntityScreen::BUFFER_SIZE];
+        char spriteBuffer[EntityScreen::BUFFER_SIZE];
         Entity &entity;
         sf::Vector3f camera;
         sf::IntRect sprite;

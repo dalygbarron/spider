@@ -1,17 +1,3 @@
-Initial Entity Screen
-    To start with the entity screen requires showing the entity's image, and
-    allowing the user to pan with some key, and zoom in and out with the scroll
-    wheel. Should also be allowed to press a button on the menu to recenter
-    everything. Should also be a dialogue on the menu to choose the picture or
-    choose a new picture (which is a sprite in the ratpack remember).
-    When no picture has yet been chosen it should just show a nice white
-    square or nothing. ALSO, you should be able to press a button to save the
-    entity file and it should save.
-    For the sprite selecting bit, it would be nice if it gave a list of the
-    names of all of the sprites, and then let you narrow the list by typing in
-    the start of the name of the sprite you want or something like that. Might
-    be a bitch in the ass though so maybe don't bother.
-
 Concave Shape
     I either need to steal or otherwise get my hands on a concave shape
     implementation which can be visualised one way or the other, and which can
@@ -33,6 +19,8 @@ Renderer Update
 Proper Entity Screen
     Same as before but it must now also allow you to manipulate the entity's
     wireframe and save it into the file.
+    Also, if the user tries to save things in circumstances that are silly like
+    there is no name or a name with a space or no sprite it will complain.
 
 Level Screen
     Must be able to set the background and pan around in 3d, entities must
@@ -70,7 +58,8 @@ Battle Screen
     little test battle.
 
 Improve core parsing core
-    It sucks ASS
+    It sucks ASS. Actually also generally improve all the FileIO code to have
+    less of the same stuff over and over.
 
 EntityScreen zooming
     Make it that the zoom centres around the current middle of the screen.

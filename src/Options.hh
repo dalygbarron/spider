@@ -12,7 +12,6 @@ class Options {
         int entityFlag = false;
         int levelFlag = false;
         int ratFlag = false;
-        int relativeFlag = false;
         int helpFlag = false;
         int versionFlag = false;
 };

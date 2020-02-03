@@ -1,6 +1,7 @@
 #include "Screen.hh"
 #include "Const.hh"
 #include "FileIO.hh"
+#include <string.h>
 
 EntityScreen::EntityScreen(Core &core, Entity &entity):
     Screen(core),
@@ -9,6 +10,10 @@ EntityScreen::EntityScreen(Core &core, Entity &entity):
     this->refocus();
     this->background = sf::Color(rand() % 255, rand() % 255, rand() % 255);
     this->spriteBuffer[0] = 0;
+    strcpy(this->nameBuffer, entity.name.c_str());
+    if (!entity.sprite.empty()) {
+        this->sprite = this->core.spritesheet.get(entity.sprite.c_str());
+    }
 }
 
 EntityScreen::~EntityScreen() {
@@ -19,6 +24,7 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin("Entity")) {
         if (ImGui::Button("save")) {
+            this->entity.name = this->nameBuffer;
             FileIO::saveEntity(this->entity);
         }
         ImGui::SameLine();
@@ -30,7 +36,13 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
             );
         }
         if (ImGui::Button("refocus")) this->refocus();
-        ImGui::InputText("Sprite", this->spriteBuffer, SPRITE_BUFFER_SIZE);
+        ImGui::SameLine();
+        ImGui::InputText("Name", this->nameBuffer, EntityScreen::BUFFER_SIZE);
+        ImGui::InputText(
+            "Sprite",
+            this->spriteBuffer,
+            EntityScreen::BUFFER_SIZE
+        );
         ImGui::BeginChild("Sprites");
         for (std::unordered_map<std::string, sf::IntRect>::const_iterator it =
             this->core.spritesheet.begin(); it != this->core.spritesheet.end();

@@ -37,14 +37,13 @@ void help() {
         Const::VERSION_MINOR,
         Const::VERSION_REV
     );
-    printf("Usage: spider [-h] [-v] [-r] [-g=gameFile] -R|-e=entityFile|-l=levelFile\n");
+    printf("Usage: spider [-h] [-v] [-g=gameFile] -r|-e=entityFile|-l=levelFile\n");
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
     printf(" -g means game file, it is required.\n");
-    printf(" -e means entity file to edit, it cannot be used with -l.\n");
-    printf(" -l means level file to edit, it cannot be used with -e.\n");
-    printf(" -r means consider the file path of -e or -l relative to the game file\n");
-    printf(" -R means open in rat mode.\n");
+    printf(" -e means entity file to edit, it cannot be used with -l, and it is relative to the game file.\n");
+    printf(" -l means level file to edit, it cannot be used with -e, and it is relative to the game file\n");
+    printf(" -r means open in rat mode.\n");
     printf("\nIf you run it and it says shaders are not available, it's fucked\n");
 }
 /**
@@ -52,7 +51,7 @@ void help() {
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
-    while ((opt = getopt(argc, argv, "hvRrg:e:l:")) != -1) {
+    while ((opt = getopt(argc, argv, "hvrg:e:l:")) != -1) {
         switch (opt) {
             case 'h':
                 options.helpFlag = true;
@@ -60,11 +59,8 @@ int parseOptions(Options &options, int argc, char **argv) {
             case 'v':
                 options.versionFlag = true;
                 return 0;
-            case 'R':
-                options.ratFlag = true;
-                break;
             case 'r':
-                options.relativeFlag = true;
+                options.ratFlag = true;
                 break;
             case 'g':
                 options.game = optarg;
