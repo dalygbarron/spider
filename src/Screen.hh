@@ -4,7 +4,6 @@
 #include "Level.hh"
 #include "Entity.hh"
 #include "Core.hh"
-#include "Mesh.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -161,7 +160,6 @@ class EntityScreen: public Screen {
         sf::ConvexShape outline;
         sf::Color background;
         int selected = -1;
-        Mesh mesh;
 
         /**
          * Put the entity back in the middle of the screen at normal size.

@@ -17,6 +17,15 @@ void Mesh::split(int index) {
     this->vertices.insert(this->vertices.begin() + index + 1, vertex);
 }
 
+void Mesh::remove(int index) {
+    this->vertices.erase(this->vertices.begin() + index);
+}
+
+sf::Vector2f *Mesh::getVertex(int index) {
+    if (index < 0 || index >= this->vertices.size()) return NULL;
+    return this->vertices.data() + index;
+}
+
 std::vector<sf::Vector2f> const &Mesh::getVertices() const {
     return this->vertices;
 }
@@ -39,11 +48,10 @@ int Mesh::in(sf::Vector2f pos) const {
     return inside;
 }
 
-int Mesh::getClosestEdge(sf::Vector2f pos) const {
+int Mesh::getClosestVertex(sf::Vector2f pos) const {
     int index = -1;
     float distance = 999999999;
-    int n = this->vertices.size();
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < this->vertices.size(); i++) {
         // Manhattan distance will do.
         float vertexDistance = abs(this->vertices[i].x - pos.x) +
             abs(this->vertices[i].y - pos.y);
@@ -52,14 +60,5 @@ int Mesh::getClosestEdge(sf::Vector2f pos) const {
             distance = vertexDistance;
         }
     }
-    if (index == -1) return index;
-    int left = index - 1;
-    int right = index + 1;
-    if (left < 0) left = n - 1;
-    if (right >= n) right = 0;
-    sf::Vector2f leftPos = this->vertices[left];
-    sf::Vector2f rightPos = this->vertices[right];
-    float leftNodeDistance = Util::manhattan(leftPos, this->vertices[index]);
-    float rightNodeDistance = Util::manhattan(leftPos, this->vertices[index]);
     return index;
 }

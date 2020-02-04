@@ -16,12 +16,6 @@ EntityScreen::EntityScreen(Core &core, Entity &entity):
     if (!entity.sprite.empty()) {
         this->sprite = this->core.spritesheet.get(entity.sprite.c_str());
     }
-    for (int i = 0; i < 4; i++) {
-        this->mesh.addVertex(sf::Vector2f(
-            cos(i * Const::DOUBLE_PI / 4) * 100,
-            sin(i * Const::DOUBLE_PI / 4) * 100
-        ));
-    }
 }
 
 EntityScreen::~EntityScreen() {
@@ -42,6 +36,17 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
                 rand() % 255,
                 rand() % 255
             );
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Split") && this->selected != -1) {
+            this->entity.mesh.split(this->selected);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Remove") && this->selected != -1) {
+            this->entity.mesh.remove(this->selected);
+            if (this->selected >= this->entity.mesh.getVertices().size()) {
+                this->selected--;
+            }
         }
         if (ImGui::Button("refocus")) this->refocus();
         ImGui::SameLine();
@@ -71,19 +76,26 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
 }
 
 void EntityScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
-    if (button == sf::Mouse::Button::Right) {
+    if (button == sf::Mouse::Button::Left) {
+        sf::Vector2f *vertex = this->entity.mesh.getVertex(this->selected);
+        if (vertex) {
+            vertex->x += delta.x;
+            vertex->y += delta.y;
+        }
+    } else if (button == sf::Mouse::Button::Right) {
         this->camera.x += delta.x;
         this->camera.y += delta.y;
     }
 }
 
 void EntityScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
-    pos.x -= this->camera.x;
-    pos.y -= this->camera.y;
-    pos.x *= this->camera.z;
-    pos.y *= this->camera.z;
-    this->selected = this->mesh.getClosestEdge(pos);
-    spdlog::info("selected {}", this->selected);
+    if (button == sf::Mouse::Button::Left) {
+        pos.x -= this->camera.x;
+        pos.y -= this->camera.y;
+        pos.x *= this->camera.z;
+        pos.y *= this->camera.z;
+        this->selected = this->entity.mesh.getClosestVertex(pos);
+    }
 }
 
 void EntityScreen::onScroll(int delta) {
@@ -117,9 +129,9 @@ void EntityScreen::draw(
         this->sprite.height * this->camera.z
     ), false);
     // Draw the Outline.
-    std::vector<sf::Vector2f> const &vertices = this->mesh.getVertices();
+    std::vector<sf::Vector2f> const &vertices = this->entity.mesh.getVertices();
     int n = vertices.size();
-    for (int i = 1; i < vertices.size(); i++) {
+    for (int i = 1; i < n; i++) {
         this->core.renderer.club(
             sf::Vector2f(
                 vertices[i - 1].x * this->camera.z + this->camera.x,
@@ -132,17 +144,19 @@ void EntityScreen::draw(
             this->selected == i - 1
         );
     }
-    this->core.renderer.club(
-        sf::Vector2f(
-            vertices[n - 1].x * this->camera.z + this->camera.x,
-            vertices[n - 1].y * this->camera.z + this->camera.y
-        ),
-        sf::Vector2f(
-            vertices[0].x * this->camera.z + this->camera.x,
-            vertices[0].y * this->camera.z + this->camera.y
-        ),
-        this->selected == n - 1
-    );
+    if (n > 0) {
+        this->core.renderer.club(
+            sf::Vector2f(
+                vertices[n - 1].x * this->camera.z + this->camera.x,
+                vertices[n - 1].y * this->camera.z + this->camera.y
+            ),
+            sf::Vector2f(
+                vertices[0].x * this->camera.z + this->camera.x,
+                vertices[0].y * this->camera.z + this->camera.y
+            ),
+            this->selected == n - 1
+        );
+    }
     target.draw(this->core.renderer.batch);
     ImGui::SFML::Render(target);
 }

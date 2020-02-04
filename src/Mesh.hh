@@ -33,6 +33,22 @@ class Mesh {
         void split(int index);
 
         /**
+         * Remove a vertex from the mesh.
+         * @param index is the index of the vertex to remove.
+         */
+        void remove(int index);
+
+        /**
+         * Gives you a mutable pointer to some vertex. Obviously this will not
+         * outlive the mesh. DOn't be a retard with it, just use it and then
+         * forget it.
+         * @param index is the index of the vertex you want.
+         * @return a mutable pointer to it, which is null if you gave an
+         *         invalid index.
+         */
+        sf::Vector2f *getVertex(int index);
+
+        /**
          * Gives you the vertices in the mesh.
          * @return a constant vector of them.
          */
@@ -46,16 +62,13 @@ class Mesh {
         int in(sf::Vector2f pos) const;
 
         /**
-         * Gives you the index of the vertex that precedes the edge the given
-         * position was most in alignment with. This is not efficient enough to
-         * be calling multiple times a frame, but it will be fine for my
-         * purposes.
+         * Gives you the index of the vertex closest to the given position.
          * @param pos is the point to find an edge near.
          * @return the index in the vertices of the found vertex, or -1 if none
          *         were particularly close or the mesh has no vertices or
          *         something.
          */
-        int getClosestEdge(sf::Vector2f pos) const;
+        int getClosestVertex(sf::Vector2f pos) const;
 
     private:
         std::vector<sf::Vector2f> vertices;
