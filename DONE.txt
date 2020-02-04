@@ -61,3 +61,17 @@ Renderer Update
     Add rendering concave shapes and stuff. Also add rendering 9patches so that
     we can use that for the gui.
 
+Concave Shape
+    I either need to steal or otherwise get my hands on a concave shape
+    implementation which can be visualised one way or the other, and which can
+    tell whether or not a point is inside the shape. The visualisation should
+    probably be done seperately, now I think of it, because when we use it in
+    the level screen it is going to be deformed so the built in representation
+    is not going to work anway.
+    As well as being able to tell you if a point is within the shape, it should
+    probably also be able to take a point and tell you if that point is close
+    enough to a node or an edge to be over that node or edge for the purposes
+    of manipulating the shape.
+    We should probably have tests for all that stuff also since it sounds
+    compliocated and painful to manually test.
+
