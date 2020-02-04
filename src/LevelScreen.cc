@@ -110,7 +110,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     return this;
 }
 
-void LevelScreen::onClick(sf::Mouse::Button button) {
+void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
 }
 
 void LevelScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {

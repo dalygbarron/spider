@@ -57,3 +57,7 @@ Initial Entity Screen
     the start of the name of the sprite you want or something like that. Might
     be a bitch in the ass though so maybe don't bother.
 
+Renderer Update
+    Add rendering concave shapes and stuff. Also add rendering 9patches so that
+    we can use that for the gui.
+

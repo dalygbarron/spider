@@ -4,6 +4,7 @@
 #include "Level.hh"
 #include "Entity.hh"
 #include "Core.hh"
+#include "Mesh.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -43,7 +44,7 @@ class Screen: public sf::Drawable {
          * Called when the user clicks on the screen.
          * @param button is the button that they clicked.
          */
-        virtual void onClick(sf::Mouse::Button button);
+        virtual void onClick(sf::Mouse::Button button, sf::Vector2f pos);
 
         /**
          * Called when the user drags the mouse on the screen.
@@ -103,7 +104,10 @@ class LevelScreen: public Screen {
 
         virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
-        virtual void onClick(sf::Mouse::Button button) override;
+        virtual void onClick(
+            sf::Mouse::Button button,
+            sf::Vector2f pos
+        ) override;
 
         virtual void onDrag(
             sf::Mouse::Button button,
@@ -210,6 +214,13 @@ class RatScreen: public Screen {
 
     private:
         std::vector<Rat> rats;
+        Mesh mesh;
+        int select;
+
+        virtual void onClick(
+            sf::Mouse::Button button,
+            sf::Vector2f pos
+        ) override;
 
         virtual void draw(
             sf::RenderTarget &target,

@@ -8,7 +8,7 @@ Screen::~Screen() {
     // Does nothing.
 }
 
-void Screen::onClick(sf::Mouse::Button button) {
+void Screen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     // Do nothing by default.
 }
 

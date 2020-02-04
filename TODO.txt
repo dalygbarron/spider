@@ -12,10 +12,6 @@ Concave Shape
     We should probably have tests for all that stuff also since it sounds
     compliocated and painful to manually test.
 
-Renderer Update
-    Add rendering concave shapes and stuff. Also add rendering 9patches so that
-    we can use that for the gui.
-
 Proper Entity Screen
     Same as before but it must now also allow you to manipulate the entity's
     wireframe and save it into the file.

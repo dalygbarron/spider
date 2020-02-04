@@ -4,6 +4,16 @@
 #include "Patch.hh"
 #include <SFML/Graphics.hpp>
 
+/**
+ * Batches draw calls into one big call where they are all using portions of
+ * the same texture, also has to implement various primitive ways of arranging
+ * vertices.
+ * TODO: if we are not going to implement changing the colour of a sprite drawn
+ *       then there is no reason to add code setting vertices to white
+ *       everywhere and the code would be a lot less massive without it.
+ *       Actually, if I ever want drawing with a tint, maybe I should add
+ *       a setTint function to this which then affects drawing after.
+ */
 class RatBatch: public sf::Drawable {
     public:
         /**
@@ -53,6 +63,15 @@ class RatBatch: public sf::Drawable {
          * @param pos    is the rectangle to fit it in on the screen.
          */
         void draw(sf::IntRect sprite, sf::FloatRect pos);
+
+        /**
+         * Draw the given sprite stretched as a line from one point to another
+         * point.
+         * @param sprite is the sprite to draw.
+         * @param start  is the start to start drawing from.
+         * @param end    is the end to stop drawing at.
+         */
+        void draw(sf::IntRect sprite, sf::Vector2f start, sf::Vector2f end);
 
     private:
         int n;

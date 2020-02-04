@@ -156,6 +156,8 @@ void FileIO::initRatPackFromFile(
 
 Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     sf::IntRect pointRat(0, 0, 0, 0);
+    sf::IntRect lineRat(0, 0, 0, 0);
+    sf::IntRect lineHighlightRat(0, 0, 0, 0);
     sf::IntRect nodeRat(0, 0, 0, 0);
     sf::IntRect nodeHighlightRat(0, 0, 0, 0);
     sf::IntRect boxRat(0, 0, 0, 0);
@@ -194,6 +196,12 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     // now set the gui bits
     core->renderer.setPointRat(core->spritesheet.get(
         node.attribute("point").value())
+    );
+    core->renderer.setLineRat(core->spritesheet.get(
+        node.attribute("line").value())
+    );
+    core->renderer.setLineHighlightRat(core->spritesheet.get(
+        node.attribute("lineHighlight").value())
     );
     core->renderer.setNodeRat(core->spritesheet.get(
         node.attribute("node").value()

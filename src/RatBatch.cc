@@ -163,6 +163,57 @@ void RatBatch::draw(sf::IntRect sprite, sf::FloatRect pos) {
     this->n++;
 }
 
+void RatBatch::draw(sf::IntRect sprite, sf::Vector2f start, sf::Vector2f end) {
+    // Figure out what orientation to draw them with.
+    sf::Vector2f edge(0, 0);
+    if (abs(end.x - start.x) > abs(end.y - start.y)) {
+        edge.y = sprite.height / 2;
+    } else {
+        edge.x = sprite.width / 2;
+    }
+    int nVertices = this->n * 4;
+    if (nVertices + 4 > this->vertices.size()) {
+        this->vertices.resize(this->vertices.size() + 4);
+    }
+    this->vertices[nVertices].position = sf::Vector2f(
+        start.x - edge.x,
+        start.y - edge.y
+    );
+    this->vertices[nVertices].texCoords = sf::Vector2f(
+        sprite.left,
+        sprite.top + sprite.height
+    );
+    this->vertices[nVertices].color = sf::Color::White;
+    this->vertices[nVertices + 1].position = sf::Vector2f(
+        end.x - edge.x,
+        end.y - edge.y
+    );
+    this->vertices[nVertices + 1].texCoords = sf::Vector2f(
+        sprite.left,
+        sprite.top
+    );
+    this->vertices[nVertices + 1].color = sf::Color::White;
+    this->vertices[nVertices + 2].position = sf::Vector2f(
+        end.x + edge.x,
+        end.y + edge.y
+    );
+    this->vertices[nVertices + 2].texCoords = sf::Vector2f(
+        sprite.left + sprite.width,
+        sprite.top
+    );
+    this->vertices[nVertices + 2].color = sf::Color::White;
+    this->vertices[nVertices + 3].position = sf::Vector2f(
+        start.x + edge.x,
+        start.y + edge.y
+    );
+    this->vertices[nVertices + 3].texCoords = sf::Vector2f(
+        sprite.left + sprite.width,
+        sprite.top + sprite.height
+    );
+    this->vertices[nVertices + 3].color = sf::Color::White;
+    this->n++;
+}
+
 void RatBatch::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     if (!this->clean) {
         spdlog::critical("RatBatch not cleared between draw calls. Abort.");

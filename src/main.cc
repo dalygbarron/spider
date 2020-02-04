@@ -117,7 +117,10 @@ int process(Screen *screen) {
                 );
             } else if (!ImGui::GetIO().WantCaptureMouse) {
                 if (event.type == sf::Event::MouseButtonPressed) {
-                    screen->onClick(event.mouseButton.button);
+                    screen->onClick(event.mouseButton.button, sf::Vector2f(
+                        event.mouseButton.x,
+                        event.mouseButton.y
+                    ));
                     buttons[event.mouseButton.button] = true;
                 } else if (event.type == sf::Event::MouseButtonReleased) {
                     buttons[event.mouseButton.button] = false;
@@ -164,6 +167,7 @@ int process(Screen *screen) {
  *           any meaning other than fail.
  */
 int main(int argc, char **argv) {
+    srand(time(0));
     // Parse and validate arguments.
     Options options;
     int result = parseOptions(options, argc, argv);

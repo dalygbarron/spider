@@ -28,6 +28,18 @@ class Renderer: public sf::Drawable {
         void setPointRat(sf::IntRect rat);
 
         /**
+         * Sets the rat to use to draw lines.
+         * @param rat is the rat.
+         */
+        void setLineRat(sf::IntRect rat);
+
+        /**
+         * Set the rat to use to draw highlighted lines.
+         * @param rat is the rat to use.
+         */
+        void setLineHighlightRat(sf::IntRect rat);
+
+        /**
          * Sets the rat to use to draw nodes.
          * @param rat is the rat to use.
          */
@@ -71,8 +83,26 @@ class Renderer: public sf::Drawable {
          */
         void box(sf::FloatRect pos, int highlight);
 
+        /**
+         * Draw a line between two points.
+         * @param start     is where on the screen the line starts.
+         * @param end       is where on the screen the line ends.
+         * @param highlight is whether to draw the line highlighted.
+         */
+        void line(sf::Vector2f start, sf::Vector2f, int highlight);
+
+        /**
+         * Draw a node with a line coming out of it.
+         * @param start     is the start where the node is.
+         * @param end       is where the line ends.
+         * @param highlight is whether to draw it highlighted or normal.
+         */
+        void club(sf::Vector2f start, sf::Vector2f end, int highlight);
+
     private:
         sf::IntRect pointRat;
+        sf::IntRect lineRat;
+        sf::IntRect lineHighlightRat;
         sf::IntRect nodeRat;
         sf::IntRect nodeHighlightRat;
         Patch boxPatch;
