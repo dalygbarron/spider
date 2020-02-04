@@ -149,11 +149,6 @@ class EntityScreen: public Screen {
 
         virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
-        virtual void onDrag(
-            sf::Mouse::Button button,
-            sf::Vector2f delta
-        ) override;
-
         virtual void onScroll(int delta) override;
 
     private:
@@ -165,12 +160,23 @@ class EntityScreen: public Screen {
         std::vector<sf::CircleShape> points;
         sf::ConvexShape outline;
         sf::Color background;
+        int selected = -1;
+        Mesh mesh;
 
         /**
          * Put the entity back in the middle of the screen at normal size.
          */
         void refocus();
 
+        virtual void onDrag(
+            sf::Mouse::Button button,
+            sf::Vector2f delta
+        ) override;
+
+        virtual void onClick(
+            sf::Mouse::Button button,
+            sf::Vector2f pos
+        ) override;
 
         virtual void draw(
             sf::RenderTarget &target,
@@ -215,12 +221,6 @@ class RatScreen: public Screen {
     private:
         std::vector<Rat> rats;
         Mesh mesh;
-        int select;
-
-        virtual void onClick(
-            sf::Mouse::Button button,
-            sf::Vector2f pos
-        ) override;
 
         virtual void draw(
             sf::RenderTarget &target,

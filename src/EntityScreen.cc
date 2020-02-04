@@ -2,6 +2,7 @@
 #include "Const.hh"
 #include "FileIO.hh"
 #include "Mesh.hh"
+#include <cmath>
 #include <string.h>
 
 EntityScreen::EntityScreen(Core &core, Entity &entity):
@@ -14,6 +15,12 @@ EntityScreen::EntityScreen(Core &core, Entity &entity):
     strcpy(this->nameBuffer, entity.name.c_str());
     if (!entity.sprite.empty()) {
         this->sprite = this->core.spritesheet.get(entity.sprite.c_str());
+    }
+    for (int i = 0; i < 4; i++) {
+        this->mesh.addVertex(sf::Vector2f(
+            cos(i * Const::DOUBLE_PI / 4) * 100,
+            sin(i * Const::DOUBLE_PI / 4) * 100
+        ));
     }
 }
 
@@ -70,6 +77,15 @@ void EntityScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
     }
 }
 
+void EntityScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
+    pos.x -= this->camera.x;
+    pos.y -= this->camera.y;
+    pos.x *= this->camera.z;
+    pos.y *= this->camera.z;
+    this->selected = this->mesh.getClosestEdge(pos);
+    spdlog::info("selected {}", this->selected);
+}
+
 void EntityScreen::onScroll(int delta) {
     this->camera.z += delta * 0.1;
 }
@@ -86,18 +102,47 @@ void EntityScreen::draw(
 ) const {
     target.clear(this->background);
     this->core.renderer.batch.clear();
+    // Draw the sprite.
     this->core.renderer.batch.draw(
         this->sprite,
         sf::Vector2f(this->camera.x, this->camera.y),
         0,
         sf::Vector2f(this->camera.z, this->camera.z)
     );
+    // Draw the bounds of the sprite.
     this->core.renderer.box(sf::FloatRect(
         this->camera.x - this->sprite.width / 2 * this->camera.z,
         this->camera.y - this->sprite.height / 2 * this->camera.z,
         this->sprite.width * this->camera.z,
         this->sprite.height * this->camera.z
     ), false);
+    // Draw the Outline.
+    std::vector<sf::Vector2f> const &vertices = this->mesh.getVertices();
+    int n = vertices.size();
+    for (int i = 1; i < vertices.size(); i++) {
+        this->core.renderer.club(
+            sf::Vector2f(
+                vertices[i - 1].x * this->camera.z + this->camera.x,
+                vertices[i - 1].y * this->camera.z + this->camera.y
+            ),
+            sf::Vector2f(
+                vertices[i].x * this->camera.z + this->camera.x,
+                vertices[i].y * this->camera.z + this->camera.y
+            ),
+            this->selected == i - 1
+        );
+    }
+    this->core.renderer.club(
+        sf::Vector2f(
+            vertices[n - 1].x * this->camera.z + this->camera.x,
+            vertices[n - 1].y * this->camera.z + this->camera.y
+        ),
+        sf::Vector2f(
+            vertices[0].x * this->camera.z + this->camera.x,
+            vertices[0].y * this->camera.z + this->camera.y
+        ),
+        this->selected == n - 1
+    );
     target.draw(this->core.renderer.batch);
     ImGui::SFML::Render(target);
 }

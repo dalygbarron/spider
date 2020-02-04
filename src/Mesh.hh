@@ -46,13 +46,16 @@ class Mesh {
         int in(sf::Vector2f pos) const;
 
         /**
-         * Gives you the index of the closest vertex to the given point.
-         * @param pos is the point to find a vertex near.
-         * @return the index in the vertices of the found vertex. There will
-         *         always be one no matter what. If you call this on a mesh
-         *         with no vertices it will return 0.
+         * Gives you the index of the vertex that precedes the edge the given
+         * position was most in alignment with. This is not efficient enough to
+         * be calling multiple times a frame, but it will be fine for my
+         * purposes.
+         * @param pos is the point to find an edge near.
+         * @return the index in the vertices of the found vertex, or -1 if none
+         *         were particularly close or the mesh has no vertices or
+         *         something.
          */
-        int getClosestVertex(sf::Vector2f pos) const;
+        int getClosestEdge(sf::Vector2f pos) const;
 
     private:
         std::vector<sf::Vector2f> vertices;

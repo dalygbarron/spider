@@ -17,7 +17,6 @@ RatScreen::RatScreen(Core &core): Screen(core) {
         "Creating rat screen with {} rats",
         this->core.spritesheet.count()
     );
-    this->select = 3;
     this->rats.resize(this->core.spritesheet.count());
     int i = 0;
     for (std::unordered_map<std::string, sf::IntRect>::const_iterator it =
@@ -50,7 +49,7 @@ RatScreen::RatScreen(Core &core): Screen(core) {
             return a.scale.x < b.scale.x;
         }
     );
-    for (i = 0; i < rand() % 50 + 1; i++) {
+    for (i = 0; i < 5; i++) {
         this->mesh.addVertex(sf::Vector2f(
             rand() % Const::WIDTH,
             rand() % Const::HEIGHT
@@ -65,30 +64,14 @@ Screen *RatScreen::update(float delta, sf::RenderWindow &window) {
     return NULL;
 }
 
-void RatScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
-    int old = this->select;
-    this->select = this->mesh.getClosestVertex(pos);
-    if (this->select == old) {
-        this->mesh.split(this->select);
-    }
-}
-
 void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.clear(sf::Color::Cyan);
     this->core.renderer.batch.clear();
     std::vector<sf::Vector2f> const &vertices = this->mesh.getVertices();
     for (int i = 1; i < vertices.size(); i++) {
-        this->core.renderer.club(
-            vertices[i -  1],
-            vertices[i],
-            i == this->select + 1
-        );
+        this->core.renderer.club(vertices[i -  1], vertices[i], false);
     }
-    this->core.renderer.club(
-        vertices.back(),
-        vertices.front(),
-        this->select == 0
-    );
+    this->core.renderer.club(vertices.back(), vertices.front(), false);
     for (int i = 0; i < this->rats.size(); i++) {
         if (this->mesh.in(this->rats[i].position)) {
             this->core.renderer.point(this->rats[i].position);

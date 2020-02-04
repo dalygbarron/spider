@@ -39,10 +39,11 @@ int Mesh::in(sf::Vector2f pos) const {
     return inside;
 }
 
-int Mesh::getClosestVertex(sf::Vector2f pos) const {
+int Mesh::getClosestEdge(sf::Vector2f pos) const {
     int index = -1;
     float distance = 999999999;
-    for (int i = 0; i < this->vertices.size(); i++) {
+    int n = this->vertices.size();
+    for (int i = 0; i < n; i++) {
         // Manhattan distance will do.
         float vertexDistance = abs(this->vertices[i].x - pos.x) +
             abs(this->vertices[i].y - pos.y);
@@ -51,5 +52,14 @@ int Mesh::getClosestVertex(sf::Vector2f pos) const {
             distance = vertexDistance;
         }
     }
+    if (index == -1) return index;
+    int left = index - 1;
+    int right = index + 1;
+    if (left < 0) left = n - 1;
+    if (right >= n) right = 0;
+    sf::Vector2f leftPos = this->vertices[left];
+    sf::Vector2f rightPos = this->vertices[right];
+    float leftNodeDistance = Util::manhattan(leftPos, this->vertices[index]);
+    float rightNodeDistance = Util::manhattan(leftPos, this->vertices[index]);
     return index;
 }

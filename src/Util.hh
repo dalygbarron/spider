@@ -24,6 +24,23 @@ namespace Util {
      * @return that amount in degrees.
      */
     float degrees(float radians);
+
+    /**
+     * Gives you the distance between two float vectors.
+     * @param a is the first position.
+     * @param b is the second position.
+     * @return float the distance between these two positions.
+     */
+    float distance(sf::Vector2f a, sf::Vector2f b);
+
+    /**
+     * Gives you the manhattan distance between two float vectors. It is like
+     * normal distance but shitty and fast.
+     * @param a is the first position.
+     * @param b is the second position.
+     * @return the manhattan distance between the two positions.
+     */
+    float manhattan(sf::Vector2f a, sf::Vector2f b);
 }
 
 #endif

@@ -27,3 +27,13 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
 float Util::degrees(float radians) {
     return fmod(radians, Const::DOUBLE_PI) * Const::RADIAN_CONVERT;
 }
+
+float Util::distance(sf::Vector2f a, sf::Vector2f b) {
+    float dX = abs(a.x - b.x);
+    float dY = abs(a.y - b.y);
+    return sqrt(dX * dX + dY * dY);
+}
+
+float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
+    return abs(a.x - b.x) + abs(a.y + b.y);
+}
