@@ -121,6 +121,8 @@ class LevelScreen: public Screen {
 
     private:
         Level &level;
+        Instance *selectedInstance = NULL;
+        int selectedVertex = -1;
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;
