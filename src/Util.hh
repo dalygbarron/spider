@@ -41,6 +41,24 @@ namespace Util {
      * @return the manhattan distance between the two positions.
      */
     float manhattan(sf::Vector2f a, sf::Vector2f b);
+
+    /**
+     * Converts a location on the screen to an angle from the centre of
+     * a sphere that is around the screen.
+     * @param pos    is the position on the screen.
+     * @param camera is the rotation of the camera.
+     * @return the coordinates of that point on the sphere.
+     */
+    sf::Vector2f screenToSphere(sf::Vector2f pos, sf::Vector2f camera);
+
+    /**
+     * Converts a coordinate on the surface of a sphere to a location on the
+     * screen assuming the camera is inside the centre of the sphere.
+     * @param coordinate is the latitude and longitude of the point converted.
+     * @param camera     is the current angle of the camera.
+     * @return the position to place it on the screen.
+     */
+    sf::Vector2f sphereToScreen(sf::Vector2f coordinate, sf::Vector2f camera);
 }
 
 #endif

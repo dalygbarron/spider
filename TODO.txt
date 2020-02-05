@@ -4,6 +4,9 @@ Level Screen
     which also means I need to figure that out. Should be able to select entity
     files to add into the level
 
+Set Origin in EntityScreen
+    Yeah I forgot to do that last time so I need to do it now.
+
 Look into built in text editor
     Would be handy to have for level screen but I am not sure how hard it would
     be to get it to work so maybe no.
