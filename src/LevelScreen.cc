@@ -58,6 +58,8 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::Button("-");
         ImGui::SameLine();
         ImGui::Button("+shape");
+        ImGui::SameLine();
+        ImGui::Button("+entity");
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
         static int selected = -1;
         static float longitude = 0;
@@ -129,6 +131,7 @@ void LevelScreen::draw(
     sf::RenderTarget &target,
     sf::RenderStates states
 ) const {
+    target.clear();
     states.shader = &(this->shader);
     target.draw(back, states);
     ImGui::SFML::Render(target);
