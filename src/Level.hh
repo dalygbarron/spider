@@ -14,20 +14,11 @@
 class Level {
     public:
         ghc::filesystem::path file;
+        ghc::filesystem::path pic;
         std::string script;
         std::unordered_map<std::string, Entity *> defines;
         std::unordered_map<std::string, Instance *> entities;
         std::unordered_map<std::string, std::vector<sf::Vector2f>> shapes;
-
-        /**
-         * Passes in the picture that the level is using.
-         */
-        Level();
-
-        /**
-         * Destroys the level's picture from memory.
-         */
-        ~Level();
 
         /**
          * Tells if you if the level is currently clean or if it has changes

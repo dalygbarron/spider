@@ -45,28 +45,21 @@ Level *FileIO::levelFromFile(ghc::filesystem::path const &path) {
         pugi::xml_document doc;
         pugi::xml_parse_result result = doc.load_file(path.c_str());
         if (!result) {
-            fprintf(
-                stderr,
-                "File '%s' simply can NOT be opened.\n",
-                path.c_str()
-            );
+            spdlog::error("Level file '{}' cannnot be opened", path.c_str());
             return NULL;
         }
         pugi::xml_node node = doc.child("level");
         if (!node) {
-            fprintf(
-                stderr,
-                "File '%s' sadly does not contain a level.\n",
-                path.c_str()
-            );
+            spdlog::error("File '{}' does not contain a level.", path.c_str());
             return NULL;
         }
         Level *level = FileIO::parseLevel(node);
         level->file = path;
         return level;
     } else {
-        printf("%s not exist\n", path.c_str());
-        return NULL;
+        Level *level = new Level();
+        level->file = path;
+        return level;
     }
 }
 

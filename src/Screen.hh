@@ -118,6 +118,7 @@ class LevelScreen: public Screen {
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;
+        sf::Texture texture;
         ImGui::FileBrowser backgroundSelector;
         ImGui::FileBrowser entitySelector;
 

@@ -73,6 +73,7 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::EndChild();
     }
     ImGui::End();
+    return this;
 }
 
 void EntityScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {

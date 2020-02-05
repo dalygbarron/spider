@@ -39,6 +39,8 @@ Improve core parsing core
 
 EntityScreen zooming
     Make it that the zoom centres around the current middle of the screen.
+    Also make it that the mesh vertex selection zone doesn't get bigger when
+    zoom.
 
 Go to EntityScreen from LevelScreen and back again
     Really should be able to go to the entityscreen from the level screen so

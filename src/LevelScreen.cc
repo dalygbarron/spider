@@ -34,7 +34,8 @@ LevelScreen::~LevelScreen() {
 Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     this->shader.setUniform("angle", camera);
     // Now do the gui.
-    if(ImGui::Begin(this->level.file.c_str())) {
+    ImGui::SFML::Update(window, sf::seconds(delta));
+    if (ImGui::Begin(this->level.file.c_str())) {
         if (ImGui::Button(this->level.getClean() ? "Save" : "+Save+")) {
             // TODO: stuff
         }
@@ -96,7 +97,9 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     // pic selector.
     this->backgroundSelector.Display();
     if (this->backgroundSelector.HasSelected()) {
-        ghc::filesystem::path pic = this->backgroundSelector.GetSelected().string();
+        this->level.pic = this->backgroundSelector.GetSelected().string();
+        this->texture.loadFromFile(this->backgroundSelector.GetSelected().string());
+        this->back.setTexture(&this->texture, true);
         this->backgroundSelector.ClearSelected();
     }
     // entity selector
@@ -128,5 +131,6 @@ void LevelScreen::draw(
 ) const {
     states.shader = &(this->shader);
     target.draw(back, states);
+    ImGui::SFML::Render(target);
 }
 
