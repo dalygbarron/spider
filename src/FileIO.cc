@@ -1,4 +1,5 @@
 #include "FileIO.hh"
+#include "Const.hh"
 #include <iostream>
 
 void FileIO::parsePatch(Core &core, pugi::xml_node const &node) {
@@ -89,10 +90,24 @@ Entity *FileIO::entityFromFile(ghc::filesystem::path const &path) {
         entity->sprite = node.attribute("rat").value();
         entity->origin.x = node.attribute("origin-x").as_float();
         entity->origin.y = node.attribute("origin-y").as_float();
+        for (pugi::xml_node point = node.child("point"); point;
+            point = point.next_sibling("point")
+        ) {
+            entity->mesh.addVertex(sf::Vector2f(
+                point.attribute("x").as_float(),
+                point.attribute("y").as_float()
+            ));
+        }
         return entity;
     }
     Entity *entity = new Entity();
     entity->file = path;
+    for (int i = 0; i < 3; i++) {
+        entity->mesh.addVertex(sf::Vector2f(
+            cos(i * Const::DOUBLE_PI / 3) * 50,
+            sin(i * Const::DOUBLE_PI / 3) * 50
+        ));
+    }
     return entity;
 }
 
@@ -104,6 +119,12 @@ void FileIO::saveEntity(Entity const &entity) {
     node.append_attribute("rat") = entity.sprite.c_str();
     node.append_attribute("origin-x") = entity.origin.x;
     node.append_attribute("origin-y") = entity.origin.y;
+    std::vector<sf::Vector2f> const &vertices = entity.mesh.getVertices();
+    for (int i = 0; i < vertices.size(); i++) {
+        pugi::xml_node point = node.append_child("point");
+        point.append_attribute("x") = vertices[i].x;
+        point.append_attribute("y") = vertices[i].y;
+    }
     int success = doc.save_file(entity.file.c_str());
     if (!success) {
         spdlog::error(

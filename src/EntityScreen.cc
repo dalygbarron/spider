@@ -79,8 +79,8 @@ void EntityScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
     if (button == sf::Mouse::Button::Left) {
         sf::Vector2f *vertex = this->entity.mesh.getVertex(this->selected);
         if (vertex) {
-            vertex->x += delta.x;
-            vertex->y += delta.y;
+            vertex->x += delta.x / this->camera.z;
+            vertex->y += delta.y / this->camera.z;
         }
     } else if (button == sf::Mouse::Button::Right) {
         this->camera.x += delta.x;
@@ -90,10 +90,10 @@ void EntityScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
 
 void EntityScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     if (button == sf::Mouse::Button::Left) {
-        pos.x -= this->camera.x;
-        pos.y -= this->camera.y;
-        pos.x *= this->camera.z;
-        pos.y *= this->camera.z;
+        pos.x /= this->camera.z;
+        pos.y /= this->camera.z;
+        pos.x -= this->camera.x / this->camera.z;
+        pos.y -= this->camera.y / this->camera.z;
         this->selected = this->entity.mesh.getClosestVertex(pos);
     }
 }

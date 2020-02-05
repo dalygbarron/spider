@@ -1,9 +1,3 @@
-Proper Entity Screen
-    Same as before but it must now also allow you to manipulate the entity's
-    wireframe and save it into the file.
-    Also, if the user tries to save things in circumstances that are silly like
-    there is no name or a name with a space or no sprite it will complain.
-
 Level Screen
     Must be able to set the background and pan around in 3d, entities must
     place themselves in the 3d joint and also rotate thus that it looks right,
@@ -45,3 +39,7 @@ Improve core parsing core
 
 EntityScreen zooming
     Make it that the zoom centres around the current middle of the screen.
+
+Go to EntityScreen from LevelScreen and back again
+    Really should be able to go to the entityscreen from the level screen so
+    that you can edit some entity if you so desire.

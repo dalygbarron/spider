@@ -23,7 +23,7 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     if (!this->shader.loadFromMemory(
         Const::SKY_SHADER, sf::Shader::Fragment
     )) {
-        fprintf(stderr, "Couldn't start the sky shader.\n");
+        spdlog::error("Couldn't start the sky shader");
     }
 }
 

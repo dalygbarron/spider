@@ -75,3 +75,9 @@ Concave Shape
     We should probably have tests for all that stuff also since it sounds
     compliocated and painful to manually test.
 
+Proper Entity Screen
+    Same as before but it must now also allow you to manipulate the entity's
+    wireframe and save it into the file.
+    Also, if the user tries to save things in circumstances that are silly like
+    there is no name or a name with a space or no sprite it will complain.
+

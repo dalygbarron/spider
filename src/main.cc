@@ -86,9 +86,13 @@ int parseOptions(Options &options, int argc, char **argv) {
  * @return the result code the program should give after.
  */
 int process(Screen *screen) {
+    if (!screen) {
+        spdlog::critical("No Screen Created. Aborting.");
+        return 1;
+    }
     sf::RenderWindow window(
         sf::VideoMode(Const::WIDTH, Const::HEIGHT),
-        Const::TITLE
+        Const::TITLE// TODO: add to core and get from core.
     );
     window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
@@ -117,9 +121,10 @@ int process(Screen *screen) {
                 );
             } else if (!ImGui::GetIO().WantCaptureMouse) {
                 if (event.type == sf::Event::MouseButtonPressed) {
+                    sf::Vector2u size = window.getSize();
                     screen->onClick(event.mouseButton.button, sf::Vector2f(
-                        event.mouseButton.x,
-                        event.mouseButton.y
+                        event.mouseButton.x * ((float)Const::WIDTH / size.x),
+                        event.mouseButton.y * ((float)Const::HEIGHT / size.y)
                     ));
                     buttons[event.mouseButton.button] = true;
                 } else if (event.type == sf::Event::MouseButtonReleased) {
@@ -129,8 +134,10 @@ int process(Screen *screen) {
                         if (buttons[i]) {
                             sf::Vector2u size = window.getSize();
                             screen->onDrag((sf::Mouse::Button)i, sf::Vector2f(
-                                (event.mouseMove.x - mouse.x) * ((float)Const::WIDTH / size.x),
-                                (event.mouseMove.y - mouse.y) * ((float)Const::HEIGHT / size.y)
+                                (event.mouseMove.x - mouse.x) *
+                                    ((float)Const::WIDTH / size.x),
+                                (event.mouseMove.y - mouse.y) *
+                                    ((float)Const::HEIGHT / size.y)
                             ));
                         }
                     }
