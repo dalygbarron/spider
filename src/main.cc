@@ -145,6 +145,8 @@ int process(Screen *screen) {
                     mouse.y = event.mouseMove.y;
                 } else if (event.type == sf::Event::MouseWheelScrolled) {
                     screen->onScroll(event.mouseWheelScroll.delta);
+                } else if (event.type == sf::Event::KeyPressed) {
+                    screen->onKey(event.key.code);
                 }
             }
         }

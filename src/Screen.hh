@@ -61,6 +61,12 @@ class Screen: public sf::Drawable {
          */
         virtual void onScroll(int delta);
 
+        /**
+         * Called when the user presses a key.
+         * @param key is the key that was pressed.
+         */
+        virtual void onKey(sf::Keyboard::Key key);
+
     protected:
         Core &core;
 
@@ -149,7 +155,19 @@ class EntityScreen: public Screen {
 
         virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
+        virtual void onDrag(
+            sf::Mouse::Button button,
+            sf::Vector2f delta
+        ) override;
+
+        virtual void onClick(
+            sf::Mouse::Button button,
+            sf::Vector2f pos
+        ) override;
+
         virtual void onScroll(int delta) override;
+
+        virtual void onKey(sf::Keyboard::Key key) override;
 
     private:
         char nameBuffer[EntityScreen::BUFFER_SIZE];
@@ -166,16 +184,6 @@ class EntityScreen: public Screen {
          * Put the entity back in the middle of the screen at normal size.
          */
         void refocus();
-
-        virtual void onDrag(
-            sf::Mouse::Button button,
-            sf::Vector2f delta
-        ) override;
-
-        virtual void onClick(
-            sf::Mouse::Button button,
-            sf::Vector2f pos
-        ) override;
 
         virtual void draw(
             sf::RenderTarget &target,

@@ -103,6 +103,23 @@ void EntityScreen::onScroll(int delta) {
     this->camera.z += delta * 0.1;
 }
 
+void EntityScreen::onKey(sf::Keyboard::Key key) {
+    if (key == sf::Keyboard::Key::Space) {
+        if (this->selected != -1) {
+            this->entity.mesh.split(this->selected);
+            this->selected++;
+        }
+    } else if (key == sf::Keyboard::Key::Backspace) {
+        if (this->selected != -1 && this->entity.mesh.getVertices().size() > 2) {
+            this->entity.mesh.remove(this->selected);
+            this->selected--;
+            if (this->selected < 0) {
+                this->selected = this->entity.mesh.getVertices().size() - 1;
+            }
+        }
+    }
+}
+
 void EntityScreen::refocus() {
     this->camera.x = Const::WIDTH / 2;
     this->camera.y = Const::WIDTH / 2;

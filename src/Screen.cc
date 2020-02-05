@@ -19,3 +19,7 @@ void Screen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
 void Screen::onScroll(int delta) {
     // Do nothing by default.
 }
+
+void Screen::onKey(sf::Keyboard::Key key) {
+    // Do nothing by default
+}
