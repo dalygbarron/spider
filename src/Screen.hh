@@ -123,6 +123,7 @@ class LevelScreen: public Screen {
         Level &level;
         Instance *selectedInstance = NULL;
         int selectedVertex = -1;
+        std::vector<Instance> instances;
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;

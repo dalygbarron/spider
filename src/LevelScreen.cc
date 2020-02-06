@@ -15,6 +15,7 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     this->backgroundSelector.SetTypeFilters({".png"});
     this->entitySelector.SetTitle("Select entity to include");
     this->entitySelector.SetTypeFilters({".xml"});
+    this->texture.setSmooth(true);
     // TODO: this shader really ought to be kept and reused by other level
     //       screens since it is always the same stuff but I will do that
     //       later.
