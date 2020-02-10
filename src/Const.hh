@@ -44,7 +44,7 @@ namespace Const {
         uniform vec2 angle;
 
         float hfovDegrees = 120.0;
-        float vfovDegrees = 60.0;
+        float vfovDegrees = 90.0;
 
         //tools
         vec3 rotateXY(vec3 p, vec2 angle) {

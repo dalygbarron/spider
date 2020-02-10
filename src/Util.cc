@@ -37,3 +37,14 @@ float Util::distance(sf::Vector2f a, sf::Vector2f b) {
 float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
     return abs(a.x - b.x) + abs(a.y + b.y);
 }
+
+sf::Vector2f Util::sphereToScreen(
+    sf::Vector2f coordinate,
+    sf::Vector2f camera
+) {
+    float scale = Const::HEIGHT / 2;
+    sf::Vector2f pos;
+    pos.x = coordinate.x - camera.x * cos(coordinate.y - camera.y) * scale + scale;
+    pos.y = coordinate.y - camera.y * scale + scale;
+    return pos;
+}

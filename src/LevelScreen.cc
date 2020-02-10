@@ -1,6 +1,7 @@
 #include "Screen.hh"
 #include "FileIO.hh"
 #include "Const.hh"
+#include "Util.hh"
 
 LevelScreen::LevelScreen(Core &core, Level &level):
     Screen(core),
@@ -78,38 +79,13 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         if (ImGui::Button("+entity")) this->addInstance(NULL);
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
         static int selected = -1;
-        static float longitude = 0;
-        static float latitude = 0;
         for (int n = 0; n < 50; n++) {
             if (ImGui::Selectable("Bongonr", selected == n)) selected = n;
         }
         ImGui::EndChild();
         ImGui::SameLine();
-        ImGui::BeginGroup();
-        ImGui::BeginChild("itemView",ImVec2(
-            0,
-            -ImGui::GetFrameHeightWithSpacing()
-        ));
-        ImGui::Text("Number: %d", selected);
-        ImGui::DragFloat(
-            "longitude",
-            &longitude,
-            0.01f,
-            -Const::PI,
-            Const::PI,
-            "%.2f"
-        );
-        ImGui::DragFloat(
-            "latitude",
-            &latitude,
-            0.01f,
-            -Const::HALF_PI,
-            Const::HALF_PI,
-            "%.2f"
-        );
-        ImGui::Separator();
-        ImGui::EndChild();
-        ImGui::EndGroup();
+        // TODO: if a shape is selected do the shape menu.
+        this->entityMenu();
         ImGui::End();
     }
     // pic selector.
@@ -143,6 +119,36 @@ void LevelScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
     if (this->camera.y < -Const::HALF_PI) this->camera.y = -Const::HALF_PI;
 }
 
+void LevelScreen::entityMenu() {
+    ImGui::BeginGroup();
+    ImGui::BeginChild("itemView",ImVec2(
+        0,
+        -ImGui::GetFrameHeightWithSpacing()
+    ));
+    ImGui::Text("Number: 6");
+    float latitude;
+    float longitude;
+    ImGui::DragFloat(
+        "longitude",
+        &longitude,
+        0.01f,
+        -Const::PI,
+        Const::PI,
+        "%.2f"
+    );
+    ImGui::DragFloat(
+        "latitude",
+        &latitude,
+        0.01f,
+        -Const::HALF_PI,
+        Const::HALF_PI,
+        "%.2f"
+    );
+    ImGui::Separator();
+    ImGui::EndChild();
+    ImGui::EndGroup();
+}
+
 void LevelScreen::draw(
     sf::RenderTarget &target,
     sf::RenderStates states
@@ -159,27 +165,15 @@ void LevelScreen::draw(
             int n = vertices.size();
             for (int i = 1; i < n; i++) {
                 this->core.renderer.club(
-                    sf::Vector2f(
-                        vertices[i - 1].x + this->camera.x,
-                        vertices[i - 1].y + this->camera.y
-                    ),
-                    sf::Vector2f(
-                        vertices[i].x + this->camera.x,
-                        vertices[i].y + this->camera.y
-                    ),
+                    Util::sphereToScreen(vertices[i - 1], this->camera),
+                    Util::sphereToScreen(vertices[i], this->camera),
                     false
                 );
             }
             if (n > 0) {
                 this->core.renderer.club(
-                    sf::Vector2f(
-                        vertices[n - 1].x + this->camera.x,
-                        vertices[n - 1].y + this->camera.y
-                    ),
-                    sf::Vector2f(
-                        vertices[0].x + this->camera.x,
-                        vertices[0].y + this->camera.y
-                    ),
+                    Util::sphereToScreen(vertices[n - 1], this->camera),
+                    Util::sphereToScreen(vertices[0], this->camera),
                     false
                 );
             }

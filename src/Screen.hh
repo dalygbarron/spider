@@ -134,6 +134,16 @@ class LevelScreen: public Screen {
         ImGui::FileBrowser backgroundSelector;
         ImGui::FileBrowser entitySelector;
 
+        /**
+         * Does the menu for when an entity is selected.
+         */
+        void entityMenu();
+
+        /**
+         * Does the menu for when a shape is selected.
+         */
+        void shapeMenu();
+
         virtual void draw(
             sf::RenderTarget &target,
             sf::RenderStates states
