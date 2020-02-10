@@ -44,7 +44,7 @@ sf::Vector2f Util::sphereToScreen(
 ) {
     float scale = Const::HEIGHT / 2;
     sf::Vector2f pos;
-    pos.x = coordinate.x - camera.x * cos(coordinate.y - camera.y) * scale + scale;
-    pos.y = coordinate.y - camera.y * scale + scale;
+    pos.x = (coordinate.x - camera.x) * cos(coordinate.y - camera.y) * scale + scale;
+    pos.y = (coordinate.y - camera.y) * scale + scale;
     return pos;
 }
