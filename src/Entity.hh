@@ -7,7 +7,9 @@
 #include <vector>
 
 /**
- * Represents an entity.
+ * Represents an entity. This is not the same as an instance of an entity that
+ * you see placed within a level, this is more like the immortal concept of
+ * a given entity which instances of entities are only making reference to.
  */
 class Entity {
     public:
@@ -16,7 +18,6 @@ class Entity {
         std::string item;
         std::string sprite;
         sf::Vector2f origin;
-        std::vector<sf::Vector2f> shape;
         Mesh mesh;
 };
 

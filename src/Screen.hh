@@ -96,16 +96,19 @@ class LevelScreen: public Screen {
         ~LevelScreen();
 
         /**
-         * Add an entity instance to the level.
-         * @param instance is the instance to add.
-         */
-        void addInstance(Instance *instance);
-
-        /**
          * Remove an entity instance from the level and free it.
          * @param index is the index of the entity to remove.
          */
         void removeInstance(int index);
+
+        /**
+         * Creates an instance in the level and returns a reference to it.
+         * @param entity is what to set the instance's entity field to, if you
+         *               choose null, that is ok because it means it is a shape
+         *               instance not an entity instance.
+         * @return the created instance.
+         */
+        Instance &addInstance(Entity *entity);
 
         virtual Screen *update(float delta, sf::RenderWindow &window) override;
 

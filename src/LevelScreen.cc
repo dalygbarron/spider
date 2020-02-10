@@ -32,6 +32,18 @@ LevelScreen::~LevelScreen() {
     // Doesn othingg.
 }
 
+void LevelScreen::removeInstance(int index) {
+    // TODO: this.
+}
+
+Instance &LevelScreen::addInstance(Entity *entity) {
+    int n = this->instances.size();
+    this->instances.resize(n + 1);
+    Instance *instance = this->instances.data() + n;
+    instance->entity = entity;
+    return *instance;
+}
+
 Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     this->shader.setUniform("angle", camera);
     // Now do the gui.
@@ -58,9 +70,12 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::SameLine();
         ImGui::Button("-");
         ImGui::SameLine();
-        ImGui::Button("+shape");
+        if (ImGui::Button("+shape")) {
+            Instance &instance = this->addInstance(NULL);
+            instance.mesh.addVertex(sf::Vector2f(0, 0));
+        }
         ImGui::SameLine();
-        ImGui::Button("+entity");
+        if (ImGui::Button("+entity")) this->addInstance(NULL);
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
         static int selected = -1;
         static float longitude = 0;
@@ -135,6 +150,42 @@ void LevelScreen::draw(
     target.clear();
     states.shader = &(this->shader);
     target.draw(back, states);
+    this->core.renderer.batch.clear();
+    for (Instance const &instance: this->instances) {
+        if (instance.entity) {
+            // TODO: draw entity picture with transformed location.
+        } else {
+            std::vector<sf::Vector2f> const &vertices = instance.mesh.getVertices();
+            int n = vertices.size();
+            for (int i = 1; i < n; i++) {
+                this->core.renderer.club(
+                    sf::Vector2f(
+                        vertices[i - 1].x + this->camera.x,
+                        vertices[i - 1].y + this->camera.y
+                    ),
+                    sf::Vector2f(
+                        vertices[i].x + this->camera.x,
+                        vertices[i].y + this->camera.y
+                    ),
+                    false
+                );
+            }
+            if (n > 0) {
+                this->core.renderer.club(
+                    sf::Vector2f(
+                        vertices[n - 1].x + this->camera.x,
+                        vertices[n - 1].y + this->camera.y
+                    ),
+                    sf::Vector2f(
+                        vertices[0].x + this->camera.x,
+                        vertices[0].y + this->camera.y
+                    ),
+                    false
+                );
+            }
+        }
+    }
+    target.draw(this->core.renderer.batch);
     ImGui::SFML::Render(target);
 }
 
