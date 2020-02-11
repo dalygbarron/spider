@@ -73,7 +73,12 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::SameLine();
         if (ImGui::Button("+shape")) {
             Instance &instance = this->addInstance(NULL);
-            instance.mesh.addVertex(sf::Vector2f(0, 0));
+            for (int i = 0; i < 360; i++) {
+                instance.mesh.addVertex(sf::Vector2f((float)Const::DOUBLE_PI / 360 * i, 0));
+            }
+            for (int i = 0; i < 360; i++) {
+                instance.mesh.addVertex(sf::Vector2f(0, (float)Const::DOUBLE_PI / 360 * i));
+            }
         }
         ImGui::SameLine();
         if (ImGui::Button("+entity")) this->addInstance(NULL);

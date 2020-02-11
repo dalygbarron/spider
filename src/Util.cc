@@ -1,5 +1,6 @@
 #include "Util.hh"
 #include "Const.hh"
+#include "spdlog/spdlog.h"
 #include <SFML/Graphics.hpp>
 #include <stdio.h>
 #include <cmath>
@@ -43,8 +44,10 @@ sf::Vector2f Util::sphereToScreen(
     sf::Vector2f camera
 ) {
     sf::Vector2f fov(2.094395, 1.570796);
+    sf::Vector2f length(sin(fov.x / 2), sin(fov.y / 2));
+    sf::Vector2f distance(cos(fov.x / 2), cos(fov.y / 2));
     sf::Vector2f pos;
-    pos.x = (coordinate.x - camera.x) / fov.x * Const::WIDTH;
-    pos.y = (coordinate.y - camera.y) / fov.y * Const::HEIGHT;
+    pos.x = (tan(fmod(coordinate.x - camera.x, Const::DOUBLE_PI)) * distance.x) / length.x * Const::WIDTH / 2 + Const::WIDTH / 2;
+    pos.y = (tan(fmod(coordinate.y - camera.y, Const::DOUBLE_PI)) * distance.y) / length.y * Const::WIDTH / 2 + Const::HEIGHT / 2;
     return pos;
 }
