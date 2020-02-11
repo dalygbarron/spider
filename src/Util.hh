@@ -5,8 +5,6 @@
 
 /**
  * Contains random utility functions for your pleasure.
- * TODO: so much of this is loading stuff in, maybe I should have a different
- *       file just for loading related stuff.
  */
 namespace Util {
     /**
@@ -32,6 +30,14 @@ namespace Util {
      * @return float the distance between these two positions.
      */
     float distance(sf::Vector2f a, sf::Vector2f b);
+
+    /**
+     * Rotates a vector using a latitude and a longitude.
+     * @param vector is the vector to rotate.
+     * @param angle  is the two angles to rotate it by.
+     * @return the rotated version.
+     */
+    sf::Vector3f rotate(sf::Vector3f vector, sf::Vector2f angle);
 
     /**
      * Gives you the manhattan distance between two float vectors. It is like

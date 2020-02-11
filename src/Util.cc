@@ -35,6 +35,21 @@ float Util::distance(sf::Vector2f a, sf::Vector2f b) {
     return sqrt(dX * dX + dY * dY);
 }
 
+sf::Vector3f Util::rotate(sf::Vector3f vector, sf::Vector2f angle) {
+    sf::Vector2f cosines(cos(angle.x), cos(angle.y));
+    sf::Vector2f sines(sin(angle.x), sin(angle.y));
+    sf::Vector3f p(
+        vector.x,
+        cosines.x * vector.y + sines.x * vector.z,
+        -sines.x * vector.y + cosines.x * vector.z
+    );
+    return sf::Vector3f(
+        cosines.y * p.x + sines.y * p.z,
+        p.y,
+        -sines.y * p.x + cosines.y * p.z
+    );
+}
+
 float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
     return abs(a.x - b.x) + abs(a.y + b.y);
 }
@@ -46,8 +61,26 @@ sf::Vector2f Util::sphereToScreen(
     sf::Vector2f fov(2.094395, 1.570796);
     sf::Vector2f length(sin(fov.x / 2), sin(fov.y / 2));
     sf::Vector2f distance(cos(fov.x / 2), cos(fov.y / 2));
-    sf::Vector2f pos;
-    pos.x = (tan(fmod(coordinate.x - camera.x, Const::DOUBLE_PI)) * distance.x) / length.x * Const::WIDTH / 2 + Const::WIDTH / 2;
-    pos.y = (tan(fmod(coordinate.y - camera.y, Const::DOUBLE_PI)) * distance.y) / length.y * Const::WIDTH / 2 + Const::HEIGHT / 2;
-    return pos;
+    sf::Vector3f pos(
+        cos(coordinate.y) * cos(coordinate.x),
+        cos(coordinate.y) * sin(coordinate.x),
+        sin(coordinate.y)
+    );
+    pos = Util::rotate(pos, camera);
+    coordinate.x = atan2(pos.y, pos.x);
+    coordinate.y = atan2(pos.z, sqrt(pos.x * pos.x + pos.y * pos.y));
+    spdlog::info(
+        "lat ({} {}) cam ({} {}) pos ({} {} {})",
+        coordinate.x,
+        coordinate.y,
+        camera.x,
+        camera.y,
+        pos.x,
+        pos.y,
+        pos.z
+    );
+    return sf::Vector2f(
+        (tan(coordinate.x) * distance.x) / length.x * Const::WIDTH / 2 + Const::WIDTH / 2,
+        (tan(coordinate.y) * distance.y) / length.y * Const::HEIGHT / 2 + Const::HEIGHT / 2
+    );
 }
