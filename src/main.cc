@@ -1,15 +1,15 @@
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
-#include "Level.hh"
-#include "Entity.hh"
-#include "Options.hh"
-#include "Util.hh"
-#include "FileIO.hh"
-#include "Screen.hh"
-#include "Const.hh"
-#include "imgui.h"
-#include "imgui-SFML.h"
-#include "spdlog/spdlog.h"
-#include "spdlog/rotating_file_sink.h"
+#include "main/Level.hh"
+#include "main/Entity.hh"
+#include "main/Options.hh"
+#include "main/Util.hh"
+#include "main/FileIO.hh"
+#include "main/Screen.hh"
+#include "main/Const.hh"
+#include "main/imgui.h"
+#include "main/imgui-SFML.h"
+#include "main/spdlog/spdlog.h"
+#include "main/spdlog/rotating_file_sink.h"
 #include <SFML/System.hpp>
 #include <stdlib.h>
 #include <stdio.h>

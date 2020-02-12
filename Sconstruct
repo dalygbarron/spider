@@ -1,6 +1,5 @@
 import sys
 
-env = Environment()
 
 libs = [
     'sfml-graphics',
@@ -19,12 +18,16 @@ else:
     cflags.append('-mmacosx-version-min=10.15')
     cflags.append('-stdlib=libc++')
 
-main = env.Program(
-    'main',
-    Glob('src/*.cc'),
+mainSources = Glob('src/main/*.cc')
+testSources = Glob('src/test/*.cc')
+
+env = Environment(
     LIBS=libs,
     FRAMEWORKS=['OpenGl'],
     CXXFLAGS=cflags
 )
+
+main = env.Program('main', mainSources + ['src/main.cc'])
+test = env.Program('test', mainSources + testSources + ['src/catch.cc'])
 
 Default(main)
