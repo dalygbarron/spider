@@ -27,7 +27,7 @@ env = Environment(
     CXXFLAGS=cflags
 )
 
-main = env.Program('main', mainSources + ['src/main.cc'])
+spider = env.Program('spider', mainSources + ['src/main.cc'])
 test = env.Program('test', mainSources + testSources + ['src/catch.cc'])
 
-Default(main)
+Default(spider)
