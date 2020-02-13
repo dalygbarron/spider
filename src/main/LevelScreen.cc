@@ -27,6 +27,11 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     )) {
         spdlog::error("Couldn't start the sky shader");
     }
+    for (int i = 0; i < 4; i++) {
+        float x = (float)(rand() % 100) / 100 * Const::HALF_PI;
+        float y = (float)(rand() % 100) / 100 * Const::HALF_PI;
+        this->shape.addVertex(sf::Vector2f(x, y));
+    }
 }
 
 LevelScreen::~LevelScreen() {
@@ -72,12 +77,10 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::Button("-");
         ImGui::SameLine();
         if (ImGui::Button("+shape")) {
-            for (int i = 0; i < 500; i++) {
-                Instance &instance = this->addInstance(NULL);
-                float x = (float)(rand() % 100) / 100 * Const::DOUBLE_PI - Const::PI;
-                float y = (float)(rand() % 100) / 100 * Const::PI - Const::HALF_PI;
-                instance.mesh.addVertex(sf::Vector2f(x, y));
-            }
+            Instance &instance = this->addInstance(NULL);
+            float x = (float)(rand() % 100) / 100 * Const::DOUBLE_PI - Const::PI;
+            float y = (float)(rand() % 100) / 100 * Const::PI - Const::HALF_PI;
+            instance.mesh.addVertex(sf::Vector2f(x, y));
         }
         ImGui::SameLine();
         if (ImGui::Button("+entity")) this->addInstance(NULL);
@@ -112,6 +115,12 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
 }
 
 void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
+    sf::Vector2f coordinate = Util::screenToSphere(pos, this->camera);
+    spdlog::info("{} {}", coordinate.x, coordinate.y);
+    this->bright = this->shape.inSphere(coordinate);
+    this->shape.getVertex(0)->x = coordinate.x;
+    this->shape.getVertex(0)->y = coordinate.y;
+
 }
 
 void LevelScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
@@ -161,28 +170,44 @@ void LevelScreen::draw(
     states.shader = &(this->shader);
     target.draw(back, states);
     this->core.renderer.batch.clear();
-    for (Instance const &instance: this->instances) {
-        if (instance.entity) {
-            // TODO: draw entity picture with transformed location.
-        } else {
-            std::vector<sf::Vector2f> const &vertices = instance.mesh.getVertices();
-            int n = vertices.size();
-            for (int i = 1; i < n; i++) {
-                this->core.renderer.club(
-                    Util::sphereToScreen(vertices[i - 1], this->camera),
-                    Util::sphereToScreen(vertices[i], this->camera),
-                    false
-                );
-            }
-            if (n > 0) {
-                this->core.renderer.club(
-                    Util::sphereToScreen(vertices[n - 1], this->camera),
-                    Util::sphereToScreen(vertices[0], this->camera),
-                    false
-                );
-            }
-        }
+    std::vector<sf::Vector2f> const &vertices = this->shape.getVertices();
+    int n = vertices.size();
+    for (int i = 1; i < n; i++) {
+        this->core.renderer.club(
+            Util::sphereToScreen(vertices[i - 1], this->camera),
+            Util::sphereToScreen(vertices[i], this->camera),
+            this->bright
+        );
     }
+    if (n > 0) {
+        this->core.renderer.club(
+            Util::sphereToScreen(vertices[n - 1], this->camera),
+            Util::sphereToScreen(vertices[0], this->camera),
+            this->bright
+        );
+    }
+    // for (Instance const &instance: this->instances) {
+    //     if (instance.entity) {
+    //         // TODO: draw entity picture with transformed location.
+    //     } else {
+    //         std::vector<sf::Vector2f> const &vertices = instance.mesh.getVertices();
+    //         int n = vertices.size();
+    //         for (int i = 1; i < n; i++) {
+    //             this->core.renderer.club(
+    //                 Util::sphereToScreen(vertices[i - 1], this->camera),
+    //                 Util::sphereToScreen(vertices[i], this->camera),
+    //                 false
+    //             );
+    //         }
+    //         if (n > 0) {
+    //             this->core.renderer.club(
+    //                 Util::sphereToScreen(vertices[n - 1], this->camera),
+    //                 Util::sphereToScreen(vertices[0], this->camera),
+    //                 false
+    //             );
+    //         }
+    //     }
+    // }
     target.draw(this->core.renderer.batch);
     ImGui::SFML::Render(target);
 }

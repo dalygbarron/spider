@@ -1,4 +1,6 @@
 #include "Mesh.hh"
+#include "Const.hh"
+#include "spdlog/spdlog.h"
 #include <cmath>
 
 void Mesh::addVertex(sf::Vector2f vertex) {
@@ -13,8 +15,7 @@ void Mesh::split(int index) {
     vertex.x += this->vertices[next].x;
     vertex.y += this->vertices[next].y;
     vertex.x /= 2;
-    vertex.y /= 2;
-    this->vertices.insert(this->vertices.begin() + index + 1, vertex);
+    vertex.y /= 2; this->vertices.insert(this->vertices.begin() + index + 1, vertex);
 }
 
 void Mesh::remove(int index) {
@@ -43,6 +44,29 @@ int Mesh::in(sf::Vector2f pos) const {
             (pos.y - this->vertices[i].y) /
             (this->vertices[next].y - this->vertices[i].y) +
             this->vertices[i].x);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+}
+
+int Mesh::inSphere(sf::Vector2f coordinate) const {
+    coordinate.x = fmod(coordinate.x, Const::DOUBLE_PI);
+    int size = this->vertices.size();
+    if (size < 3) return false;
+    int inside = false;
+    for (int i = 0; i < size; i++) {
+        int next = i + 1;
+        if (next == size) next = 0;
+        float height = this->vertices[next].y - this->vertices[i].y /
+            (this->vertices[next].x - this->vertices[i].x);
+        int intersect = this->vertices[i].x <= coordinate.x &&
+            this->vertices[next].x >= coordinate.x &&
+            height >= coordinate.y;
+        if (!intersect) {
+            coordinate.x = fmod(coordinate.x + Const::PI, Const::DOUBLE_PI);
+            intersect = this->vertices[i].x <= coordinate.x &&
+                this->vertices[next].x >= coordinate.x;
+        }
         if (intersect) inside = !inside;
     }
     return inside;

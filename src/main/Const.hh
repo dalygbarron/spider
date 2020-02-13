@@ -15,12 +15,12 @@ namespace Const {
     static float PI = 3.141592653589793238462643383279;
     static float DOUBLE_PI = 6.283185307179586;
     static float HALF_PI = 1.570796326794897;
-    static float FOV_X = 2.0944;
-    static float FOV_Y = 1.5708;
-    static float RENDER_LENGTH_X = 1.732060603;
-    static float RENDER_LENGTH_Y = 1.000003673;
-    static float INVERSE_RENDER_LENGTH_X = 0.577347004;
-    static float INVERSE_RENDER_LENGTH_Y = 0.999996327;
+    static float FOV_X = 2.094395102;
+    static float FOV_Y = 1.570796327;
+    static float RENDER_LENGTH_X = 1.732050807;
+    static float RENDER_LENGTH_Y = 1;
+    static float INVERSE_RENDER_LENGTH_X = 0.577350269;
+    static float INVERSE_RENDER_LENGTH_Y = 1;
     static float RADIAN_CONVERT = 57.2957795131;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
@@ -50,8 +50,8 @@ namespace Const {
         uniform sampler2D picture;
         uniform vec2 angle;
 
-        float hfovDegrees = 2.0944;
-        float vfovDegrees = 1.5708;
+        float hfovDegrees = 2.094395102;
+        float vfovDegrees = 1.570796327;
 
         //tools
         vec3 rotateXY(vec3 p, vec2 angle) {

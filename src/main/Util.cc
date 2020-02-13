@@ -62,6 +62,35 @@ float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
     return abs(a.x - b.x) + abs(a.y + b.y);
 }
 
+sf::Vector2f Util::screenToSphere(
+    sf::Vector2f pos,
+    sf::Vector2f camera
+) {
+    // yeah, dunno why but for this you have to rotate around the y axis first
+    // and then the x axis, but for the rotate function it was the other way
+    // round in order to work so who knows lol.
+    sf::Vector2f coordinate(
+        atan((pos.x - Const::HALF_WIDTH) /
+            Const::WIDTH * Const::RENDER_LENGTH_X),
+        atan((pos.y - Const::HALF_HEIGHT) /
+            Const::HEIGHT * Const::RENDER_LENGTH_Y)
+    );
+    float cosY = cos(coordinate.y);
+    sf::Vector3f vector(
+        cosY * sin(coordinate.x),
+        sin(coordinate.y),
+        cos(coordinate.x) * cosY
+    );
+    float sideLength = sqrt(vector.z * vector.z + vector.y * vector.y);
+    float sideAngle = atan2(vector.y, vector.z);
+    vector.z = cos(sideAngle + camera.y) * sideLength;
+    vector.y = sin(sideAngle + camera.y) * sideLength;
+    return sf::Vector2f(
+        atan2(vector.x, vector.z) + camera.x,
+        atan2(vector.y, sqrt(vector.x * vector.x + vector.z * vector.z))
+    );
+}
+
 sf::Vector2f Util::sphereToScreen(
     sf::Vector2f coordinate,
     sf::Vector2f camera

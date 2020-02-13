@@ -125,8 +125,9 @@ class LevelScreen: public Screen {
     private:
         Level &level;
         Instance *selectedInstance = NULL;
-        int selectedVertex = -1;
         std::vector<Instance> instances;
+        int bright;
+        Mesh shape;
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;

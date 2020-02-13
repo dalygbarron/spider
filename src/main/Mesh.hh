@@ -62,6 +62,14 @@ class Mesh {
         int in(sf::Vector2f pos) const;
 
         /**
+         * Tells you if the given latitude and longitude would be in this shape
+         * if this shape was the surface of a sphere.
+         * @param coordinate is the location to check.
+         * @return true if it is inside and false otherwise.
+         */
+        int inSphere(sf::Vector2f coordinate) const;
+
+        /**
          * Gives you the index of the vertex closest to the given position.
          * @param pos is the point to find an edge near.
          * @return the index in the vertices of the found vertex, or -1 if none
