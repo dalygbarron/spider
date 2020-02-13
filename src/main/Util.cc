@@ -52,8 +52,8 @@ sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
     vector.z = cos(sideAngle + angle.y) * sideLength;
     vector.y = sin(sideAngle + angle.y) * sideLength;
     return sf::Vector2f(
-        fmod(atan2(vector.x, vector.z), Const::DOUBLE_PI),
-        fmod(atan2(vector.y, sqrt(vector.x * vector.x + vector.z * vector.z)), Const::PI)
+        atan2(vector.x, vector.z),
+        atan2(vector.y, sqrt(vector.x * vector.x + vector.z * vector.z))
     );
 }
 
@@ -65,19 +65,12 @@ sf::Vector2f Util::sphereToScreen(
     sf::Vector2f coordinate,
     sf::Vector2f camera
 ) {
-    sf::Vector2f fov(2.0944, 1.5708);
-    sf::Vector2f length(tan(fov.x / 2), tan(fov.y / 2));
     coordinate = rotate(coordinate, sf::Vector2f(-camera.x, -camera.y));
-    if ((coordinate.x >= Const::HALF_PI &&
-        coordinate.x <= Const::DOUBLE_PI - Const::HALF_PI) || 
-        (coordinate.y >= Const::HALF_PI &&
-        coordinate.y <= Const::DOUBLE_PI - Const::HALF_PI)
-    ) {
-        spdlog::info("gregre");
+    if (cos(coordinate.x) < 0 || cos(coordinate.y) < 0) {
         return sf::Vector2f(-99999, -99999);
     }
     return sf::Vector2f(
-        tan(coordinate.x) / length.x * 2 * Const::WIDTH / 2 + Const::WIDTH / 2,
-        tan(coordinate.y) / length.y * 2 * Const::HEIGHT / 2 + Const::HEIGHT / 2
+        tan(coordinate.x) * Const::INVERSE_RENDER_LENGTH_X * Const::WIDTH + Const::HALF_WIDTH,
+        tan(coordinate.y) * Const::INVERSE_RENDER_LENGTH_Y * Const::HEIGHT + Const::HALF_HEIGHT
     );
 }

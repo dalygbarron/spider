@@ -72,13 +72,12 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::Button("-");
         ImGui::SameLine();
         if (ImGui::Button("+shape")) {
-            Instance &instance = this->addInstance(NULL);
-            float x = (float)(rand() % 10) / 10 * Const::DOUBLE_PI - Const::PI;
-            float y = (float)(rand() % 10) / 10 * Const::PI - Const::HALF_PI;
-            instance.mesh.addVertex(sf::Vector2f(x, y));
-            this->camera.x = x;
-            this->camera.y = y;
-            spdlog::info("{} {}", x, y);
+            for (int i = 0; i < 500; i++) {
+                Instance &instance = this->addInstance(NULL);
+                float x = (float)(rand() % 100) / 100 * Const::DOUBLE_PI - Const::PI;
+                float y = (float)(rand() % 100) / 100 * Const::PI - Const::HALF_PI;
+                instance.mesh.addVertex(sf::Vector2f(x, y));
+            }
         }
         ImGui::SameLine();
         if (ImGui::Button("+entity")) this->addInstance(NULL);
