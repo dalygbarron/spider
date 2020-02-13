@@ -41,49 +41,42 @@ float Util::length(sf::Vector3f vector) {
     );
 }
 
-sf::Vector3f Util::rotate(sf::Vector3f vector, sf::Vector2f angle) {
-    sf::Vector3f rotated;
+sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
+    sf::Vector3f vector(
+        cos(coordinate.y) * sin(coordinate.x + angle.x),
+        sin(coordinate.y),
+        cos(coordinate.x + angle.x) * cos(coordinate.y)
+    );
     float sideLength = sqrt(vector.z * vector.z + vector.y * vector.y);
     float sideAngle = atan2(vector.y, vector.z);
-    rotated.z = cos(sideAngle - angle.y) * sideLength;
-    rotated.y = sin(sideAngle - angle.y) * sideLength;
-    rotated.x = vector.x;
-    float topLength = sqrt(rotated.x * rotated.x + rotated.z * rotated.z);
-    float topAngle = atan2(rotated.z, rotated.x);
-    rotated.x = cos(topAngle - angle.x) * topLength;
-    rotated.z = sin(topAngle - angle.x) * topLength;
-    return rotated;
+    vector.z = cos(sideAngle + angle.y) * sideLength;
+    vector.y = sin(sideAngle + angle.y) * sideLength;
+    return sf::Vector2f(
+        fmod(atan2(vector.x, vector.z), Const::DOUBLE_PI),
+        fmod(atan2(vector.y, sqrt(vector.x * vector.x + vector.z * vector.z)), Const::PI)
+    );
 }
 
 float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
     return abs(a.x - b.x) + abs(a.y + b.y);
 }
 
-sf::Vector3f sphereToPoint(sf::Vector2f coordinate) {
-    return sf::Vector3f(
-        cos(coordinate.y) * cos(coordinate.x),
-        sin(coordinate.y),
-        cos(coordinate.y) * sin(coordinate.x)
-    );
-}
-
-sf::Vector2f pointToSphere(sf::Vector3f point) {
-    return sf::Vector2f(
-        atan(pos.z / pos.x),
-        atan(pos.y / sqrt(pos.x * pos.x + pos.z * pos.z))
-    );
-}
-
 sf::Vector2f Util::sphereToScreen(
     sf::Vector2f coordinate,
     sf::Vector2f camera
 ) {
-    sf::Vector2f fov(2.094395, 1.570796);
-    sf::Vector2f length(sin(fov.x / 2), sin(fov.y / 2));
-    sf::Vector2f distance(cos(fov.x / 2), cos(fov.y / 2));
-    coordinate = sphereToPoint(rotate(sphereToPoint(coordinate), camera));
+    sf::Vector2f fov(2.0944, 1.5708);
+    sf::Vector2f length(tan(fov.x / 2), tan(fov.y / 2));
+    coordinate = rotate(coordinate, sf::Vector2f(-camera.x, -camera.y));
+    if ((coordinate.x >= Const::HALF_PI &&
+        coordinate.x <= Const::DOUBLE_PI - Const::HALF_PI) || 
+        (coordinate.y >= Const::HALF_PI &&
+        coordinate.y <= Const::DOUBLE_PI - Const::HALF_PI)
+    ) {
+        return sf::Vector2f(-99999, -99999);
+    }
     return sf::Vector2f(
-        (tan(coordinate.x) * distance.x) / length.x * Const::WIDTH / 2 + Const::WIDTH / 2,
-        (tan(coordinate.y) * distance.y) / length.y * Const::HEIGHT / 2 + Const::HEIGHT / 2
+        tan(coordinate.x) / length.x * 2 * Const::WIDTH / 2 + Const::WIDTH / 2,
+        tan(coordinate.y) / length.y * 2 * Const::HEIGHT / 2 + Const::HEIGHT / 2
     );
 }

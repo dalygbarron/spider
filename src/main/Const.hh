@@ -10,9 +10,9 @@ namespace Const {
     static int const VERSION_REV = 0;
     static int const WIDTH = 1024;
     static int const HEIGHT = 600;
-    static float PI = 3.14159265359;
-    static float DOUBLE_PI = 6.28318530718;
-    static float HALF_PI = 1.57079632679;
+    static float PI = 3.141592653589793238462643383279;
+    static float DOUBLE_PI = 6.283185307179586;
+    static float HALF_PI = 1.570796326794897;
     static float RADIAN_CONVERT = 57.2957795131;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
@@ -42,8 +42,8 @@ namespace Const {
         uniform sampler2D picture;
         uniform vec2 angle;
 
-        float hfovDegrees = 2.094395;
-        float vfovDegrees = 1.570796;
+        float hfovDegrees = 2.0944;
+        float vfovDegrees = 1.5708;
 
         //tools
         vec3 rotateXY(vec3 p, vec2 angle) {

@@ -5,23 +5,23 @@
 #include "../main/spdlog/spdlog.h"
 
 TEST_CASE("clean rotations", "[maths]") {
-    sf::Vector3f front(0, 0, 1);
-    sf::Vector3f right = Util::rotate(front, sf::Vector2f(Const::HALF_PI, 0));
-    sf::Vector3f left = Util::rotate(front, sf::Vector2f(-Const::HALF_PI, 0));
-    sf::Vector3f back = Util::rotate(front, sf::Vector2f(Const::PI, 0));
-    sf::Vector3f bottom = Util::rotate(front, sf::Vector2f(0, Const::HALF_PI));
-    sf::Vector3f top = Util::rotate(front, sf::Vector2f(0, -Const::HALF_PI));
-    sf::Vector3f rightAgain = Util::rotate(right, sf::Vector2f(0, Const::HALF_PI));
-    sf::Vector3f leftAgain = Util::rotate(bottom, sf::Vector2f(Const::HALF_PI, Const::HALF_PI));
-    sf::Vector3f topAgain = Util::rotate(bottom, sf::Vector2f(0, Const::PI));
-    Help::compareVector3f(right, sf::Vector3f(1, 0, 0));
-    Help::compareVector3f(rightAgain, sf::Vector3f(1, 0, 0));
-    Help::compareVector3f(left, sf::Vector3f(-1, 0, 0));
-    Help::compareVector3f(leftAgain, sf::Vector3f(-1, 0, 0));
-    Help::compareVector3f(back, sf::Vector3f(0, 0, -1));
-    Help::compareVector3f(bottom, sf::Vector3f(0, -1, 0));
-    Help::compareVector3f(top, sf::Vector3f(0, 1, 0));
-    Help::compareVector3f(topAgain, sf::Vector3f(0, 1, 0));
+    sf::Vector2f front(0, 0);
+    sf::Vector2f right = Util::rotate(front, sf::Vector2f(Const::HALF_PI, 0));
+    sf::Vector2f left = Util::rotate(front, sf::Vector2f(-Const::HALF_PI, 0));
+    sf::Vector2f back = Util::rotate(front, sf::Vector2f(Const::PI, 0));
+    sf::Vector2f bottom = Util::rotate(front, sf::Vector2f(0, Const::HALF_PI));
+    sf::Vector2f top = Util::rotate(front, sf::Vector2f(0, -Const::HALF_PI));
+    sf::Vector2f rightAgain = Util::rotate(top, sf::Vector2f(Const::HALF_PI, Const::HALF_PI));
+    sf::Vector2f leftAgain = Util::rotate(bottom, sf::Vector2f(-Const::HALF_PI, -Const::HALF_PI));
+    sf::Vector2f topAgain = Util::rotate(bottom, sf::Vector2f(0, -Const::PI));
+    Help::compareSphere(right, sf::Vector2f(Const::HALF_PI, 0));
+    Help::compareSphere(rightAgain, sf::Vector2f(Const::HALF_PI, 0));
+    Help::compareSphere(left, sf::Vector2f(-Const::HALF_PI, 0));
+    Help::compareSphere(leftAgain, sf::Vector2f(-Const::HALF_PI, 0));
+    Help::compareSphere(back, sf::Vector2f(Const::PI, 0));
+    Help::compareSphere(bottom, sf::Vector2f(0, Const::HALF_PI));
+    Help::compareSphere(top, sf::Vector2f(0, -Const::HALF_PI));
+    Help::compareSphere(topAgain, sf::Vector2f(0, -Const::HALF_PI));
 }
 
 TEST_CASE("sphere to point and point to sphere", "[maths]") {

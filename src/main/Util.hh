@@ -39,12 +39,13 @@ namespace Util {
     float length(sf::Vector3f vector);
 
     /**
-     * Rotates a vector using a latitude and a longitude.
-     * @param vector is the vector to rotate.
+     * Rotates a latitude and longitude first around the X axis, and then
+     * around the Y axis to create a fully new latitude and longitude.
+     * @param coordinate is the latitude and longitude to rotate.
      * @param angle  is the two angles to rotate it by.
-     * @return the rotated version.
+     * @return the rotated latitude and longitude.
      */
-    sf::Vector3f rotate(sf::Vector3f vector, sf::Vector2f angle);
+    sf::Vector2f rotate(sf::Vector2f coordinate, sf::Vector2f angle);
 
     /**
      * Gives you the manhattan distance between two float vectors. It is like
@@ -54,24 +55,6 @@ namespace Util {
      * @return the manhattan distance between the two positions.
      */
     float manhattan(sf::Vector2f a, sf::Vector2f b);
-
-    /**
-     * Takes geographical coordinates of a point on the surface of a unit
-     * sphere, and converts it to a a 3d point.
-     * @param coordinate is the latitude and longitude where latitude is y and
-     *                   longitude is x.
-     * @return a vector of the point in 3d.
-     */
-    sf::Vector3f sphereToPoint(sf::Vector2f coordinate);
-
-    /**
-     * Converts a point in 3d space to a latitude and longitude of the point on
-     * a sphere located at the origin that has a line going from the origin to
-     * the point.
-     * @param point is the point to convert.
-     * @return the latitude and longitude.
-     */
-    sf::Vector2f pointToSphere(sf::Vector3f point);
 
     /**
      * Converts a location on the screen to an angle from the centre of

@@ -22,11 +22,12 @@ namespace Help {
     void compareVector2f(sf::Vector2f a, sf::Vector2f b);
 
     /**
-     * Compares two 2d vectors.
-     * @param a is the first vector.
-     * @param b is the second vector.
+     * Compares two 2D vectors as if they were latitudes and longitudes on
+     * a sphere, and in such a way that PI is approximately equal to 0.
+     * @param a is the first point.
+     * @param b is the second point.
      */
-    void compareVector3f(sf::Vector3f a, sf::Vector3f b);
+    void compareSphere(sf::Vector2f a, sf::Vector2f b);
 };
 
 #endif
