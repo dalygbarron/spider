@@ -4,6 +4,22 @@ Level Screen
     which also means I need to figure that out. Should be able to select entity
     files to add into the level
 
+Make interface to 3D rotation be as latlong
+    Yeah so currently it uses a couple of trigonometric functions in order to
+    rotate points, and it's kinda slow. This is only really necessary for the
+    rotation around the X axis, rotation on the Y axis can be done simply by
+    adding to the longitude. So therefore, I say we just pass latlongs to the
+    rotate function instead of a 3d point, then do the conversion to 3D point
+    for the rotation around X, then convert back to latitude and longitude and
+    add the rotation around Y at the same time.
+
+Optimise 3D Projection
+    My 3D projection for entities at the current time is quite inefficient
+    which is not a good thing. For a start, we could decrease the number of
+    trigonometric functions that need to be called by making it that rotation
+    operates around the x axis, and then rotating around the x axis simply by
+    adding the rotation to the longitude while it is in that form.
+
 Set Origin in EntityScreen
     Yeah I forgot to do that last time so I need to do it now.
 
