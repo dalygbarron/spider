@@ -42,10 +42,11 @@ float Util::length(sf::Vector3f vector) {
 }
 
 sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
+    float cosY = cos(coordinate.y);
     sf::Vector3f vector(
-        cos(coordinate.y) * sin(coordinate.x + angle.x),
+        cosY * sin(coordinate.x + angle.x),
         sin(coordinate.y),
-        cos(coordinate.x + angle.x) * cos(coordinate.y)
+        cos(coordinate.x + angle.x) * cosY
     );
     float sideLength = sqrt(vector.z * vector.z + vector.y * vector.y);
     float sideAngle = atan2(vector.y, vector.z);
@@ -66,9 +67,7 @@ sf::Vector2f Util::sphereToScreen(
     sf::Vector2f camera
 ) {
     coordinate = rotate(coordinate, sf::Vector2f(-camera.x, -camera.y));
-    if (cos(coordinate.x) < 0 || cos(coordinate.y) < 0) {
-        return sf::Vector2f(-99999, -99999);
-    }
+    if (cos(coordinate.x) < 0 || cos(coordinate.y) < 0) return sf::Vector2f(-99999, -99999);
     return sf::Vector2f(
         tan(coordinate.x) * Const::INVERSE_RENDER_LENGTH_X * Const::WIDTH + Const::HALF_WIDTH,
         tan(coordinate.y) * Const::INVERSE_RENDER_LENGTH_Y * Const::HEIGHT + Const::HALF_HEIGHT
