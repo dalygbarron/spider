@@ -116,11 +116,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
 
 void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     sf::Vector2f coordinate = Util::screenToSphere(pos, this->camera);
-    spdlog::info("{} {}", coordinate.x, coordinate.y);
     this->bright = this->shape.inSphere(coordinate);
-    this->shape.getVertex(0)->x = coordinate.x;
-    this->shape.getVertex(0)->y = coordinate.y;
-
 }
 
 void LevelScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {

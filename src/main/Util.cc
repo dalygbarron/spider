@@ -96,9 +96,13 @@ sf::Vector2f Util::sphereToScreen(
     sf::Vector2f camera
 ) {
     coordinate = rotate(coordinate, sf::Vector2f(-camera.x, -camera.y));
-    if (cos(coordinate.x) < 0 || cos(coordinate.y) < 0) return sf::Vector2f(-99999, -99999);
+    if (cos(coordinate.x) < 0 || cos(coordinate.y) < 0) {
+        return sf::Vector2f(-99999, -99999);
+    }
     return sf::Vector2f(
-        tan(coordinate.x) * Const::INVERSE_RENDER_LENGTH_X * Const::WIDTH + Const::HALF_WIDTH,
-        tan(coordinate.y) * Const::INVERSE_RENDER_LENGTH_Y * Const::HEIGHT + Const::HALF_HEIGHT
+        tan(coordinate.x) * Const::INVERSE_RENDER_LENGTH_X * Const::WIDTH +
+            Const::HALF_WIDTH,
+        tan(coordinate.y) * Const::INVERSE_RENDER_LENGTH_Y * Const::HEIGHT +
+            Const::HALF_HEIGHT
     );
 }
