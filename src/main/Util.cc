@@ -73,6 +73,7 @@ sf::Vector2f Util::sphereToScreen(
         (coordinate.y >= Const::HALF_PI &&
         coordinate.y <= Const::DOUBLE_PI - Const::HALF_PI)
     ) {
+        spdlog::info("gregre");
         return sf::Vector2f(-99999, -99999);
     }
     return sf::Vector2f(
