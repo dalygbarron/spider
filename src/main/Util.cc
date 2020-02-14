@@ -41,6 +41,17 @@ float Util::length(sf::Vector3f vector) {
     );
 }
 
+int Util::inSlice(float a, float b, float point) {
+    a = fmod(a, Const::DOUBLE_PI);
+    b = fmod(b, Const::DOUBLE_PI);
+    point = fmod(point, Const::DOUBLE_PI);
+    float delta = abs(a - b);
+    if (delta <= Const::PI) {
+        return (point >= a && point <= b) || (point >= b && point <= a);
+    }
+    return (point >= a && point >= b) || (point <= a && point <= b);
+}
+
 sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
     float cosY = cos(coordinate.y);
     sf::Vector3f vector(

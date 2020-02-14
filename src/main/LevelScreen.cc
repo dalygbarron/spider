@@ -27,10 +27,19 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     )) {
         spdlog::error("Couldn't start the sky shader");
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 5; i++) {
         float x = (float)(rand() % 100) / 100 * Const::HALF_PI;
         float y = (float)(rand() % 100) / 100 * Const::HALF_PI;
         this->shape.addVertex(sf::Vector2f(x, y));
+    }
+    for (int i = 4; i >= 0; i--) {
+        this->shape.split(i);
+    }
+    for (int i = 9; i >= 0; i--) {
+        this->shape.split(i);
+    }
+    for (int i = 19; i >= 0; i--) {
+        this->shape.split(i);
     }
 }
 

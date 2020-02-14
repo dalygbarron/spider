@@ -24,6 +24,9 @@ TEST_CASE("clean rotations", "[maths]") {
     Help::compareSphere(topAgain, sf::Vector2f(0, -Const::HALF_PI));
 }
 
-TEST_CASE("sphere to point and point to sphere", "[maths]") {
-
+TEST_CASE("slice checks", "[maths]") {
+    REQUIRE(Util::inSlice(1, 2, 1.5));
+    REQUIRE(Util::inSlice(5, 1, 6));
+    REQUIRE(!Util::inSlice(1, 2, 3));
+    REQUIRE(!Util::inSlice(6, 0.2, 4));
 }

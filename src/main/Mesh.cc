@@ -1,5 +1,6 @@
 #include "Mesh.hh"
 #include "Const.hh"
+#include "Util.hh"
 #include "spdlog/spdlog.h"
 #include <cmath>
 
@@ -57,17 +58,22 @@ int Mesh::inSphere(sf::Vector2f coordinate) const {
     for (int i = 0; i < size; i++) {
         int next = i + 1;
         if (next == size) next = 0;
-        float height = this->vertices[next].y - this->vertices[i].y /
-            (this->vertices[next].x - this->vertices[i].x);
-        int intersect = this->vertices[i].x <= coordinate.x &&
-            this->vertices[next].x >= coordinate.x &&
-            height >= coordinate.y;
-        if (!intersect) {
-            coordinate.x = fmod(coordinate.x + Const::PI, Const::DOUBLE_PI);
-            intersect = this->vertices[i].x <= coordinate.x &&
-                this->vertices[next].x >= coordinate.x;
+        float height = (this->vertices[next].y - this->vertices[i].y) *
+            abs(coordinate.x - this->vertices[i].x) / 
+            abs(this->vertices[next].x - this->vertices[i].x) +
+            this->vertices[i].y;
+        int intersect = false;
+        int aligned = Util::inSlice(
+            this->vertices[i].x,
+            this->vertices[next].x,
+            coordinate.x
+        );
+        if (!aligned) continue;
+        if (coordinate.y < 0) intersect = height >= coordinate.y;
+        else intersect = height <= coordinate.y;
+        if (intersect) {
+            inside = !inside;
         }
-        if (intersect) inside = !inside;
     }
     return inside;
 }

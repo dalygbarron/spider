@@ -39,6 +39,17 @@ namespace Util {
     float length(sf::Vector3f vector);
 
     /**
+     * Tells you if a given latitude is between two other latitudes, under the
+     * assumption that the "inner" part between the latitudes is the shorter
+     * part.
+     * @param a     is the first latitude.
+     * @param b     is the second latitude.
+     * @param point is the latitude that we are checking is between the other
+     *              two.
+     */
+    int inSlice(float a, float b, float point);
+
+    /**
      * Rotates a latitude and longitude first around the X axis, and then
      * around the Y axis to create a fully new latitude and longitude.
      * @param coordinate is the latitude and longitude to rotate.
