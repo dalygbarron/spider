@@ -99,6 +99,14 @@ class Renderer: public sf::Drawable {
          */
         void club(sf::Vector2f start, sf::Vector2f end, int highlight);
 
+        /**
+         * Render a sphere mesh rotated in accordance with the given camera
+         * orientation.
+         * @param mesh   is the mesh to draw.
+         * @param camera is the camera to rotate it in accordance with.
+         */
+        void sphereMesh(Mesh const &mesh, sf::Vector2f camera);
+
     private:
         sf::IntRect pointRat;
         sf::IntRect lineRat;

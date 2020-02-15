@@ -166,35 +166,7 @@ void LevelScreen::draw(
     states.shader = &(this->shader);
     target.draw(back, states);
     this->core.renderer.batch.clear();
-    std::vector<sf::Vector2f> const &vertices = this->shape.getVertices();
-    int n = vertices.size();
-    for (int i = 0; i < n; i++) {
-        int next = (i == n - 1) ? 0 : i + 1;
-        sf::Vector2f delta = vertices[next] - vertices[i];
-        delta.x /= LevelScreen::SHAPE_INTERPOLATION;
-        delta.y /= LevelScreen::SHAPE_INTERPOLATION;
-        for (int j = 0; j < LevelScreen::SHAPE_INTERPOLATION; j++) {
-            sf::Vector2f multipliedDelta = sf::Vector2f(
-                delta.x * j,
-                delta.y * j
-            );
-            this->core.renderer.line(
-                Util::sphereToScreen(
-                    vertices[i] + multipliedDelta,
-                    this->camera
-                ),
-                Util::sphereToScreen(
-                    vertices[i] + multipliedDelta + delta,
-                    this->camera
-                ),
-                this->bright
-            );
-        }
-        this->core.renderer.node(
-            Util::sphereToScreen(vertices[i], this->camera),
-            this->bright
-        );
-    }
+    this->core.renderer.sphereMesh(this->shape, this->camera);
     // for (Instance const &instance: this->instances) {
     //     if (instance.entity) {
     //         // TODO: draw entity picture with transformed location.
