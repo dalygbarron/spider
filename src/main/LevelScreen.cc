@@ -32,15 +32,6 @@ LevelScreen::LevelScreen(Core &core, Level &level):
         float y = (float)(rand() % 100) / 100 * Const::HALF_PI;
         this->shape.addVertex(sf::Vector2f(x, y));
     }
-    for (int i = 4; i >= 0; i--) {
-        this->shape.split(i);
-    }
-    for (int i = 9; i >= 0; i--) {
-        this->shape.split(i);
-    }
-    for (int i = 19; i >= 0; i--) {
-        this->shape.split(i);
-    }
 }
 
 LevelScreen::~LevelScreen() {
@@ -177,19 +168,15 @@ void LevelScreen::draw(
     this->core.renderer.batch.clear();
     std::vector<sf::Vector2f> const &vertices = this->shape.getVertices();
     int n = vertices.size();
-    for (int i = 1; i < n; i++) {
-        this->core.renderer.club(
-            Util::sphereToScreen(vertices[i - 1], this->camera),
-            Util::sphereToScreen(vertices[i], this->camera),
-            this->bright
-        );
-    }
-    if (n > 0) {
-        this->core.renderer.club(
-            Util::sphereToScreen(vertices[n - 1], this->camera),
-            Util::sphereToScreen(vertices[0], this->camera),
-            this->bright
-        );
+    for (int i = 0; i < n; i++) {
+        int next = (i == size - 1) ? 0 : i + 1;
+        for (int j = 0; j < LevelScreen::SHAPE_INTERPOLATION; j++) {
+            this->core.renderer.club(
+                Util::sphereToScreen(vertices[i], this->camera),
+                Util::sphereToScreen(vertices[next], this->camera),
+                this->bright
+            );
+        }
     }
     // for (Instance const &instance: this->instances) {
     //     if (instance.entity) {

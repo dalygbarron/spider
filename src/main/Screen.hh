@@ -82,6 +82,8 @@ class Screen: public sf::Drawable {
  */
 class LevelScreen: public Screen {
     public:
+        static int const SHAPE_INTERPOLATION = 5;
+
         /**
          * Creates the level screen and gives it it's level. It then becomes
          * responsible for this level and destoys it when it is done.
