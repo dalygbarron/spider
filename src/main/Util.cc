@@ -30,8 +30,8 @@ float Util::degrees(float radians) {
 }
 
 float Util::distance(sf::Vector2f a, sf::Vector2f b) {
-    float dX = abs(a.x - b.x);
-    float dY = abs(a.y - b.y);
+    float dX = fabs(a.x - b.x);
+    float dY = fabs(a.y - b.y);
     return sqrt(dX * dX + dY * dY);
 }
 
@@ -45,7 +45,7 @@ int Util::inSlice(float a, float b, float point) {
     a = fmod(a, Const::DOUBLE_PI);
     b = fmod(b, Const::DOUBLE_PI);
     point = fmod(point, Const::DOUBLE_PI);
-    float delta = abs(a - b);
+    float delta = fabs(a - b);
     if (delta <= Const::PI) {
         return (point >= a && point <= b) || (point >= b && point <= a);
     }
@@ -70,7 +70,7 @@ sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
 }
 
 float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
-    return abs(a.x - b.x) + abs(a.y + b.y);
+    return fabs(a.x - b.x) + fabs(a.y + b.y);
 }
 
 sf::Vector2f Util::screenToSphere(

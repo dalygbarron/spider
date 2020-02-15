@@ -166,7 +166,7 @@ void RatBatch::draw(sf::IntRect sprite, sf::FloatRect pos) {
 void RatBatch::draw(sf::IntRect sprite, sf::Vector2f start, sf::Vector2f end) {
     // Figure out what orientation to draw them with.
     sf::Vector2f edge(0, 0);
-    if (abs(end.x - start.x) > abs(end.y - start.y)) {
+    if (fabs(end.x - start.x) > fabs(end.y - start.y)) {
         edge.y = sprite.height / 2;
     } else {
         edge.x = sprite.width / 2;

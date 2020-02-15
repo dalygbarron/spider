@@ -59,8 +59,8 @@ int Mesh::inSphere(sf::Vector2f coordinate) const {
         int next = i + 1;
         if (next == size) next = 0;
         float height = (this->vertices[next].y - this->vertices[i].y) *
-            abs(coordinate.x - this->vertices[i].x) / 
-            abs(this->vertices[next].x - this->vertices[i].x) +
+            fabs(coordinate.x - this->vertices[i].x) / 
+            fabs(this->vertices[next].x - this->vertices[i].x) +
             this->vertices[i].y;
         int intersect = false;
         int aligned = Util::inSlice(
@@ -83,8 +83,8 @@ int Mesh::getClosestVertex(sf::Vector2f pos) const {
     float distance = 999999999;
     for (int i = 0; i < this->vertices.size(); i++) {
         // Manhattan distance will do.
-        float vertexDistance = abs(this->vertices[i].x - pos.x) +
-            abs(this->vertices[i].y - pos.y);
+        float vertexDistance = fabs(this->vertices[i].x - pos.x) +
+            fabs(this->vertices[i].y - pos.y);
         if (vertexDistance < distance && vertexDistance < Mesh::CLOSE) {
             index = i;
             distance = vertexDistance;
