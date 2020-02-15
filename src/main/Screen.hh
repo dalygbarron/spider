@@ -82,7 +82,7 @@ class Screen: public sf::Drawable {
  */
 class LevelScreen: public Screen {
     public:
-        static int const SHAPE_INTERPOLATION = 5;
+        static int const SHAPE_INTERPOLATION = 4;
 
         /**
          * Creates the level screen and gives it it's level. It then becomes

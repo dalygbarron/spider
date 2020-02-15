@@ -169,14 +169,31 @@ void LevelScreen::draw(
     std::vector<sf::Vector2f> const &vertices = this->shape.getVertices();
     int n = vertices.size();
     for (int i = 0; i < n; i++) {
-        int next = (i == size - 1) ? 0 : i + 1;
+        int next = (i == n - 1) ? 0 : i + 1;
+        sf::Vector2f delta = vertices[next] - vertices[i];
+        delta.x /= LevelScreen::SHAPE_INTERPOLATION;
+        delta.y /= LevelScreen::SHAPE_INTERPOLATION;
         for (int j = 0; j < LevelScreen::SHAPE_INTERPOLATION; j++) {
-            this->core.renderer.club(
-                Util::sphereToScreen(vertices[i], this->camera),
-                Util::sphereToScreen(vertices[next], this->camera),
+            sf::Vector2f multipliedDelta = sf::Vector2f(
+                delta.x * j,
+                delta.y * j
+            );
+            this->core.renderer.line(
+                Util::sphereToScreen(
+                    vertices[i] + multipliedDelta,
+                    this->camera
+                ),
+                Util::sphereToScreen(
+                    vertices[i] + multipliedDelta + delta,
+                    this->camera
+                ),
                 this->bright
             );
         }
+        this->core.renderer.node(
+            Util::sphereToScreen(vertices[i], this->camera),
+            this->bright
+        );
     }
     // for (Instance const &instance: this->instances) {
     //     if (instance.entity) {
