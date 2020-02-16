@@ -78,9 +78,12 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::SameLine();
         if (ImGui::Button("+shape")) {
             Instance &instance = this->addInstance(NULL);
-            float x = (float)(rand() % 100) / 100 * Const::DOUBLE_PI - Const::PI;
-            float y = (float)(rand() % 100) / 100 * Const::PI - Const::HALF_PI;
-            instance.mesh.addVertex(sf::Vector2f(x, y));
+            for (int i = 0; i < 3; i++) {
+                instance.mesh.addVertex(sf::Vector2f(
+                    cos(i * Const::DOUBLE_PI / 3) / 4 + this->camera.x,
+                    sin(i * Const::DOUBLE_PI / 3) / 4 + this->camera.y
+                ));
+            }
         }
         ImGui::SameLine();
         if (ImGui::Button("+entity")) this->addInstance(NULL);
@@ -115,12 +118,53 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
 }
 
 void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
-    sf::Vector2f coordinate = Util::screenToSphere(pos, this->camera);
-    this->bright = this->shape.inSphere(coordinate);
+    if (button == sf::Mouse::Button::Left) {
+        sf::Vector2f coordinate = Util::screenToSphere(pos, this->camera);
+        for (Instance &instance: this->instances) {
+            this->selected = instance.mesh.getClosestVertex(coordinate);
+            if (selected != -1) {
+                this->selectedInstance = &instance;
+                return;
+            }
+        }
+    }
+}
+
+void LevelScreen::onKey(sf::Keyboard::Key key) {
+    if (key == sf::Keyboard::Key::Space) {
+        if (this->selected != -1) {
+            this->selectedInstance->mesh.split(this->selected);
+            this->selected++;
+        }
+    } else if (key == sf::Keyboard::Key::Backspace) {
+        if (this->selected != -1 &&
+            this->selectedInstance->mesh.getVertices().size() > 2
+        ) {
+            this->selectedInstance->mesh.remove(this->selected);
+            this->selected--;
+            if (this->selected < 0) {
+                this->selected = this->selectedInstance->mesh.getVertices().size() - 1;
+            }
+        }
+    }
 }
 
 void LevelScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
-    if (button == sf::Mouse::Button::Right) {
+    if (button == sf::Mouse::Button::Left) {
+        if (this->selectedInstance) {
+            sf::Vector2f *vertex = this->selectedInstance->mesh.getVertex(
+                this->selected
+            );
+            if (vertex) {
+                sf::Vector2i mouse = sf::Mouse::getPosition();
+                sf::Vector2f mouseF = sf::Vector2f(mouse.x, mouse.y);
+                sf::Vector2f end = Util::screenToSphere(mouseF, this->camera);
+                sf::Vector2f start = Util::screenToSphere(mouseF - delta, this->camera);
+                vertex->x += end.x - start.x;
+                vertex->y += end.y - start.y;
+            }
+        }
+    } else if (button == sf::Mouse::Button::Right) {
         this->camera.x -= delta.x * 0.003;
         this->camera.y -= delta.y * 0.003;
     }
@@ -166,29 +210,17 @@ void LevelScreen::draw(
     states.shader = &(this->shader);
     target.draw(back, states);
     this->core.renderer.batch.clear();
-    this->core.renderer.sphereMesh(this->shape, this->camera);
-    // for (Instance const &instance: this->instances) {
-    //     if (instance.entity) {
-    //         // TODO: draw entity picture with transformed location.
-    //     } else {
-    //         std::vector<sf::Vector2f> const &vertices = instance.mesh.getVertices();
-    //         int n = vertices.size();
-    //         for (int i = 1; i < n; i++) {
-    //             this->core.renderer.club(
-    //                 Util::sphereToScreen(vertices[i - 1], this->camera),
-    //                 Util::sphereToScreen(vertices[i], this->camera),
-    //                 false
-    //             );
-    //         }
-    //         if (n > 0) {
-    //             this->core.renderer.club(
-    //                 Util::sphereToScreen(vertices[n - 1], this->camera),
-    //                 Util::sphereToScreen(vertices[0], this->camera),
-    //                 false
-    //             );
-    //         }
-    //     }
-    // }
+    for (Instance const &instance: this->instances) {
+        if (instance.entity) {
+            // TODO: draw entity picture with transformed location.
+        } else {
+            this->core.renderer.sphereMesh(
+                instance.mesh,
+                this->camera,
+                (this->selectedInstance == &instance) ? this->selected : -1 
+            );
+        }
+    }
     target.draw(this->core.renderer.batch);
     ImGui::SFML::Render(target);
 }

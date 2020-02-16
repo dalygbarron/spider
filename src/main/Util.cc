@@ -61,8 +61,8 @@ sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
     );
     float sideLength = sqrt(vector.z * vector.z + vector.y * vector.y);
     float sideAngle = atan2(vector.y, vector.z);
-    vector.z = cos(sideAngle + angle.y) * sideLength;
-    vector.y = sin(sideAngle + angle.y) * sideLength;
+    vector.z = cos(sideAngle + angle.y);
+    vector.y = sin(sideAngle + angle.y);
     return sf::Vector2f(
         atan2(vector.x, vector.z),
         atan2(vector.y, sqrt(vector.x * vector.x + vector.z * vector.z))

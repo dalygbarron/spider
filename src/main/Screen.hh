@@ -82,8 +82,6 @@ class Screen: public sf::Drawable {
  */
 class LevelScreen: public Screen {
     public:
-        static int const SHAPE_INTERPOLATION = 4;
-
         /**
          * Creates the level screen and gives it it's level. It then becomes
          * responsible for this level and destoys it when it is done.
@@ -119,6 +117,8 @@ class LevelScreen: public Screen {
             sf::Vector2f pos
         ) override;
 
+        virtual void onKey(sf::Keyboard::Key key) override;
+
         virtual void onDrag(
             sf::Mouse::Button button,
             sf::Vector2f delta
@@ -127,8 +127,8 @@ class LevelScreen: public Screen {
     private:
         Level &level;
         Instance *selectedInstance = NULL;
+        int selected;
         std::vector<Instance> instances;
-        int bright;
         Mesh shape;
         sf::Vector2f camera;
         sf::Shader shader;

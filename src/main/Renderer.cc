@@ -60,15 +60,15 @@ void Renderer::club(sf::Vector2f start, sf::Vector2f end, int highlight) {
     this->node(start, highlight);
 }
 
-void sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) {
+void Renderer::sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) {
     std::vector<sf::Vector2f> const &vertices = mesh.getVertices();
     int n = vertices.size();
     for (int i = 0; i < n; i++) {
         int next = (i == n - 1) ? 0 : i + 1;
         sf::Vector2f delta = vertices[next] - vertices[i];
-        delta.x /= LevelScreen::SHAPE_INTERPOLATION;
-        delta.y /= LevelScreen::SHAPE_INTERPOLATION;
-        for (int j = 0; j < LevelScreen::SHAPE_INTERPOLATION; j++) {
+        delta.x /= Renderer::SPHERE_INTERPOLATION;
+        delta.y /= Renderer::SPHERE_INTERPOLATION;
+        for (int j = 0; j < Renderer::SPHERE_INTERPOLATION; j++) {
             sf::Vector2f multipliedDelta = sf::Vector2f(
                 delta.x * j,
                 delta.y * j
@@ -82,10 +82,10 @@ void sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) {
                     vertices[i] + multipliedDelta + delta,
                     camera
                 ),
-                highlight
+                i == highlight
             );
         }
-        this->node(Util::sphereToScreen(vertices[i], camera), highlight);
+        this->node(Util::sphereToScreen(vertices[i], camera), i == highlight);
     }
 }
 

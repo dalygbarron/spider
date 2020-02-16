@@ -3,6 +3,8 @@
 
 #include "RatBatch.hh"
 #include "Patch.hh"
+#include "Mesh.hh"
+#include "Util.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -12,6 +14,8 @@
  */
 class Renderer: public sf::Drawable {
     public:
+        static int const SPHERE_INTERPOLATION = 5;
+
         RatBatch batch;
 
         /**
@@ -102,10 +106,13 @@ class Renderer: public sf::Drawable {
         /**
          * Render a sphere mesh rotated in accordance with the given camera
          * orientation.
-         * @param mesh   is the mesh to draw.
-         * @param camera is the camera to rotate it in accordance with.
+         * @param mesh      is the mesh to draw.
+         * @param camera    is the camera to rotate it in accordance with.
+         * @param highlight the index of the node to highlight. If you want
+         *                  none to be highlighted give an index that does not
+         *                  appear eg -1.
          */
-        void sphereMesh(Mesh const &mesh, sf::Vector2f camera);
+        void sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight);
 
     private:
         sf::IntRect pointRat;
