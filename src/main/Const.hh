@@ -17,10 +17,10 @@ namespace Const {
     static float HALF_PI = 1.570796326794897;
     static float FOV_X = 2.094395102;
     static float FOV_Y = 1.570796327;
-    static float RENDER_LENGTH_X = 1.732050807;
-    static float RENDER_LENGTH_Y = 1;
-    static float INVERSE_RENDER_LENGTH_X = 0.577350269;
-    static float INVERSE_RENDER_LENGTH_Y = 1;
+    static float RENDER_LENGTH_X = 0.866025404;
+    static float RENDER_LENGTH_Y = 0.707106781;
+    static float INVERSE_RENDER_LENGTH_X = 1.154700538;
+    static float INVERSE_RENDER_LENGTH_Y = 1.414213562;
     static float RADIAN_CONVERT = 57.2957795131;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
