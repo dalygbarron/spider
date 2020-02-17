@@ -85,7 +85,7 @@ int Mesh::getClosestVertex(sf::Vector2f pos, float threshold) const {
         // Manhattan distance will do.
         float vertexDistance = fabs(this->vertices[i].x - pos.x) +
             fabs(this->vertices[i].y - pos.y);
-        if (vertexDistance < distance && vertexDistance < Mesh::CLOSE) {
+        if (vertexDistance <= distance) {
             index = i;
             distance = vertexDistance;
         }
