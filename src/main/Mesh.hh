@@ -37,6 +37,12 @@ class Mesh {
         void remove(int index);
 
         /**
+         * Tells you the centrepoint of the mesh.
+         * @return the centre.
+         */
+        sf::Vector2f getCentre();
+
+        /**
          * Gives you a mutable pointer to some vertex. Obviously this will not
          * outlive the mesh. DOn't be a retard with it, just use it and then
          * forget it.

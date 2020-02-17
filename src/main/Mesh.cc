@@ -23,6 +23,13 @@ void Mesh::remove(int index) {
     this->vertices.erase(this->vertices.begin() + index);
 }
 
+sf::Vector2f Mesh::getCentre() {
+    sf::Vector2f total(0, 0);
+    for (sf::Vector2f vertex: this->vertices) total += vertex;
+    int n = this->vertices.size();
+    return sf::Vector2f(total.x / n, total.y / n);
+}
+
 sf::Vector2f *Mesh::getVertex(int index) {
     if (index < 0 || index >= this->vertices.size()) return NULL;
     return this->vertices.data() + index;

@@ -88,9 +88,15 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::SameLine();
         if (ImGui::Button("+entity")) this->addInstance(NULL);
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
-        static int selected = -1;
-        for (int n = 0; n < 50; n++) {
-            if (ImGui::Selectable("Bongonr", selected == n)) selected = n;
+        for (Instance &instance: this->instances) {
+            if (ImGui::Selectable(
+                instance.name.c_str(),
+                &instance == this->selectedInstance
+            )) {
+                this->selectedInstance = &instance;
+                this->selected = 0;
+                this->camera = instance.mesh.getCentre();
+            }
         }
         ImGui::EndChild();
         ImGui::SameLine();
