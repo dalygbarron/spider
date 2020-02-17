@@ -14,7 +14,7 @@
 class Instance {
     public:
         std::string name;
-        Entity *entity;
+        Entity const *entity;
         Mesh mesh;
 };
 

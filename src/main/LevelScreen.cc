@@ -38,6 +38,13 @@ LevelScreen::~LevelScreen() {
     // Doesn othingg.
 }
 
+Instance const *LevelScreen::getInstanceWithName(char const *name) const {
+    for (Instance const &instance: this->instances) {
+        if (instance.name == name) return &instance;
+    }
+    return NULL;
+}
+
 void LevelScreen::removeInstance(int index) {
     // TODO: this.
 }
@@ -47,6 +54,32 @@ Instance &LevelScreen::addInstance(Entity *entity) {
     this->instances.resize(n + 1);
     Instance *instance = this->instances.data() + n;
     instance->entity = entity;
+    char const *baseName;
+    char name[LevelScreen::NAME_BUFFER_SIZE];
+    if (entity) {
+        baseName = entity->name.c_str();
+    } else {
+        for (int i = 0; i < 3; i++) {
+            instance->mesh.addVertex(sf::Vector2f(
+                cos(i * Const::DOUBLE_PI / 3) / 4 + this->camera.x,
+                sin(i * Const::DOUBLE_PI / 3) / 4 + this->camera.y
+            ));
+        }
+        baseName = "shape";
+    }
+    snprintf(name, LevelScreen::NAME_BUFFER_SIZE, "%s", baseName);
+    int iteration = 0;
+    while (this->getInstanceWithName(name)) {
+        iteration++;
+        snprintf(
+            name,
+            LevelScreen::NAME_BUFFER_SIZE,
+            "%s%d",
+            baseName,
+            iteration
+        );
+    }
+    instance->name = name;
     return *instance;
 }
 
@@ -74,16 +107,16 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::Separator();
         ImGui::Text("Instances");
         ImGui::SameLine();
-        ImGui::Button("-");
+        if (ImGui::Button("--") && this->selectedInstance) {
+            this->instances.erase(
+                this->instances.begin() +
+                    (this->selectedInstance - this->instances.data())
+            );
+            this->selectedInstance = NULL;
+        }
         ImGui::SameLine();
         if (ImGui::Button("+shape")) {
             Instance &instance = this->addInstance(NULL);
-            for (int i = 0; i < 3; i++) {
-                instance.mesh.addVertex(sf::Vector2f(
-                    cos(i * Const::DOUBLE_PI / 3) / 4 + this->camera.x,
-                    sin(i * Const::DOUBLE_PI / 3) / 4 + this->camera.y
-                ));
-            }
         }
         ImGui::SameLine();
         if (ImGui::Button("+entity")) this->addInstance(NULL);

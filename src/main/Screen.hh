@@ -84,6 +84,8 @@ class Screen: public sf::Drawable {
  */
 class LevelScreen: public Screen {
     public:
+        static int const NAME_BUFFER_SIZE = 64;
+
         /**
          * Creates the level screen and gives it it's level. It then becomes
          * responsible for this level and destoys it when it is done.
@@ -96,6 +98,13 @@ class LevelScreen: public Screen {
          * Destructor which does little to noghitn.
          */
         ~LevelScreen();
+
+        /**
+         * Gives you the instance with the given name.
+         * @param name is the name of the instance to get.
+         * @return the instance if there is one or null.
+         */
+        Instance const *getInstanceWithName(char const *name) const;
 
         /**
          * Remove an entity instance from the level and free it.
