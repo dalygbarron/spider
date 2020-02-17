@@ -121,7 +121,7 @@ void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     if (button == sf::Mouse::Button::Left) {
         sf::Vector2f coordinate = Util::screenToSphere(pos, this->camera);
         for (Instance &instance: this->instances) {
-            this->selected = instance.mesh.getClosestVertex(coordinate);
+            this->selected = instance.mesh.getClosestVertex(coordinate, 0.2);
             if (selected != -1) {
                 this->selectedInstance = &instance;
                 return;

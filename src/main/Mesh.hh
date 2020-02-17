@@ -14,8 +14,6 @@
  */
 class Mesh {
     public:
-        static int const CLOSE = 100;
-
         /**
          * Adds a vertex to the mesh.
          * @param vertex is the vertex to add.
@@ -71,12 +69,14 @@ class Mesh {
 
         /**
          * Gives you the index of the vertex closest to the given position.
-         * @param pos is the point to find an edge near.
+         * @param pos       is the point to find an edge near.
+         * @param threshold is the maximum distance within which to find
+         *                  a vertex.
          * @return the index in the vertices of the found vertex, or -1 if none
          *         were particularly close or the mesh has no vertices or
          *         something.
          */
-        int getClosestVertex(sf::Vector2f pos) const;
+        int getClosestVertex(sf::Vector2f pos, float theshold) const;
 
     private:
         std::vector<sf::Vector2f> vertices;

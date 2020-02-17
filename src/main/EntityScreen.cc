@@ -99,7 +99,7 @@ void EntityScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
         pos.y /= this->camera.z;
         pos.x -= this->camera.x / this->camera.z;
         pos.y -= this->camera.y / this->camera.z;
-        this->selected = this->entity.mesh.getClosestVertex(pos);
+        this->selected = this->entity.mesh.getClosestVertex(pos, 50);
     }
 }
 

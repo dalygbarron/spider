@@ -78,9 +78,9 @@ int Mesh::inSphere(sf::Vector2f coordinate) const {
     return inside;
 }
 
-int Mesh::getClosestVertex(sf::Vector2f pos) const {
+int Mesh::getClosestVertex(sf::Vector2f pos, float threshold) const {
     int index = -1;
-    float distance = 999999999;
+    float distance = threshold;
     for (int i = 0; i < this->vertices.size(); i++) {
         // Manhattan distance will do.
         float vertexDistance = fabs(this->vertices[i].x - pos.x) +
