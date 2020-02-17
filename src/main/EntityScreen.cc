@@ -76,7 +76,11 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
     return this;
 }
 
-void EntityScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
+void EntityScreen::onDrag(
+    sf::Mouse::Button button,
+    sf::Vector2f delta,
+    sf::Vector2f pos
+) {
     if (button == sf::Mouse::Button::Left) {
         sf::Vector2f *vertex = this->entity.mesh.getVertex(this->selected);
         if (vertex) {

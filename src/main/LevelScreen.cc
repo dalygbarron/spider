@@ -149,19 +149,23 @@ void LevelScreen::onKey(sf::Keyboard::Key key) {
     }
 }
 
-void LevelScreen::onDrag(sf::Mouse::Button button, sf::Vector2f delta) {
+void LevelScreen::onDrag(
+    sf::Mouse::Button button,
+    sf::Vector2f delta,
+    sf::Vector2f pos
+) {
     if (button == sf::Mouse::Button::Left) {
         if (this->selectedInstance) {
             sf::Vector2f *vertex = this->selectedInstance->mesh.getVertex(
                 this->selected
             );
             if (vertex) {
-                sf::Vector2i mouse = sf::Mouse::getPosition();
-                sf::Vector2f mouseF = sf::Vector2f(mouse.x, mouse.y);
-                sf::Vector2f end = Util::screenToSphere(mouseF, this->camera);
-                sf::Vector2f start = Util::screenToSphere(mouseF - delta, this->camera);
-                vertex->x += end.x - start.x;
-                vertex->y += end.y - start.y;
+                sf::Vector2f spherePos = Util::screenToSphere(
+                    pos,
+                    this->camera
+                );
+                vertex->x = spherePos.x;
+                vertex->y = spherePos.y;
             }
         }
     } else if (button == sf::Mouse::Button::Right) {

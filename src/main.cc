@@ -133,12 +133,19 @@ int process(Screen *screen) {
                     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) {
                         if (buttons[i]) {
                             sf::Vector2u size = window.getSize();
-                            screen->onDrag((sf::Mouse::Button)i, sf::Vector2f(
-                                (event.mouseMove.x - mouse.x) *
-                                    ((float)Const::WIDTH / size.x),
-                                (event.mouseMove.y - mouse.y) *
-                                    ((float)Const::HEIGHT / size.y)
-                            ));
+                            screen->onDrag(
+                                (sf::Mouse::Button)i,
+                                sf::Vector2f(
+                                    (event.mouseMove.x - mouse.x) *
+                                        ((float)Const::WIDTH / size.x),
+                                    (event.mouseMove.y - mouse.y) *
+                                        ((float)Const::HEIGHT / size.y)
+                                ),
+                                sf::Vector2f(
+                                    mouse.x * ((float)Const::WIDTH / size.x),
+                                    mouse.y * ((float)Const::HEIGHT / size.y)
+                                )
+                            );
                         }
                     }
                     mouse.x = event.mouseMove.x;
