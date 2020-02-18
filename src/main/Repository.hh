@@ -3,6 +3,7 @@
 
 #include "Entity.hh"
 #include "Level.hh"
+#include "RatPack.hh"
 #include "spdlog/spdlog.h"
 #include <SFML/Audio.hpp>
 #include <unordered_map>
@@ -71,7 +72,21 @@ class SoundBufferRepository: public Repository<sf::SoundBuffer> {
  */
 class EntityRepository: public Repository<Entity> {
     public:
+        /**
+         * Puts in the ratpack.
+         * @param spritesheet is the ratpack that is used to give entities
+         *                    their sprites. This means the spritesheet must be
+         *                    fully formed from the start basically. If this
+         *                    was problematic I could put the sprite in the
+         *                    instance rather than the entity but really it's
+         *                    not.
+         */
+        EntityRepository(RatPack const &spritesheet);
+
         virtual Entity *load(char const *key) const override;
+
+    private:
+        RatPack const &spritesheet;
 };
 
 /**

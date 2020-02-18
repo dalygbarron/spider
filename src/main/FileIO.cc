@@ -36,10 +36,6 @@ Level *FileIO::parseLevel(pugi::xml_node const &node) {
     return level;
 }
 
-Entity *FileIO::parseEntity(pugi::xml_node const &node) {
-
-}
-
 Level *FileIO::levelFromFile(ghc::filesystem::path const &path) {
     if (ghc::filesystem::exists(path)) {
         pugi::xml_document doc;
@@ -63,55 +59,14 @@ Level *FileIO::levelFromFile(ghc::filesystem::path const &path) {
     }
 }
 
-Entity *FileIO::entityFromFile(ghc::filesystem::path const &path) {
-    if (ghc::filesystem::exists(path)) {
-        pugi::xml_document doc;
-        pugi::xml_parse_result result = doc.load_file(path.c_str());
-        if (!result) {
-            spdlog::error("File '{}' cannot be opened", path.c_str());
-            return NULL;
-        }
-        pugi::xml_node node = doc.child("entity");
-        if (!node) {
-            spdlog::error("file '{}' contains no entity", path.c_str());
-            return NULL;
-        }
-        Entity *entity = new Entity();
-        entity->file = path;
-        entity->name = node.attribute("name").value();
-        entity->item = node.attribute("item").value();
-        entity->sprite = node.attribute("rat").value();
-        entity->origin.x = node.attribute("origin-x").as_float();
-        entity->origin.y = node.attribute("origin-y").as_float();
-        for (pugi::xml_node point = node.child("point"); point;
-            point = point.next_sibling("point")
-        ) {
-            entity->mesh.addVertex(sf::Vector2f(
-                point.attribute("x").as_float(),
-                point.attribute("y").as_float()
-            ));
-        }
-        return entity;
-    }
-    Entity *entity = new Entity();
-    entity->file = path;
-    for (int i = 0; i < 3; i++) {
-        entity->mesh.addVertex(sf::Vector2f(
-            cos(i * Const::DOUBLE_PI / 3) * 50,
-            sin(i * Const::DOUBLE_PI / 3) * 50
-        ));
-    }
-    return entity;
-}
-
 void FileIO::saveEntity(Entity const &entity) {
     spdlog::info("Saving entity to {}", entity.file.c_str());
     pugi::xml_document doc;
     pugi::xml_node node = doc.append_child("entity");
     node.append_attribute("name") = entity.name.c_str();
-    node.append_attribute("rat") = entity.sprite.c_str();
-    node.append_attribute("origin-x") = entity.origin.x;
-    node.append_attribute("origin-y") = entity.origin.y;
+    node.append_attribute("rat") = entity.spriteName.c_str();
+    node.append_attribute("offset-x") = entity.offset.x;
+    node.append_attribute("offset-y") = entity.offset.y;
     std::vector<sf::Vector2f> const &vertices = entity.mesh.getVertices();
     for (int i = 0; i < vertices.size(); i++) {
         pugi::xml_node point = node.append_child("point");

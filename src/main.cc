@@ -217,7 +217,7 @@ int main(int argc, char **argv) {
         Level *level = FileIO::levelFromFile(options.file);
         screen = new LevelScreen(*core, *level);
     } else {
-        Entity *entity = FileIO::entityFromFile(options.file);
+        Entity *entity = core->entityRepository.get(options.file.c_str());
         screen = new EntityScreen(*core, *entity);
     }
     result = process(screen);

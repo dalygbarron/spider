@@ -1,11 +1,24 @@
 #include "Repository.hh"
+#include "Const.hh"
 #include "pugixml.hpp"
+
+EntityRepository::EntityRepository(RatPack const &spritesheet):
+    spritesheet(spritesheet)
+{
+    // nothing else.
+}
 
 Entity *EntityRepository::load(char const *key) const {
     ghc::filesystem::path file = key;
     if (!ghc::filesystem::exists(file)) {
         Entity *entity = new Entity();
         entity->file = file;
+        for (int i = 0; i < 3; i++) {
+            entity->mesh.addVertex(sf::Vector2f(
+                cos(i * Const::DOUBLE_PI / 3) * 50,
+                sin(i * Const::DOUBLE_PI / 3) * 50
+            ));
+        }
         return entity;
     }
     pugi::xml_document doc;
@@ -23,9 +36,17 @@ Entity *EntityRepository::load(char const *key) const {
     entity->file = file;
     entity->name = node.attribute("name").value();
     entity->item = node.attribute("item").value();
-    entity->sprite = node.attribute("sprite").value();
-    entity->origin.x = node.attribute("origin-x").as_float();
-    entity->origin.y = node.attribute("origin-y").as_float();
-    // TODO: load in the points of the web.
+    entity->spriteName = node.attribute("rat").value();
+    entity->sprite = this->spritesheet.get(entity->spriteName.c_str());
+    entity->offset.x = node.attribute("offset-x").as_float();
+    entity->offset.y = node.attribute("offset-y").as_float();
+    for (pugi::xml_node point = node.child("point"); point;
+        point = point.next_sibling("point")
+    ) {
+        entity->mesh.addVertex(sf::Vector2f(
+            point.attribute("x").as_float(),
+            point.attribute("y").as_float()
+        ));
+    }
     return entity;
 }

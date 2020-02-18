@@ -79,6 +79,7 @@ void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
             this->core.renderer.batch.draw(
                 this->rats[i].sprite,
                 this->rats[i].position,
+                sf::Vector2f(0, 0),
                 this->rats[i].rotation,
                 this->rats[i].scale
             );

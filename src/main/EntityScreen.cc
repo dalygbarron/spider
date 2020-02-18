@@ -13,9 +13,6 @@ EntityScreen::EntityScreen(Core &core, Entity &entity):
     this->background = sf::Color(rand() % 255, rand() % 255, rand() % 255);
     this->spriteBuffer[0] = 0;
     strcpy(this->nameBuffer, entity.name.c_str());
-    if (!entity.sprite.empty()) {
-        this->sprite = this->core.spritesheet.get(entity.sprite.c_str());
-    }
 }
 
 EntityScreen::~EntityScreen() {
@@ -65,8 +62,8 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
                 it->first.find(this->spriteBuffer) != std::string::npos
             ) {
                 if (ImGui::Button(it->first.c_str())) {
-                    this->entity.sprite = it->first;
-                    this->sprite = it->second;
+                    this->entity.spriteName = it->first;
+                    this->entity.sprite = it->second;
                 }
             }
         }
@@ -138,17 +135,18 @@ void EntityScreen::draw(
     this->core.renderer.batch.clear();
     // Draw the sprite.
     this->core.renderer.batch.draw(
-        this->sprite,
+        this->entity.sprite,
         sf::Vector2f(this->camera.x, this->camera.y),
+        sf::Vector2f(0, 0),
         0,
         sf::Vector2f(this->camera.z, this->camera.z)
     );
     // Draw the bounds of the sprite.
     this->core.renderer.box(sf::FloatRect(
-        this->camera.x - this->sprite.width / 2 * this->camera.z,
-        this->camera.y - this->sprite.height / 2 * this->camera.z,
-        this->sprite.width * this->camera.z,
-        this->sprite.height * this->camera.z
+        this->camera.x - this->entity.sprite.width / 2 * this->camera.z,
+        this->camera.y - this->entity.sprite.height / 2 * this->camera.z,
+        this->entity.sprite.width * this->camera.z,
+        this->entity.sprite.height * this->camera.z
     ), false);
     // Draw the Outline.
     std::vector<sf::Vector2f> const &vertices = this->entity.mesh.getVertices();

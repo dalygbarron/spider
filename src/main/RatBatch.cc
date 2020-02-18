@@ -23,11 +23,15 @@ void RatBatch::draw(sf::IntRect sprite, sf::Vector2f pos) {
 void RatBatch::draw(
     sf::IntRect sprite,
     sf::Vector2f pos,
+    sf::Vector2f offset,
     float rot,
     sf::Vector2f scale
 ) {
     sf::Transform transform;
-    transform.translate(pos).rotate(Util::degrees(rot)).scale(scale);
+    transform.translate(pos)
+        .rotate(Util::degrees(rot))
+        .translate(offset)
+        .scale(scale);
     int nVertices = this->n * 4;
     if (nVertices + 4 > this->vertices.size()) {
         this->vertices.resize(this->vertices.size() + 4);

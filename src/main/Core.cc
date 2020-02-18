@@ -2,7 +2,8 @@
 
 Core::Core(sf::Font *font):
     font(font),
-    renderer(this->spritesheet.getTexture())
+    renderer(this->spritesheet.getTexture()),
+    entityRepository(this->spritesheet)
 {
     // Does nothing else.
 }

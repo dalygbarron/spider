@@ -49,7 +49,7 @@ void LevelScreen::removeInstance(int index) {
     // TODO: this.
 }
 
-Instance &LevelScreen::addInstance(Entity *entity) {
+Instance &LevelScreen::addInstance(Entity const *entity) {
     int n = this->instances.size();
     this->instances.resize(n + 1);
     Instance *instance = this->instances.data() + n;
@@ -58,6 +58,7 @@ Instance &LevelScreen::addInstance(Entity *entity) {
     char name[LevelScreen::NAME_BUFFER_SIZE];
     if (entity) {
         baseName = entity->name.c_str();
+        instance->pos = this->camera;
     } else {
         for (int i = 0; i < 3; i++) {
             instance->mesh.addVertex(sf::Vector2f(
@@ -100,8 +101,13 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::SameLine();
         if (ImGui::Button("+")) this->entitySelector.Open();
         ImGui::BeginChild("EntityList", ImVec2(0, 100), true);
-        for (int n = 0; n < 50; n++) {
-            if (ImGui::Selectable("entities/mrBungle.xml", n == 3));
+        for (int i = 0; i < this->entities.size(); i++) {
+            if (ImGui::Selectable(
+                this->entities[i].c_str(),
+                this->selectedEntity == i
+            )) {
+                this->selectedEntity = i;
+            }
         }
         ImGui::EndChild();
         ImGui::Separator();
@@ -119,7 +125,18 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
             Instance &instance = this->addInstance(NULL);
         }
         ImGui::SameLine();
-        if (ImGui::Button("+entity")) this->addInstance(NULL);
+        if (ImGui::Button("+entity")) {
+            Entity const *entity = this->core.entityRepository.get(
+                this->entities[this->selectedEntity].c_str()
+            );
+            if (!entity) {
+                spdlog::error(
+                    "Entity for key '{}' is null, program will probably crash",
+                    this->entities[this->selectedEntity].c_str()
+                );
+            }
+            Instance &instance = this->addInstance(entity);
+        }
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
         for (Instance &instance: this->instances) {
             if (ImGui::Selectable(
@@ -128,7 +145,8 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
             )) {
                 this->selectedInstance = &instance;
                 this->selected = 0;
-                this->camera = instance.mesh.getCentre();
+                if (instance.entity) this->camera = instance.pos;
+                else this->camera = instance.mesh.getCentre();
             }
         }
         ImGui::EndChild();
@@ -149,8 +167,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     this->entitySelector.Display();
     if (this->entitySelector.HasSelected()) {
         ghc::filesystem::path file = this->entitySelector.GetSelected().string();
-        Entity *entity = FileIO::entityFromFile(file);
-        // TODO: more stuff.
+        this->loadEntity(file.c_str());
         this->entitySelector.ClearSelected();
     }
     return this;
@@ -215,6 +232,20 @@ void LevelScreen::onDrag(
     if (this->camera.y < -Const::HALF_PI) this->camera.y = -Const::HALF_PI;
 }
 
+Entity *LevelScreen::loadEntity(char const *key) {
+    int n = this->entities.size();
+    this->entities.resize(n + 1);
+    this->entities[n] = key;
+    Entity *entity = this->core.entityRepository.get(key);
+    if (!entity) {
+        spdlog::error(
+            "Entity for key '{}' is null, program will probably crash",
+            key
+        );
+    }
+    return entity;
+}
+
 void LevelScreen::entityMenu() {
     ImGui::BeginGroup();
     ImGui::BeginChild("itemView",ImVec2(
@@ -253,9 +284,26 @@ void LevelScreen::draw(
     states.shader = &(this->shader);
     target.draw(back, states);
     this->core.renderer.batch.clear();
+    sf::Vector2f floor = Util::sphereToScreen(
+        sf::Vector2f(0, Const::HALF_PI),
+        this->camera
+    );
     for (Instance const &instance: this->instances) {
         if (instance.entity) {
-            // TODO: draw entity picture with transformed location.
+            sf::Vector2f pos = Util::sphereToScreen(
+                instance.pos,
+                this->camera
+            );
+            float angle = atan2(floor.y - pos.y, floor.x - pos.x) *
+                sin(this->camera.y);
+            this->core.renderer.batch.draw(
+                instance.entity->sprite,
+                pos,
+                instance.entity->offset,
+                angle,
+                sf::Vector2f(instance.size, instance.size)
+            );
+            this->core.renderer.point(pos);
         } else {
             this->core.renderer.sphereMesh(
                 instance.mesh,

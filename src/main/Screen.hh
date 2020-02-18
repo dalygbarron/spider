@@ -119,7 +119,7 @@ class LevelScreen: public Screen {
          *               instance not an entity instance.
          * @return the created instance.
          */
-        Instance &addInstance(Entity *entity);
+        Instance &addInstance(Entity const *entity);
 
         virtual Screen *update(float delta, sf::RenderWindow &window) override;
 
@@ -140,6 +140,8 @@ class LevelScreen: public Screen {
         Level &level;
         Instance *selectedInstance = NULL;
         int selected;
+        int selectedEntity;
+        std::vector<std::string> entities;
         std::vector<Instance> instances;
         Mesh shape;
         sf::Vector2f camera;
@@ -148,6 +150,15 @@ class LevelScreen: public Screen {
         sf::Texture texture;
         ImGui::FileBrowser backgroundSelector;
         ImGui::FileBrowser entitySelector;
+
+        /**
+         * Loads an entity into the entity repository and at the same time
+         * saves it's key to the level so that it remembers that it is a thing
+         * for it.
+         * @param key is the key of the entity to load.
+         * @return whatever the entity repo loaded.
+         */
+        Entity *loadEntity(char const *key);
 
         /**
          * Does the menu for when an entity is selected.
@@ -206,9 +217,6 @@ class EntityScreen: public Screen {
         char spriteBuffer[EntityScreen::BUFFER_SIZE];
         Entity &entity;
         sf::Vector3f camera;
-        sf::IntRect sprite;
-        std::vector<sf::CircleShape> points;
-        sf::ConvexShape outline;
         sf::Color background;
         int selected = -1;
 

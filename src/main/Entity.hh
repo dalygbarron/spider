@@ -16,8 +16,9 @@ class Entity {
         ghc::filesystem::path file;
         std::string name;
         std::string item;
-        std::string sprite;
-        sf::Vector2f origin;
+        std::string spriteName;
+        sf::IntRect sprite;
+        sf::Vector2f offset;
         Mesh mesh;
 };
 

@@ -29,27 +29,12 @@ namespace FileIO {
     Level *parseLevel(pugi::xml_node const &node);
 
     /**
-     * Parses an xml node into an entity.
-     * @param node is the top level node of the entity.
-     * @return the parsed entity or null if it could not be done.
-     */
-    Entity *parseEntity(pugi::xml_node const &node);
-
-    /**
      * Loads a level in from the given file, and if the file does not exist
      * then it creates a new blank level that uses that file.
      * @param filename is the name of the file from which to load.
      * @return the loaded level or null if you gave a bad filename.
      */
     Level *levelFromFile(ghc::filesystem::path const &path);
-
-    /**
-     * Loads an entity in from the given file, and if the file does not exist
-     * then it creates a new blank entity that uses that file.
-     * @param filename is the name of the file from which to load.
-     * @return the loaded entity or null if you gave a bad filename.
-     */
-    Entity *entityFromFile(ghc::filesystem::path const &path);
 
     /**
      * Saves an entity to the given file in the same xml format that this

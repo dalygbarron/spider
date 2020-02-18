@@ -39,12 +39,14 @@ class RatBatch: public sf::Drawable {
          * Draw the given sprite with a given scale on the given spot.
          * @param sprite is the sprite to draw.
          * @param pos    is the point for the middle of the sprite to be.
+         * @param offset is the amount to offset origin from centre.
          * @param rot    is the rotation with which to draw the sprite.
          * @param scale  is the scale at which to draw the sprite.
          */
         void draw(
             sf::IntRect sprite,
             sf::Vector2f pos,
+            sf::Vector2f offset,
             float rot,
             sf::Vector2f scale
         );

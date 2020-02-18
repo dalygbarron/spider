@@ -15,7 +15,9 @@ class Instance {
     public:
         std::string name;
         Entity const *entity;
+        sf::Vector2f pos;
         Mesh mesh;
+        float size;
 };
 
 #endif
