@@ -294,13 +294,13 @@ void LevelScreen::draw(
                 instance.pos,
                 this->camera
             );
-            float angle = atan2(floor.y - pos.y, floor.x - pos.x) *
+            float angle = atan2(floor.x - pos.x, floor.y - pos.y) *
                 sin(this->camera.y);
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
                 pos,
                 instance.entity->offset,
-                angle,
+                fabs(-angle),
                 sf::Vector2f(instance.size, instance.size)
             );
             this->core.renderer.point(pos);
