@@ -74,7 +74,7 @@ void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     this->core.renderer.club(vertices.back(), vertices.front(), false);
     for (int i = 0; i < this->rats.size(); i++) {
         if (this->mesh.in(this->rats[i].position)) {
-            this->core.renderer.point(this->rats[i].position);
+            this->core.renderer.point(this->rats[i].position, false);
         } else {
             this->core.renderer.batch.draw(
                 this->rats[i].sprite,

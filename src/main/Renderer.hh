@@ -32,6 +32,12 @@ class Renderer: public sf::Drawable {
         void setPointRat(sf::IntRect rat);
 
         /**
+         * Sets the rat to use to draw highlighted points.
+         * @param rat is the rat to use.
+         */
+        void setPointHighlightRat(sf::IntRect rat);
+
+        /**
          * Sets the rat to use to draw lines.
          * @param rat is the rat.
          */
@@ -70,8 +76,9 @@ class Renderer: public sf::Drawable {
         /**
          * Draw a crosshair over the given point on the screen.
          * @param pos       is the position to put it.
+         * @param highlight is whether to make the point highlighted.
          */
-        void point(sf::Vector2f pos);
+        void point(sf::Vector2f pos, int highlight);
 
         /**
          * Draw a round node thingy over the given point on the screen.
@@ -116,6 +123,7 @@ class Renderer: public sf::Drawable {
 
     private:
         sf::IntRect pointRat;
+        sf::IntRect pointHighlightRat;
         sf::IntRect lineRat;
         sf::IntRect lineHighlightRat;
         sf::IntRect nodeRat;

@@ -18,6 +18,17 @@ class Instance {
         sf::Vector2f pos;
         Mesh mesh;
         float size = 1;
+
+        /**
+         * Gives you the instance's distance from a point, taking into account
+         * that the instance may consist of either a mesh or an entity. If it
+         * is a mesh it will be the distance from the closest point, whereas if
+         * it is an entity it will be the distance from the origin of it.
+         * @param coordinate is the latitude and longitude coordinate we are
+         *                   finding the distance from.
+         * @return the distance.
+         */
+        float distance(sf::Vector2f coordinate) const;
 };
 
 #endif

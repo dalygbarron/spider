@@ -166,6 +166,9 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     core->renderer.setPointRat(core->spritesheet.get(
         node.attribute("point").value())
     );
+    core->renderer.setPointHighlightRat(core->spritesheet.get(
+        node.attribute("pointHighlight").value())
+    );
     core->renderer.setLineRat(core->spritesheet.get(
         node.attribute("line").value())
     );

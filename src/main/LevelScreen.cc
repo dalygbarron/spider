@@ -178,11 +178,20 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
 void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     if (button == sf::Mouse::Button::Left) {
         sf::Vector2f coordinate = Util::screenToSphere(pos, this->camera);
+        // Find the closest thing.
+        float distance = 0.2;
+        this->selectedInstance = NULL;
         for (Instance &instance: this->instances) {
-            this->selected = instance.mesh.getClosestVertex(coordinate, 0.2);
-            if (selected != -1) {
+            float newDistance = instance.distance(coordinate);
+            if (newDistance < distance) {
+                distance = newDistance;
                 this->selectedInstance = &instance;
-                return;
+                if (!instance.entity) {
+                    this->selected = instance.mesh.getClosestVertex(
+                        coordinate,
+                        0.2
+                    );
+                }
             }
         }
     }
@@ -214,16 +223,25 @@ void LevelScreen::onDrag(
 ) {
     if (button == sf::Mouse::Button::Left) {
         if (this->selectedInstance) {
-            sf::Vector2f *vertex = this->selectedInstance->mesh.getVertex(
-                this->selected
-            );
-            if (vertex) {
-                sf::Vector2f spherePos = Util::screenToSphere(
-                    pos,
-                    this->camera
+            if (this->selectedInstance->entity) {
+                    sf::Vector2f spherePos = Util::screenToSphere(
+                        pos,
+                        this->camera
+                    );
+                    this->selectedInstance->pos.x = spherePos.x;
+                    this->selectedInstance->pos.y = spherePos.y;
+            } else {
+                sf::Vector2f *vertex = this->selectedInstance->mesh.getVertex(
+                    this->selected
                 );
-                vertex->x = spherePos.x;
-                vertex->y = spherePos.y;
+                if (vertex) {
+                    sf::Vector2f spherePos = Util::screenToSphere(
+                        pos,
+                        this->camera
+                    );
+                    vertex->x = spherePos.x;
+                    vertex->y = spherePos.y;
+                }
             }
         }
     } else if (button == sf::Mouse::Button::Right) {
@@ -312,7 +330,10 @@ void LevelScreen::draw(
                 angle * ((this->camera.y > 0) ? -1 : 1),
                 sf::Vector2f(instance.size, instance.size)
             );
-            this->core.renderer.point(sf::Vector2f(pos.x, pos.y));
+            this->core.renderer.point(
+                sf::Vector2f(pos.x, pos.y),
+                this->selectedInstance == &instance
+            );
         } else {
             this->core.renderer.sphereMesh(
                 instance.mesh,
