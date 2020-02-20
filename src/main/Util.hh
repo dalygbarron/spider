@@ -81,9 +81,11 @@ namespace Util {
      * screen assuming the camera is inside the centre of the sphere.
      * @param coordinate is the latitude and longitude of the point converted.
      * @param camera     is the current angle of the camera.
-     * @return the position to place it on the screen.
+     * @return the position to place it on the screen. The third dimension is
+     *         whether it is appearing on the front of the screen or on the
+     *         back of the screen.
      */
-    sf::Vector2f sphereToScreen(sf::Vector2f coordinate, sf::Vector2f camera);
+    sf::Vector3f sphereToScreen(sf::Vector2f coordinate, sf::Vector2f camera);
 }
 
 #endif

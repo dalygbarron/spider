@@ -167,7 +167,9 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     this->entitySelector.Display();
     if (this->entitySelector.HasSelected()) {
         ghc::filesystem::path file = this->entitySelector.GetSelected().string();
-        this->loadEntity(file.c_str());
+        ghc::filesystem::path relative = ghc::filesystem::relative(file);
+        spdlog::info("loading entity at {}", relative.c_str());
+        this->loadEntity(relative.c_str());
         this->entitySelector.ClearSelected();
     }
     return this;
@@ -284,26 +286,33 @@ void LevelScreen::draw(
     states.shader = &(this->shader);
     target.draw(back, states);
     this->core.renderer.batch.clear();
-    sf::Vector2f floor = Util::sphereToScreen(
-        sf::Vector2f(0, Const::HALF_PI),
+    sf::Vector3f floor = Util::sphereToScreen(
+        sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
         this->camera
     );
     for (Instance const &instance: this->instances) {
         if (instance.entity) {
-            sf::Vector2f pos = Util::sphereToScreen(
+            sf::Vector3f pos = Util::sphereToScreen(
                 instance.pos,
                 this->camera
             );
-            float angle = atan2(floor.x - pos.x, floor.y - pos.y) *
-                sin(this->camera.y);
+            if (pos.z < 0) continue;
+            float angle;
+            if (this->camera.y > 0) {
+                angle = atan2(floor.x - pos.x, floor.y - pos.y) *
+                    sin(this->camera.y);
+            } else {
+                angle = atan2(pos.x - floor.x, pos.y - floor.y) *
+                    sin(this->camera.y);
+            }
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                pos,
+                sf::Vector2f(pos.x, pos.y),
                 instance.entity->offset,
-                fabs(-angle),
+                angle * ((this->camera.y > 0) ? -1 : 1),
                 sf::Vector2f(instance.size, instance.size)
             );
-            this->core.renderer.point(pos);
+            this->core.renderer.point(sf::Vector2f(pos.x, pos.y));
         } else {
             this->core.renderer.sphereMesh(
                 instance.mesh,

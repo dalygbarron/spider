@@ -73,19 +73,24 @@ void Renderer::sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) 
                 delta.x * j,
                 delta.y * j
             );
+            sf::Vector3f start = Util::sphereToScreen(
+                vertices[i] + multipliedDelta,
+                camera
+            );
+            sf::Vector3f end = Util::sphereToScreen(
+                vertices[i] + multipliedDelta + delta,
+                camera
+            );
+            if (start.z < 0) continue;
             this->line(
-                Util::sphereToScreen(
-                    vertices[i] + multipliedDelta,
-                    camera
-                ),
-                Util::sphereToScreen(
-                    vertices[i] + multipliedDelta + delta,
-                    camera
-                ),
+                sf::Vector2f(start.x, start.y),
+                sf::Vector2f(end.x, end.y),
                 i == highlight
             );
         }
-        this->node(Util::sphereToScreen(vertices[i], camera), i == highlight);
+        sf::Vector3f nodePos = Util::sphereToScreen(vertices[i], camera);
+        if (nodePos.z < 0) continue;
+        this->node(sf::Vector2f(nodePos.x, nodePos.y), i == highlight);
     }
 }
 
