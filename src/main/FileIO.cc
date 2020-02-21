@@ -21,44 +21,6 @@ void FileIO::parsePatch(Core &core, pugi::xml_node const &node) {
     }
 }
 
-Level *FileIO::parseLevel(pugi::xml_node const &node) {
-    // Main bits.
-    Level *level = new Level();
-    level->script = node.attribute("script").value();
-    // Defines.
-    pugi::xml_node defines = node.child("defines");
-    for (pugi::xml_node define = defines.child("define"); define;
-        define = define.next_sibling("define")
-    ) {
-    }
-    // Entities.
-    // TODO: things.
-    return level;
-}
-
-Level *FileIO::levelFromFile(ghc::filesystem::path const &path) {
-    if (ghc::filesystem::exists(path)) {
-        pugi::xml_document doc;
-        pugi::xml_parse_result result = doc.load_file(path.c_str());
-        if (!result) {
-            spdlog::error("Level file '{}' cannnot be opened", path.c_str());
-            return NULL;
-        }
-        pugi::xml_node node = doc.child("level");
-        if (!node) {
-            spdlog::error("File '{}' does not contain a level.", path.c_str());
-            return NULL;
-        }
-        Level *level = FileIO::parseLevel(node);
-        level->file = path;
-        return level;
-    } else {
-        Level *level = new Level();
-        level->file = path;
-        return level;
-    }
-}
-
 void FileIO::saveEntity(Entity const &entity) {
     spdlog::info("Saving entity to {}", entity.file.c_str());
     pugi::xml_document doc;

@@ -16,7 +16,6 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     this->backgroundSelector.SetTypeFilters({".png"});
     this->entitySelector.SetTitle("Select entity to include");
     this->entitySelector.SetTypeFilters({".xml"});
-    this->texture.setSmooth(true);
     // TODO: this shader really ought to be kept and reused by other level
     //       screens since it is always the same stuff but I will do that
     //       later.
@@ -89,7 +88,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     // Now do the gui.
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin(this->level.file.c_str())) {
-        if (ImGui::Button(this->level.getClean() ? "Save" : "+Save+")) {
+        if (ImGui::Button("Save")) {
             // TODO: stuff
         }
         if (ImGui::Button("Select Pic")) this->backgroundSelector.Open();
@@ -158,9 +157,10 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     // pic selector.
     this->backgroundSelector.Display();
     if (this->backgroundSelector.HasSelected()) {
-        this->level.pic = this->backgroundSelector.GetSelected().string();
-        this->texture.loadFromFile(this->backgroundSelector.GetSelected().string());
-        this->back.setTexture(&this->texture, true);
+        ghc::filesystem::path file =
+            this->backgroundSelector.GetSelected().string();
+        this->level.setPic(ghc::filesystem::relative(file));
+        this->back.setTexture(&this->level.getPic(), true);
         this->backgroundSelector.ClearSelected();
     }
     // entity selector
@@ -250,6 +250,10 @@ void LevelScreen::onDrag(
     }
     if (this->camera.y > Const::HALF_PI) this->camera.y = Const::HALF_PI;
     if (this->camera.y < -Const::HALF_PI) this->camera.y = -Const::HALF_PI;
+}
+
+void LevelScreen::onScroll(int delta) {
+    if (this->selectedInstance) this->selectedInstance->size += delta * 0.1;
 }
 
 Entity *LevelScreen::loadEntity(char const *key) {

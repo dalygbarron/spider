@@ -214,7 +214,7 @@ int main(int argc, char **argv) {
     if (options.ratFlag) {
         screen = new RatScreen(*core);
     } else if (options.levelFlag) {
-        Level *level = FileIO::levelFromFile(options.file);
+        Level *level = core->loadLevel(options.file);
         screen = new LevelScreen(*core, *level);
     } else {
         Entity *entity = core->entityRepository.get(options.file.c_str());

@@ -61,6 +61,12 @@ EntityScreen zooming
     Also make it that the mesh vertex selection zone doesn't get bigger when
     zoom.
 
-Go to EntityScreen from LevelScreen and back again
-    Really should be able to go to the entityscreen from the level screen so
-    that you can edit some entity if you so desire.
+Screen where you can browse files and choose to edit entities or levels
+    Maybe also let them edit the general config here but I am not sure I will
+    allow that as it is complicated. Actually it would be doable, but yeah nah
+    why bother.
+
+Look into making the projection better fit with the equirectangular shader
+    Or vice versa, but it will at some point be necessary that they rightly
+    match each other. Possibly I could write my own equirectangular thing
+    projector, but I might have trouble doing the rotation part.

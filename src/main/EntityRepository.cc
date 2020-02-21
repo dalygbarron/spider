@@ -8,32 +8,28 @@ EntityRepository::EntityRepository(RatPack const &spritesheet):
     // nothing else.
 }
 
-Entity *EntityRepository::load(char const *key) const {
-    ghc::filesystem::path file = key;
-    if (!ghc::filesystem::exists(file)) {
-        Entity *entity = new Entity();
-        entity->file = file;
-        for (int i = 0; i < 3; i++) {
-            entity->mesh.addVertex(sf::Vector2f(
-                cos(i * Const::DOUBLE_PI / 3) * 50,
-                sin(i * Const::DOUBLE_PI / 3) * 50
-            ));
-        }
-        return entity;
-    }
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(key);
-    if (!result) {
-        spdlog::error("couldn't open entity file '{}'", key);
-        return NULL;
-    }
-    pugi::xml_node node = doc.child("entity");
-    if (!node) {
-        spdlog::error("no entity in alleged entity file '{}'", key);
-        return NULL;
-    }
+Entity *EntityRepository::create(ghc::filesystem::path const &path) const {
     Entity *entity = new Entity();
-    entity->file = file;
+    entity->file = path;
+    for (int i = 0; i < 3; i++) {
+        entity->mesh.addVertex(sf::Vector2f(
+            cos(i * Const::DOUBLE_PI / 3) * 50,
+            sin(i * Const::DOUBLE_PI / 3) * 50
+        ));
+    }
+    return entity;
+}
+
+char const *EntityRepository::getNodeName() const {
+    return "entity";
+}
+
+Entity *EntityRepository::parse(
+    pugi::xml_node const &node,
+    ghc::filesystem::path const &path
+) const {
+    Entity *entity = new Entity();
+    entity->file = path;
     entity->name = node.attribute("name").value();
     entity->item = node.attribute("item").value();
     entity->spriteName = node.attribute("rat").value();

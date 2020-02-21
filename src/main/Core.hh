@@ -17,7 +17,6 @@ class Core {
         Renderer renderer;
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
-        LevelRepository levelRepository;
 
         /**
          * Initialises the core. Fonts must be passed in because they don't
@@ -36,6 +35,15 @@ class Core {
          * @return the font.
          */
         sf::Font &getFont();
+
+        /**
+         * Loads in a level making use of the entity repository for putting in
+         * it's entities. There is no repository for levels because they use
+         * a lot of memory.
+         * @param path is the file from which to load the level.
+         * @return the level, probably, or null if it was in some way fucked.
+         */
+        Level *loadLevel(ghc::filesystem::path const &path) const;
 
     private:
         sf::Font *font;

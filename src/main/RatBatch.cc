@@ -30,8 +30,8 @@ void RatBatch::draw(
     sf::Transform transform;
     transform.translate(pos)
         .rotate(Util::degrees(rot))
-        .translate(offset)
-        .scale(scale);
+        .scale(scale)
+        .translate(offset);
     int nVertices = this->n * 4;
     if (nVertices + 4 > this->vertices.size()) {
         this->vertices.resize(this->vertices.size() + 4);

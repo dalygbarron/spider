@@ -136,6 +136,8 @@ class LevelScreen: public Screen {
             sf::Vector2f pos
         ) override;
 
+        virtual void onScroll(int delta) override;
+
     private:
         Level &level;
         Instance *selectedInstance = NULL;

@@ -14,21 +14,44 @@
 class Level {
     public:
         ghc::filesystem::path file;
-        ghc::filesystem::path pic;
         std::string script;
-        std::unordered_map<std::string, Entity *> defines;
-        std::unordered_map<std::string, Instance *> entities;
-        std::unordered_map<std::string, std::vector<sf::Vector2f>> shapes;
+        std::vector<Instance *> instances;
 
         /**
-         * Tells if you if the level is currently clean or if it has changes
-         * since it was last saved.
-         * @return true if it is clean and false if it is not clean.
+         * Deletes the level's stuff.
          */
-        int getClean() const;
+        ~Level();
+
+        /**
+         * sets the level's pic, both loading in the texture and setting the
+         * file record.
+         * @param path is the path to the pic.
+         */
+        void setPic(ghc::filesystem::path const &path);
+
+        /**
+         * Gives you the level's background image texture.
+         * @return the texture.
+         */
+        sf::Texture const &getPic() const;
+
+        /**
+         * Gives you the level's background image file path.
+         * @return the file path.
+         */
+        ghc::filesystem::path const &getPicFile() const;
+
+        /**
+         * Adds an instance to the level.
+         * @param instance is a pointer to the instance which this level now
+         *                 owns.
+         */
+        void addInstance(Instance *instance);
 
     private:
-        int clean = false;
+        sf::Texture pic;
+        ghc::filesystem::path picFile;
+
 };
 
 #endif
