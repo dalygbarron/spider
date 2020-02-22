@@ -6,10 +6,6 @@ Level::Level() {
     this->pic.setSmooth(true);
 }
 
-Level::~Level() {
-    for (Instance *instance: this->instances) delete instance;
-}
-
 void Level::setPic(ghc::filesystem::path const &path) {
     this->pic.loadFromFile(path.c_str());
     this->picFile = path;
@@ -23,6 +19,8 @@ ghc::filesystem::path const &Level::getPicFile() const {
     return this->picFile;
 }
 
-void Level::addInstance(Instance *instance) {
-    this->instances.push_back(instance);
+Instance &Level::addInstance() {
+    int n = this->instances.size();
+    this->instances.resize(n + 1);
+    return this->instances[n];
 }

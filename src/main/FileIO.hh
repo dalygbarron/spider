@@ -22,11 +22,18 @@ namespace FileIO {
     void parsePatch(Core &core, pugi::xml_node const &node);
 
     /**
-     * Saves an entity to the given file in the same xml format that this
+     * Saves an entity to it's allotted file in the same xml format that this
      * program loads.
      * @param entity is the entity to save.
      */
     void saveEntity(Entity const &entity);
+
+    /**
+     * Saves a level to it's allotted file in the same xml format that this
+     * program loads.
+     * @param level is the level to save.
+     */
+    void saveLevel(Level const &level);
 
     /**
      * Opens up a rat pack xml file and adds all the nodes from it into a rat

@@ -144,7 +144,6 @@ class LevelScreen: public Screen {
         int selected;
         int selectedEntity;
         std::vector<std::string> entities;
-        std::vector<Instance> instances;
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;

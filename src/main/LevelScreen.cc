@@ -34,7 +34,7 @@ LevelScreen::~LevelScreen() {
 }
 
 Instance const *LevelScreen::getInstanceWithName(char const *name) const {
-    for (Instance const &instance: this->instances) {
+    for (Instance const &instance: this->level.instances) {
         if (instance.name == name) return &instance;
     }
     return NULL;
@@ -45,9 +45,9 @@ void LevelScreen::removeInstance(int index) {
 }
 
 Instance &LevelScreen::addInstance(Entity const *entity) {
-    int n = this->instances.size();
-    this->instances.resize(n + 1);
-    Instance *instance = this->instances.data() + n;
+    int n = this->level.instances.size();
+    this->level.instances.resize(n + 1);
+    Instance *instance = this->level.instances.data() + n;
     instance->entity = entity;
     char const *baseName;
     char name[LevelScreen::NAME_BUFFER_SIZE];
@@ -85,7 +85,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin(this->level.file.c_str())) {
         if (ImGui::Button("Save")) {
-            // TODO: stuff
+            FileIO::saveLevel(this->level);
         }
         if (ImGui::Button("Select Pic")) this->backgroundSelector.Open();
         ImGui::SameLine();
@@ -109,9 +109,9 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::Text("Instances");
         ImGui::SameLine();
         if (ImGui::Button("--") && this->selectedInstance) {
-            this->instances.erase(
-                this->instances.begin() +
-                    (this->selectedInstance - this->instances.data())
+            this->level.instances.erase(
+                this->level.instances.begin() +
+                    (this->selectedInstance - this->level.instances.data())
             );
             this->selectedInstance = NULL;
         }
@@ -133,7 +133,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
             Instance &instance = this->addInstance(entity);
         }
         ImGui::BeginChild("InstanceList", ImVec2(150, 0), true);
-        for (Instance &instance: this->instances) {
+        for (Instance &instance: this->level.instances) {
             if (ImGui::Selectable(
                 instance.name.c_str(),
                 &instance == this->selectedInstance
@@ -177,7 +177,7 @@ void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
         // Find the closest thing.
         float distance = 0.2;
         this->selectedInstance = NULL;
-        for (Instance &instance: this->instances) {
+        for (Instance &instance: this->level.instances) {
             float newDistance = instance.distance(coordinate);
             if (newDistance < distance) {
                 distance = newDistance;
@@ -308,7 +308,7 @@ void LevelScreen::draw(
         sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
         this->camera
     );
-    for (Instance const &instance: this->instances) {
+    for (Instance const &instance: this->level.instances) {
         if (instance.entity) {
             sf::Vector3f pos = Util::sphereToScreen(
                 instance.pos,

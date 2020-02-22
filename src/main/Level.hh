@@ -15,17 +15,12 @@ class Level {
     public:
         ghc::filesystem::path file;
         std::string script;
-        std::vector<Instance *> instances;
+        std::vector<Instance> instances;
 
         /**
          * Initialises some stuff.
          */
         Level();
-
-        /**
-         * Deletes the level's stuff.
-         */
-        ~Level();
 
         /**
          * sets the level's pic, both loading in the texture and setting the
@@ -47,16 +42,14 @@ class Level {
         ghc::filesystem::path const &getPicFile() const;
 
         /**
-         * Adds an instance to the level.
-         * @param instance is a pointer to the instance which this level now
-         *                 owns.
+         * Creates a new instance and then returns a pointer to it.
+         * @return a reference to the instance.
          */
-        void addInstance(Instance *instance);
+        Instance &addInstance();
 
     private:
         sf::Texture pic;
         ghc::filesystem::path picFile;
-
 };
 
 #endif

@@ -43,7 +43,7 @@ class Core {
          * @param path is the file from which to load the level.
          * @return the level, probably, or null if it was in some way fucked.
          */
-        Level *loadLevel(ghc::filesystem::path const &path) const;
+        Level *loadLevel(ghc::filesystem::path const &path);
 
     private:
         sf::Font *font;

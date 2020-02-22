@@ -44,6 +44,39 @@ void FileIO::saveEntity(Entity const &entity) {
     }
 }
 
+void FileIO::saveLevel(Level const &level) {
+    spdlog::info("Saving level to {}", level.file.c_str());
+    pugi::xml_document doc;
+    pugi::xml_node node = doc.append_child("level");
+    node.append_attribute("pic") = level.getPicFile().c_str();
+    for (Instance const &instance: level.instances) {
+        if (instance.entity) {
+            pugi::xml_node entityNode = node.append_child("entityInstance");
+            entityNode.append_attribute("name") = instance.name.c_str();
+            entityNode.append_attribute("entity") =
+                instance.entity->file.c_str();
+            entityNode.append_attribute("x") = instance.pos.x;
+            entityNode.append_attribute("y") = instance.pos.y;
+            entityNode.append_attribute("size") = instance.size;
+        } else {
+            pugi::xml_node shapeNode = node.append_child("shapeInstance");
+            shapeNode.append_attribute("name") = instance.name.c_str();
+            for (sf::Vector2f const &point: instance.mesh.getVertices()) {
+                pugi::xml_node pointNode = shapeNode.append_child("point");
+                pointNode.append_attribute("x") = point.x;
+                pointNode.append_attribute("y") = point.y;
+            }
+        }
+    }
+    int success = doc.save_file(level.file.c_str());
+    if (!success) {
+        spdlog::error(
+            "Could not save level to file {}. Does folder exist?",
+            level.file.c_str()
+        );
+    }
+}
+
 void FileIO::initRatPackFromFile(
     RatPack &pack,
     ghc::filesystem::path const &path
