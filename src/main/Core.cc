@@ -46,8 +46,9 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) const {
 
             } else {
                 spdlog::warn(
-                    "weird shit going in level file '{}'",
-                    path.c_str()
+                    "weird shit going on in level file '{}'. Wtf is '{}'?",
+                    path.c_str(),
+                    type
                 );
             }
             level->addInstance(instance);

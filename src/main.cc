@@ -96,7 +96,6 @@ int process(Screen *screen) {
     );
     window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
-    ImGui::GetIO().IniFilename = NULL;
     window.resetGLStates();
     sf::View view;
     view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));

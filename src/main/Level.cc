@@ -1,5 +1,10 @@
 #include "Level.hh"
 #include "Util.hh"
+#include "spdlog/spdlog.h"
+
+Level::Level() {
+    this->pic.setSmooth(true);
+}
 
 Level::~Level() {
     for (Instance *instance: this->instances) delete instance;

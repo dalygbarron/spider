@@ -18,6 +18,11 @@ class Level {
         std::vector<Instance *> instances;
 
         /**
+         * Initialises some stuff.
+         */
+        Level();
+
+        /**
          * Deletes the level's stuff.
          */
         ~Level();

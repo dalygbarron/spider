@@ -26,11 +26,7 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     )) {
         spdlog::error("Couldn't start the sky shader");
     }
-    for (int i = 0; i < 5; i++) {
-        float x = (float)(rand() % 100) / 100 * Const::HALF_PI;
-        float y = (float)(rand() % 100) / 100 * Const::HALF_PI;
-        this->shape.addVertex(sf::Vector2f(x, y));
-    }
+    this->back.setTexture(&this->level.getPic(), true);
 }
 
 LevelScreen::~LevelScreen() {
