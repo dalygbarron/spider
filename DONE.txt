@@ -81,3 +81,9 @@ Proper Entity Screen
     Also, if the user tries to save things in circumstances that are silly like
     there is no name or a name with a space or no sprite it will complain.
 
+Level Screen
+    Must be able to set the background and pan around in 3d, entities must
+    place themselves in the 3d joint and also rotate thus that it looks right,
+    which also means I need to figure that out. Should be able to select entity
+    files to add into the level
+
