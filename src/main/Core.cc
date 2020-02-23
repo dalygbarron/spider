@@ -38,10 +38,10 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
         level->setPic(node.attribute("pic").value());
         // Instances.
         for (pugi::xml_node child: node.children()) {
-            Instance &instance = level->addInstance();
-            instance.name = child.attribute("name").value();
             char const *type = child.name();
             if (strcmp(type, "shapeInstance") == 0) {
+                Instance &instance = level->addInstance();
+                instance.name = child.attribute("name").value();
                 for (pugi::xml_node point: child.children("point")) {
                     instance.mesh.addVertex(sf::Vector2f(
                         point.attribute("x").as_float(),
@@ -49,12 +49,16 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
                     ));
                 }
             } else if (strcmp(type, "entityInstance") == 0) {
+                Instance &instance = level->addInstance();
+                instance.name = child.attribute("name").value();
                 instance.pos.x = child.attribute("x").as_float();
                 instance.pos.y = child.attribute("y").as_float();
                 instance.size = child.attribute("size").as_float();
                 instance.entity = this->entityRepository.get(
                     child.attribute("entity").value()
                 );
+            } else if (strcmp(type, "script") == 0) {
+                level->script = child.child_value();
             } else {
                 spdlog::warn(
                     "weird shit going on in level file '{}'. Wtf is '{}'?",

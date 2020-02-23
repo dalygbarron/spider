@@ -27,6 +27,13 @@ LevelScreen::LevelScreen(Core &core, Level &level):
         spdlog::error("Couldn't start the sky shader");
     }
     this->back.setTexture(&this->level.getPic(), true);
+    this->textEditor.SetLanguageDefinition(
+        TextEditor::LanguageDefinition::Lua()
+    );
+    this->textEditor.SetText(this->level.script);
+    for (Instance const &instance: this->level.instances) {
+        if (instance.entity) this->loadEntity(instance.entity->file.c_str());
+    }
 }
 
 LevelScreen::~LevelScreen() {
@@ -85,6 +92,7 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin(this->level.file.c_str())) {
         if (ImGui::Button("Save")) {
+            this->level.script = this->textEditor.GetText();
             FileIO::saveLevel(this->level);
         }
         if (ImGui::Button("Select Pic")) this->backgroundSelector.Open();
@@ -148,8 +156,14 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::SameLine();
         // TODO: if a shape is selected do the shape menu.
         this->entityMenu();
-        ImGui::End();
     }
+    ImGui::End();
+    // Text editor.
+    auto cpos = this->textEditor.GetCursorPosition();
+    if (ImGui::Begin("Script Editor")) {
+        this->textEditor.Render("brexit");
+    }
+    ImGui::End();
     // pic selector.
     this->backgroundSelector.Display();
     if (this->backgroundSelector.HasSelected()) {

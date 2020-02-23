@@ -49,6 +49,8 @@ void FileIO::saveLevel(Level const &level) {
     pugi::xml_document doc;
     pugi::xml_node node = doc.append_child("level");
     node.append_attribute("pic") = level.getPicFile().c_str();
+    pugi::xml_node scriptNode = node.append_child("script");
+    scriptNode.text() = level.script.c_str();
     for (Instance const &instance: level.instances) {
         if (instance.entity) {
             pugi::xml_node entityNode = node.append_child("entityInstance");

@@ -1,10 +1,6 @@
 Set Origin in EntityScreen
     Yeah I forgot to do that last time so I need to do it now.
 
-Look into built in text editor
-    Would be handy to have for level screen but I am not sure how hard it would
-    be to get it to work so maybe no.
-
 game gui
     Should be ripped off from the gui I developed for snowpea, that was great.
     Won't support keyboard only or gamepad but who gives a fuck? Not me. Text

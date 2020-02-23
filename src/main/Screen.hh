@@ -7,6 +7,7 @@
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
+#include "TextEditor.h"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -148,6 +149,7 @@ class LevelScreen: public Screen {
         sf::Shader shader;
         sf::RectangleShape back;
         sf::Texture texture;
+        TextEditor textEditor;
         ImGui::FileBrowser backgroundSelector;
         ImGui::FileBrowser entitySelector;
 
