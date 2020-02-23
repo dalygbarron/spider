@@ -277,4 +277,37 @@ class RatScreen: public Screen {
         ) const override;
 };
 
+/**
+ * Screen where the player plays adventure game type bits of the game.
+ */
+class AdventureScreen: public Screen {
+    public:
+        /**
+         * Creates the screen by giving it it's dependencies.
+         * @param core  is the core screen dependencies.
+         * @param level is the level the screen takes place in.
+         */
+        AdventureScreen(Core &core, Level const &level);
+
+        virtual Screen *update(float delta, sf::RenderWindow &window) override;
+
+        virtual void onClick(
+            sf::Mouse::Button button,
+            sf::Vector2f pos
+        ) override;
+
+        virtual void onKey(sf::Keyboard::Key key) override;
+
+    private:
+        Level const &level;
+        sf::Vector2f camera;
+        sf::Shader shader;
+        sf::RectangleShape back;
+
+        virtual void draw(
+            sf::RenderTarget &target,
+            sf::RenderStates states
+        ) const override;
+};
+
 #endif

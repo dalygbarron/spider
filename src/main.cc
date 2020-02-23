@@ -41,9 +41,10 @@ void help() {
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
     printf(" -g means game file, it is required.\n");
-    printf(" -e means entity file to edit, it cannot be used with -l, and it is relative to the game file.\n");
-    printf(" -l means level file to edit, it cannot be used with -e, and it is relative to the game file\n");
+    printf(" -e means entity file to edit. It is relative to the game file.\n");
+    printf(" -l means level file to edit. It is relative to the game file\n");
     printf(" -r means open in rat mode.\n");
+    printf("To play normally, provide just a game");
     printf("\nIf you run it and it says shaders are not available, it's fucked\n");
 }
 /**
@@ -215,9 +216,12 @@ int main(int argc, char **argv) {
     } else if (options.levelFlag) {
         Level *level = core->loadLevel(options.file);
         screen = new LevelScreen(*core, *level);
-    } else {
+    } else if (options.entityFlag) {
         Entity *entity = core->entityRepository.get(options.file.c_str());
         screen = new EntityScreen(*core, *entity);
+    } else {
+        Level *level = core->loadLevel(core->start);
+        screen = new AdventureScreen(*core, *level);
     }
     result = process(screen);
     // Clean up.

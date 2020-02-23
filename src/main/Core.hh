@@ -11,7 +11,9 @@
  */
 class Core {
     public:
+        // TODO: some of these things ought to be const.
         std::string name;
+        std::string start;
         ghc::filesystem::path filename;
         RatPack spritesheet;
         Renderer renderer;

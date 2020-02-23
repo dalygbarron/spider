@@ -1,6 +1,8 @@
 #ifndef CONST_H
 #define CONST_H
 
+#include <SFML/Graphics.hpp>
+
 /**
  * Contains constants that should be available everywhere in the program.
  */
@@ -12,6 +14,10 @@ namespace Const {
     static int const HEIGHT = 600;
     static int const HALF_WIDTH = 512;
     static int const HALF_HEIGHT = 300;
+    static sf::Vector2i const MOUSE_ORIGIN(
+        Const::HALF_WIDTH,
+        Const::HALF_HEIGHT
+    );
     static float PI = 3.141592653589793238462643383279;
     static float DOUBLE_PI = 6.283185307179586;
     static float HALF_PI = 1.570796326794897;

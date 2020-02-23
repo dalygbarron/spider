@@ -156,6 +156,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     Core *core = new Core(font);
     core->filename = path;
     core->name = node.attribute("name").value();
+    core->start = node.attribute("start").value();
     // Check some optional things.
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());

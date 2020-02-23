@@ -21,6 +21,13 @@ Scripting
 Properly Playable Level Screen with items and shit.
     Yep like it says right there.
 
+Screen Stack
+    Yeah so when you go into a battle, it needs to save your place in the
+    dialogue shit that you were already in which means it needs to save the
+    whole state of that screen basically so it sohuld work like a stack where
+    the battle is put on top of the existing screen, and then after it is
+    removed. Obviously plain transitions must also be handled.
+
 Battle Screen
     Should run entirely off a Lua script, and you should be able to start the
     engine by specifying just the game file and a battle script. Make a nice
