@@ -307,7 +307,6 @@ void LevelScreen::entityMenu() {
 }
 
 void LevelScreen::draw(sf::RenderTarget &target, int top) const {
-    target.clear();
     sf::RenderStates states;
     states.shader = &(this->shader);
     target.draw(back, states);

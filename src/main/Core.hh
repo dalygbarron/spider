@@ -88,6 +88,11 @@ class Core {
         std::vector<Screen *> screens;
         int firstVisible = 0;
         int nScreens = 0;
+
+        /**
+         * Recalculates what screens should be rendered.
+         */
+        void recalculateVisible();
 };
 
 #endif

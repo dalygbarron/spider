@@ -103,9 +103,7 @@ int process(Core &core) {
     sf::Vector2i mouse = sf::Mouse::getPosition();
     int buttons[sf::Mouse::Button::ButtonCount];
     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) buttons[i] = 0;
-    printf("get\n");
     Screen *screen = core.getTopScreen();
-    printf("got\n");
     while (window.isOpen() && screen) {
         // Handle Events.
         sf::Event event;
@@ -156,6 +154,7 @@ int process(Core &core) {
         screen->update(delta.asSeconds(), window);
         // Render.
         window.setView(view);
+        window.clear();
         core.drawScreens(window);
         window.display();
         // frame rate.

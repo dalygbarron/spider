@@ -268,6 +268,35 @@ class RatScreen: public Screen {
 };
 
 /**
+ * Screen that displays gui knobs and lets you click on them and stuff.
+ */
+class KnobScreen: public Screen {
+    public:
+        /**
+         * Creates the screen and gives it it's dependencies.
+         * @param core is the core dependencies.
+         * @param knob is the control that the screen will let you interact
+         *             with. If the control has not already been fitted then
+         *             the screen will remove itself from the screen stack
+         *             as soon as it can. Also, the control is a pointer
+         *             because when this screen is done it will delete it.
+         */
+        KnobScreen(Core &core, Knob *knob);
+
+        /**
+         * Deletes.
+         */
+        ~KnobScreen();
+
+        virtual void update(float delta, sf::RenderWindow &window) override;
+
+        virtual void draw(sf::RenderTarget &target, int top) const override;
+
+    private:
+        Control *control;
+};
+
+/**
  * Screen where the player plays adventure game type bits of the game.
  */
 class AdventureScreen: public Screen {

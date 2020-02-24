@@ -77,24 +77,25 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
 }
 
 void Core::pushScreen(Screen *screen) {
-    printf("push %d\n", this->nScreens);
-    this->screens[this->nScreens] = screen;
     this->nScreens++;
-    this->firstVisible = this->nScreens - 1;
-    printf("pushed\n");
+    if (this->nScreens > this->screens.size()) {
+        this->screens.resize(this->nScreens + 3);
+    }
+    this->screens[this->nScreens - 1] = screen;
+    this->recalculateVisible();
 }
 
 void Core::popScreen(int response) {
     delete this->screens[this->nScreens];
     this->nScreens--;
     if (this->nScreens > 0) this->screens[this->nScreens]->onReveal(response);
-    this->firstVisible = this->nScreens - 1;
+    this->recalculateVisible();
 }
 
 void Core::replaceScreen(Screen *screen) {
     delete this->screens[this->nScreens];
     this->screens[this->nScreens] = screen;
-    this->firstVisible = this->nScreens - 1;
+    this->recalculateVisible();
 }
 
 Screen *Core::getTopScreen() {
@@ -103,10 +104,19 @@ Screen *Core::getTopScreen() {
 }
 
 void Core::drawScreens(sf::RenderTarget &target) {
-    printf("drawing %d %d\n", this->firstVisible, this->nScreens);
-    for (auto it = this->screens.begin() + this->firstVisible;
-        it != this->screens.end(); it++
-    ) {
-        (*it)->draw(target, it == this->screens.end());
+    if (this->nScreens == 0) return;
+    auto start = this->screens.begin() + this->firstVisible;
+    auto end = this->screens.begin() + this->nScreens;
+    for (auto it = start; it != end; it++) {
+        (*it)->draw(target, it == end);
     }
+}
+
+void Core::recalculateVisible() {
+    for (
+        this->firstVisible = this->nScreens - 1;
+        this->firstVisible >= 0 &&
+            this->screens[this->firstVisible]->isTransparent();
+        this->firstVisible--
+    );
 }
