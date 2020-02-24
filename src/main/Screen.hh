@@ -13,8 +13,20 @@
 /**
  * A screen that has different functionality ya know.
  */
-class Screen: public sf::Drawable {
+class Screen {
     public:
+        /**
+         * Describes an instruction to transform the screen stack.
+         */
+        class Transition {
+            Screen *screen;
+            struct {
+                POP,
+                PUSH,
+                REPLACE
+            } action;
+        };
+
         /**
          * Creates the screen and puts in it's main dependencies.
          * @param core contains the main dependencies.
@@ -32,13 +44,36 @@ class Screen: public sf::Drawable {
          *               consideration.
          * @param window is the window so that you can mess around with it and
          *               get stuff that is needed.
-         * @return the screen that the next frame should consist of, so
-         *         normally it will return itself but sometimes it will return
-         *         a different screen which should then be transitioned to. If
-         *         it returns null then that means the program should now
-         *         close.
          */
-        virtual Screen *update(float delta, sf::RenderWindow &window) = 0;
+        virtual void update(float delta, sf::RenderWindow &window) = 0;
+
+        /**
+         * Tells you if the screen under this one in the screen stack can be
+         * rendered too.
+         * @return true if so.
+         */
+        virtual int isTransparent();
+
+        /**
+         * Draw the screen.
+         * @param target is the window to draw it to.
+         * @param states is the renderstates to draw with.
+         * @param top    is whether this screen is being drawn on the top.
+         */
+        virtual void draw(
+            sf::RenderTarget &target,
+            sf::RenderStates states,
+            int top
+        ) const = 0;
+
+        /**
+         * Called when this screen is revealed on the screen stack, as in it
+         * has been covered on the stack by another screen and now that screen
+         * has been removed and this one has been revealed.
+         * @param value is the value that the covering screen returned for this
+         *              one to receive.
+         */
+        virtual void onReveal(int value)
 
         /**
          * Called when the user clicks on the screen.
@@ -67,12 +102,6 @@ class Screen: public sf::Drawable {
 
     protected:
         Core &core;
-
-    private:
-        virtual void draw(
-            sf::RenderTarget &target,
-            sf::RenderStates states
-        ) const override = 0;
 };
 
 /**

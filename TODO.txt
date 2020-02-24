@@ -1,7 +1,17 @@
 Set Origin in EntityScreen
     Yeah I forgot to do that last time so I need to do it now.
 
+Screen Stack
+    Screens should be arranged in a stack so you can push new screens on, and
+    when they are removed again they return a numeric value to the screen
+    below. Multiple screens can also be rendered, each screen will provide
+    a function that lets you query if it allows rendering of the screen
+    underneath, and it iwll figure this out at the point that the stack is
+    altered. After that it will just know which ones to render in order of
+    oldest to newest.
+
 game gui
+    Gui should be it's own screen.
     Should be ripped off from the gui I developed for snowpea, that was great.
     Won't support keyboard only or gamepad but who gives a fuck? Not me. Text
     will be implemented with sf::Text so that I can do wrapping without too

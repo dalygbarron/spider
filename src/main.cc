@@ -83,14 +83,10 @@ int parseOptions(Options &options, int argc, char **argv) {
 
 /**
  * Runs the main loop of the program over and over.
- * @param screen is the screen of the program to start on.
+ * @param core is the core game stuff.
  * @return the result code the program should give after.
  */
-int process(Screen *screen) {
-    if (!screen) {
-        spdlog::critical("No Screen Created. Aborting.");
-        return 1;
-    }
+int process(Core &core) {
     sf::RenderWindow window(
         sf::VideoMode(Const::WIDTH, Const::HEIGHT),
         Const::TITLE// TODO: add to core and get from core.
@@ -107,7 +103,8 @@ int process(Screen *screen) {
     sf::Vector2i mouse = sf::Mouse::getPosition();
     int buttons[sf::Mouse::Button::ButtonCount];
     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) buttons[i] = 0;
-    while (window.isOpen() && screen) {
+    Screen *screen;
+    while (window.isOpen() && (screen = core.getTopScreen())) {
         // Handle Events.
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -157,7 +154,7 @@ int process(Screen *screen) {
         screen->update(delta.asSeconds(), window);
         // Render.
         window.setView(view);
-        window.draw(*screen);
+        core.drawScreens(window);
         window.display();
         // frame rate.
         frame++;
@@ -207,18 +204,18 @@ int main(int argc, char **argv) {
     Level *level = NULL;
     Entity *entity = NULL;
     if (options.ratFlag) {
-        screen = new RatScreen(*core);
+        core->pushScreen(new RatScreen(*core));
     } else if (options.levelFlag) {
         Level *level = core->loadLevel(options.file);
-        screen = new LevelScreen(*core, *level);
+        core->pushScreen(new LevelScreen(*core, *level));
     } else if (options.entityFlag) {
         Entity *entity = core->entityRepository.get(options.file.c_str());
-        screen = new EntityScreen(*core, *entity);
+        core->pushScreen(new EntityScreen(*core, *entity););
     } else {
         Level *level = core->loadLevel(core->start);
-        screen = new AdventureScreen(*core, *level);
+        core->pushScreen(new AdventureScreen(*core, *level));
     }
-    result = process(screen);
+    result = process(*core);
     // Clean up.
     ImGui::SFML::Shutdown();
     delete core;

@@ -74,3 +74,24 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
         return level;
     }
 }
+
+void Core::pushScreen(Screen *screen) {
+    this->screens[this->nScreens] = screen;
+    this->nScreens++;
+}
+
+void Core::popScreen(int response) {
+    delete this->screens[this->nScreens];
+    this->nScreens--;
+    if (this->nScreens > 0) this->screens[this->nScreens].onReveal(response);
+}
+
+void Core::replaceScreen(Screen *screen) {
+    delete this->screens[this->nScreens];
+    this->screens[this->nScreens] = screen;
+}
+
+Screen *Core::getTopScreen() {
+    if (this->nScreens > 0) return this->screens[this->nScreens];
+    return NULL;
+}

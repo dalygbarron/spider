@@ -19,7 +19,7 @@ EntityScreen::~EntityScreen() {
     // TODO: stuff I suppose.
 }
 
-Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
+void EntityScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin("Entity")) {
         if (ImGui::Button("save")) {
@@ -70,7 +70,6 @@ Screen *EntityScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::EndChild();
     }
     ImGui::End();
-    return this;
 }
 
 void EntityScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {

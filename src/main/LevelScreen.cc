@@ -86,7 +86,7 @@ Instance &LevelScreen::addInstance(Entity const *entity) {
     return *instance;
 }
 
-Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
+void LevelScreen::update(float delta, sf::RenderWindow &window) {
     this->shader.setUniform("angle", camera);
     // Now do the gui.
     ImGui::SFML::Update(window, sf::seconds(delta));
@@ -182,7 +182,6 @@ Screen *LevelScreen::update(float delta, sf::RenderWindow &window) {
         this->loadEntity(relative.c_str());
         this->entitySelector.ClearSelected();
     }
-    return this;
 }
 
 void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {

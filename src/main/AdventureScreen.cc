@@ -17,7 +17,7 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     this->back.setTexture(&this->level.getPic(), true);
 }
 
-Screen *AdventureScreen::update(float delta, sf::RenderWindow &window) {
+void AdventureScreen::update(float delta, sf::RenderWindow &window) {
     window.setMouseCursorVisible(false);
     sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
     this->shader.setUniform("angle", camera);

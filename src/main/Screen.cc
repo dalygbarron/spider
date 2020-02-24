@@ -8,6 +8,14 @@ Screen::~Screen() {
     // Does nothing.
 }
 
+int Screen::isTransparent() {
+    return false;
+}
+
+void Screen::onReveal(int value) {
+    // Do nothing by default.
+}
+
 void Screen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     // Do nothing by default.
 }
