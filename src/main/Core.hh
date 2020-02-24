@@ -22,6 +22,7 @@ class Core {
         ghc::filesystem::path filename;
         RatPack spritesheet;
         Renderer renderer;
+        SoundPlayer soundPlayer;
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
 
