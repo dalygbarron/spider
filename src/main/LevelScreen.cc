@@ -226,12 +226,8 @@ void LevelScreen::onKey(sf::Keyboard::Key key) {
     }
 }
 
-void LevelScreen::onDrag(
-    sf::Mouse::Button button,
-    sf::Vector2f delta,
-    sf::Vector2f pos
-) {
-    if (button == sf::Mouse::Button::Left) {
+void LevelScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         if (this->selectedInstance) {
             if (this->selectedInstance->entity) {
                     sf::Vector2f spherePos = Util::screenToSphere(
@@ -254,7 +250,8 @@ void LevelScreen::onDrag(
                 }
             }
         }
-    } else if (button == sf::Mouse::Button::Right) {
+    }
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
         this->camera.x -= delta.x * 0.003;
         this->camera.y -= delta.y * 0.003;
     }

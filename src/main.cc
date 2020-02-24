@@ -130,24 +130,20 @@ int process(Screen *screen) {
                 } else if (event.type == sf::Event::MouseButtonReleased) {
                     buttons[event.mouseButton.button] = false;
                 } else if (event.type == sf::Event::MouseMoved) {
-                    for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) {
-                        if (buttons[i]) {
-                            sf::Vector2u size = window.getSize();
-                            screen->onDrag(
-                                (sf::Mouse::Button)i,
-                                sf::Vector2f(
-                                    (event.mouseMove.x - mouse.x) *
-                                        ((float)Const::WIDTH / size.x),
-                                    (event.mouseMove.y - mouse.y) *
-                                        ((float)Const::HEIGHT / size.y)
-                                ),
-                                sf::Vector2f(
-                                    mouse.x * ((float)Const::WIDTH / size.x),
-                                    mouse.y * ((float)Const::HEIGHT / size.y)
-                                )
-                            );
-                        }
-                    }
+                    sf::Vector2u size = window.getSize();
+                    screen->onDrag(
+                        sf::Vector2f(
+                            (event.mouseMove.x - mouse.x) *
+                                ((float)Const::WIDTH / size.x),
+                            (event.mouseMove.y - mouse.y) *
+                                ((float)Const::HEIGHT / size.y)
+                        ),
+                        sf::Vector2f(
+                            mouse.x * ((float)Const::WIDTH / size.x),
+                            mouse.y * ((float)Const::HEIGHT / size.y)
+                        )
+                    );
+                    spdlog::info("{} {}", event.mouseMove.x, event.mouseMove.y);
                     mouse.x = event.mouseMove.x;
                     mouse.y = event.mouseMove.y;
                 } else if (event.type == sf::Event::MouseWheelScrolled) {

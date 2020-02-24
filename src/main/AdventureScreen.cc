@@ -18,22 +18,9 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
 }
 
 Screen *AdventureScreen::update(float delta, sf::RenderWindow &window) {
-    window.setMouseCursorVisible(false);
-    // Move the camera.
-    sf::Vector2i mouse = sf::Mouse::getPosition(window);
-    if (mouse != Const::MOUSE_ORIGIN) {
-        sf::Vector2f originSphere = Util::screenToSphere(
-            sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
-            this->camera
-        );
-        sf::Vector2f mouseSphere = Util::screenToSphere(
-            sf::Vector2f(mouse.x, mouse.y),
-            this->camera
-        );
-        this->camera.x += mouseSphere.x - originSphere.x;
-        this->camera.y += mouseSphere.y - originSphere.y;
-        sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
-    }
+    //window.setMouseCursorVisible(false);
+    window.setMouseCursorGrabbed(true);
+    sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
     this->shader.setUniform("angle", camera);
 }
 
@@ -42,6 +29,12 @@ void AdventureScreen::onClick(
     sf::Vector2f pos
 ) {
 
+}
+
+void AdventureScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
+    sf::Vector2f current = Util::screenToSphere(pos, this->camera);
+    sf::Vector2f old = Util::screenToSphere(pos - delta, this->camera);
+    this->camera += current - old;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {

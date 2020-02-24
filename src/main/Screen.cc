@@ -12,11 +12,7 @@ void Screen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     // Do nothing by default.
 }
 
-void Screen::onDrag(
-    sf::Mouse::Button button,
-    sf::Vector2f delta,
-    sf::Vector2f pos
-) {
+void Screen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
     // Do nothing by default.
 }
 
