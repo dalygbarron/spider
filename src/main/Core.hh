@@ -7,6 +7,11 @@
 #include "RatBatch.hh"
 
 /**
+ * Forward declaration.
+ */
+class Screen;
+
+/**
  * Core engine parts that form the common dependencies of every screen.
  */
 class Core {

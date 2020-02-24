@@ -103,8 +103,10 @@ int process(Core &core) {
     sf::Vector2i mouse = sf::Mouse::getPosition();
     int buttons[sf::Mouse::Button::ButtonCount];
     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) buttons[i] = 0;
-    Screen *screen;
-    while (window.isOpen() && (screen = core.getTopScreen())) {
+    printf("get\n");
+    Screen *screen = core.getTopScreen();
+    printf("got\n");
+    while (window.isOpen() && screen) {
         // Handle Events.
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -163,6 +165,8 @@ int process(Core &core) {
             fps.restart();
             frame = 0;
         }
+        // Re get the screen for if there has been a transition.
+        Screen *screen = core.getTopScreen();
     }
     return 0;
 }
@@ -210,7 +214,7 @@ int main(int argc, char **argv) {
         core->pushScreen(new LevelScreen(*core, *level));
     } else if (options.entityFlag) {
         Entity *entity = core->entityRepository.get(options.file.c_str());
-        core->pushScreen(new EntityScreen(*core, *entity););
+        core->pushScreen(new EntityScreen(*core, *entity));
     } else {
         Level *level = core->loadLevel(core->start);
         core->pushScreen(new AdventureScreen(*core, *level));

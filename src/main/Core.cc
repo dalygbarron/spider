@@ -1,4 +1,5 @@
 #include "Core.hh"
+#include "Screen.hh"
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -76,22 +77,36 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
 }
 
 void Core::pushScreen(Screen *screen) {
+    printf("push %d\n", this->nScreens);
     this->screens[this->nScreens] = screen;
     this->nScreens++;
+    this->firstVisible = this->nScreens - 1;
+    printf("pushed\n");
 }
 
 void Core::popScreen(int response) {
     delete this->screens[this->nScreens];
     this->nScreens--;
-    if (this->nScreens > 0) this->screens[this->nScreens].onReveal(response);
+    if (this->nScreens > 0) this->screens[this->nScreens]->onReveal(response);
+    this->firstVisible = this->nScreens - 1;
 }
 
 void Core::replaceScreen(Screen *screen) {
     delete this->screens[this->nScreens];
     this->screens[this->nScreens] = screen;
+    this->firstVisible = this->nScreens - 1;
 }
 
 Screen *Core::getTopScreen() {
-    if (this->nScreens > 0) return this->screens[this->nScreens];
+    if (this->nScreens > 0) return this->screens[this->nScreens - 1];
     return NULL;
+}
+
+void Core::drawScreens(sf::RenderTarget &target) {
+    printf("drawing %d %d\n", this->firstVisible, this->nScreens);
+    for (auto it = this->screens.begin() + this->firstVisible;
+        it != this->screens.end(); it++
+    ) {
+        (*it)->draw(target, it == this->screens.end());
+    }
 }

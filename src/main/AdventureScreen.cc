@@ -40,11 +40,9 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 
 }
 
-void AdventureScreen::draw(
-    sf::RenderTarget &target,
-    sf::RenderStates states
-) const {
+void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     target.clear();
+    sf::RenderStates states;
     states.shader = &(this->shader);
     target.draw(back, states);
     this->core.renderer.batch.clear();

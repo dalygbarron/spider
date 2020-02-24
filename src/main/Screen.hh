@@ -16,18 +16,6 @@
 class Screen {
     public:
         /**
-         * Describes an instruction to transform the screen stack.
-         */
-        class Transition {
-            Screen *screen;
-            struct {
-                POP,
-                PUSH,
-                REPLACE
-            } action;
-        };
-
-        /**
          * Creates the screen and puts in it's main dependencies.
          * @param core contains the main dependencies.
          */
@@ -48,23 +36,18 @@ class Screen {
         virtual void update(float delta, sf::RenderWindow &window) = 0;
 
         /**
+         * Draw the screen.
+         * @param target is the window to draw it to.
+         * @param top    is whether this screen is being drawn on the top.
+         */
+        virtual void draw(sf::RenderTarget &target, int top) const = 0;
+
+        /**
          * Tells you if the screen under this one in the screen stack can be
          * rendered too.
          * @return true if so.
          */
         virtual int isTransparent();
-
-        /**
-         * Draw the screen.
-         * @param target is the window to draw it to.
-         * @param states is the renderstates to draw with.
-         * @param top    is whether this screen is being drawn on the top.
-         */
-        virtual void draw(
-            sf::RenderTarget &target,
-            sf::RenderStates states,
-            int top
-        ) const = 0;
 
         /**
          * Called when this screen is revealed on the screen stack, as in it
@@ -73,7 +56,7 @@ class Screen {
          * @param value is the value that the covering screen returned for this
          *              one to receive.
          */
-        virtual void onReveal(int value)
+        virtual void onReveal(int value);
 
         /**
          * Called when the user clicks on the screen.
@@ -146,7 +129,9 @@ class LevelScreen: public Screen {
          */
         Instance &addInstance(Entity const *entity);
 
-        virtual Screen *update(float delta, sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
+
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual void onClick(
             sf::Mouse::Button button,
@@ -191,11 +176,6 @@ class LevelScreen: public Screen {
          * Does the menu for when a shape is selected.
          */
         void shapeMenu();
-
-        virtual void draw(
-            sf::RenderTarget &target,
-            sf::RenderStates states
-        ) const override;
 };
 
 /**
@@ -217,7 +197,9 @@ class EntityScreen: public Screen {
          */
         virtual ~EntityScreen();
 
-        virtual Screen *update(float delta, sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
+
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual void onDrag(sf::Vector2f delta, sf::Vector2f pos) override;
 
@@ -242,11 +224,6 @@ class EntityScreen: public Screen {
          * Put the entity back in the middle of the screen at normal size.
          */
         void refocus();
-
-        virtual void draw(
-            sf::RenderTarget &target,
-            sf::RenderStates states
-        ) const override;
 };
 
 /**
@@ -281,16 +258,13 @@ class RatScreen: public Screen {
          */
         RatScreen(Core &core);
 
-        virtual Screen *update(float delta, sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
+
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
     private:
         std::vector<Rat> rats;
         Mesh mesh;
-
-        virtual void draw(
-            sf::RenderTarget &target,
-            sf::RenderStates states
-        ) const override;
 };
 
 /**
@@ -305,7 +279,9 @@ class AdventureScreen: public Screen {
          */
         AdventureScreen(Core &core, Level const &level);
 
-        virtual Screen *update(float delta, sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
+
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual void onClick(
             sf::Mouse::Button button,
@@ -321,11 +297,6 @@ class AdventureScreen: public Screen {
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;
-
-        virtual void draw(
-            sf::RenderTarget &target,
-            sf::RenderStates states
-        ) const override;
 };
 
 #endif

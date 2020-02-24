@@ -123,10 +123,7 @@ void EntityScreen::refocus() {
     this->camera.z = 1;
 }
 
-void EntityScreen::draw(
-    sf::RenderTarget &target,
-    sf::RenderStates states
-) const {
+void EntityScreen::draw(sf::RenderTarget &target, int top) const {
     target.clear(this->background);
     this->core.renderer.batch.clear();
     // Draw the sprite.

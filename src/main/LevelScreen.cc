@@ -306,11 +306,9 @@ void LevelScreen::entityMenu() {
     ImGui::EndGroup();
 }
 
-void LevelScreen::draw(
-    sf::RenderTarget &target,
-    sf::RenderStates states
-) const {
+void LevelScreen::draw(sf::RenderTarget &target, int top) const {
     target.clear();
+    sf::RenderStates states;
     states.shader = &(this->shader);
     target.draw(back, states);
     this->core.renderer.batch.clear();

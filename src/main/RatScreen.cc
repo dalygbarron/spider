@@ -61,7 +61,7 @@ void RatScreen::update(float delta, sf::RenderWindow &window) {
     for (int i = 0; i < this->rats.size(); i++) this->rats[i].update(delta);
 }
 
-void RatScreen::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void RatScreen::draw(sf::RenderTarget &target, int top) const {
     target.clear(sf::Color::Cyan);
     this->core.renderer.batch.clear();
     std::vector<sf::Vector2f> const &vertices = this->mesh.getVertices();
