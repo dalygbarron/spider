@@ -143,7 +143,6 @@ int process(Screen *screen) {
                             mouse.y * ((float)Const::HEIGHT / size.y)
                         )
                     );
-                    spdlog::info("{} {}", event.mouseMove.x, event.mouseMove.y);
                     mouse.x = event.mouseMove.x;
                     mouse.y = event.mouseMove.y;
                 } else if (event.type == sf::Event::MouseWheelScrolled) {

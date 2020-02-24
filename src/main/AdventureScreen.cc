@@ -18,8 +18,7 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
 }
 
 Screen *AdventureScreen::update(float delta, sf::RenderWindow &window) {
-    //window.setMouseCursorVisible(false);
-    window.setMouseCursorGrabbed(true);
+    window.setMouseCursorVisible(false);
     sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
     this->shader.setUniform("angle", camera);
 }
@@ -33,7 +32,7 @@ void AdventureScreen::onClick(
 
 void AdventureScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
     sf::Vector2f current = Util::screenToSphere(pos, this->camera);
-    sf::Vector2f old = Util::screenToSphere(pos - delta, this->camera);
+    sf::Vector2f old = Util::screenToSphere(sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT), this->camera);
     this->camera += current - old;
 }
 
