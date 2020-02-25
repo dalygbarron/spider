@@ -16,6 +16,12 @@ void FileIO::parsePatch(Core &core, pugi::xml_node const &node) {
         core.renderer.setBoxPatch(patch);
     } else if (strcmp(role, "boxHighlight") == 0) {
         core.renderer.setBoxHighlightPatch(patch);
+    } else if (strcmp(role, "panel") == 0) {
+        core.renderer.setPanelPatch(patch);
+    } else if (strcmp(role, "button") == 0) {
+        core.renderer.setButtonPatch(patch);
+    } else if (strcmp(role, "buttonDepressed") == 0) {
+        core.renderer.setButtonDepressedPatch(patch);
     } else {
         spdlog::error("No such role in gui for patch as '{}'", role);
     }
@@ -162,17 +168,29 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());
     // now set the gui bits
     core->renderer.setPointRat(core->spritesheet.get(
-        node.attribute("point").value())
-    );
+        node.attribute("point").value()
+    ));
+    core->renderer.setCursorRat(core->spritesheet.get(
+        node.attribute("pointer").value()
+    ), Renderer::CursorType::pointer);
+    core->renderer.setCursorRat(core->spritesheet.get(
+        node.attribute("talk").value()
+    ), Renderer::CursorType::talk);
+    core->renderer.setCursorRat(core->spritesheet.get(
+        node.attribute("move").value()
+    ), Renderer::CursorType::move);
+    core->renderer.setCursorRat(core->spritesheet.get(
+        node.attribute("use").value()
+    ), Renderer::CursorType::use);
     core->renderer.setPointHighlightRat(core->spritesheet.get(
-        node.attribute("pointHighlight").value())
-    );
+        node.attribute("pointHighlight").value()
+    ));
     core->renderer.setLineRat(core->spritesheet.get(
-        node.attribute("line").value())
-    );
+        node.attribute("line").value()
+    ));
     core->renderer.setLineHighlightRat(core->spritesheet.get(
-        node.attribute("lineHighlight").value())
-    );
+        node.attribute("lineHighlight").value()
+    ));
     core->renderer.setNodeRat(core->spritesheet.get(
         node.attribute("node").value()
     ));

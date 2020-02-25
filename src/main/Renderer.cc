@@ -27,12 +27,28 @@ void Renderer::setNodeHighlightRat(sf::IntRect rat) {
     this->nodeHighlightRat = rat;
 }
 
+void Renderer::setCursorRat(sf::IntRect rat, Renderer::CursorType cursor) {
+    this->cursorRats[static_cast<int>(cursor)] = rat;
+}
+
 void Renderer::setBoxPatch(Patch patch) {
     this->boxPatch = patch;
 }
 
 void Renderer::setBoxHighlightPatch(Patch patch) {
     this->boxHighlightPatch = patch;
+}
+
+void Renderer::setPanelPatch(Patch patch) {
+    this->panelPatch = patch;
+}
+
+void Renderer::setButtonPatch(Patch patch) {
+    this->buttonPatch = patch;
+}
+
+void Renderer::setButtonDepressedPatch(Patch patch) {
+    this->buttonDepressedPatch = patch;
 }
 
 void Renderer::point(sf::Vector2f pos, int highlight) {
@@ -46,9 +62,24 @@ void Renderer::node(sf::Vector2f pos, int highlight) {
     this->batch.draw(highlight ? this->nodeHighlightRat : this->nodeRat, pos);
 }
 
+void Renderer::cursor(sf::Vector2f pos, Renderer::CursorType cursor) {
+    this->batch.draw(this->cursorRats[static_cast<int>(cursor)], pos);
+}
+
 void Renderer::box(sf::FloatRect pos, int highlight) {
     this->batch.draw(
         highlight ? this->boxHighlightPatch : this->boxPatch,
+        pos
+    );
+}
+
+void Renderer::panel(sf::FloatRect pos) {
+    this->batch.draw(this->panelPatch, pos);
+}
+
+void Renderer::button(sf::FloatRect pos, int depressed) {
+    this->batch.draw(
+        depressed ? this->buttonDepressedPatch : this->buttonPatch,
         pos
     );
 }

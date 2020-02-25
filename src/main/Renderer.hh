@@ -16,6 +16,17 @@ class Renderer: public sf::Drawable {
     public:
         static int const SPHERE_INTERPOLATION = 5;
 
+        /**
+         * A mouse cursor type.
+         */
+        enum class CursorType {
+            pointer,
+            talk,
+            move,
+            use,
+            n
+        };
+
         RatBatch batch;
 
         /**
@@ -62,6 +73,13 @@ class Renderer: public sf::Drawable {
         void setNodeHighlightRat(sf::IntRect rat);
 
         /**
+         * Sets the rat for drawing a given type of cursor for.
+         * @param rat    is the rat to draw with.
+         * @param cursor is the cursor type to draw with that rat.
+         */
+        void setCursorRat(sf::IntRect rat, CursorType cursor);
+
+        /**
          * Sets the 9 patch to use to draw boxes.
          * @param patch is the patch to use.
          */
@@ -72,6 +90,24 @@ class Renderer: public sf::Drawable {
          * @param patch is the rat to use.
          */
         void setBoxHighlightPatch(Patch patch);
+
+        /**
+         * Sets the patch for drawing panels.
+         * @param patch is the patch to draw panels with.
+         */
+        void setPanelPatch(Patch patch);
+
+        /**
+         * Sets the patch for drawing buttons.
+         * @param patch is the patch to draw buttons with.
+         */
+        void setButtonPatch(Patch patch);
+
+        /**
+         * Sets the patch for drawing depressed buttons for.
+         * @param patch is the patch to draw depressed buttons with.
+         */
+        void setButtonDepressedPatch(Patch patch);
 
         /**
          * Draw a crosshair over the given point on the screen.
@@ -88,11 +124,31 @@ class Renderer: public sf::Drawable {
         void node(sf::Vector2f pos, int highlight);
 
         /**
+         * Draw a cursor pointing to the given point on the screen.
+         * @param pos    is the location the cursor should point to.
+         * @param cursor is the cursor type to draw.
+         */
+        void cursor(sf::Vector2f pos, Renderer::CursorType cursor);
+
+        /**
          * Draw a box around the given rectangle on the screen.
          * @param pos is the rectangle to draw around.
          * @param highlight is whether to make the box highlighted.
          */
         void box(sf::FloatRect pos, int highlight);
+
+        /**
+         * Draw a panel around the given rectangle on the screen.
+         * @param pos is the rectangle to draw the panel around.
+         */
+        void panel(sf::FloatRect pos);
+
+        /**
+         * Draw a button around the given rectangle on the screen.
+         * @param pos       is the rectangle to draw the button around.
+         * @param depressed is whether to draw the button as depressed or not.
+         */
+        void button(sf::FloatRect pos, int depressed);
 
         /**
          * Draw a line between two points.
@@ -128,8 +184,12 @@ class Renderer: public sf::Drawable {
         sf::IntRect lineHighlightRat;
         sf::IntRect nodeRat;
         sf::IntRect nodeHighlightRat;
+        sf::IntRect cursorRats[static_cast<int>(Renderer::CursorType::n)];
         Patch boxPatch;
         Patch boxHighlightPatch;
+        Patch panelPatch;
+        Patch buttonPatch;
+        Patch buttonDepressedPatch;
 
         void draw(
             sf::RenderTarget &target,

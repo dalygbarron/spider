@@ -38,6 +38,6 @@ Knob *PanelKnob::update(
 }
 
 void PanelKnob::draw(Renderer &renderer) const {
-    renderer.box(this->getShape(), false);
+    renderer.panel(this->getShape());
     for (Knob *child: this->children) child->draw(renderer);
 }

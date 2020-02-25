@@ -32,7 +32,7 @@ void KnobScreen::update(float delta, sf::RenderWindow &window) {
 void KnobScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     if (this->knob) this->knob->draw(this->core.renderer);
-    this->core.renderer.point(this->mouse, false);
+    this->core.renderer.cursor(this->mouse, Renderer::CursorType::pointer);
     target.draw(this->core.renderer.batch);
 }
 
