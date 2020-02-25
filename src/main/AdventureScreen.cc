@@ -21,7 +21,17 @@ void AdventureScreen::update(float delta, sf::RenderWindow &window) {
     sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
     this->shader.setUniform("angle", camera);
     // add a gui screen.
-    Knob *knob = new PanelKnob(2);
+    PanelKnob *knob = new PanelKnob(3);
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
+    knob->addChild(new PanelKnob(0));
     knob->bake(sf::FloatRect(100, 200, 300, 400));
     this->core.pushScreen(new KnobScreen(this->core, knob));
     this->shader.setUniform("angle", camera);

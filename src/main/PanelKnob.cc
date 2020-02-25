@@ -19,7 +19,7 @@ void PanelKnob::bake(sf::FloatRect shape) {
     for (int i = 0; i < this->children.size(); i++) {
         this->children[i]->bake(sf::FloatRect(
             shape.left + (i % this->parts) * shape.width,
-            shape.top + ceil(i / this->parts + 1) * shape.height,
+            shape.top + ceil(i / this->parts) * shape.height,
             shape.width,
             shape.height
         ));

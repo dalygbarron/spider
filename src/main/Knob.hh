@@ -87,12 +87,57 @@ class PanelKnob: public Knob {
             SoundPlayer &soundPlayer
         ) override;
 
-        virtual void draw(
-            Renderer &renderer
-        ) const override;
+        virtual void draw(Renderer &renderer) const override;
 
     private:
         std::vector<Knob *> children;
 };
+
+/**
+ * A nice button that you can click on.
+ */
+class ButtonKnob: public Knob {
+    public:
+        /**
+         * Creates a button knob with an arbitrary knob as it's content.
+         * @param child is the contents of the button.
+         */
+        ButtonKnob(Knob *child);
+
+        virtual void bake(sf::FloatRect shape) override;
+
+        virtual Knob *update(
+            sf::Vector2f mouse,
+            SoundPlayer &soundPlayer
+        ) const override;
+
+        virtual void draw(Renderer &renderer) const override;
+
+    private:
+        Knob *child;
+};
+
+/**
+ * Displays some text and wraps it to fit where you put it.
+ */
+class TextKnob: public Knob {
+    public:
+        virtual void draw(Renderer &renderer) const override;
+};
+
+/**
+ * Displays a rat scaled to fit in the box you give it without stretching.
+ */
+class FrameKnob: public Knob {
+    public:
+        FrameKnob(sf::IntRect rat);
+
+        virtual void bake(sf::FloatRect shape) override;
+
+        virtual void draw(Renderer &renderer) const override;
+
+    private:
+        sf::IntRect rat;
+}
 
 #endif
