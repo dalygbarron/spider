@@ -4,6 +4,7 @@
 #include "Level.hh"
 #include "Entity.hh"
 #include "Core.hh"
+#include "Knob.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -47,7 +48,7 @@ class Screen {
          * rendered too.
          * @return true if so.
          */
-        virtual int isTransparent();
+        virtual int isTransparent() const;
 
         /**
          * Called when this screen is revealed on the screen stack, as in it
@@ -275,10 +276,10 @@ class KnobScreen: public Screen {
         /**
          * Creates the screen and gives it it's dependencies.
          * @param core is the core dependencies.
-         * @param knob is the control that the screen will let you interact
-         *             with. If the control has not already been fitted then
+         * @param knob is the knob that the screen will let you interact
+         *             with. If the knob has not already been baked then
          *             the screen will remove itself from the screen stack
-         *             as soon as it can. Also, the control is a pointer
+         *             as soon as it can. Also, the knob is a pointer
          *             because when this screen is done it will delete it.
          */
         KnobScreen(Core &core, Knob *knob);
@@ -292,8 +293,11 @@ class KnobScreen: public Screen {
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
+        virtual int isTransparent() const override;
+
     private:
-        Control *control;
+        Knob *knob;
+        sf::Vector2f mouse;
 };
 
 /**

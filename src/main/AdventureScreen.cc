@@ -18,8 +18,12 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
 }
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
-    window.setMouseCursorVisible(false);
     sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
+    this->shader.setUniform("angle", camera);
+    // add a gui screen.
+    Knob *knob = new PanelKnob(2);
+    knob->bake(sf::FloatRect(100, 200, 300, 400));
+    this->core.pushScreen(new KnobScreen(this->core, knob));
     this->shader.setUniform("angle", camera);
 }
 
@@ -73,6 +77,12 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
                 sf::Vector2f(instance.size, instance.size)
             );
         }
+    }
+    if (top) {
+        this->core.renderer.point(
+            sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
+            false
+        );
     }
     target.draw(this->core.renderer.batch);
 }

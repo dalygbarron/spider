@@ -87,7 +87,6 @@ Instance &LevelScreen::addInstance(Entity const *entity) {
 }
 
 void LevelScreen::update(float delta, sf::RenderWindow &window) {
-    this->shader.setUniform("angle", camera);
     // Now do the gui.
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin(this->level.file.c_str())) {
@@ -307,10 +306,10 @@ void LevelScreen::entityMenu() {
 }
 
 void LevelScreen::draw(sf::RenderTarget &target, int top) const {
+    this->core.renderer.batch.clear();
     sf::RenderStates states;
     states.shader = &(this->shader);
     target.draw(back, states);
-    this->core.renderer.batch.clear();
     sf::Vector3f floor = Util::sphereToScreen(
         sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
         this->camera

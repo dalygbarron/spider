@@ -1,12 +1,15 @@
 #ifndef KNOB_H
 #define KNOB_H
 
+#include "SoundPlayer.hh"
+#include "Renderer.hh"
+#include <SFML/Graphics.hpp>
+
 /**
  * Generic superclass of gui knobs like buttons, boxes, sliders, etc.
  */
 class Knob {
     public:
-        sf::FloatRect shape;
         int id = -1;
 
         /**
@@ -18,6 +21,12 @@ class Knob {
          * Tells you if the knob is baked.
          */
         int isBaked() const;
+
+        /**
+         * Gives you the shape of the knob.
+         * @return the shape of it's outline.
+         */
+        sf::FloatRect getShape() const;
 
         /**
          * Set the shape of the knob and if it has children, them too.
@@ -46,6 +55,7 @@ class Knob {
 
     private:
         int baked = false;
+        sf::FloatRect shape;
 };
 
 /**
@@ -53,6 +63,10 @@ class Knob {
  */
 class PanelKnob: public Knob {
     public:
+        // TODO: this kinda sucks but it's dependent on the sprite patch.
+        static int const BORDER = 8;
+        int const parts;
+
         /**
          * Creates the panel and sets how many parts per row it has.
          * @param parts is the number of things per row it will have.
@@ -60,7 +74,8 @@ class PanelKnob: public Knob {
         PanelKnob(int parts);
 
         /**
-         * Adds a child to the panel.
+         * Adds a child to the panel. Don't pass null pointers to this for
+         * god's sake.
          * @param child is the knob to add as a child.
          */
         void addChild(Knob *child);
@@ -78,7 +93,6 @@ class PanelKnob: public Knob {
 
     private:
         std::vector<Knob *> children;
-        Knob::Direction direction;
 };
 
 #endif

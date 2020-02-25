@@ -92,6 +92,7 @@ int process(Core &core) {
         Const::TITLE// TODO: add to core and get from core.
     );
     window.setVerticalSyncEnabled(true);
+    window.setMouseCursorVisible(false);
     ImGui::SFML::Init(window);
     window.resetGLStates();
     sf::View view;
@@ -165,7 +166,7 @@ int process(Core &core) {
             frame = 0;
         }
         // Re get the screen for if there has been a transition.
-        Screen *screen = core.getTopScreen();
+        screen = core.getTopScreen();
     }
     return 0;
 }

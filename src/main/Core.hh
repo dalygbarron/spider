@@ -5,6 +5,7 @@
 #include "RatPack.hh"
 #include "Renderer.hh"
 #include "RatBatch.hh"
+#include "SoundPlayer.hh"
 
 /**
  * Forward declaration.

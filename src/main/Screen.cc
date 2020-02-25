@@ -8,7 +8,7 @@ Screen::~Screen() {
     // Does nothing.
 }
 
-int Screen::isTransparent() {
+int Screen::isTransparent() const {
     return false;
 }
 
