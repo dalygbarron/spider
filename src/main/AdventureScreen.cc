@@ -36,7 +36,10 @@ void AdventureScreen::onClick(
 
 void AdventureScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
     sf::Vector2f current = Util::screenToSphere(pos, this->camera);
-    sf::Vector2f old = Util::screenToSphere(sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT), this->camera);
+    sf::Vector2f old = Util::screenToSphere(
+        sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
+        this->camera
+    );
     this->camera += current - old;
 }
 
