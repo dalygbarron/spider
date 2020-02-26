@@ -15,25 +15,24 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         spdlog::error("Couldn't start the sky shader");
     }
     this->back.setTexture(&this->level.getPic(), true);
+    this->script.open_libraries(sol::lib::base, sol::lib::coroutine);
+    this->script["_getCamera"] = [this]() {
+        return std::make_tuple(this->camera.x, this->camera.y);
+    };
+    this->script["_setCamera"] = [this](float x, float y) {
+        this->camera.x = x;
+        this->camera.y = y;
+    };
+    this->script.script(this->level.script);
+    this->coroutine = this->script["_start"];
+    if (this->coroutine) this->coroutine();
 }
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
+    if (this->coroutine) {
+        this->coroutine();
+    }
     sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
-    this->shader.setUniform("angle", camera);
-    // add a gui screen.
-    PanelKnob *knob = new PanelKnob(4);
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->addChild(new ButtonKnob(NULL));
-    knob->bake(sf::FloatRect(256, 400, 512, 200));
-    this->core.pushScreen(new KnobScreen(this->core, knob));
     this->shader.setUniform("angle", camera);
 }
 
@@ -41,10 +40,16 @@ void AdventureScreen::onClick(
     sf::Mouse::Button button,
     sf::Vector2f pos
 ) {
+    if (this->coroutine) return;
 
 }
 
+void AdventureScreen::onReveal(int response) {
+    if (this->coroutine) this->coroutine(response);
+}
+
 void AdventureScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
+    if (this->coroutine) return;
     sf::Vector2f current = Util::screenToSphere(pos, this->camera);
     sf::Vector2f old = Util::screenToSphere(
         sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
@@ -54,6 +59,7 @@ void AdventureScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
+    if (this->coroutine) return;
 
 }
 

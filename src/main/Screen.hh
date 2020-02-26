@@ -322,6 +322,8 @@ class AdventureScreen: public Screen {
             sf::Vector2f pos
         ) override;
 
+        virtual void onReveal(int response) override;
+
         virtual void onDrag(sf::Vector2f delta, sf::Vector2f pos) override;
 
         virtual void onKey(sf::Keyboard::Key key) override;
