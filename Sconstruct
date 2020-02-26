@@ -5,24 +5,24 @@ libs = [
     'sfml-system',
     'sfml-audio',
     'sfml-window',
-    'luajit',
+    'luajit-5.1',
     'm',
     'dl'
 ]
 cflags = [
     '-std=c++17',
-    '-fdiagnostics-color=always'
+    '-fdiagnostics-color=always',
+    '-I/usr/include/luajit-2.1'
 ]
-lflags = [
-    '-pagezero_size', '10000',
-    '-image_base', '100000000'
-]
+lflags = []
 
 if sys.platform != 'darwin':
     libs.append('GL')
 else:
     cflags.append('-mmacosx-version-min=10.15')
     cflags.append('-stdlib=libc++')
+    lflags.append(['-pagezero_size', '10000'])
+    lflags.append(['-image_base', '100000000'])
 
 mainSources = Glob('src/main/*.cc')
 testSources = Glob('src/test/*.cc')

@@ -27,9 +27,9 @@
 #include "../feature_test.hpp"
 
 #if defined(SOL_USING_CXX_LUA) && SOL_USING_CXX_LUA
-	#include <luajit-2.0/lua.h>
-	#include <luajit-2.0/lualib.h>
-	#include <luajit-2.0/lauxlib.h>
+	#include <lua.h>
+	#include <lualib.h>
+	#include <lauxlib.h>
 	#if (defined(SOL_USING_CXX_LUAJIT) && SOL_USING_CXX_LUAJIT) || (defined(LUAJIT_VERSION) && LUAJIT_VERSION)
 		#include <luajit.h>
 	#endif // C++ LuaJIT ... whatever that means
@@ -39,29 +39,29 @@
 #else
 	#if defined(SOL_NO_LUA_HPP) && SOL_NO_LUA_HPP
 		extern "C" {
-			#include <luajit-2.0/lua.h>
-			#include <luajit-2.0/lauxlib.h>
-			#include <luajit-2.0/lualib.h>
+			#include <lua.h>
+			#include <lauxlib.h>
+			#include <lualib.h>
 			#if defined(LUAJIT_VERSION) && LUAJIT_VERSION
 				#include <luajit.h>
 			#endif
 		}
 	#else
 		#if defined(__has_include)
-			#if __has_include(<luajit-2.0/lua.hpp>)
-				#include <luajit-2.0/lua.hpp>
+			#if __has_include(<lua.hpp>)
+				#include <lua.hpp>
 			#else
 				extern "C" {
-					#include <luajit-2.0/lua.h>
-					#include <luajit-2.0/lauxlib.h>
-					#include <luajit-2.0/lualib.h>
+					#include <lua.h>
+					#include <lauxlib.h>
+					#include <lualib.h>
 					#if defined(LUAJIT_VERSION) && LUAJIT_VERSION
 						#include <luajit.h>
 					#endif
 				}
 			#endif // lua.hpp exists or does not
 		#else
-			#include <luajit-2.0/lua.hpp>
+			#include <lua.hpp>
 		#endif // check for lua.hpp safely for Lua 5.1 derps
 	#endif // Manual - have lua.hpp or not
 #endif // C++ Mangling for Lua vs. Not
