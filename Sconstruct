@@ -4,11 +4,18 @@ libs = [
     'sfml-graphics',
     'sfml-system',
     'sfml-audio',
-    'sfml-window'
+    'sfml-window',
+    'luajit',
+    'm',
+    'dl'
 ]
 cflags = [
     '-std=c++17',
     '-fdiagnostics-color=always'
+]
+lflags = [
+    '-pagezero_size', '10000',
+    '-image_base', '100000000'
 ]
 
 if sys.platform != 'darwin':
@@ -23,7 +30,8 @@ testSources = Glob('src/test/*.cc')
 env = Environment(
     LIBS=libs,
     FRAMEWORKS=['OpenGl'],
-    CXXFLAGS=cflags
+    CXXFLAGS=cflags,
+    LINKFLAGS=lflags
 )
 
 spider = env.Program('spider', mainSources + ['src/main.cc'])

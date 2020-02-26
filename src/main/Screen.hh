@@ -9,6 +9,7 @@
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
 #include "TextEditor.h"
+#include "sol/sol.hpp"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -330,6 +331,8 @@ class AdventureScreen: public Screen {
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;
+        sol::state script;
+        sol::coroutine coroutine;
 };
 
 #endif

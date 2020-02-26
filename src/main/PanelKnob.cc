@@ -5,6 +5,10 @@ PanelKnob::PanelKnob(int parts): parts(parts) {
     // Nothing else.
 }
 
+PanelKnob::~PanelKnob() {
+    for (Knob *child: this->children) delete child;
+}
+
 void PanelKnob::addChild(Knob *child) {
     this->children.push_back(child);
 }

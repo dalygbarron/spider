@@ -74,6 +74,11 @@ class PanelKnob: public Knob {
         PanelKnob(int parts);
 
         /**
+         * Deletes the children.
+         */
+        ~PanelKnob();
+
+        /**
          * Adds a child to the panel. Don't pass null pointers to this for
          * god's sake.
          * @param child is the knob to add as a child.
@@ -98,23 +103,32 @@ class PanelKnob: public Knob {
  */
 class ButtonKnob: public Knob {
     public:
+        static int const BORDER = 8;
+        int enabled = true;
+
         /**
          * Creates a button knob with an arbitrary knob as it's content.
          * @param child is the contents of the button.
          */
         ButtonKnob(Knob *child);
 
+        /**
+         * Deletes the child.
+         */
+        ~ButtonKnob();
+
         virtual void bake(sf::FloatRect shape) override;
 
         virtual Knob *update(
             sf::Vector2f mouse,
             SoundPlayer &soundPlayer
-        ) const override;
+        ) override;
 
         virtual void draw(Renderer &renderer) const override;
 
     private:
         Knob *child;
+        int depressed = false;
 };
 
 /**
@@ -122,7 +136,20 @@ class ButtonKnob: public Knob {
  */
 class TextKnob: public Knob {
     public:
+        /**
+         * Gives the text knob tghe text that it can write.
+         * @param text is the text to write. The knob copies this data and then
+         *             discards it so if you allocated it dynamically, you must
+         *             delete it yourself.
+         */
+        TextKnob(char const *text);
+
+        virtual void bake(sf::FloatRect shape) override;
+
         virtual void draw(Renderer &renderer) const override;
+    
+    private:
+        sf::Text text;
 };
 
 /**
@@ -138,6 +165,6 @@ class FrameKnob: public Knob {
 
     private:
         sf::IntRect rat;
-}
+};
 
 #endif
