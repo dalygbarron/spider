@@ -30,7 +30,7 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
     if (this->coroutine) {
-        this->coroutine();
+        this->coroutine(delta);
     }
     sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
     this->shader.setUniform("angle", camera);
