@@ -12,7 +12,8 @@ libs = [
 cflags = [
     '-std=c++17',
     '-fdiagnostics-color=always',
-    '-I/usr/include/luajit-2.1'
+    '-I/usr/include/luajit-2.1',
+    '-I/usr/local/include/luajit-2.0',
 ]
 lflags = []
 
@@ -22,7 +23,7 @@ else:
     cflags.append('-mmacosx-version-min=10.15')
     cflags.append('-stdlib=libc++')
     lflags.append(['-pagezero_size', '10000'])
-    lflags.append(['-image_base', '100000000'])
+    lflags.append(['-image_base', '10000000'])
 
 mainSources = Glob('src/main/*.cc')
 testSources = Glob('src/test/*.cc')

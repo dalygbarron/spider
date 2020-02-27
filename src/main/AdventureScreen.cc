@@ -15,7 +15,15 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         spdlog::error("Couldn't start the sky shader");
     }
     this->back.setTexture(&this->level.getPic(), true);
-    this->script.open_libraries(sol::lib::base, sol::lib::coroutine);
+    this->script.open_libraries(
+        sol::lib::base,
+        sol::lib::coroutine,
+        sol::lib::package,
+        sol::lib::math
+    );
+    this->script["_error"] = [](std::string message) {
+        spdlog::error("Scripting Error: {}", message.c_str());
+    };
     this->script["_getCamera"] = [this]() {
         return std::make_tuple(this->camera.x, this->camera.y);
     };
@@ -25,6 +33,7 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     };
     this->script.script(this->level.script);
     this->coroutine = this->script["_start"];
+    this->coroutine.error_handler = this->script["_error"];
     if (this->coroutine) this->coroutine();
 }
 
