@@ -31,6 +31,10 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->camera.x = x;
         this->camera.y = y;
     };
+    this->script["_knobTable"] = [](sol::table table) {
+        Knob *knob = Util::knobTable(table);
+        this->core.transition(new KnobScreen(knob));
+    }
     this->script.script(this->level.script);
     this->coroutine = this->script["_start"];
     this->coroutine.error_handler = this->script["_error"];
