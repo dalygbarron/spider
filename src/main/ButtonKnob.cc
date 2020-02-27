@@ -1,4 +1,5 @@
 #include "Knob.hh"
+#include "Renderer.hh"
 
 ButtonKnob::ButtonKnob(Knob *child) {
     this->child = child;

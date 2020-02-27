@@ -1,4 +1,5 @@
 #include "Knob.hh"
+#include "Renderer.hh"
 #include <cmath>
 
 PanelKnob::PanelKnob(int parts): parts(parts) {

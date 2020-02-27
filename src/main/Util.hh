@@ -1,6 +1,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include "Knob.hh"
+#include "sol.hh"
 #include <SFML/Graphics.hpp>
 
 /**

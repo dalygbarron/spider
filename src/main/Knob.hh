@@ -2,8 +2,12 @@
 #define KNOB_H
 
 #include "SoundPlayer.hh"
-#include "Renderer.hh"
 #include <SFML/Graphics.hpp>
+
+/**
+ * Forward declaration.
+ */
+class Renderer;
 
 /**
  * Generic superclass of gui knobs like buttons, boxes, sliders, etc.

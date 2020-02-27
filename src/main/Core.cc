@@ -107,8 +107,9 @@ void Core::drawScreens(sf::RenderTarget &target) {
     if (this->nScreens == 0) return;
     auto start = this->screens.begin() + this->firstVisible;
     auto end = this->screens.begin() + this->nScreens;
+    auto almostEnd = this->screens.begin() + this->nScreens - 1;
     for (auto it = start; it != end; it++) {
-        (*it)->draw(target, it == end);
+        (*it)->draw(target, it == almostEnd);
     }
 }
 

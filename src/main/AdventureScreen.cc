@@ -22,7 +22,7 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         sol::lib::math
     );
     this->script["_error"] = [](std::string message) {
-        spdlog::error("Scripting Error: {}", message.c_str());
+        spdlog::error("Script: {}", message.c_str());
     };
     this->script["_getCamera"] = [this]() {
         return std::make_tuple(this->camera.x, this->camera.y);
@@ -31,10 +31,10 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->camera.x = x;
         this->camera.y = y;
     };
-    this->script["_knobTable"] = [](sol::table table) {
+    this->script["_knobTable"] = [this](sol::table table) {
         Knob *knob = Util::knobTable(table);
-        this->core.transition(new KnobScreen(knob));
-    }
+        this->core.pushScreen(new KnobScreen(this->core, knob));
+    };
     this->script.script(this->level.script);
     this->coroutine = this->script["_start"];
     this->coroutine.error_handler = this->script["_error"];
@@ -111,9 +111,9 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         }
     }
     if (top) {
-        this->core.renderer.point(
+        this->core.renderer.cursor(
             sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
-            false
+            Renderer::CursorType::pointer
         );
     }
     target.draw(this->core.renderer.batch);
