@@ -88,15 +88,6 @@ namespace Util {
      *         back of the screen.
      */
     sf::Vector3f sphereToScreen(sf::Vector2f coordinate, sf::Vector2f camera);
-
-    /**
-     * Takes a lua table and converts it into a knob (potentially with child
-     * knobs). If you have given it junk, it will log an error and return null
-     * and not cause a memory hopefully.
-     * @param table is the table to be converted.
-     * @return a pointer to a knob you now own.
-     */
-    Knob *knobTable(sol::table const &table);
 }
 
 #endif

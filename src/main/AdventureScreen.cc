@@ -1,5 +1,6 @@
 #include "Screen.hh"
 #include "Const.hh"
+#include "Knob.hh"
 #include "Util.hh"
 
 AdventureScreen::AdventureScreen(Core &core, Level const &level):
@@ -31,9 +32,19 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->camera.x = x;
         this->camera.y = y;
     };
-    this->script["_knobTable"] = [this](sol::table table) {
-        Knob *knob = Util::knobTable(table);
-        this->core.pushScreen(new KnobScreen(this->core, knob));
+    sol::usertype<PanelKnob> panelType = this->script.new_usertype<PanelKnob>(
+        "PanelKnob",
+        sol::constructors<PanelKnob(int parts)>(),
+        sol::base_classes, sol::bases<Knob>()
+    );
+    sol::usertype<ButtonKnob> buttonType = this->script.new_usertype<ButtonKnob>(
+        "ButtonKnob",
+        sol::constructors<ButtonKnob(Knob *knob)>(),
+        sol::base_classes, sol::bases<Knob>()
+    );
+    this->script["_gui"] = [this](Knob &knob) {
+        knob.bake(sf::FloatRect(100, 100, 200, 300));
+        this->core.pushScreen(new KnobScreen(this->core, &knob));
     };
     this->script.script(this->level.script);
     this->coroutine = this->script["_start"];
@@ -54,7 +65,6 @@ void AdventureScreen::onClick(
     sf::Vector2f pos
 ) {
     if (this->coroutine) return;
-
 }
 
 void AdventureScreen::onReveal(int response) {
@@ -73,7 +83,6 @@ void AdventureScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
     if (this->coroutine) return;
-
 }
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {

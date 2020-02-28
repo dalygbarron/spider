@@ -115,10 +115,3 @@ sf::Vector3f Util::sphereToScreen(
         cos(coordinate.x)
     );
 }
-
-Knob *Util::knobTable(sol::table const &table) {
-    for (sol::table const &knob: table) {
-        spdlog::info("{}", knob["type"]);
-    }
-    return NULL;
-}
