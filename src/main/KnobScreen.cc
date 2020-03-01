@@ -14,11 +14,6 @@ void KnobScreen::update(float delta, sf::RenderWindow &window) {
         this->core.popScreen(-1);
         return;
     }
-    if (!this->knob->isBaked()) {
-        spdlog::warn("Removing control screen because control is unbaked");
-        this->core.popScreen(-1);
-        return;
-    }
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     this->mouse.x = mousePos.x;
     this->mouse.y = mousePos.y;

@@ -22,7 +22,8 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         sol::lib::coroutine,
         sol::lib::package,
         sol::lib::math,
-        sol::lib::table
+        sol::lib::table,
+        sol::lib::string
     );
     this->script["_error"] = [](std::string message) {
         spdlog::error("Script: {}", message.c_str());
@@ -34,20 +35,13 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->camera.x = x;
         this->camera.y = y;
     };
-    this->script["_xmlKnob"] = [this](
-        std::string const &xml,
-        int x,
-        int y,
-        int w,
-        int h
-    ) {
+    this->script["_xmlKnob"] = [this](std::string const &xml) {
         spdlog::info(xml.c_str());
         Knob *knob = FileIO::readXml(
             xml.c_str(),
             FileIO::parseKnob
         );
         if (knob) {
-            knob->bake(sf::FloatRect(100, 100, 200, 300));
             this->core.pushScreen(new KnobScreen(this->core, knob));
         } else {
             spdlog::error("API: Invalid argument to _xmlKnob");

@@ -15,28 +15,12 @@ class Renderer;
 class Knob {
     public:
         int id = -1;
+        sf::FloatRect shape;
 
         /**
          * Virtual destructor so sub types can destroy.
          */
         virtual ~Knob();
-
-        /**
-         * Tells you if the knob is baked.
-         */
-        int isBaked() const;
-
-        /**
-         * Gives you the shape of the knob.
-         * @return the shape of it's outline.
-         */
-        sf::FloatRect getShape() const;
-
-        /**
-         * Set the shape of the knob and if it has children, them too.
-         * @param shape is the size to fit the knob into.
-         */
-        virtual void bake(sf::FloatRect shape);
 
         /**
          * Updates the knob and potentially returns somethnig nice if something
@@ -56,10 +40,6 @@ class Knob {
          *                 draw to.
          */
         virtual void draw(Renderer &renderer) const = 0;
-
-    private:
-        int baked = false;
-        sf::FloatRect shape;
 };
 
 /**
@@ -67,8 +47,6 @@ class Knob {
  */
 class PanelKnob: public Knob {
     public:
-        // TODO: this kinda sucks but it's dependent on the sprite patch.
-        static int const BORDER = 8;
         int const parts;
 
         /**
@@ -89,8 +67,6 @@ class PanelKnob: public Knob {
          */
         void addChild(Knob *child);
 
-        virtual void bake(sf::FloatRect shape) override;
-
         virtual Knob *update(
             sf::Vector2f mouse,
             SoundPlayer &soundPlayer
@@ -107,7 +83,6 @@ class PanelKnob: public Knob {
  */
 class ButtonKnob: public Knob {
     public:
-        static int const BORDER = 8;
         int enabled = true;
 
         /**
@@ -120,8 +95,6 @@ class ButtonKnob: public Knob {
          * Deletes the child.
          */
         ~ButtonKnob();
-
-        virtual void bake(sf::FloatRect shape) override;
 
         virtual Knob *update(
             sf::Vector2f mouse,
@@ -148,8 +121,6 @@ class TextKnob: public Knob {
          */
         TextKnob(char const *text);
 
-        virtual void bake(sf::FloatRect shape) override;
-
         virtual void draw(Renderer &renderer) const override;
     
     private:
@@ -162,8 +133,6 @@ class TextKnob: public Knob {
 class FrameKnob: public Knob {
     public:
         FrameKnob(sf::IntRect rat);
-
-        virtual void bake(sf::FloatRect shape) override;
 
         virtual void draw(Renderer &renderer) const override;
 
