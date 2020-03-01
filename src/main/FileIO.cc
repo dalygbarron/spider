@@ -207,3 +207,20 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     }
     return core;
 }
+
+Knob *FileIO::parseKnob(pugi::xml_node node) {
+    char const *type = node.name();
+    if (strcmp(type, "panel") == 0) {
+        PanelKnob *panel = new PanelKnob(node.attribute("parts").as_int());
+        for (pugi::xml_node child: node.children()) {
+            panel->addChild(FileIO::parseKnob(child));
+        }
+        return panel;
+    } else if (strcmp(type, "button") == 0) {
+        pugi::xml_node child = node.first_child();
+        return new ButtonKnob(FileIO::parseKnob(child));
+    } else if (strcmp(type, "text") == 0) {
+        // TODO: this.
+        return NULL;
+    }
+}

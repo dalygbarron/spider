@@ -50,6 +50,63 @@ namespace FileIO {
      * @return the new core.
      */
     Core *loadCoreFromFile(ghc::filesystem::path const &path);
+
+    /**
+     * TUrns an xml node into the knob it represents recursively.
+     * @param knob is the xml node.
+     * @return the knob or null if it's no good.
+     */
+    Knob *parseKnob(pugi::xml_node node);
+
+    /**
+     * Loads in XML from a file, then parses it into your desired type using
+     * your desired parsing function.
+     * @param filename is the name of the file to load.
+     * @param parser   is the function used to parse the xml.
+     * @return whatever the parser returned, unless the the file would not open
+     *         or the xml was invalid in which case it's null for certain.
+     */
+    template <class T> T *readXmlFile(
+        char const *filename,
+        T *(*parser)(pugi::xml_node node)
+    ) {
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(filename);
+        if (!result) {
+            spdlog::error(
+                "'{}' does not work as an xml file: {}",
+                filename,
+                result.description()
+            );
+            return NULL;
+        }
+        return parser(doc.first_child());
+    }
+
+    /**
+     * Reads xml from a string, then parses it into your desired type using
+     * your desired parsing function.
+     * @param xml    is the string to parse.
+     * @param parser is the function used to parse the xml.
+     * @return whatever the parser returned, unless the the file would not open
+     *         or the xml was invalid in which case it's null for certain.
+     */
+    template <class T> T *readXml(
+        char const *xml,
+        T *(*parser)(pugi::xml_node node)
+    ) {
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_string(xml);
+        if (!result) {
+            spdlog::error(
+                "'{}' does not work as xml: {}",
+                xml,
+                result.description()
+            );
+            return NULL;
+        }
+        return parser(doc.first_child());
+    }
 };
 
 #endif

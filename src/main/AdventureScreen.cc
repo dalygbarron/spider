@@ -2,6 +2,7 @@
 #include "Const.hh"
 #include "Knob.hh"
 #include "Util.hh"
+#include "FileIO.hh"
 
 AdventureScreen::AdventureScreen(Core &core, Level const &level):
     Screen(core),
@@ -20,7 +21,8 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         sol::lib::base,
         sol::lib::coroutine,
         sol::lib::package,
-        sol::lib::math
+        sol::lib::math,
+        sol::lib::table
     );
     this->script["_error"] = [](std::string message) {
         spdlog::error("Script: {}", message.c_str());
@@ -32,19 +34,24 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->camera.x = x;
         this->camera.y = y;
     };
-    sol::usertype<PanelKnob> panelType = this->script.new_usertype<PanelKnob>(
-        "PanelKnob",
-        sol::constructors<PanelKnob(int parts)>(),
-        sol::base_classes, sol::bases<Knob>()
-    );
-    sol::usertype<ButtonKnob> buttonType = this->script.new_usertype<ButtonKnob>(
-        "ButtonKnob",
-        sol::constructors<ButtonKnob(Knob *knob)>(),
-        sol::base_classes, sol::bases<Knob>()
-    );
-    this->script["_gui"] = [this](Knob &knob) {
-        knob.bake(sf::FloatRect(100, 100, 200, 300));
-        this->core.pushScreen(new KnobScreen(this->core, &knob));
+    this->script["_xmlKnob"] = [this](
+        std::string const &xml,
+        int x,
+        int y,
+        int w,
+        int h
+    ) {
+        spdlog::info(xml.c_str());
+        Knob *knob = FileIO::readXml(
+            xml.c_str(),
+            FileIO::parseKnob
+        );
+        if (knob) {
+            knob->bake(sf::FloatRect(100, 100, 200, 300));
+            this->core.pushScreen(new KnobScreen(this->core, knob));
+        } else {
+            spdlog::error("API: Invalid argument to _xmlKnob");
+        }
     };
     this->script.script(this->level.script);
     this->coroutine = this->script["_start"];
