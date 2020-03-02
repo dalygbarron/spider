@@ -135,7 +135,7 @@ function gui.bake(knob, x, y, w, h)
             gui.bake(
                 child,
                 x + ((i - 1) % knob.parts) * w,
-                y + math.ceil((i - 1) / knob.parts) * h,
+                y + (math.ceil(i / knob.parts) - 1) * h,
                 w,
                 h
             )
@@ -209,7 +209,7 @@ function gui.ask(speaker, question, ...)
         table.insert(answerButtons, gui.button(answer, i - 1))
     end
     local questionPanel = gui.panel(
-        4,
+        3,
         unpack(answerButtons)
     )
     local knob = gui.panel(
