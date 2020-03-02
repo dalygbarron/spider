@@ -14,8 +14,18 @@ class Renderer;
  */
 class Knob {
     public:
-        int id = -1;
-        sf::FloatRect shape;
+        sf::FloatRect const shape;
+        int const id;
+
+        /**
+         * Sets the shape and the id.
+         * @param x  is the position from the left.
+         * @param y  is the position from the right.
+         * @param w  is the width.
+         * @param h  is the height.
+         * @param id is the id number of this knob.
+         */
+        Knob(int x, int y, int w, int h, int id);
 
         /**
          * Virtual destructor so sub types can destroy.
@@ -36,10 +46,14 @@ class Knob {
 
         /**
          * Draws the knob on the sprite batch.
+         * @param target   is the render target to draw on.
          * @param renderer is the renderer and owner of the sprite batch to
          *                 draw to.
          */
-        virtual void draw(Renderer &renderer) const = 0;
+        virtual void draw(
+            sf::RenderTarget &target,
+            Renderer &renderer
+        ) const = 0;
 };
 
 /**
@@ -50,10 +64,15 @@ class PanelKnob: public Knob {
         int const parts;
 
         /**
-         * Creates the panel and sets how many parts per row it has.
+         * Creates the panel and sets how many parts per row it has and it's
+         * dimensions.
+         * @param x     is the position from the left.
+         * @param y     is the position from the right.
+         * @param w     is the width.
+         * @param h     is the height.
          * @param parts is the number of things per row it will have.
          */
-        PanelKnob(int parts);
+        PanelKnob(int x, int y, int w, int h, int parts);
 
         /**
          * Deletes the children.
@@ -72,7 +91,10 @@ class PanelKnob: public Knob {
             SoundPlayer &soundPlayer
         ) override;
 
-        virtual void draw(Renderer &renderer) const override;
+        virtual void draw(
+            sf::RenderTarget &target,
+            Renderer &renderer
+        ) const override;
 
     private:
         std::vector<Knob *> children;
@@ -87,9 +109,14 @@ class ButtonKnob: public Knob {
 
         /**
          * Creates a button knob with an arbitrary knob as it's content.
+         * @param x     is the left position.
+         * @param y     is the top position.
+         * @param w     is the width.
+         * @param h     is the height.
+         * @param id    is the id number.
          * @param child is the contents of the button.
          */
-        ButtonKnob(Knob *child);
+        ButtonKnob(int x, int y, int w, int h, int id, Knob *child);
 
         /**
          * Deletes the child.
@@ -101,7 +128,10 @@ class ButtonKnob: public Knob {
             SoundPlayer &soundPlayer
         ) override;
 
-        virtual void draw(Renderer &renderer) const override;
+        virtual void draw(
+            sf::RenderTarget &target,
+            Renderer &renderer
+        ) const override;
 
     private:
         Knob *child;
@@ -119,9 +149,12 @@ class TextKnob: public Knob {
          *             discards it so if you allocated it dynamically, you must
          *             delete it yourself.
          */
-        TextKnob(char const *text);
+        TextKnob(int x, int y, int w, int h, char const *text);
 
-        virtual void draw(Renderer &renderer) const override;
+        virtual void draw(
+            sf::RenderTarget &target,
+            Renderer &renderer
+        ) const override;
     
     private:
         sf::Text text;
@@ -132,9 +165,20 @@ class TextKnob: public Knob {
  */
 class FrameKnob: public Knob {
     public:
+        /**
+         * Creates teh frameknob and enters the rat.
+         * @param x   is the distance from left.
+         * @param y   is the distance from top.
+         * @param w   is the width.
+         * @param y   is the height.
+         * @param rat is the rat to draw.
+         */
         FrameKnob(sf::IntRect rat);
 
-        virtual void draw(Renderer &renderer) const override;
+        virtual void draw(
+            sf::RenderTarget &target,
+            Renderer &renderer
+        ) const override;
 
     private:
         sf::IntRect rat;

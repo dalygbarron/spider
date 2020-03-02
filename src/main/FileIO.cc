@@ -209,26 +209,29 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
 }
 
 Knob *FileIO::parseKnob(pugi::xml_node node) {
+    int x = node.attribute("x").as_int();
+    int y = node.attribute("y").as_int();
+    int w = node.attribute("w").as_int();
+    int h = node.attribute("h").as_int();
+    int id = node.attribute("id").as_int();
     char const *type = node.name();
-    Knob *knob = NULL;
     if (strcmp(type, "panel") == 0) {
-        PanelKnob *panel = new PanelKnob(node.attribute("parts").as_int());
+        PanelKnob *panel = new PanelKnob(
+            x,
+            y,
+            w,
+            h,
+            node.attribute("parts").as_int()
+        );
         for (pugi::xml_node child: node.children()) {
             panel->addChild(FileIO::parseKnob(child));
         }
-        knob = panel;
+        return panel;
     } else if (strcmp(type, "button") == 0) {
         pugi::xml_node child = node.first_child();
-        knob = new ButtonKnob(FileIO::parseKnob(child));
+        return new ButtonKnob(x, y, w, h, id, FileIO::parseKnob(child));
     } else if (strcmp(type, "text") == 0) {
-        TextKnob *text = new TextKnob(node.value());
-        knob = text;
+        TextKnob *text = new TextKnob(x, y, w, h, node.value());
+        return text;
     }
-    if (!knob) return NULL;
-    knob->id = node.attribute("id").as_int();
-    knob->shape.left = node.attribute("x").as_int();
-    knob->shape.top = node.attribute("y").as_int();
-    knob->shape.width = node.attribute("w").as_int();
-    knob->shape.height = node.attribute("h").as_int();
-    return knob;
 }

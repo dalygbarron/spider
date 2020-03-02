@@ -1,9 +1,12 @@
 #include "Knob.hh"
 
-TextKnob::TextKnob(char const *text) {
-    // TODO: stfuf
+TextKnob::TextKnob(int x, int y, int w, int h, char const *text):
+    Knob(x, y, w, h, -1)
+{
+    std::string content = text;
+    this->text.setString(content);
 }
 
-void TextKnob::draw(Renderer &renderer) const {
-    // TODO: stuff
+void TextKnob::draw(sf::RenderTarget &target, Renderer &renderer) const {
+    target.draw(this->text);
 }

@@ -1,7 +1,9 @@
 #include "Knob.hh"
 #include "Renderer.hh"
 
-ButtonKnob::ButtonKnob(Knob *child) {
+ButtonKnob::ButtonKnob(int x, int y, int w, int h, int id, Knob *child):
+    Knob(x, y, w, h, id)
+{
     this->child = child;
 }
 
@@ -25,9 +27,9 @@ Knob *ButtonKnob::update(sf::Vector2f mouse, SoundPlayer &soundPlayer) {
     return NULL;
 }
 
-void ButtonKnob::draw(Renderer &renderer) const {
+void ButtonKnob::draw(sf::RenderTarget &target, Renderer &renderer) const {
     renderer.button(this->shape, !this->enabled || this->depressed);
-    if (this->child) this->child->draw(renderer);
+    if (this->child) this->child->draw(target, renderer);
 }
 
 
