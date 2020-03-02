@@ -1,20 +1,33 @@
 local gui = {}
 
--- TODO: you know what we can do? We can actually create fake knobs that are
--- never sent over to the engine, and just enable baking their children knobs
--- in more unusual ways. Hell yeah nice idea.
-
 gui.BUTTON_BORDER = 8
 gui.PANEL_BORDER = 8
+
+--- Creates a representation of a text node for use within this module.
+-- @param content is the text to write.
+-- @return the representation.
+function gui.text(content)
+    return {
+        type = "text",
+        content = content,
+        x = 0,
+        y = 0,
+        w = 0,
+        h = 0
+    }
+end
 
 --- Creates a representation of a button that can be used within this module.
 -- @param content is what to put in the button, which should be either a string
 --                or a table representation of a knob.
+-- @param id      is the id to give the button so when it has been clicked you
+--                will recognise it.
 -- @return a representation of a button knob.
-function gui.button(content)
+function gui.button(content, id)
     local kind = type(content)
     local knob = {
         type = "button",
+        id = id or -1,
         x = 0,
         y = 0,
         w = 0,
@@ -52,6 +65,53 @@ function gui.panel(parts, ...)
     return knob
 end
 
+--- Creates a representation of a virtual horizontal split knob which is
+-- something that only exists within this code, it simply affects the baking
+-- process and is never sent to the engine.
+-- @param share is the proportion of the horizontal space the first item gets.
+-- @param a     is the first knob to share the inside space.
+-- @param b     is the second knob to share the inside space.
+-- @return the representation of a hsplit knob.
+function gui.hsplit(share, a, b)
+    return {
+        type = "hsplit",
+        share = share,
+        a = a,
+        b = b,
+        x = 0,
+        y = 0,
+        w = 0,
+        h = 0
+    }
+end
+
+--- Creates a representation of a virtual vertical split knob which is
+-- something that only exists within this code, it simply affects the baking
+-- process and is never sent to the engine.
+-- @param share is the proportion of the vertical space the first item gets.
+-- @param a     is the first knob to share the inside space.
+-- @param b     is the second knob to share the inside space.
+-- @return the representation of a vsplit knob.
+function gui.vsplit(share, a, b)
+    return {
+        type = "vsplit",
+        share = share,
+        a = a,
+        b = b,
+        x = 0,
+        y = 0,
+        w = 0,
+        h = 0
+    }
+end
+
+--- Sets the position of all of the knobs based on their familial
+-- relationships.
+-- @param knob is the parent knob to start baking at.
+-- @param x is the horizontal position to fit at.
+-- @param y is the vertical position to fit at.
+-- @param w is the width to fit the knobs in.
+-- @param h is the height to fit the knobs in.
 function gui.bake(knob, x, y, w, h)
     knob.x = x
     knob.y = y
@@ -80,6 +140,12 @@ function gui.bake(knob, x, y, w, h)
                 h
             )
         end
+    elseif (knob.type == "hsplit") then
+        gui.bake(knob.a, x, y, w * knob.share, h)
+        gui.bake(knob.b, x + w * knob.share, y, w - w * knob.share, h)
+    elseif (knob.type == "vsplit") then
+        gui.bake(knob.a, x, y, w, h * knob.share)
+        gui.bake(knob.b, x, y + h * knob.share, w, h - h * knob.share)
     end
 end
 
@@ -90,11 +156,12 @@ end
 function gui.xml(knob)
     if (knob.type == "button") then
         return string.format(
-            "<button x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\">%s</button>",
+            "<button x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\" id=\"%d\">%s</button>",
             knob.x,
             knob.y,
             knob.w,
             knob.h,
+            knob.id,
             gui.xml(knob.child)
         )
     elseif (knob.type == "panel") then
@@ -112,8 +179,54 @@ function gui.xml(knob)
         return text.."</panel>"
     elseif (knob.type == "text") then
         return "<text>"..knob.content.."</text>"
+    elseif (knob.type == "hsplit" or knob.type == "vsplit") then
+        return gui.xml(knob.a)..gui.xml(knob.b)
     end
-    return "<shiiiiieet />"
+    return string.format("<%s />", knob.type)
+end
+
+function gui.say(speaker, speech)
+    local knob = gui.panel(
+        1,
+        gui.vsplit(
+            0.25,
+            gui.panel(1, gui.text(speaker)),
+            gui.hsplit(
+                0.9,
+                gui.text(speech),
+                gui.button("$")
+            )
+        )
+    )
+    gui.bake(knob, 256, 400, 512, 200)
+    _xmlKnob(gui.xml(knob))
+    coroutine.yield()
+end
+
+function gui.ask(speaker, question, ...)
+    local answerButtons = {}
+    for i, answer in ipairs({...}) do
+        table.insert(answerButtons, gui.button(answer, i - 1))
+    end
+    local questionPanel = gui.panel(
+        4,
+        unpack(answerButtons)
+    )
+    local knob = gui.panel(
+        1,
+        gui.vsplit(
+            0.25,
+            gui.panel(1, gui.text(speaker)),
+            gui.vsplit(
+                0.25,
+                gui.text(question),
+                questionPanel
+            )
+        )
+    )
+    gui.bake(knob, 256, 400, 512, 200)
+    _xmlKnob(gui.xml(knob))
+    return coroutine.yield()
 end
 
 return gui

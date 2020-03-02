@@ -221,9 +221,11 @@ Knob *FileIO::parseKnob(pugi::xml_node node) {
         pugi::xml_node child = node.first_child();
         knob = new ButtonKnob(FileIO::parseKnob(child));
     } else if (strcmp(type, "text") == 0) {
-        // TODO: this.
+        TextKnob *text = new TextKnob(node.value());
+        knob = text;
     }
     if (!knob) return NULL;
+    knob->id = node.attribute("id").as_int();
     knob->shape.left = node.attribute("x").as_int();
     knob->shape.top = node.attribute("y").as_int();
     knob->shape.width = node.attribute("w").as_int();
