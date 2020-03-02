@@ -210,17 +210,23 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
 
 Knob *FileIO::parseKnob(pugi::xml_node node) {
     char const *type = node.name();
+    Knob *knob = NULL;
     if (strcmp(type, "panel") == 0) {
         PanelKnob *panel = new PanelKnob(node.attribute("parts").as_int());
         for (pugi::xml_node child: node.children()) {
             panel->addChild(FileIO::parseKnob(child));
         }
-        return panel;
+        knob = panel;
     } else if (strcmp(type, "button") == 0) {
         pugi::xml_node child = node.first_child();
-        return new ButtonKnob(FileIO::parseKnob(child));
+        knob = new ButtonKnob(FileIO::parseKnob(child));
     } else if (strcmp(type, "text") == 0) {
         // TODO: this.
-        return NULL;
     }
+    if (!knob) return NULL;
+    knob->shape.left = node.attribute("x").as_int();
+    knob->shape.top = node.attribute("y").as_int();
+    knob->shape.width = node.attribute("w").as_int();
+    knob->shape.height = node.attribute("h").as_int();
+    return knob;
 }

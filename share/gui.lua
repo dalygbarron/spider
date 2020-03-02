@@ -1,5 +1,9 @@
 local gui = {}
 
+-- TODO: you know what we can do? We can actually create fake knobs that are
+-- never sent over to the engine, and just enable baking their children knobs
+-- in more unusual ways. Hell yeah nice idea.
+
 gui.BUTTON_BORDER = 8
 gui.PANEL_BORDER = 8
 
@@ -64,21 +68,19 @@ function gui.bake(knob, x, y, w, h)
     elseif (knob.type == "panel") then
         local rows = math.ceil(table.getn(knob.children) / knob.parts)
         x = x + gui.PANEL_BORDER
-        y = x + gui.PANEL_BORDER
+        y = y + gui.PANEL_BORDER
         w = (w - gui.PANEL_BORDER * 2) / knob.parts
         h = (h - gui.PANEL_BORDER * 2) / rows
         for i, child in ipairs(knob.children) do
             gui.bake(
                 child,
-                x + (i % knob.parts) * w,
-                y + math.ceil(i / knob.parts) * h,
+                x + ((i - 1) % knob.parts) * w,
+                y + math.ceil((i - 1) / knob.parts) * h,
                 w,
                 h
             )
         end
     end
-    -- TODO: this return is kinda weird imo
-    return knob
 end
 
 --- Converts a knob in our representation we use in this module into an xml.
@@ -86,14 +88,24 @@ end
 -- @param knob is the knob to convert.
 -- @return the xml string
 function gui.xml(knob)
-    print(knob.type)
     if (knob.type == "button") then
         return string.format(
-            "<button x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\">%s</button",
+            "<button x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\">%s</button>",
+            knob.x,
+            knob.y,
+            knob.w,
+            knob.h,
             gui.xml(knob.child)
         )
     elseif (knob.type == "panel") then
-        local text = string.format("<panel parts=\"%d\">", knob.parts)
+        local text = string.format(
+            "<panel parts=\"%d\" x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\">",
+            knob.parts,
+            knob.x,
+            knob.y,
+            knob.w,
+            knob.h
+        )
         for i, child in ipairs(knob.children) do
             text = text..gui.xml(child)
         end
