@@ -197,6 +197,9 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     core->renderer.setNodeHighlightRat(core->spritesheet.get(
         node.attribute("nodeHighlight").value()
     ));
+    core->renderer.setFont(core->spritesheet.get(
+        node.attribute("font").value()
+    ));
     // Now look for child nodes to deal with.
     for (pugi::xml_node child: node.children()) {
         char const *type = child.name();
@@ -231,7 +234,7 @@ Knob *FileIO::parseKnob(pugi::xml_node node) {
         pugi::xml_node child = node.first_child();
         return new ButtonKnob(x, y, w, h, id, FileIO::parseKnob(child));
     } else if (strcmp(type, "text") == 0) {
-        TextKnob *text = new TextKnob(x, y, w, h, node.value());
+        TextKnob *text = new TextKnob(x, y, w, h, node.child_value());
         return text;
     }
 }

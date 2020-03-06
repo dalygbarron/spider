@@ -157,7 +157,7 @@ class TextKnob: public Knob {
         ) const override;
     
     private:
-        sf::Text text;
+        std::string const text;
 };
 
 /**

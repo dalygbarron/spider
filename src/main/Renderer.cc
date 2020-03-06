@@ -1,4 +1,5 @@
 #include "Renderer.hh"
+#include "spdlog/spdlog.h"
 
 Renderer::Renderer(sf::Texture const &sprites): batch(sprites) {
     // does nothing else.
@@ -49,6 +50,10 @@ void Renderer::setButtonPatch(Patch patch) {
 
 void Renderer::setButtonDepressedPatch(Patch patch) {
     this->buttonDepressedPatch = patch;
+}
+
+void Renderer::setFont(Font font) {
+    this->font = font;
 }
 
 void Renderer::point(sf::Vector2f pos, int highlight) {
@@ -128,6 +133,20 @@ void Renderer::sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) 
         sf::Vector3f nodePos = Util::sphereToScreen(vertices[i], camera);
         if (nodePos.z < 0) continue;
         this->node(sf::Vector2f(nodePos.x, nodePos.y), i == highlight);
+    }
+}
+
+void Renderer::text(std::string const &content, sf::Vector2f pos) {
+    for (int i = 0; i < content.size(); i++) {
+        this->batch.draw(
+            this->font.get(content[i]),
+            sf::FloatRect(
+                pos.x + i * this->font.character.x,
+                pos.y,
+                this->font.character.x,
+                this->font.character.y
+            )
+        );
     }
 }
 

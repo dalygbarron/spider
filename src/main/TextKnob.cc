@@ -1,12 +1,13 @@
 #include "Knob.hh"
+#include "Renderer.hh"
 
 TextKnob::TextKnob(int x, int y, int w, int h, char const *text):
-    Knob(x, y, w, h, -1)
+    Knob(x, y, w, h, -1),
+    text(text)
 {
-    std::string content = text;
-    this->text.setString(content);
 }
 
 void TextKnob::draw(sf::RenderTarget &target, Renderer &renderer) const {
-    target.draw(this->text);
+    sf::Vector2f pos(this->shape.left, this->shape.top);
+    renderer.text(this->text, pos);
 }

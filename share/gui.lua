@@ -178,7 +178,14 @@ function gui.xml(knob)
         end
         return text.."</panel>"
     elseif (knob.type == "text") then
-        return "<text>"..knob.content.."</text>"
+        return string.format(
+            "<text x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\">%s</text>",
+            knob.x,
+            knob.y,
+            knob.w,
+            knob.h,
+            knob.content
+        )
     elseif (knob.type == "hsplit" or knob.type == "vsplit") then
         return gui.xml(knob.a)..gui.xml(knob.b)
     end

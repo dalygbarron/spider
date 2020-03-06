@@ -4,6 +4,7 @@
 #include "RatBatch.hh"
 #include "Patch.hh"
 #include "Mesh.hh"
+#include "Font.hh"
 #include "Util.hh"
 #include <SFML/Graphics.hpp>
 
@@ -110,6 +111,12 @@ class Renderer: public sf::Drawable {
         void setButtonDepressedPatch(Patch patch);
 
         /**
+         * Sets the font to use for normal text drawing.
+         * @param font is the font to use from now on.
+         */
+        void setFont(Font font);
+
+        /**
          * Draw a crosshair over the given point on the screen.
          * @param pos       is the position to put it.
          * @param highlight is whether to make the point highlighted.
@@ -177,6 +184,13 @@ class Renderer: public sf::Drawable {
          */
         void sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight);
 
+        /**
+         * Writes some text on the screen using the font.
+         * @param content is the text to write.
+         * @param pos     is the location to write it at.
+         */
+        void text(std::string const &content, sf::Vector2f pos);
+
     private:
         sf::IntRect pointRat;
         sf::IntRect pointHighlightRat;
@@ -190,6 +204,7 @@ class Renderer: public sf::Drawable {
         Patch panelPatch;
         Patch buttonPatch;
         Patch buttonDepressedPatch;
+        Font font;
 
         void draw(
             sf::RenderTarget &target,
