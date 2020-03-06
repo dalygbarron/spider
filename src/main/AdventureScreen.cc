@@ -72,7 +72,14 @@ void AdventureScreen::onClick(
     for (Instance const &instance: this->level.instances) {
         int hit = false;
         if (instance.entity) {
-            hit = false;
+            sf::Vector3f pos = Util::sphereToScreen(
+                instance.pos,
+                this->camera
+            );
+            hit = pos.z > 0 && instance.entity->mesh.in(sf::Vector2f(
+                Const::HALF_WIDTH - pos.x,
+                Const::HALF_HEIGHT - pos.y
+            ));
         } else {
             hit = instance.mesh.inSphere(this->camera);
         }
