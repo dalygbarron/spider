@@ -28,6 +28,9 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     this->script["_error"] = [](std::string message) {
         spdlog::error("Script: {}", message.c_str());
     };
+    this->script["_systemInfo"] = []() {
+        return std::make_tuple(8, 8);
+    };
     this->script["_getCamera"] = [this]() {
         return std::make_tuple(this->camera.x, this->camera.y);
     };
@@ -37,9 +40,10 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     };
     this->script["_xmlKnob"] = [this](std::string const &xml) {
         spdlog::info(xml.c_str());
-        Knob *knob = FileIO::readXml(
+        Knob *knob = FileIO::readXml<Knob, Measurements>(
             xml.c_str(),
-            FileIO::parseKnob
+            FileIO::parseKnob,
+            this->core.renderer.getMeasurements()
         );
         if (knob) {
             this->core.pushScreen(new KnobScreen(this->core, knob));

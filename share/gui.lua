@@ -1,7 +1,11 @@
 local gui = {}
 
-gui.BUTTON_BORDER = 8
-gui.PANEL_BORDER = 8
+local panelBorder, buttonBorder, fontWidth, fontHeight = _systemInfo()
+
+gui.BUTTON_BORDER = buttonBorder
+gui.PANEL_BORDER = panelBorder
+gui.FONT_WIDTH = fontWidth
+gui.FONT_HEIGHT = fontHeight
 
 --- Creates a representation of a text node for use within this module.
 -- @param content is the text to write.
@@ -192,20 +196,24 @@ function gui.xml(knob)
     return string.format("<%s />", knob.type)
 end
 
-function gui.say(speaker, speech)
+function gui.say(speaker, ...)
+    local speech = ""
+    for i, bit in ipairs({...}) do
+        speech = speech..bit.." "
+    end
     local knob = gui.panel(
         1,
         gui.vsplit(
-            0.25,
+            0.20,
             gui.panel(1, gui.text(speaker)),
             gui.hsplit(
                 0.9,
                 gui.text(speech),
-                gui.button("$")
+                gui.button("\x01")
             )
         )
     )
-    gui.bake(knob, 256, 400, 512, 200)
+    gui.bake(knob, 192, 400, 640, 200)
     _xmlKnob(gui.xml(knob))
     coroutine.yield()
 end
@@ -222,7 +230,7 @@ function gui.ask(speaker, question, ...)
     local knob = gui.panel(
         1,
         gui.vsplit(
-            0.25,
+            0.20,
             gui.panel(1, gui.text(speaker)),
             gui.vsplit(
                 0.25,
@@ -231,7 +239,7 @@ function gui.ask(speaker, question, ...)
             )
         )
     )
-    gui.bake(knob, 256, 400, 512, 200)
+    gui.bake(knob, 192, 400, 640, 200)
     _xmlKnob(gui.xml(knob))
     return coroutine.yield()
 end

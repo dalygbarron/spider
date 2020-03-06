@@ -211,7 +211,10 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     return core;
 }
 
-Knob *FileIO::parseKnob(pugi::xml_node node) {
+Knob *FileIO::parseKnob(
+    pugi::xml_node node,
+    Measurements const &measurements
+) {
     int x = node.attribute("x").as_int();
     int y = node.attribute("y").as_int();
     int w = node.attribute("w").as_int();
@@ -227,14 +230,28 @@ Knob *FileIO::parseKnob(pugi::xml_node node) {
             node.attribute("parts").as_int()
         );
         for (pugi::xml_node child: node.children()) {
-            panel->addChild(FileIO::parseKnob(child));
+            panel->addChild(FileIO::parseKnob(child, measurements));
         }
         return panel;
     } else if (strcmp(type, "button") == 0) {
         pugi::xml_node child = node.first_child();
-        return new ButtonKnob(x, y, w, h, id, FileIO::parseKnob(child));
+        return new ButtonKnob(
+            x,
+            y,
+            w,
+            h,
+            id,
+            FileIO::parseKnob(child, measurements)
+        );
     } else if (strcmp(type, "text") == 0) {
-        TextKnob *text = new TextKnob(x, y, w, h, node.child_value());
+        TextKnob *text = new TextKnob(
+            x,
+            y,
+            w,
+            h,
+            measurements,
+            node.child_value()
+        );
         return text;
     }
 }

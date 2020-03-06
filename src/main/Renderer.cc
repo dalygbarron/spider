@@ -54,6 +54,12 @@ void Renderer::setButtonDepressedPatch(Patch patch) {
 
 void Renderer::setFont(Font font) {
     this->font = font;
+    this->measurements.normalFontSize.x = font.bounds.width / 16;
+    this->measurements.normalFontSize.y = font.bounds.height / 16;
+}
+
+Measurements const &Renderer::getMeasurements() {
+    return measurements;
 }
 
 void Renderer::point(sf::Vector2f pos, int highlight) {
@@ -137,16 +143,23 @@ void Renderer::sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) 
 }
 
 void Renderer::text(std::string const &content, sf::Vector2f pos) {
+    float originX = pos.x;
     for (int i = 0; i < content.size(); i++) {
+        if (content[i] == '\n') {
+            pos.x = originX;
+            pos.y += this->font.character.y;
+            continue;
+        }
         this->batch.draw(
             this->font.get(content[i]),
             sf::FloatRect(
-                pos.x + i * this->font.character.x,
+                pos.x,
                 pos.y,
                 this->font.character.x,
                 this->font.character.y
             )
         );
+        pos.x += this->font.character.x;
     }
 }
 

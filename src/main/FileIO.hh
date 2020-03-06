@@ -53,10 +53,11 @@ namespace FileIO {
 
     /**
      * TUrns an xml node into the knob it represents recursively.
-     * @param knob is the xml node.
+     * @param knob         is the xml node.
+     * @param measurements is the stuff you need for loading knobs.
      * @return the knob or null if it's no good.
      */
-    Knob *parseKnob(pugi::xml_node node);
+    Knob *parseKnob(pugi::xml_node node, Measurements const &measurements);
 
     /**
      * Loads in XML from a file, then parses it into your desired type using
@@ -91,9 +92,10 @@ namespace FileIO {
      * @return whatever the parser returned, unless the the file would not open
      *         or the xml was invalid in which case it's null for certain.
      */
-    template <class T> T *readXml(
+    template <class T, class A> T *readXml(
         char const *xml,
-        T *(*parser)(pugi::xml_node node)
+        T *(*parser)(pugi::xml_node node, A const &arg),
+        A const &arg
     ) {
         pugi::xml_document doc;
         pugi::xml_parse_result result = doc.load_string(xml);
@@ -105,7 +107,7 @@ namespace FileIO {
             );
             return NULL;
         }
-        return parser(doc.first_child());
+        return parser(doc.first_child(), arg);
     }
 };
 

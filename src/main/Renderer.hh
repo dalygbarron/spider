@@ -42,7 +42,7 @@ class Renderer: public sf::Drawable {
          * @param rat is the rat to use.
          */
         void setPointRat(sf::IntRect rat);
-
+        
         /**
          * Sets the rat to use to draw highlighted points.
          * @param rat is the rat to use.
@@ -109,6 +109,14 @@ class Renderer: public sf::Drawable {
          * @param patch is the patch to draw depressed buttons with.
          */
         void setButtonDepressedPatch(Patch patch);
+
+        /**
+         * Gives you some measurements that are useful in non rendering
+         * contexts to that stuff lines up with what is rendered.
+         * @return a constant reference to the measurements which are kept up
+         *         to date.
+         */
+        Measurements const &getMeasurements();
 
         /**
          * Sets the font to use for normal text drawing.
@@ -205,6 +213,7 @@ class Renderer: public sf::Drawable {
         Patch buttonPatch;
         Patch buttonDepressedPatch;
         Font font;
+        Measurements measurements;
 
         void draw(
             sf::RenderTarget &target,

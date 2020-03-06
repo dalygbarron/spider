@@ -1,42 +1,5 @@
-Set Origin in EntityScreen
-    Yeah I forgot to do that last time so I need to do it now.
-
-Screen Stack
-    Screens should be arranged in a stack so you can push new screens on, and
-    when they are removed again they return a numeric value to the screen
-    below. Multiple screens can also be rendered, each screen will provide
-    a function that lets you query if it allows rendering of the screen
-    underneath, and it iwll figure this out at the point that the stack is
-    altered. After that it will just know which ones to render in order of
-    oldest to newest.
-
-game gui
-    Gui should be it's own screen.
-    Should be ripped off from the gui I developed for snowpea, that was great.
-    Won't support keyboard only or gamepad but who gives a fuck? Not me. Text
-    will be implemented with sf::Text so that I can do wrapping without too
-    much pain.
-
-Playable Level Screen
-    To start off we just need to have the screen and make it that it follows
-    the mouse. Make sure that it can handle having GUI elements that make the
-    camera stop following the mouse until they go away.
-
-Scripting
-    Will need to embed a scripting language, and then make it able to drive the
-    gui, and move the camera around and stuff.
-    Should be able to implement a basic main menu that leads into another
-    screen when you press the play button.
-
 Properly Playable Level Screen with items and shit.
     Yep like it says right there.
-
-Screen Stack
-    Yeah so when you go into a battle, it needs to save your place in the
-    dialogue shit that you were already in which means it needs to save the
-    whole state of that screen basically so it sohuld work like a stack where
-    the battle is put on top of the existing screen, and then after it is
-    removed. Obviously plain transitions must also be handled.
 
 Battle Screen
     Should run entirely off a Lua script, and you should be able to start the
@@ -46,6 +9,9 @@ Battle Screen
 Improve core parsing core
     It sucks ASS. Actually also generally improve all the FileIO code to have
     less of the same stuff over and over.
+
+Set Origin in EntityScreen
+    Yeah I forgot to do that last time so I need to do it now.
 
 EntityScreen zooming
     Make it that the zoom centres around the current middle of the screen.
