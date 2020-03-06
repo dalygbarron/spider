@@ -54,7 +54,6 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     this->script.script(this->level.script);
     this->coroutine = this->script["_start"];
     this->coroutine.error_handler = this->script["_error"];
-    if (this->coroutine) this->coroutine();
 }
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
@@ -70,6 +69,18 @@ void AdventureScreen::onClick(
     sf::Vector2f pos
 ) {
     if (this->coroutine) return;
+    for (Instance const &instance: this->level.instances) {
+        int hit = false;
+        if (instance.entity) {
+            hit = false;
+        } else {
+            hit = instance.mesh.inSphere(this->camera);
+        }
+        if (hit) {
+            this->coroutine = this->script[instance.name.c_str()];
+            return;
+        }
+    }
 }
 
 void AdventureScreen::onReveal(int response) {

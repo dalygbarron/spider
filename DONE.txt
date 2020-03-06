@@ -91,3 +91,30 @@ Look into built in text editor
     Would be handy to have for level screen but I am not sure how hard it would
     be to get it to work so maybe no.
 
+Screen Stack
+    Screens should be arranged in a stack so you can push new screens on, and
+    when they are removed again they return a numeric value to the screen
+    below. Multiple screens can also be rendered, each screen will provide
+    a function that lets you query if it allows rendering of the screen
+    underneath, and it iwll figure this out at the point that the stack is
+    altered. After that it will just know which ones to render in order of
+    oldest to newest.
+
+game gui
+    Gui should be it's own screen.
+    Should be ripped off from the gui I developed for snowpea, that was great.
+    Won't support keyboard only or gamepad but who gives a fuck? Not me. Text
+    will be implemented with sf::Text so that I can do wrapping without too
+    much pain.
+
+Scripting
+    Will need to embed a scripting language, and then make it able to drive the
+    gui, and move the camera around and stuff.
+    Should be able to implement a basic main menu that leads into another
+    screen when you press the play button.
+
+Playable Level Screen
+    To start off we just need to have the screen and make it that it follows
+    the mouse. Make sure that it can handle having GUI elements that make the
+    camera stop following the mouse until they go away.
+
