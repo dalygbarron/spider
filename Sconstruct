@@ -28,14 +28,23 @@ else:
 mainSources = Glob('src/main/*.cc')
 testSources = Glob('src/test/*.cc')
 
-env = Environment(
+debugEnv = Environment(
+    LIBS=libs,
+    FRAMEWORKS=['OpenGl'],
+    CXXFLAGS=cflags + ['-g'],
+    LINKFLAGS=lflags
+)
+goodEnv = Environment(
     LIBS=libs,
     FRAMEWORKS=['OpenGl'],
     CXXFLAGS=cflags,
     LINKFLAGS=lflags
 )
 
-spider = env.Program('spider', mainSources + ['src/main.cc'])
-test = env.Program('test', mainSources + testSources + ['src/catch.cc'])
+debugEnv.VariantDir("debug", "src", duplicate=0)
+goodEnv.VariantDir("build", "src", duplicate=0)
+spiderDebug = debugEnv.Program('spiderDebug', mainSources + ['src/main.cc'])
+spider = goodEnv.Program('spider', mainSources + ['src/main.cc'])
+test = goodEnv.Program('test', mainSources + testSources + ['src/catch.cc'])
 
 Default(spider)
