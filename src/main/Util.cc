@@ -115,3 +115,15 @@ sf::Vector3f Util::sphereToScreen(
         cos(coordinate.x)
     );
 }
+
+float Util::upAngle(
+    sf::Vector2f camera,
+    sf::Vector2f floor,
+    sf::Vector2f pos
+) {
+    if (camera.y > 0) {
+        return atan2(floor.x - pos.x, floor.y - pos.y) * sin(camera.y) * -1;
+    } else {
+        return atan2(pos.x - floor.x, pos.y - floor.y) * sin(camera.y);
+    }
+}

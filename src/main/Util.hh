@@ -88,6 +88,16 @@ namespace Util {
      *         back of the screen.
      */
     sf::Vector3f sphereToScreen(sf::Vector2f coordinate, sf::Vector2f camera);
+
+    /**
+     * Gives you the angle that images should be given thus that they appear to
+     * be facing upwards given their position and the angle of the camera.
+     * @param camera is the angle of the camera.
+     * @param floor  is the screen position of the lowest angle.
+     * @param pos    is the position to get an angle for.
+     * @return the angle that a pic should get.
+     */
+    float upAngle(sf::Vector2f camera, sf::Vector2f floor, sf::Vector2f pos);
 }
 
 #endif

@@ -69,16 +69,27 @@ void AdventureScreen::onClick(
     sf::Vector2f pos
 ) {
     if (this->coroutine) return;
+    sf::Vector3f floor = Util::sphereToScreen(
+        sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
+        this->camera
+    );
+    sf::Vector2f floorScreen(floor.x, floor.y);
     for (Instance const &instance: this->level.instances) {
         int hit = false;
         if (instance.entity) {
-            sf::Vector3f pos = Util::sphereToScreen(
+            sf::Vector3f screenPos = Util::sphereToScreen(
                 instance.pos,
                 this->camera
             );
-            hit = pos.z > 0 && instance.entity->mesh.in(sf::Vector2f(
-                Const::HALF_WIDTH - pos.x,
-                Const::HALF_HEIGHT - pos.y
+            float angle = Util::upAngle(
+                this->camera,
+                floorScreen,
+                sf::Vector2f(screenPos.x, screenPos.y)
+            )
+            float length = sqrt(
+            hit = screenPos.z > 0 && instance.entity->mesh.in(sf::Vector2f(
+                Const::HALF_WIDTH - rotatedPos.x,
+                Const::HALF_HEIGHT - rotatedPos.y
             ));
         } else {
             hit = instance.mesh.inSphere(this->camera);
@@ -118,6 +129,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
         this->camera
     );
+    sf::Vector2f floorScreen(floor.x, floor.y);
     for (Instance const &instance: this->level.instances) {
         if (instance.entity) {
             sf::Vector3f pos = Util::sphereToScreen(
@@ -125,19 +137,16 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
                 this->camera
             );
             if (pos.z < 0) continue;
-            float angle;
-            if (this->camera.y > 0) {
-                angle = atan2(floor.x - pos.x, floor.y - pos.y) *
-                    sin(this->camera.y);
-            } else {
-                angle = atan2(pos.x - floor.x, pos.y - floor.y) *
-                    sin(this->camera.y);
-            }
+            float angle = Util::upAngle(
+                this->camera,
+                floorScreen,
+                sf::Vector2f(pos.x, pos.y)
+            );
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
                 sf::Vector2f(pos.x, pos.y),
                 instance.entity->offset,
-                angle * ((this->camera.y > 0) ? -1 : 1),
+                angle,
                 sf::Vector2f(instance.size, instance.size)
             );
         }
