@@ -41,10 +41,19 @@ goodEnv = Environment(
     LINKFLAGS=lflags
 )
 
-debugEnv.VariantDir("debug", "src", duplicate=0)
-goodEnv.VariantDir("build", "src", duplicate=0)
-spiderDebug = debugEnv.Program('spiderDebug', mainSources + ['src/main.cc'])
-spider = goodEnv.Program('spider', mainSources + ['src/main.cc'])
-test = goodEnv.Program('test', mainSources + testSources + ['src/catch.cc'])
+debugEnv.VariantDir("gen-dbg", "src", duplicate=0)
+goodEnv.VariantDir("gen-prod", "src", duplicate=0)
+debug = debugEnv.Program(
+    "debug",
+    Glob("gen-dbg/main/*.cc") + ["gen-dbg/main.cc"]
+)
+test = debugEnv.Program(
+    "test",
+    Glob("gen-dbg/*/*.cc") + ["gen-dbg/catch.cc"]
+)
+prod = goodEnv.Program(
+    "spider",
+    Glob("gen-prod/main/*.cc") + ["gen-prod/main.cc"]
+)
 
-Default(spider)
+Default(prod)

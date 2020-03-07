@@ -13,6 +13,11 @@ TextKnob::TextKnob(
 ):
     Knob(x, y, w, h, -1)
 {
+    if (measurements.normalFontSize.x == 0 ||
+        measurements.normalFontSize.y == 0
+    ) {
+        return;
+    }
     int columns = w / measurements.normalFontSize.x;
     int rows = h / measurements.normalFontSize.y;
     this->text = text;
