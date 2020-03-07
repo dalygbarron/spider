@@ -81,15 +81,16 @@ void AdventureScreen::onClick(
                 instance.pos,
                 this->camera
             );
+            if (screenPos.z < 0) continue;
             float angle = Util::upAngle(
                 this->camera,
                 floorScreen,
                 sf::Vector2f(screenPos.x, screenPos.y)
-            )
-            float length = sqrt(
-            hit = screenPos.z > 0 && instance.entity->mesh.in(sf::Vector2f(
-                Const::HALF_WIDTH - rotatedPos.x,
-                Const::HALF_HEIGHT - rotatedPos.y
+            );
+            hit = instance.entity->mesh.in(Util::rotateAround(
+                sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
+                sf::Vector2f(screenPos.x, screenPos.y),
+                angle
             ));
         } else {
             hit = instance.mesh.inSphere(this->camera);

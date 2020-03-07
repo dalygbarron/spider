@@ -98,6 +98,19 @@ namespace Util {
      * @return the angle that a pic should get.
      */
     float upAngle(sf::Vector2f camera, sf::Vector2f floor, sf::Vector2f pos);
+
+    /**
+     * Rotates a point around another point by a given angle.
+     * @param pos    is the point to rotate.
+     * @param origin is the point to rotate around.
+     * @param angle  is the angle to rotate by.
+     * @return the rotated point.
+     */
+    sf::Vector2f rotateAround(
+        sf::Vector2f pos,
+        sf::Vector2f origin,
+        float angle
+    );
 }
 
 #endif
