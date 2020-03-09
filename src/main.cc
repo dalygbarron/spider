@@ -131,14 +131,12 @@ int process(Core &core) {
                     sf::Vector2u size = window.getSize();
                     screen->onDrag(
                         sf::Vector2f(
-                            (event.mouseMove.x - mouse.x) *
-                                ((float)Const::WIDTH / size.x),
-                            (event.mouseMove.y - mouse.y) *
-                                ((float)Const::HEIGHT / size.y)
+                            event.mouseMove.x * (float)Const::WIDTH / size.x,
+                            event.mouseMove.y * (float)Const::HEIGHT / size.y
                         ),
                         sf::Vector2f(
-                            mouse.x * ((float)Const::WIDTH / size.x),
-                            mouse.y * ((float)Const::HEIGHT / size.y)
+                            mouse.x * (float)Const::WIDTH / size.x,
+                            mouse.y * (float)Const::HEIGHT / size.y
                         )
                     );
                     mouse.x = event.mouseMove.x;

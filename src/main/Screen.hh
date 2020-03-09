@@ -68,10 +68,10 @@ class Screen {
 
         /**
          * Called when the user drags the mouse on the screen.
-         * @param delta  is the movement they have made with the mouse.
-         * @param pos    is the new location of the screen.
+         * @param prev is the previous position on the screen.
+         * @param pos  is the new location of the screen.
          */
-        virtual void onDrag(sf::Vector2f delta, sf::Vector2f pos);
+        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos);
 
         /**
          * Called when the user does the scrolling.
@@ -142,7 +142,7 @@ class LevelScreen: public Screen {
 
         virtual void onKey(sf::Keyboard::Key key) override;
 
-        virtual void onDrag(sf::Vector2f delta, sf::Vector2f pos) override;
+        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos) override;
 
         virtual void onScroll(int delta) override;
 
@@ -203,7 +203,7 @@ class EntityScreen: public Screen {
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
-        virtual void onDrag(sf::Vector2f delta, sf::Vector2f pos) override;
+        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos) override;
 
         virtual void onClick(
             sf::Mouse::Button button,
@@ -324,7 +324,7 @@ class AdventureScreen: public Screen {
 
         virtual void onReveal(int response) override;
 
-        virtual void onDrag(sf::Vector2f delta, sf::Vector2f pos) override;
+        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos) override;
 
         virtual void onKey(sf::Keyboard::Key key) override;
 

@@ -60,7 +60,7 @@ void AdventureScreen::update(float delta, sf::RenderWindow &window) {
     if (this->coroutine) {
         this->coroutine(delta);
     }
-    sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
+    Util::centreMouse(window);
     this->shader.setUniform("angle", camera);
 }
 
@@ -107,14 +107,10 @@ void AdventureScreen::onReveal(int response) {
     if (this->coroutine) this->coroutine(response);
 }
 
-void AdventureScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
+void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
     if (this->coroutine) return;
     sf::Vector2f current = Util::screenToSphere(pos, this->camera);
-    sf::Vector2f old = Util::screenToSphere(
-        sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
-        this->camera
-    );
-    this->camera += current - old;
+    this->camera = current;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {

@@ -25,6 +25,14 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     return view;
 }
 
+void Util::centreMouse(sf::Window &window) {
+    sf::Vector2u windowSize = window.getSize();
+    sf::Mouse::setPosition(
+        sf::Vector2i(Const::HALF_WIDTH, Const::HALF_HEIGHT),
+        window
+    );
+}
+
 float Util::degrees(float radians) {
     return fmod(radians, Const::DOUBLE_PI) * Const::RADIAN_CONVERT;
 }
