@@ -104,12 +104,14 @@ namespace Util {
      * @param pos    is the point to rotate.
      * @param origin is the point to rotate around.
      * @param angle  is the angle to rotate by.
+     * @param scale  is the scale to multiply the final result by.
      * @return the rotated point.
      */
     sf::Vector2f rotateAround(
         sf::Vector2f pos,
         sf::Vector2f origin,
-        float angle
+        float angle,
+        float scale=1
     );
 }
 

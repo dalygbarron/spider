@@ -131,16 +131,16 @@ float Util::upAngle(
 sf::Vector2f Util::rotateAround(
     sf::Vector2f pos,
     sf::Vector2f origin,
-    float angle
+    float angle,
+    float scale
 ) {
     pos.x -= origin.x;
     pos.y -= origin.y;
-    float length = sqrt(pos.x * pos.x + pos.y * pos.y);
+    float length = sqrt(pos.x * pos.x + pos.y * pos.y) * scale;
     float currentAngle = atan2(pos.y, pos.x);
     pos.x = cos(currentAngle + angle) * length;
     pos.y = sin(currentAngle + angle) * length;
     pos.x += origin.x;
     pos.y += origin.y;
-    spdlog::info("{} {}", pos.x, pos.y);
     return pos;
 }

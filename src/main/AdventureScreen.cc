@@ -90,8 +90,9 @@ void AdventureScreen::onClick(
             hit = instance.entity->mesh.in(Util::rotateAround(
                 sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
                 sf::Vector2f(screenPos.x, screenPos.y),
-                angle
-            ));
+                -angle,
+                1 / instance.size
+            ) - sf::Vector2f(screenPos.x, screenPos.y) - instance.entity->offset);
         } else {
             hit = instance.mesh.inSphere(this->camera);
         }
