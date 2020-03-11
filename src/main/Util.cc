@@ -26,11 +26,7 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
 }
 
 void Util::centreMouse(sf::Window &window) {
-    sf::Vector2u windowSize = window.getSize();
-    sf::Mouse::setPosition(
-        Const::MOUSE_ORIGIN,
-        window
-    );
+    sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
 }
 
 float Util::degrees(float radians) {

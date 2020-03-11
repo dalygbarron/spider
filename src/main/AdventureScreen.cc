@@ -110,6 +110,7 @@ void AdventureScreen::onReveal(int response) {
 void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
     if (this->coroutine) return;
     if (prev == pos) return;
+    spdlog::info("{} {}", pos.x, pos.y);
     sf::Vector2f current = Util::screenToSphere(pos, this->camera);
     this->camera = current;
 }
