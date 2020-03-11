@@ -28,7 +28,7 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
 void Util::centreMouse(sf::Window &window) {
     sf::Vector2u windowSize = window.getSize();
     sf::Mouse::setPosition(
-        sf::Vector2i(Const::HALF_WIDTH, Const::HALF_HEIGHT),
+        Const::MOUSE_ORIGIN,
         window
     );
 }

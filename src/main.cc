@@ -121,8 +121,8 @@ int process(Core &core) {
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2u size = window.getSize();
                     screen->onClick(event.mouseButton.button, sf::Vector2f(
-                        event.mouseButton.x * ((float)Const::WIDTH / size.x),
-                        event.mouseButton.y * ((float)Const::HEIGHT / size.y)
+                        event.mouseButton.x,
+                        event.mouseButton.y
                     ));
                     buttons[event.mouseButton.button] = true;
                 } else if (event.type == sf::Event::MouseButtonReleased) {
@@ -130,14 +130,8 @@ int process(Core &core) {
                 } else if (event.type == sf::Event::MouseMoved) {
                     sf::Vector2u size = window.getSize();
                     screen->onDrag(
-                        sf::Vector2f(
-                            event.mouseMove.x * (float)Const::WIDTH / size.x,
-                            event.mouseMove.y * (float)Const::HEIGHT / size.y
-                        ),
-                        sf::Vector2f(
-                            mouse.x * (float)Const::WIDTH / size.x,
-                            mouse.y * (float)Const::HEIGHT / size.y
-                        )
+                        sf::Vector2f(event.mouseMove.x, event.mouseMove.y),
+                        sf::Vector2f(mouse.x, mouse.y)
                     );
                     mouse.x = event.mouseMove.x;
                     mouse.y = event.mouseMove.y;

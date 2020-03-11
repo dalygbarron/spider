@@ -1,0 +1,19 @@
+Real mouse needs to be captured and kept in the cetre at all times unless the
+game has lost focus or whatever. Should also be able to control the position of
+the virtual mouse so that it can be set into the centre too which allows the
+first person view.
+
+This means that displaying the "cursor" is dissassociated from the actual
+position of the mouse itself but that is ok, it will be shown where it should
+be shown for the given screen.
+
+Also, this means that knobs will need to have the position of the mouse cursor
+passed to them Oh but they already do so no change.
+
+Control of the mouse object will be in the core which is fine since screens
+have access to the core and screens are where the mouse position is
+manipulated.
+
+One day in the future I may wish to add gamepad support which would require
+manipulating the position of the cursor. This would happen in... a screen, yeah
+so that is fine too.
