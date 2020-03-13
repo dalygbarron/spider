@@ -14,6 +14,19 @@
  */
 namespace FileIO {
     /**
+     * Loads a memory from the file it should be at for you. If there is no
+     * such file then it returns a blank memory.
+     * @param id is the id of the memory to load.
+     */
+    Memory loadMemory(int id);
+
+    /**
+     * Saveas a memory to the right file for it's id.
+     * @param memory is the memory to save.
+     */
+    void saveMemory(Memory const &memory);
+
+    /**
      * Parses an xml node into a 9patch and put it into the given renderer in
      * the correct spot depending on what role it says it fills.
      * @param core     is the core to put the patch into.

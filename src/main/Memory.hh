@@ -7,17 +7,13 @@
  */
 class Memory {
     public:
-        /**
-         * Creates the memory object.
-         * @param nItems is the number of possible items that there are in the
-         *               so that the inventory can be correctly instantiated.
-         */
-        Memory(int nItems);
+        int const id;
 
         /**
-         * Destroys the item count array.
+         * Creates a new memory.
+         * @param id is the id of the memory to make.
          */
-        ~Memory();
+        Memory(int id);
 
         /**
          * Gives you the value of a switch.
@@ -29,17 +25,40 @@ class Memory {
 
         /**
          * Sets the value of a switch.
-         * @param name is the name of the switch to set.
+         * @param name  is the name of the switch to set.
          * @param value is the value to set it to.
          */
         void setSwitch(char const *name, int value);
 
+        /**
+         * Gives you the number that the player has of a given item.
+         * @param item is the item to get the number of.
+         * @return the number.
+         */
+        int getItemCount(Item const &item) const;
 
+        /**
+         * Sets the number that the player has of a given item.
+         * @param item  is to set the count of.
+         * @param count is the number to set it to.
+         */
+        void setItemCount(Item const &item, int count);
+
+        /**
+         * Gives you read only access to the full switch list.
+         * @return the switch list.
+         */
+        unordered_map<std::string, int> const &getSwitches() const;
+
+        /**
+         * Gives you read only access to the full item list.
+         * @return the item list.
+         */
+        unordered_map<std::string, int> const &getItems() const;
 
     private:
-        int id;
         unordered_map<std::string, int> switches;
-        int *inventory;
+        unordered_map<std::string, int> items;
 };
 
 #endif

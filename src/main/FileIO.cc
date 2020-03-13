@@ -2,6 +2,63 @@
 #include "Const.hh"
 #include <iostream>
 
+Memory FileIO::loadMemory(int id) {
+    char *text;
+    asprintf(&text, ".save%d.xml", id);
+    ghc::filesystem::path path = text;
+    delete text;
+    Memory memory(id);
+    if (ghc::filesystem::exists(path)) {
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file(path.c_str());
+        if (!result) {
+            spdlog::error("Cannot load save file from '{}'", path.c_str());
+            return memory;
+        }
+        pugi::xml_node node = doc.child("save");
+        if (!node) {
+            spdlog::error("'{}' is not a valid save file", path.c_str());
+            return memory;
+        }
+        for (pugi::xml_node child: node.children()) {
+            char const *type = child.name();
+            if (strcmp(type, "switch") == 0) {
+                memory.setSwitch(
+                    child.attribute("name").value(),
+                    child.attribute("value").as_boolean()
+                );
+            } else if (strcmp(type, "item") == 0) {
+                memory.setItemCount(
+                    child.attribute("name").value(),
+                    child.attribute("count").as_int()
+                );
+            }
+        }
+    }
+    return memory;
+}
+
+void FileIO::saveMemory(Memory const &memory) {
+    char *text;
+    asprintf(&text, ".save%d.xml", id);
+    ghc::filesystem::path path = text;
+    delete text;
+    pugi::xml_document doc;
+    pugi::xml_node node = doc.append_child("save");
+    for (std::pair<std::string const, int> item: memory.getSwitches()) {
+        pugi::xml_node child = node.append_child("switch");
+        child.append_attribute("name") = item.first;
+        child.append_attribute("value") = item.second;
+    }
+    for (std::pair<std::string const, int> item: memory.getItems()) {
+        pugi::xml_node child = node.append_child("item");
+        child.append_attribute("name") = item.first;
+        child.append_attribute("count") = item.second;
+    }
+    int success = doc.save_file(path.c_str());
+    if (!success) spdlog::error("could not save to '{}'", path.c_str());
+}
+
 void FileIO::parsePatch(Core &core, pugi::xml_node const &node) {
     Patch patch;
     patch.fill(

@@ -17,7 +17,6 @@ class Screen;
  */
 class Core {
     public:
-        // TODO: some of these things ought to be const.
         std::string name;
         std::string start;
         ghc::filesystem::path filename;
@@ -37,25 +36,37 @@ class Core {
          */
         ~Core();
 
-        void addItem(
+        Item &addItem(
             char const *name,
             char const *description,
             sf::IntRect rat
         );
 
         /**
-         * Gets an item by it's index.
-         * @param index is the index of the item to get.
-         * return the item.
+         * Starts a new game.
+         * @param id is the id to use which determines the file it is saved in
+         *           and the number the player sees it as being.
          */
-        Item const &getItem(int index);
+        void newGame(int id);
 
         /**
-         * Gets an item by it's name.
-         * @param name is the name of the item to get.
-         * @return the item.
+         * Loads the game from file based on the given id.
+         * @param id is the id to use which determines the file it is loaded
+         *           from and also the file it will save to later.
          */
-        Item const &getItem(char const *name);
+        void loadGame(int id);
+
+        /**
+         * Saves the game to file with it's already set id.
+         */
+        void saveGame();
+
+        /**
+         * Gives you access to the overall game state ie everything that is
+         * saved when you save the game.
+         * @return a reference to the memory object.
+         */
+        Memory &getMemory();
 
         /**
          * Loads in a level making use of the entity repository for putting in
@@ -98,6 +109,7 @@ class Core {
         void drawScreens(sf::RenderTarget &target);
 
     private:
+        Memory memory(0);
         std::vector<Item> items;
         std::vector<Screen *> screens;
         int firstVisible = 0;

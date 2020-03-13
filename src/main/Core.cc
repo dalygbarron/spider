@@ -15,8 +15,28 @@ Core::~Core() {
     delete this->font;
 }
 
-sf::Font &Core::getFont() {
-    return *this->font;
+Item &Core::addItem(
+    char const *name,
+    char const *description,
+    sf::IntRect rat
+) {
+    return this->items.emplace(name, description, rat);
+}
+
+void Core::newGame(int id) {
+    this->memory = Memory(id);
+}
+
+void Core::loadGame(int id) {
+    this->memory = FileIO::loadMemory(id);
+}
+
+void Core::saveGame() {
+    FileIO::saveMemory(this->memory);
+}
+
+Memory const &Core::getMemory() {
+    return this->memory;
 }
 
 Level *Core::loadLevel(ghc::filesystem::path const &path) {
