@@ -34,6 +34,8 @@ class Memory {
          */
         void setSwitch(char const *name, int value);
 
+
+
     private:
         int id;
         unordered_map<std::string, int> switches;

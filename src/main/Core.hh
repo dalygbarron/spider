@@ -28,22 +28,34 @@ class Core {
         EntityRepository entityRepository;
 
         /**
-         * Initialises the core. Fonts must be passed in because they don't
-         * work until they have been loaded.
-         * @param font             is the main font the game will use.
+         * Initialises the core.
          */
-        Core(sf::Font *font);
+        Core();
 
         /**
          * Deletes stuff.
          */
         ~Core();
 
+        void addItem(
+            char const *name,
+            char const *description,
+            sf::IntRect rat
+        );
+
         /**
-         * Gives you the font.
-         * @return the font.
+         * Gets an item by it's index.
+         * @param index is the index of the item to get.
+         * return the item.
          */
-        sf::Font &getFont();
+        Item const &getItem(int index);
+
+        /**
+         * Gets an item by it's name.
+         * @param name is the name of the item to get.
+         * @return the item.
+         */
+        Item const &getItem(char const *name);
 
         /**
          * Loads in a level making use of the entity repository for putting in
@@ -86,7 +98,7 @@ class Core {
         void drawScreens(sf::RenderTarget &target);
 
     private:
-        sf::Font *font;
+        std::vector<Item> items;
         std::vector<Screen *> screens;
         int firstVisible = 0;
         int nScreens = 0;
