@@ -1,26 +1,29 @@
 #include "Core.hh"
 #include "Screen.hh"
+#include "FileIO.hh"
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
-Core::Core(sf::Font *font):
-    font(font),
+Core::Core():
     renderer(this->spritesheet.getTexture()),
     entityRepository(this->spritesheet)
 {
     // Does nothing else.
 }
 
-Core::~Core() {
-    delete this->font;
-}
-
 Item &Core::addItem(
     char const *name,
+    char const *displayName,
     char const *description,
     sf::IntRect rat
 ) {
-    return this->items.emplace(name, description, rat);
+    Item item;
+    item.name = name;
+    item.displayName = displayName;
+    item.description = description;
+    item.rat = rat;
+    this->items[name] = item;
+    return this->items[name];
 }
 
 void Core::newGame(int id) {
@@ -35,7 +38,7 @@ void Core::saveGame() {
     FileIO::saveMemory(this->memory);
 }
 
-Memory const &Core::getMemory() {
+Memory &Core::getMemory() {
     return this->memory;
 }
 

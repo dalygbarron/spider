@@ -6,6 +6,8 @@
 #include "Renderer.hh"
 #include "RatBatch.hh"
 #include "SoundPlayer.hh"
+#include "Item.hh"
+#include "Memory.hh"
 
 /**
  * Forward declaration.
@@ -32,12 +34,16 @@ class Core {
         Core();
 
         /**
-         * Deletes stuff.
+         * Adds an item to the game, and returns a nice reference to it.
+         * @param name        is the working name of the item.
+         * @param displayName is the version of the name the player sees.
+         * @param description is the description of the game to show.
+         * @param rat         is the icon to draw the item with in inventory.
+         * @return the item.
          */
-        ~Core();
-
         Item &addItem(
             char const *name,
+            char const *displayName,
             char const *description,
             sf::IntRect rat
         );
@@ -109,8 +115,8 @@ class Core {
         void drawScreens(sf::RenderTarget &target);
 
     private:
-        Memory memory(0);
-        std::vector<Item> items;
+        Memory memory = Memory(0);
+        std::unordered_map<std::string, Item> items;
         std::vector<Screen *> screens;
         int firstVisible = 0;
         int nScreens = 0;

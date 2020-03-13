@@ -1,11 +1,15 @@
 #include "Memory.hh"
 
-Memory::Memory(int id): id(id) {
-    // nothing else.
+Memory::Memory(int id) {
+    this->id = id;
+}
+
+int Memory::getId() const {
+    return this->id;
 }
 
 int Memory::getSwitch(char const *name) const {
-    if (this->switches.count(name) == 1) return this->switches[name];
+    if (this->switches.count(name) == 1) return this->switches.at(name);
     return false;
 }
 
@@ -13,21 +17,21 @@ void Memory::setSwitch(char const *name, int value) {
     this->switches[name] = value;
 }
 
-int Memory::getItemCount(Item const &item) const {
-    if (this->items.count(item.name) == 1) {
-        return this->items[item.name];
+int Memory::getItemCount(char const *item) const {
+    if (this->items.count(item) == 1) {
+        return this->items.at(item);
     }
     return 0;
 }
 
-void Memory::setItemCount(Item const &item, int count) {
-    this->items[item.name] = count;
+void Memory::setItemCount(char const *item, int count) {
+    this->items[item] = count;
 }
 
-unordered_map<std::string, int> const &Memory::getSwitches() const {
+std::unordered_map<std::string, int> const &Memory::getSwitches() const {
     return this->switches;
 }
 
-unordered_map<std::string, int> const &Memory::getItems() const {
+std::unordered_map<std::string, int> const &Memory::getItems() const {
     return this->items;
 }

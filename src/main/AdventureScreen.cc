@@ -97,7 +97,13 @@ void AdventureScreen::onClick(
             hit = instance.mesh.inSphere(this->camera);
         }
         if (hit) {
-            this->coroutine = this->script[instance.name.c_str()];
+            if (instance.entity && !instance.entity->item.empty()) {
+                this->coroutine = this->script[
+                    instance.entity->item.c_str()
+                ];
+            } else {
+                this->coroutine = this->script[instance.name.c_str()];
+            }
             return;
         }
     }

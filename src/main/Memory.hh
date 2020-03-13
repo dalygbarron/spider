@@ -1,19 +1,26 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include <string>
+#include <unordered_map>
+
 /**
  * Stores the state of stuff that is remembered long term as in stuff the
  * player has done etc.
  */
 class Memory {
     public:
-        int const id;
-
         /**
-         * Creates a new memory.
-         * @param id is the id of the memory to make.
+         * Creates the memory and sets it's id.
+         * @param id is the id to give it.
          */
         Memory(int id);
+
+        /**
+         * Gives you the memory's id.
+         * @return the id.
+         */
+        int getId() const;
 
         /**
          * Gives you the value of a switch.
@@ -35,30 +42,31 @@ class Memory {
          * @param item is the item to get the number of.
          * @return the number.
          */
-        int getItemCount(Item const &item) const;
+        int getItemCount(char const *item) const;
 
         /**
          * Sets the number that the player has of a given item.
          * @param item  is to set the count of.
          * @param count is the number to set it to.
          */
-        void setItemCount(Item const &item, int count);
+        void setItemCount(char const *item, int count);
 
         /**
          * Gives you read only access to the full switch list.
          * @return the switch list.
          */
-        unordered_map<std::string, int> const &getSwitches() const;
+        std::unordered_map<std::string, int> const &getSwitches() const;
 
         /**
          * Gives you read only access to the full item list.
          * @return the item list.
          */
-        unordered_map<std::string, int> const &getItems() const;
+        std::unordered_map<std::string, int> const &getItems() const;
 
     private:
-        unordered_map<std::string, int> switches;
-        unordered_map<std::string, int> items;
+        int id;
+        std::unordered_map<std::string, int> switches;
+        std::unordered_map<std::string, int> items;
 };
 
 #endif

@@ -25,7 +25,7 @@ Memory FileIO::loadMemory(int id) {
             if (strcmp(type, "switch") == 0) {
                 memory.setSwitch(
                     child.attribute("name").value(),
-                    child.attribute("value").as_boolean()
+                    child.attribute("value").as_bool()
                 );
             } else if (strcmp(type, "item") == 0) {
                 memory.setItemCount(
@@ -40,19 +40,19 @@ Memory FileIO::loadMemory(int id) {
 
 void FileIO::saveMemory(Memory const &memory) {
     char *text;
-    asprintf(&text, ".save%d.xml", id);
+    asprintf(&text, ".save%d.xml", memory.getId());
     ghc::filesystem::path path = text;
     delete text;
     pugi::xml_document doc;
     pugi::xml_node node = doc.append_child("save");
     for (std::pair<std::string const, int> item: memory.getSwitches()) {
         pugi::xml_node child = node.append_child("switch");
-        child.append_attribute("name") = item.first;
+        child.append_attribute("name") = item.first.c_str();
         child.append_attribute("value") = item.second;
     }
     for (std::pair<std::string const, int> item: memory.getItems()) {
         pugi::xml_node child = node.append_child("item");
-        child.append_attribute("name") = item.first;
+        child.append_attribute("name") = item.first.c_str();
         child.append_attribute("count") = item.second;
     }
     int success = doc.save_file(path.c_str());
@@ -194,7 +194,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     if (!ghc::filesystem::exists(path)) {
         spdlog::info("Creating new game core at '{}'", path.c_str());
         // TODO: is this still ok?
-        Core *core = new Core(NULL);
+        Core *core = new Core();
         core->filename = path;
         return core;
     }
@@ -214,9 +214,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
         return NULL;
     }
     // Load names of sprites.
-    sf::Font *font = new sf::Font();
-    font->loadFromFile(node.attribute("font").value());
-    Core *core = new Core(font);
+    Core *core = new Core();
     core->filename = path;
     core->name = node.attribute("name").value();
     core->start = node.attribute("start").value();
@@ -310,5 +308,8 @@ Knob *FileIO::parseKnob(
             node.child_value()
         );
         return text;
+    } else {
+        spdlog::error("No knob type '{}'", type);
+        return NULL;
     }
 }
