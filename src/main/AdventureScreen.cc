@@ -25,14 +25,33 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         sol::lib::table,
         sol::lib::string
     );
+    sol::usertype<sf::IntRect> intRectType = this->script.new_usertype<sf::IntRect>(
+        "IntRect",
+        sol::constructors<sf::IntRect(int, int, int, int)>()
+    );
+    intRectType["left"] = &sf::IntRect::left;
+    intRectType["top"] = &sf::IntRect::top;
+    intRectType["width"] = &sf::IntRect::width;
+    intRectType["height"] = &sf::IntRect::height;
+    sol::usertype<Item> itemType = this->script.new_usertype<Item>(
+        "Item",
+        sol::constructors<Item()>()
+    );
+    itemType["name"] = &Item::name;
+    itemType["displayName"] = &Item::displayName;
+    itemType["description"] = &Item::description;
+    itemType["rat"] = &Item::rat;
+    this->script["_itemInfo"] = this->script.create_table();
+    int i = 1;
+    for (std::pair<std::string, Item> const &item: this->core.getItems()) {
+        this->script["_itemInfo"][i] = item.second;
+        i++;
+    }
     this->script["_error"] = [](std::string message) {
         spdlog::error("Script: {}", message.c_str());
     };
     this->script["_systemInfo"] = []() {
         return std::make_tuple(8, 8);
-    };
-    this->script["_itemInfo"] = [this]() {
-        return this->core.getItems();
     };
     this->script["_getCamera"] = [this]() {
         return std::make_tuple(this->camera.x, this->camera.y);
@@ -42,7 +61,7 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->camera.y = y;
     };
     this->script["_xmlKnob"] = [this](std::string const &xml) {
-        spdlog::info(xml.c_str());
+        spdlog::debug("Adding knob xml: '{}'", xml.c_str());
         Knob *knob = FileIO::readXml<Knob, Measurements>(
             xml.c_str(),
             FileIO::parseKnob,
@@ -122,7 +141,7 @@ void AdventureScreen::onReveal(int response) {
 void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
     if (this->coroutine) return;
     if (prev == pos) return;
-    spdlog::info("{} {}", pos.x, pos.y);
+    //spdlog::info("{} {}", pos.x, pos.y);
     sf::Vector2f current = Util::screenToSphere(pos, this->camera);
     this->camera = current;
 }

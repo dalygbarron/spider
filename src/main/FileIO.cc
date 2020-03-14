@@ -260,8 +260,14 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
         char const *type = child.name();
         if (strcmp(type, "patch") == 0) {
             FileIO::parsePatch(*core, child);
+        } else if (strcmp(type, "item") == 0) {
+            core->addItem(
+                child.attribute("name").value(),
+                child.attribute("display-name").value(),
+                child.attribute("description").value(),
+                core->spritesheet.get(child.attribute("rat").value())
+            );
         }
-        // TODO: other types of child node.
     }
     return core;
 }

@@ -22,7 +22,7 @@ Item &Core::addItem(
     item.displayName = displayName;
     item.description = description;
     item.rat = rat;
-    this->items[name] = item;
+    this->items[name] = std::move(item);
     return this->items[name];
 }
 
