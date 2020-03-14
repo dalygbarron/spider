@@ -31,6 +31,9 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     this->script["_systemInfo"] = []() {
         return std::make_tuple(8, 8);
     };
+    this->script["_itemInfo"] = [this]() {
+        return this->core.getItems();
+    };
     this->script["_getCamera"] = [this]() {
         return std::make_tuple(this->camera.x, this->camera.y);
     };
@@ -50,6 +53,9 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         } else {
             spdlog::error("API: Invalid argument to _xmlKnob");
         }
+    };
+    this->script["_exit"] = [this](int response) {
+        this->core.popScreen(response);
     };
     this->script.script(this->level.script);
     this->coroutine = this->script["_start"];
@@ -123,6 +129,15 @@ void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
     if (this->coroutine) return;
+    if (key == sf::Keyboard::Key::E) {
+        this->coroutine = this->script["_gameMenu"];
+    } else if (key == sf::Keyboard::Key::Escape) {
+        this->coroutine = this->script["_programMenu"];
+        if (!this->coroutine) {
+            spdlog::warn("No _programMenu defined, quitting screen");
+            this->core.popScreen(-1);
+        }
+    }
 }
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {

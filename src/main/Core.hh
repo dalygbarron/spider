@@ -75,6 +75,13 @@ class Core {
         Memory &getMemory();
 
         /**
+         * Gives you the map of all the items that are in the game, with the
+         * keys being their names.
+         * @return a reference to the const map.
+         */
+        std::unordered_map<std::string, Item> const &getItems();
+
+        /**
          * Loads in a level making use of the entity repository for putting in
          * it's entities. There is no repository for levels because they use
          * a lot of memory.

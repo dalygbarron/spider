@@ -2,6 +2,7 @@ local gui = {}
 
 local panelBorder, buttonBorder, fontWidth, fontHeight = _systemInfo()
 
+-- TODO: shouldn't be like this
 gui.BUTTON_BORDER = buttonBorder
 gui.PANEL_BORDER = panelBorder
 gui.FONT_WIDTH = fontWidth

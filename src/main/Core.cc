@@ -42,6 +42,10 @@ Memory &Core::getMemory() {
     return this->memory;
 }
 
+std::unordered_map<std::string, Item> const &Core::getItems() {
+    return this->items;
+}
+
 Level *Core::loadLevel(ghc::filesystem::path const &path) {
     if (ghc::filesystem::exists(path)) {
         pugi::xml_document doc;
@@ -111,7 +115,9 @@ void Core::pushScreen(Screen *screen) {
 void Core::popScreen(int response) {
     delete this->screens[this->nScreens];
     this->nScreens--;
-    if (this->nScreens > 0) this->screens[this->nScreens]->onReveal(response);
+    if (this->nScreens > 0) {
+        this->screens[this->nScreens - 1]->onReveal(response);
+    }
     this->recalculateVisible();
 }
 
