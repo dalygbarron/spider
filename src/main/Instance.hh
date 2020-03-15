@@ -17,6 +17,7 @@ class Instance {
         Entity const *entity;
         sf::Vector2f pos;
         Mesh mesh;
+        int alive = true;
         float size = 1;
 
         /**

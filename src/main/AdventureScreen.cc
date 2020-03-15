@@ -119,6 +119,7 @@ void AdventureScreen::onClick(
     );
     sf::Vector2f floorScreen(floor.x, floor.y);
     for (Instance const &instance: this->level.instances) {
+        if (!instance.alive) continue;
         int hit = false;
         if (instance.entity) {
             sf::Vector3f screenPos = Util::sphereToScreen(
@@ -142,9 +143,13 @@ void AdventureScreen::onClick(
         }
         if (hit) {
             if (instance.entity && !instance.entity->item.empty()) {
-                this->coroutine = this->script[
-                    instance.entity->item.c_str()
-                ];
+                char const *itemName = instance.entity->item.c_str();
+                this->core.getMemory().setItemCount(
+                    itemName,
+                    this->core.getMemory().getItemCount(itemName) + 1
+                );
+                this->coroutine = this->script["_itemMessage"];
+                this->coroutine(itemName);
             } else {
                 this->coroutine = this->script[instance.name.c_str()];
             }
@@ -154,6 +159,7 @@ void AdventureScreen::onClick(
 }
 
 void AdventureScreen::onReveal(int response) {
+    this->selected = NULL;
     if (this->coroutine) this->coroutine(response);
 }
 

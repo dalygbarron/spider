@@ -28,11 +28,13 @@ function _gameMenu()
     gui.bake(knob, 256, 100, 512, 400)
     _xmlKnob(gui.xml(knob))
     local choice = coroutine.yield()
-    local name = _itemInfo[choice].name
-    if _G[name] then
-        _G[name]()
-    else 
-        _useItem(name)
+    if _itemInfo[choice] then
+        local name = _itemInfo[choice].name
+        if _G[name] then
+            _G[name]()
+        else 
+            _useItem(name)
+        end
     end
 
 end
@@ -54,4 +56,9 @@ function _programMenu()
         gui.say("saveer", "saving and quitting")
         _exit(3)
     end
+end
+
+function _itemMessage(name)
+    local gui = require("script.gui")
+    gui.say("Hell yeah", "You got "..name..".")
 end
