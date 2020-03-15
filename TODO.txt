@@ -23,6 +23,19 @@ Screen where you can browse files and choose to edit entities or levels
     allow that as it is complicated. Actually it would be doable, but yeah nah
     why bother.
 
+Alt text on buttons
+    Yeah so far have been too lazy but it should be easy enough to do and thus
+    I ough to do it. It will not be word wrapped, it will just write exactly
+    what is there.
+
+Hotkeys for buttons
+    Yeah would be nice for example to make it that the exit inventory button
+    can be activated by pressing escape. The hotkey is the only way because of
+    the fact that gui stuff is running in it's own screen.
+
+Coloured Text
+    Yeah should be able to use the font to draw text in any colour probably.
+
 Look into making the projection better fit with the equirectangular shader
     Or vice versa, but it will at some point be necessary that they rightly
     match each other. Possibly I could write my own equirectangular thing

@@ -335,6 +335,7 @@ class AdventureScreen: public Screen {
         sf::RectangleShape back;
         sol::state script;
         sol::coroutine coroutine;
+        Item const *selected = NULL;
 };
 
 #endif

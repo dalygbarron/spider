@@ -25,14 +25,6 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         sol::lib::table,
         sol::lib::string
     );
-    sol::usertype<sf::IntRect> intRectType = this->script.new_usertype<sf::IntRect>(
-        "IntRect",
-        sol::constructors<sf::IntRect(int, int, int, int)>()
-    );
-    intRectType["left"] = &sf::IntRect::left;
-    intRectType["top"] = &sf::IntRect::top;
-    intRectType["width"] = &sf::IntRect::width;
-    intRectType["height"] = &sf::IntRect::height;
     sol::usertype<Item> itemType = this->script.new_usertype<Item>(
         "Item",
         sol::constructors<Item()>()
@@ -47,6 +39,30 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->script["_itemInfo"][i] = item.second;
         i++;
     }
+    this->script["_inventory"] = [this]() {
+        sol::table inventoryTable = this->script.create_table();
+        for (std::pair<std::string, int> const &item:
+            this->core.getMemory().getItems()
+        ) {
+            inventoryTable[item.first.c_str()] = item.second;
+        }
+        return inventoryTable;
+    };
+    this->script["_addItem"] = [this](std::string name) {
+        Memory &memory = this->core.getMemory();
+        char const *nameString = name.c_str();
+        memory.setItemCount(nameString, memory.getItemCount(nameString) + 1);
+        return this->core.getMemory().getItemCount(name.c_str());
+    };
+    this->script["_useItem"] = [this](std::string name) {
+        std::unordered_map<std::string, Item> const &items =
+            this->core.getItems();
+        if (items.count(name)) {
+            this->selected = &(this->core.getItems().at(name.c_str()));
+        } else {
+            spdlog::error("API: invalid item '{}'", name.c_str());
+        }
+    };
     this->script["_error"] = [](std::string message) {
         spdlog::error("Script: {}", message.c_str());
     };
@@ -62,10 +78,13 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     };
     this->script["_xmlKnob"] = [this](std::string const &xml) {
         spdlog::debug("Adding knob xml: '{}'", xml.c_str());
-        Knob *knob = FileIO::readXml<Knob, Measurements>(
+        Knob *knob = FileIO::readXml<Knob, FileIO::KnobInfo>(
             xml.c_str(),
             FileIO::parseKnob,
-            this->core.renderer.getMeasurements()
+            FileIO::KnobInfo {
+                this->core.renderer.getMeasurements(),
+                this->core.spritesheet
+            }
         );
         if (knob) {
             this->core.pushScreen(new KnobScreen(this->core, knob));
@@ -192,10 +211,17 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         }
     }
     if (top) {
+        if (this->selected) {
+            this->core.renderer.batch.draw(
+                this->selected->sprite,
+                sf::Vector2f(Const::HALF_WIDTH + 32, Const::HALF_HEIGHT + 32)
+            );
+        }
         this->core.renderer.cursor(
             sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
             Renderer::CursorType::pointer
         );
+
     }
     target.draw(this->core.renderer.batch);
 }

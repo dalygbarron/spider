@@ -12,7 +12,8 @@ class Item {
         std::string name;
         std::string displayName;
         std::string description;
-        sf::IntRect rat;
+        std::string rat;
+        sf::IntRect sprite;
 };
 
 #endif

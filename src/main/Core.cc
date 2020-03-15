@@ -15,13 +15,15 @@ Item &Core::addItem(
     char const *name,
     char const *displayName,
     char const *description,
-    sf::IntRect rat
+    char const *rat,
+    sf::IntRect sprite
 ) {
     Item item;
     item.name = name;
     item.displayName = displayName;
     item.description = description;
     item.rat = rat;
+    item.sprite = sprite;
     this->items[name] = std::move(item);
     return this->items[name];
 }

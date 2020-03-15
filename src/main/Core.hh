@@ -39,13 +39,15 @@ class Core {
          * @param displayName is the version of the name the player sees.
          * @param description is the description of the game to show.
          * @param rat         is the icon to draw the item with in inventory.
+         * @param sprite      is the actual sprite of the icon to draw.
          * @return the item.
          */
         Item &addItem(
             char const *name,
             char const *displayName,
             char const *description,
-            sf::IntRect rat
+            char const *rat,
+            sf::IntRect sprite
         );
 
         /**

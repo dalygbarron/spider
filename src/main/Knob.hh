@@ -186,7 +186,7 @@ class FrameKnob: public Knob {
          * @param y   is the height.
          * @param rat is the rat to draw.
          */
-        FrameKnob(sf::IntRect rat);
+        FrameKnob(int x, int y, int w, int h, sf::IntRect rat);
 
         virtual void draw(
             sf::RenderTarget &target,
@@ -194,7 +194,8 @@ class FrameKnob: public Knob {
         ) const override;
 
     private:
-        sf::IntRect rat;
+        sf::IntRect const rat;
+        sf::FloatRect drawPos;
 };
 
 #endif

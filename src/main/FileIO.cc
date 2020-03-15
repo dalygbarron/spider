@@ -265,6 +265,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
                 child.attribute("name").value(),
                 child.attribute("display-name").value(),
                 child.attribute("description").value(),
+                child.attribute("rat").value(),
                 core->spritesheet.get(child.attribute("rat").value())
             );
         }
@@ -274,7 +275,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
 
 Knob *FileIO::parseKnob(
     pugi::xml_node node,
-    Measurements const &measurements
+    FileIO::KnobInfo const &knobInfo
 ) {
     int x = node.attribute("x").as_int();
     int y = node.attribute("y").as_int();
@@ -291,7 +292,7 @@ Knob *FileIO::parseKnob(
             node.attribute("parts").as_int()
         );
         for (pugi::xml_node child: node.children()) {
-            panel->addChild(FileIO::parseKnob(child, measurements));
+            panel->addChild(FileIO::parseKnob(child, knobInfo));
         }
         return panel;
     } else if (strcmp(type, "button") == 0) {
@@ -302,18 +303,14 @@ Knob *FileIO::parseKnob(
             w,
             h,
             id,
-            FileIO::parseKnob(child, measurements)
+            FileIO::parseKnob(child, knobInfo)
         );
     } else if (strcmp(type, "text") == 0) {
-        TextKnob *text = new TextKnob(
-            x,
-            y,
-            w,
-            h,
-            measurements,
-            node.child_value()
-        );
-        return text;
+        return new TextKnob(x, y, w, h, knobInfo.measurements, node.child_value());
+    } else if (strcmp(type, "frame") == 0) {
+        return new FrameKnob(x, y, w, h, knobInfo.spritesheet.get(
+            node.attribute("rat").value()
+        ));
     } else {
         spdlog::error("No knob type '{}'", type);
         return NULL;

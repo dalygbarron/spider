@@ -14,6 +14,14 @@
  */
 namespace FileIO {
     /**
+     * Contains all the info needed to parse knobs from xml.
+     */
+    struct KnobInfo {
+        Measurements const &measurements;
+        RatPack const &spritesheet;
+    };
+
+    /**
      * Loads a memory from the file it should be at for you. If there is no
      * such file then it returns a blank memory.
      * @param id is the id of the memory to load.
@@ -66,11 +74,12 @@ namespace FileIO {
 
     /**
      * TUrns an xml node into the knob it represents recursively.
-     * @param knob         is the xml node.
-     * @param measurements is the stuff you need for loading knobs.
+     * @param knob     is the xml node.
+     * @param knobInfo is a struct containing the sizing stuff needed to parse
+     *                 knobs correctly.
      * @return the knob or null if it's no good.
      */
-    Knob *parseKnob(pugi::xml_node node, Measurements const &measurements);
+    Knob *parseKnob(pugi::xml_node node, KnobInfo const &knobInfo);
 
     /**
      * Loads in XML from a file, then parses it into your desired type using

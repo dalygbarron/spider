@@ -49,6 +49,21 @@ function gui.button(content, id)
     return knob
 end
 
+--- Creates a representation of a frame gui object. This is one that just draws
+-- a static picture which is quite nice.
+-- @param rat     is the name of the rat to draw.
+function gui.frame(rat)
+    return {
+        type = "frame",
+        rat = rat,
+        x = 0,
+        y = 0,
+        w = 0,
+        h = 0
+    }
+end
+
+
 --- Creates a representation of a panel that can be used within this module.
 -- @param parts is the number of columns to seperate things into.
 -- @param ...   all of these are meant to be knob representations to be made
@@ -113,10 +128,10 @@ end
 --- Sets the position of all of the knobs based on their familial
 -- relationships.
 -- @param knob is the parent knob to start baking at.
--- @param x is the horizontal position to fit at.
--- @param y is the vertical position to fit at.
--- @param w is the width to fit the knobs in.
--- @param h is the height to fit the knobs in.
+-- @param x    is the horizontal position to fit at.
+-- @param y    is the vertical position to fit at.
+-- @param w    is the width to fit the knobs in.
+-- @param h    is the height to fit the knobs in.
 function gui.bake(knob, x, y, w, h)
     knob.x = x
     knob.y = y
@@ -191,12 +206,24 @@ function gui.xml(knob)
             knob.h,
             knob.content
         )
+    elseif (knob.type == "frame") then
+        return string.format(
+            "<frame x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\" rat=\"%s\" />",
+            knob.x,
+            knob.y,
+            knob.w,
+            knob.h,
+            knob.rat
+        )
     elseif (knob.type == "hsplit" or knob.type == "vsplit") then
         return gui.xml(knob.a)..gui.xml(knob.b)
     end
     return string.format("<%s />", knob.type)
 end
 
+--- Writes some text in a gui box with a heading.
+-- @param speaker is the name of the thing speaker / the heading.
+-- @param ...     is just a bunch of text that is concatenated with spaces.
 function gui.say(speaker, ...)
     local speech = ""
     for i, bit in ipairs({...}) do
@@ -219,6 +246,11 @@ function gui.say(speaker, ...)
     coroutine.yield()
 end
 
+--- Writes some text and lets the user choose an option.
+-- @param speaker  is the name of the asker / heading
+-- @param question is the question to ask.
+-- @param ...      is the answers to the question you can give.
+-- @return the index of the chosen answer.
 function gui.ask(speaker, question, ...)
     local answerButtons = {}
     for i, answer in ipairs({...}) do
@@ -231,7 +263,7 @@ function gui.ask(speaker, question, ...)
     local knob = gui.panel(
         1,
         gui.vsplit(
-            0.20,
+            0.2,
             gui.panel(1, gui.text(speaker)),
             gui.vsplit(
                 0.25,
