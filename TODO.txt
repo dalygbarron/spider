@@ -1,6 +1,16 @@
 Properly Playable Level Screen with items and shit.
     Yep like it says right there.
 
+Improve Script Stuff
+    Whenver you change the running function you need to
+    reset the error handler, so should add a function for that, and should
+    probably add a function for calling the script in which it handles fuck
+    ups.
+
+transferring between advneture screens
+    yep. Scripts and stuff should not fail, birth and death switches should
+    work, etc etc.
+
 Battle Screen
     Should run entirely off a Lua script, and you should be able to start the
     engine by specifying just the game file and a battle script. Make a nice

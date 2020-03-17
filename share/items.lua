@@ -1,0 +1,10 @@
+-- It is not actually possible to provide any default implementation besides an
+-- empty file. The idea is that for every item in your game that triggers
+-- a function whenever used, you can put the function in this file. The
+-- function should have the same name (as opposed to display name) as the item
+-- and thus no two items can have the same name.
+-- It also means that you don't want to have an item that has the same name as
+-- some function you use so you kinda need to be careful about that, you might
+-- want to prefix item names with something. I promise the api only uses single
+-- underscores so I guess you could prefix all item names with two underscores.
+-- Whatever, have fun.

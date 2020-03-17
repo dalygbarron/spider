@@ -330,6 +330,7 @@ class AdventureScreen: public Screen {
 
     private:
         Level const &level;
+        std::vector<Instance> instances;
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;

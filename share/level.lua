@@ -16,7 +16,7 @@ function _gameMenu()
             0.1,
             gui.hsplit(
                 0.9,
-                gui.text("Inventory"),
+                gui.panel(1, gui.text("Inventory")),
                 gui.button("X", -1)
             ),
             gui.panel(
@@ -41,16 +41,25 @@ end
 
 function _programMenu()
     local gui = require("script.gui")
-    local answer = gui.ask(
-        "Paused",
-        "Menu",
-        "Return",
-        "Save",
-        "Save and Quit"
+    local knob = gui.panel(
+        1,
+        gui.vsplit(
+            0.1,
+            gui.panel(1, gui.text("Paused")),
+            gui.panel(
+                1,
+                gui.button("Resume", 1),
+                gui.button("Save", 2),
+                gui.button("Save and Quit", 3)
+            )
+        )
     )
-    if answer == 0 then
+    gui.bake(knob, 384, 100, 256, 400)
+    _xmlKnob(gui.xml(knob))
+    local choice = coroutine.yield()
+    if choice == 1 then
         gui.say("ferf", "returning")
-    elseif answer == 1 then
+    elseif choice == 2 then
         gui.say("saveer", "saving")
     else
         gui.say("saveer", "saving and quitting")

@@ -17,6 +17,14 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         spdlog::error("Couldn't start the sky shader");
     }
     this->back.setTexture(&this->level.getPic(), true);
+    for (Instance const &instance: level.instances) {
+        if (instance.birthSwitch.empty() ||
+            this->core.getMemory().getSwitch(instance.birthSwitch.c_str())
+        ) {
+            this->instances.push_back(instance);
+        }
+    }
+    this->instances = level.instances;
     this->script.open_libraries(
         sol::lib::base,
         sol::lib::coroutine,
@@ -118,7 +126,7 @@ void AdventureScreen::onClick(
         this->camera
     );
     sf::Vector2f floorScreen(floor.x, floor.y);
-    for (Instance const &instance: this->level.instances) {
+    for (Instance &instance: this->instances) {
         if (!instance.alive) continue;
         int hit = false;
         if (instance.entity) {
@@ -148,10 +156,12 @@ void AdventureScreen::onClick(
                     itemName,
                     this->core.getMemory().getItemCount(itemName) + 1
                 );
+                instance.alive = false;
                 this->coroutine = this->script["_itemMessage"];
                 this->coroutine(itemName);
             } else {
                 this->coroutine = this->script[instance.name.c_str()];
+                this->coroutine.error_handler = this->script["_error"];
             }
             return;
         }
@@ -175,8 +185,10 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
     if (this->coroutine) return;
     if (key == sf::Keyboard::Key::E) {
         this->coroutine = this->script["_gameMenu"];
+        this->coroutine.error_handler = this->script["_error"];
     } else if (key == sf::Keyboard::Key::Escape) {
         this->coroutine = this->script["_programMenu"];
+        this->coroutine.error_handler = this->script["_error"];
         if (!this->coroutine) {
             spdlog::warn("No _programMenu defined, quitting screen");
             this->core.popScreen(-1);
@@ -195,7 +207,8 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         this->camera
     );
     sf::Vector2f floorScreen(floor.x, floor.y);
-    for (Instance const &instance: this->level.instances) {
+    for (Instance const &instance: this->instances) {
+        if (!instance.alive) continue;
         if (instance.entity) {
             sf::Vector3f pos = Util::sphereToScreen(
                 instance.pos,
