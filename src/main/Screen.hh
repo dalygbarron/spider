@@ -337,6 +337,28 @@ class AdventureScreen: public Screen {
         sol::state script;
         sol::coroutine coroutine;
         Item const *selected = NULL;
+
+        /**
+         * Sets the script function that the screen should be running and gets
+         * it set up, and then runs it a single time.
+         * @param name is the name of the function to be running.
+         */
+        void setScript(char const *name);
+
+        /**
+         * Runs the current coroutine if it is allowed.
+         * @param input is the input to the coroutine.
+         * @return true if the script ran.
+         */
+        template <class T> int runScript(T input) {
+            if (!this->coroutine) return false;
+            auto result = this->coroutine(input);
+            if (!result.valid()) {
+                sol::error error = result;
+                spdlog::error("Script Error: {}", error.what());
+            }
+            return false;
+        };
 };
 
 #endif

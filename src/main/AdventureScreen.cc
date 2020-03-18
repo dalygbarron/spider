@@ -71,9 +71,12 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
             spdlog::error("API: invalid item '{}'", name.c_str());
         }
     };
-    this->script["_error"] = [](std::string message) {
-        spdlog::error("Script: {}", message.c_str());
-    };
+    this->script["_save"] = [this]() {
+
+    }
+    this->script["_load"] = [this](int file) {
+
+    }
     this->script["_systemInfo"] = []() {
         return std::make_tuple(8, 8);
     };
@@ -104,14 +107,11 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
         this->core.popScreen(response);
     };
     this->script.script(this->level.script);
-    this->coroutine = this->script["_start"];
-    this->coroutine.error_handler = this->script["_error"];
+    this->setScript("_start");
 }
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
-    if (this->coroutine) {
-        this->coroutine(delta);
-    }
+    if (this->runScript<float>(delta)) return;
     Util::centreMouse(window);
     this->shader.setUniform("angle", camera);
 }
@@ -157,11 +157,10 @@ void AdventureScreen::onClick(
                     this->core.getMemory().getItemCount(itemName) + 1
                 );
                 instance.alive = false;
-                this->coroutine = this->script["_itemMessage"];
-                this->coroutine(itemName);
+                this->setScript("_itemMessage");
+                this->runScript<char const *>(itemName);
             } else {
-                this->coroutine = this->script[instance.name.c_str()];
-                this->coroutine.error_handler = this->script["_error"];
+                this->setScript(instance.name.c_str());
             }
             return;
         }
@@ -170,7 +169,7 @@ void AdventureScreen::onClick(
 
 void AdventureScreen::onReveal(int response) {
     this->selected = NULL;
-    if (this->coroutine) this->coroutine(response);
+    this->runScript<int>(response);
 }
 
 void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
@@ -184,11 +183,9 @@ void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
     if (this->coroutine) return;
     if (key == sf::Keyboard::Key::E) {
-        this->coroutine = this->script["_gameMenu"];
-        this->coroutine.error_handler = this->script["_error"];
+        this->setScript("_gameMenu");
     } else if (key == sf::Keyboard::Key::Escape) {
-        this->coroutine = this->script["_programMenu"];
-        this->coroutine.error_handler = this->script["_error"];
+        this->setScript("_programMenu");
         if (!this->coroutine) {
             spdlog::warn("No _programMenu defined, quitting screen");
             this->core.popScreen(-1);
@@ -243,4 +240,8 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
 
     }
     target.draw(this->core.renderer.batch);
+}
+
+void AdventureScreen::setScript(char const *name) {
+    this->coroutine = this->script[name];
 }
