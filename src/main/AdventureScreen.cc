@@ -73,10 +73,10 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     };
     this->script["_save"] = [this]() {
 
-    }
+    };
     this->script["_load"] = [this](int file) {
 
-    }
+    };
     this->script["_systemInfo"] = []() {
         return std::make_tuple(8, 8);
     };
