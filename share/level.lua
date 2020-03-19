@@ -58,7 +58,7 @@ function _programMenu()
     _xmlKnob(gui.xml(knob))
     local choice = coroutine.yield()
     if choice == 1 then
-        gui.say("ferf", "returning")
+        -- nothing lol
     elseif choice == 2 then
         gui.say("saveer", "saving")
     else

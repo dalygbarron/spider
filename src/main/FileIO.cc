@@ -20,6 +20,7 @@ Memory FileIO::loadMemory(int id) {
             spdlog::error("'{}' is not a valid save file", path.c_str());
             return memory;
         }
+        memory.level = node.attribute("level").value();
         for (pugi::xml_node child: node.children()) {
             char const *type = child.name();
             if (strcmp(type, "switch") == 0) {

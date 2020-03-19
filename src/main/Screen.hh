@@ -52,6 +52,11 @@ class Screen {
         virtual int isTransparent() const;
 
         /**
+         * To be called when the screen is first placed onto the screen stack.
+         */
+        virtual void onStart();
+
+        /**
          * Called when this screen is revealed on the screen stack, as in it
          * has been covered on the stack by another screen and now that screen
          * has been removed and this one has been revealed.
@@ -309,9 +314,16 @@ class AdventureScreen: public Screen {
         /**
          * Creates the screen by giving it it's dependencies.
          * @param core  is the core screen dependencies.
-         * @param level is the level the screen takes place in.
+         * @param level is the level the screen takes place in. Once you give
+         *              this to the screen it will delete it when it is
+         *              deleted. beware.
          */
-        AdventureScreen(Core &core, Level const &level);
+        AdventureScreen(Core &core, Level *level);
+
+        /**
+         * Deletes the level that is stored within the screen.
+         */
+        ~AdventureScreen();
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
@@ -322,6 +334,8 @@ class AdventureScreen: public Screen {
             sf::Vector2f pos
         ) override;
 
+        virtual void onStart() override;
+
         virtual void onReveal(int response) override;
 
         virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos) override;
@@ -329,8 +343,7 @@ class AdventureScreen: public Screen {
         virtual void onKey(sf::Keyboard::Key key) override;
 
     private:
-        Level const &level;
-        std::vector<Instance> instances;
+        Level *level;
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;

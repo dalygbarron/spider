@@ -4,10 +4,8 @@
 #include "Util.hh"
 #include "FileIO.hh"
 
-AdventureScreen::AdventureScreen(Core &core, Level const &level):
-    Screen(core),
-    level(level)
-{
+AdventureScreen::AdventureScreen(Core &core, Level *level): Screen(core) {
+    this->level = level;
     this->back.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     this->shader.setUniform("angle", this->camera);
     this->shader.setUniform("picture", sf::Shader::CurrentTexture);
@@ -16,15 +14,8 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     )) {
         spdlog::error("Couldn't start the sky shader");
     }
-    this->back.setTexture(&this->level.getPic(), true);
-    for (Instance const &instance: level.instances) {
-        if (instance.birthSwitch.empty() ||
-            this->core.getMemory().getSwitch(instance.birthSwitch.c_str())
-        ) {
-            this->instances.push_back(instance);
-        }
-    }
-    this->instances = level.instances;
+    this->back.setTexture(&this->level->getPic(), true);
+    // TODO: handle birth and death switches again.
     this->script.open_libraries(
         sol::lib::base,
         sol::lib::coroutine,
@@ -71,11 +62,19 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
             spdlog::error("API: invalid item '{}'", name.c_str());
         }
     };
-    this->script["_save"] = [this]() {
-
+    this->script["_saveGame"] = [this]() {
+        this->core.saveGame();
     };
-    this->script["_load"] = [this](int file) {
-
+    this->script["_loadGame"] = [this](int id) {
+        this->core.loadGame(id);
+        spdlog::info("idiota: {}", this->core.getMemory().level.c_str());
+        this->core.replaceScreen(new AdventureScreen(
+            this->core,
+            this->core.loadLevel(this->core.getMemory().level.c_str())
+        ));
+    };
+    this->script["_newGame"] = [this](int id) {
+        this->core.newGame(id);
     };
     this->script["_systemInfo"] = []() {
         return std::make_tuple(8, 8);
@@ -106,8 +105,12 @@ AdventureScreen::AdventureScreen(Core &core, Level const &level):
     this->script["_exit"] = [this](int response) {
         this->core.popScreen(response);
     };
-    this->script.script(this->level.script);
+    this->script.script(this->level->script);
     this->setScript("_start");
+}
+
+AdventureScreen::~AdventureScreen() {
+    delete this->level;
 }
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
@@ -126,7 +129,7 @@ void AdventureScreen::onClick(
         this->camera
     );
     sf::Vector2f floorScreen(floor.x, floor.y);
-    for (Instance &instance: this->instances) {
+    for (Instance &instance: this->level->instances) {
         if (!instance.alive) continue;
         int hit = false;
         if (instance.entity) {
@@ -167,7 +170,12 @@ void AdventureScreen::onClick(
     }
 }
 
+void AdventureScreen::onStart() {
+    this->core.getMemory().level = this->level->file;
+}
+
 void AdventureScreen::onReveal(int response) {
+    this->core.getMemory().level = this->level->file;
     this->selected = NULL;
     this->runScript<int>(response);
 }
@@ -204,7 +212,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         this->camera
     );
     sf::Vector2f floorScreen(floor.x, floor.y);
-    for (Instance const &instance: this->instances) {
+    for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
             sf::Vector3f pos = Util::sphereToScreen(

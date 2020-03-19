@@ -208,8 +208,10 @@ int main(int argc, char **argv) {
         Entity *entity = core->entityRepository.get(options.file.c_str());
         core->pushScreen(new EntityScreen(*core, *entity));
     } else {
-        Level *level = core->loadLevel(core->start);
-        core->pushScreen(new AdventureScreen(*core, *level));
+        core->pushScreen(new AdventureScreen(
+            *core,
+            core->loadLevel(core->start)
+        ));
     }
     result = process(*core);
     // Clean up.

@@ -10,6 +10,8 @@
  */
 class Memory {
     public:
+        std::string level;
+
         /**
          * Creates the memory and sets it's id.
          * @param id is the id to give it.

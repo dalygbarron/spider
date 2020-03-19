@@ -112,20 +112,27 @@ void Core::pushScreen(Screen *screen) {
     }
     this->screens[this->nScreens - 1] = screen;
     this->recalculateVisible();
+    screen->onStart();
 }
 
 void Core::popScreen(int response) {
-    delete this->screens[this->nScreens];
+    if (this->nScreens == 0) {
+        spdlog::error("Trying to pop screen when there is no screen");
+    }
+    delete this->screens[this->nScreens - 1];
     this->nScreens--;
+    this->recalculateVisible();
     if (this->nScreens > 0) {
         this->screens[this->nScreens - 1]->onReveal(response);
     }
-    this->recalculateVisible();
 }
 
 void Core::replaceScreen(Screen *screen) {
-    delete this->screens[this->nScreens];
-    this->screens[this->nScreens] = screen;
+    if (this->nScreens == 0) {
+        spdlog::error("Trying to replace screen when there is no screen");
+    }
+    delete this->screens[this->nScreens - 1];
+    this->screens[this->nScreens - 1] = screen;
     this->recalculateVisible();
 }
 

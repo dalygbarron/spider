@@ -1,3 +1,9 @@
+Make transitions queued and not instant.
+    Yeah instant transitions are causing scripts to shit it. Therefore, we must
+    make it that when you call those transition functions the core object just
+    stores some kind of transition queue which it then deals with at some
+    specific point in the main loop. I suppose that is for the best anyway.
+
 Properly Playable Level Screen with items and shit.
     Yep like it says right there.
 

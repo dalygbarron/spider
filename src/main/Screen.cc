@@ -12,6 +12,10 @@ int Screen::isTransparent() const {
     return false;
 }
 
+void Screen::onStart() {
+    // Do nothing by default.
+}
+
 void Screen::onReveal(int value) {
     // Do nothing by default.
 }
