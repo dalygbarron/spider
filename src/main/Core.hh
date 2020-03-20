@@ -8,6 +8,7 @@
 #include "SoundPlayer.hh"
 #include "Item.hh"
 #include "Memory.hh"
+#include <queue>
 
 /**
  * Forward declaration.
@@ -19,6 +20,17 @@ class Screen;
  */
 class Core {
     public:
+        /**
+         * Represents a screen transition to perform at the appropriate time.
+         */
+        class Transition {
+            public:
+                int push;
+                int pop;
+                int response;
+                Screen *screen;
+        };
+
         std::string name;
         std::string start;
         ghc::filesystem::path filename;
@@ -118,6 +130,11 @@ class Core {
         Screen *getTopScreen();
 
         /**
+         * Goes through the current queue of transitions and does them all.
+         */
+        void performTransitions();
+
+        /**
          * Draw all the screens one by one.
          * @param target is the target to draw to.
          */
@@ -125,15 +142,11 @@ class Core {
 
     private:
         Memory memory = Memory(0);
+        std::queue<Core::Transition> transitions;
         std::unordered_map<std::string, Item> items;
         std::vector<Screen *> screens;
         int firstVisible = 0;
         int nScreens = 0;
-
-        /**
-         * Recalculates what screens should be rendered.
-         */
-        void recalculateVisible();
 };
 
 #endif

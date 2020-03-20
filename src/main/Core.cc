@@ -106,39 +106,53 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
 }
 
 void Core::pushScreen(Screen *screen) {
-    this->nScreens++;
-    if (this->nScreens > this->screens.size()) {
-        this->screens.resize(this->nScreens + 3);
-    }
-    this->screens[this->nScreens - 1] = screen;
-    this->recalculateVisible();
-    screen->onStart();
+    this->transitions.push(Transition {true, false, 0, screen});
 }
 
 void Core::popScreen(int response) {
-    if (this->nScreens == 0) {
-        spdlog::error("Trying to pop screen when there is no screen");
-    }
-    delete this->screens[this->nScreens - 1];
-    this->nScreens--;
-    this->recalculateVisible();
-    if (this->nScreens > 0) {
-        this->screens[this->nScreens - 1]->onReveal(response);
-    }
+    this->transitions.push(Transition {false, true, response, NULL});
 }
 
 void Core::replaceScreen(Screen *screen) {
-    if (this->nScreens == 0) {
-        spdlog::error("Trying to replace screen when there is no screen");
-    }
-    delete this->screens[this->nScreens - 1];
-    this->screens[this->nScreens - 1] = screen;
-    this->recalculateVisible();
+    this->transitions.push(Transition {true, true, 0, screen});
 }
 
 Screen *Core::getTopScreen() {
     if (this->nScreens > 0) return this->screens[this->nScreens - 1];
     return NULL;
+}
+
+void Core::performTransitions() {
+    int action = !this->transitions.empty();
+    while (!this->transitions.empty()) {
+        Transition transition = this->transitions.front();
+        this->transitions.pop();
+        if (transition.pop && this->nScreens > 0) {
+            delete this->screens[this->nScreens - 1];
+            this->nScreens--;
+            if (this->nScreens > 0 && !transition.push) {
+                this->screens[this->nScreens - 1]->onReveal(
+                    transition.response
+                );
+            }
+        }
+        if (transition.push) {
+            if (this->nScreens >= this->screens.size()) {
+                this->screens.resize(this->nScreens + 4);
+            }
+            this->screens[this->nScreens] = transition.screen;
+            this->screens[this->nScreens]->onStart();
+            this->nScreens++;
+        }
+    }
+    if (action) {
+        for (
+            this->firstVisible = this->nScreens - 1;
+            this->firstVisible >= 0 &&
+                this->screens[this->firstVisible]->isTransparent();
+            this->firstVisible--
+        );
+    }
 }
 
 void Core::drawScreens(sf::RenderTarget &target) {
@@ -149,13 +163,4 @@ void Core::drawScreens(sf::RenderTarget &target) {
     for (auto it = start; it != end; it++) {
         (*it)->draw(target, it == almostEnd);
     }
-}
-
-void Core::recalculateVisible() {
-    for (
-        this->firstVisible = this->nScreens - 1;
-        this->firstVisible >= 0 &&
-            this->screens[this->firstVisible]->isTransparent();
-        this->firstVisible--
-    );
 }

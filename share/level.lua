@@ -60,9 +60,11 @@ function _programMenu()
     if choice == 1 then
         -- nothing lol
     elseif choice == 2 then
-        gui.say("saveer", "saving")
+        _saveGame()
+        gui.say("saveer", "saved")
     else
         gui.say("saveer", "saving and quitting")
+        _saveGame()
         _exit(3)
     end
 end

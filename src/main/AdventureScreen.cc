@@ -67,14 +67,16 @@ AdventureScreen::AdventureScreen(Core &core, Level *level): Screen(core) {
     };
     this->script["_loadGame"] = [this](int id) {
         this->core.loadGame(id);
-        spdlog::info("idiota: {}", this->core.getMemory().level.c_str());
-        this->core.replaceScreen(new AdventureScreen(
-            this->core,
-            this->core.loadLevel(this->core.getMemory().level.c_str())
-        ));
+        return this->core.getMemory().level;
     };
     this->script["_newGame"] = [this](int id) {
         this->core.newGame(id);
+    };
+    this->script["_go"] = [this](std::string const &level) {
+        this->core.replaceScreen(new AdventureScreen(
+            this->core,
+            this->core.loadLevel(level)
+        ));
     };
     this->script["_systemInfo"] = []() {
         return std::make_tuple(8, 8);

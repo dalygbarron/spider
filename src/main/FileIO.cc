@@ -46,6 +46,7 @@ void FileIO::saveMemory(Memory const &memory) {
     delete text;
     pugi::xml_document doc;
     pugi::xml_node node = doc.append_child("save");
+    node.append_attribute("level") = memory.level.c_str();
     for (std::pair<std::string const, int> item: memory.getSwitches()) {
         pugi::xml_node child = node.append_child("switch");
         child.append_attribute("name") = item.first.c_str();

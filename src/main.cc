@@ -158,6 +158,7 @@ int process(Core &core) {
             frame = 0;
         }
         // Re get the screen for if there has been a transition.
+        core.performTransitions();
         screen = core.getTopScreen();
     }
     return 0;
@@ -213,6 +214,7 @@ int main(int argc, char **argv) {
             core->loadLevel(core->start)
         ));
     }
+    core->performTransitions();
     result = process(*core);
     // Clean up.
     ImGui::SFML::Shutdown();
