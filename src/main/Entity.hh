@@ -16,6 +16,7 @@ class Entity {
         ghc::filesystem::path file;
         std::string name;
         std::string item;
+        std::string itemKey;
         std::string spriteName;
         sf::IntRect sprite;
         sf::Vector2f offset;

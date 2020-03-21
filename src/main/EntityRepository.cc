@@ -32,6 +32,8 @@ Entity *EntityRepository::parse(
     entity->file = path;
     entity->name = node.attribute("name").value();
     entity->item = node.attribute("item").value();
+    entity->itemKey = "_";
+    entity->itemKey += node.attribute("item").value();
     entity->spriteName = node.attribute("rat").value();
     entity->sprite = this->spritesheet.get(entity->spriteName.c_str());
     entity->offset.x = node.attribute("offset-x").as_float();

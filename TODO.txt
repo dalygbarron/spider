@@ -1,17 +1,12 @@
-Make transitions queued and not instant.
-    Yeah instant transitions are causing scripts to shit it. Therefore, we must
-    make it that when you call those transition functions the core object just
-    stores some kind of transition queue which it then deals with at some
-    specific point in the main loop. I suppose that is for the best anyway.
+Local and Global switches
+    This is a useful feature for two reasons. Firstly, it will make it easier
+    to check whether a given item is dead in a given level without
+    concatenating a lot of strings, and also it is just a generally useful
+    thing to so you can make switches called "die" or whatever in more than one
+    level without fucking things up a lot.
 
 Properly Playable Level Screen with items and shit.
     Yep like it says right there.
-
-Improve Script Stuff
-    Whenver you change the running function you need to
-    reset the error handler, so should add a function for that, and should
-    probably add a function for calling the script in which it handles fuck
-    ups.
 
 transferring between advneture screens
     yep. Scripts and stuff should not fail, birth and death switches should

@@ -1,6 +1,7 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include "Level.hh"
 #include <string>
 #include <unordered_map>
 
@@ -40,6 +41,24 @@ class Memory {
         void setSwitch(char const *name, int value);
 
         /**
+         * Gives you the value of the given switch as set specifically for the
+         * given level.
+         * @param level is the level to get the switch for.
+         * @param name  is the name of the switch to get.
+         * @return the value of the switch, which is false if it has not been
+         *         set.
+         */
+        int getLocalSwitch(Level const &level, char const *name) const;
+
+        /**
+         * Sets the value of a given switch specifically for the given level.
+         * @param level is the level to set the value of the switch for.
+         * @param name  is the name of the switch to set.
+         * @param value is the value to set the switch to.
+         */
+        int setLocalSwitch(Level const &level, char const *name, int value);
+
+        /**
          * Gives you the number that the player has of a given item.
          * @param item is the item to get the number of.
          * @return the number.
@@ -54,21 +73,32 @@ class Memory {
         void setItemCount(char const *item, int count);
 
         /**
+         * Gives you read only access to the full item list.
+         * @return the item list.
+         */
+        std::unordered_map<std::string, int> const &getItems() const;
+
+        /**
          * Gives you read only access to the full switch list.
          * @return the switch list.
          */
         std::unordered_map<std::string, int> const &getSwitches() const;
 
         /**
-         * Gives you read only access to the full item list.
-         * @return the item list.
+         * Gives you the full list of local switches as a map where each lot
+         * is listed under the level they are in.
+         * @return a map of that maps level names to maps that map switch names
+         *         to their values.
          */
-        std::unordered_map<std::string, int> const &getItems() const;
+        std::unordered_map<std::string, std::unordered_map<std::string, int>>
+            const &getLocalSwitches() const;
 
     private:
         int id;
-        std::unordered_map<std::string, int> switches;
         std::unordered_map<std::string, int> items;
+        std::unordered_map<std::string, int> switches;
+        std::unordered_map<std::string, std::unordered_map<std::string, int>>
+            localSwitches;
 };
 
 #endif

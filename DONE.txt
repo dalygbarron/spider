@@ -118,3 +118,15 @@ Playable Level Screen
     the mouse. Make sure that it can handle having GUI elements that make the
     camera stop following the mouse until they go away.
 
+Make transitions queued and not instant.
+    Yeah instant transitions are causing scripts to shit it. Therefore, we must
+    make it that when you call those transition functions the core object just
+    stores some kind of transition queue which it then deals with at some
+    specific point in the main loop. I suppose that is for the best anyway.
+
+Improve Script Stuff
+    Whenver you change the running function you need to
+    reset the error handler, so should add a function for that, and should
+    probably add a function for calling the script in which it handles fuck
+    ups.
+

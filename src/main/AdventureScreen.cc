@@ -145,12 +145,15 @@ void AdventureScreen::onClick(
                 floorScreen,
                 sf::Vector2f(screenPos.x, screenPos.y)
             );
-            hit = instance.entity->mesh.in(Util::rotateAround(
-                sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
-                sf::Vector2f(screenPos.x, screenPos.y),
-                -angle,
-                1 / instance.size
-            ) - sf::Vector2f(screenPos.x, screenPos.y) - instance.entity->offset);
+            hit = instance.entity->mesh.in(
+                Util::rotateAround(
+                    sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
+                    sf::Vector2f(screenPos.x, screenPos.y),
+                    -angle,
+                    1 / instance.size
+                ) - sf::Vector2f(screenPos.x, screenPos.y) -
+                instance.entity->offset
+            );
         } else {
             hit = instance.mesh.inSphere(this->camera);
         }
@@ -162,6 +165,11 @@ void AdventureScreen::onClick(
                     this->core.getMemory().getItemCount(itemName) + 1
                 );
                 instance.alive = false;
+                this->core.getMemory().setLocalSwitch(
+                    *(this->level),
+                    instance.entity->itemKey.c_str(),
+                    true
+                );
                 this->setScript("_itemMessage");
                 this->runScript<char const *>(itemName);
             } else {
