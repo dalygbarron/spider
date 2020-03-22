@@ -1,6 +1,6 @@
 spider
 debug
-test
+tester
 *.o
 *.swp
 *.swn

@@ -1,5 +1,44 @@
 #include "Memory.hh"
 
+Memory::SwitchExpression::SwitchExpression(
+    SwitchExpression::Type type,
+    char const *name,
+    char const *locale,
+    Memory::SwitchExpression *a,
+    Memory::SwitchExpression *b
+) {
+    this->type = type;
+    if (name) this->name = name;
+    if (locale) this->locale = locale;
+    this->a = a;
+    this->b = b;
+}
+
+Memory::SwitchExpression::~SwitchExpression() {
+    if (this->a) delete this->a;
+    if (this->b) delete this->b;
+}
+
+int Memory::SwitchExpression::evaluate(Memory const &memory) const {
+    switch (this->type) {
+        case Memory::SwitchExpression::Type::Switch:
+            return memory.getSwitch(this->name.c_str());
+        case Memory::SwitchExpression::Type::LocalSwitch:
+            return memory.getLocalSwitch(
+                this->name.c_str(),
+                this->locale.c_str()
+            );
+        case Memory::SwitchExpression::Type::And:
+            return this->a->evaluate(memory) && this->b->evaluate(memory);
+        case Memory::SwitchExpression::Type::Or:
+            return this->a->evaluate(memory) || this->b->evaluate(memory);
+        case Memory::SwitchExpression::Type::Not:
+            return !this->a->evaluate(memory);
+        default:
+            return false;
+    }
+}
+
 Memory::Memory(int id) {
     this->id = id;
 }

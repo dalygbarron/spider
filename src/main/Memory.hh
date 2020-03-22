@@ -11,6 +11,60 @@
  */
 class Memory {
     public:
+        /**
+         * Contains and evaluates a boolean expression of switch values.
+         */
+        class SwitchExpression {
+            public:
+                enum class Type {
+                    Switch,
+                    LocalSwitch,
+                    And,
+                    Or,
+                    Not,
+                    None
+                };
+
+                /**
+                 * Creates a switch expression. Keep in mind that this
+                 * constructor does allow you to do invalid things so keep your
+                 * wits about you.
+                 * @param type is the type of expression.
+                 * @param name is the name of the switch if relevant.
+                 * @param locale is the locale of the switch if relevant.
+                 * @param a    is the first child expression if relevant.
+                 * @param b    is the second child expression if relevant.
+                 */
+                SwitchExpression(
+                    SwitchExpression::Type type,
+                    char const *name,
+                    char const *locale,
+                    SwitchExpression *a,
+                    SwitchExpression *b
+                );
+
+                /**
+                 * Destroys the expression and it's child expressions.
+                 */
+                ~SwitchExpression();
+
+                /**
+                 * Evaluates the expression using the given memory for switch
+                 * values.
+                 * @param memory is the memory to get the switch values from.
+                 * @return the overall value of the evaluated expression with
+                 *         the given switches.
+                 */
+                int evaluate(Memory const &memory) const;
+
+            private:
+                Memory::SwitchExpression::Type type;
+                std::string name;
+                std::string locale;
+                SwitchExpression *a;
+                SwitchExpression *b;
+        };
+
         std::string level;
 
         /**

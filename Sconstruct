@@ -47,8 +47,8 @@ debug = debugEnv.Program(
     "debug",
     Glob("gen-dbg/main/*.cc") + ["gen-dbg/main.cc"]
 )
-test = debugEnv.Program(
-    "test",
+tester = debugEnv.Program(
+    "tester",
     Glob("gen-dbg/*/*.cc") + ["gen-dbg/catch.cc"]
 )
 prod = goodEnv.Program(
