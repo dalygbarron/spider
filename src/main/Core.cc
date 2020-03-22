@@ -84,11 +84,8 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
                 instance.pos.x = child.attribute("x").as_float();
                 instance.pos.y = child.attribute("y").as_float();
                 instance.size = child.attribute("size").as_float();
-                instance.birthSwitch = FileIO::parseSwitchExpression(
-                    child.attribute("birthSwitch").value()
-                );
-                instance.deathSwitch = FileIO::parseSwitchExpression(
-                    child.attribute("deathSwitch").value()
+                instance.lifeSwitch = FileIO::parseSwitchExpression(
+                    child.attribute("switch").value()
                 );
                 instance.entity = this->entityRepository.get(
                     child.attribute("entity").value()

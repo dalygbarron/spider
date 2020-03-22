@@ -268,11 +268,8 @@ void AdventureScreen::setScript(char const *name) {
 void AdventureScreen::checkSwitches() {
     Memory const &memory = this->core.getMemory();
     for (Instance &instance: this->level->instances) {
-        if (instance.birthSwitch && !instance.birthSwitch->evaluate(memory)) {
-            instance.alive = false;
-        }
-        if (instance.deathSwitch && instance.deathSwitch->evaluate(memory)) {
-            instance.alive = false;
+        if (instance.lifeSwitch) {
+            instance.alive = instance.lifeSwitch->evaluate(memory);
         }
     }
 }

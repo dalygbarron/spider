@@ -15,8 +15,7 @@
 class Instance {
     public:
         std::string name;
-        Memory::SwitchExpression *birthSwitch;
-        Memory::SwitchExpression *deathSwitch;
+        Memory::SwitchExpression *lifeSwitch;
         Entity const *entity;
         sf::Vector2f pos;
         Mesh mesh;
