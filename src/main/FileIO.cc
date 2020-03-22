@@ -33,6 +33,16 @@ Memory FileIO::loadMemory(int id) {
                     child.attribute("name").value(),
                     child.attribute("count").as_int()
                 );
+            } else if (strcmp(type, "local") == 0) {
+                for (pugi::xml_node localChild: child.children()) {
+                    memory.setLocalSwitch(
+                        child.attribute("space").value(),
+                        localChild.attribute("name").value(),
+                        localChild.attribute("value").as_bool()
+                    );
+                }
+            } else {
+                spdlog::error("Unknown entry type '{}' in memory file", type);
             }
         }
     }
@@ -56,6 +66,17 @@ void FileIO::saveMemory(Memory const &memory) {
         pugi::xml_node child = node.append_child("item");
         child.append_attribute("name") = item.first.c_str();
         child.append_attribute("count") = item.second;
+    }
+    for (std::pair<std::string, std::unordered_map<std::string, int>> level:
+        memory.getLocalSwitches()
+    ) {
+        pugi::xml_node levelNode = node.append_child("local");
+        levelNode.append_attribute("level") = level.first.c_str();
+        for (std::pair<std::string, int> item: level.second) {
+            pugi::xml_node child = levelNode.append_child("switch");
+            child.append_attribute("name") = item.first.c_str();
+            child.append_attribute("value") = item.second;
+        }
     }
     int success = doc.save_file(path.c_str());
     if (!success) spdlog::error("could not save to '{}'", path.c_str());

@@ -17,18 +17,17 @@ void Memory::setSwitch(char const *name, int value) {
     this->switches[name] = value;
 }
 
-int Memory::getLocalSwitch(Level const &level, char const *name) const {
-    char const *levelName = level.file.c_str();
-    if (this->localSwitches.count(levelName) == 1 &&
-        this->localSwitches[levelName].count(name) == 1
+int Memory::getLocalSwitch(char const *space, char const *name) const {
+    if (this->localSwitches.count(space) == 1 &&
+        this->localSwitches.at(space).count(name) == 1
     ) {
-        return this->localSwitches[levelName][name];
+        return this->localSwitches.at(space).at(name);
     }
     return false;
 }
 
-void Memory::setLocalSwitch(Level const &level, char const *name, int value) {
-    this->localSwitches[level.file.c_str()][name] = value;
+void Memory::setLocalSwitch(char const *space, char const *name, int value) {
+    this->localSwitches[space][name] = value;
 }
 
 int Memory::getItemCount(char const *item) const {
@@ -48,4 +47,10 @@ std::unordered_map<std::string, int> const &Memory::getItems() const {
 
 std::unordered_map<std::string, int> const &Memory::getSwitches() const {
     return this->switches;
+}
+
+std::unordered_map<std::string, std::unordered_map<std::string, int>>
+    const &Memory::getLocalSwitches() const
+{
+    return this->localSwitches;
 }

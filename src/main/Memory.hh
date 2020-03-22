@@ -43,20 +43,20 @@ class Memory {
         /**
          * Gives you the value of the given switch as set specifically for the
          * given level.
-         * @param level is the level to get the switch for.
+         * @param space is the unique identifier that these switches are in.
          * @param name  is the name of the switch to get.
          * @return the value of the switch, which is false if it has not been
          *         set.
          */
-        int getLocalSwitch(Level const &level, char const *name) const;
+        int getLocalSwitch(char const *space, char const *name) const;
 
         /**
          * Sets the value of a given switch specifically for the given level.
-         * @param level is the level to set the value of the switch for.
+         * @param space is unique identifier that these switches are in.
          * @param name  is the name of the switch to set.
          * @param value is the value to set the switch to.
          */
-        int setLocalSwitch(Level const &level, char const *name, int value);
+        void setLocalSwitch(char const *space, char const *name, int value);
 
         /**
          * Gives you the number that the player has of a given item.

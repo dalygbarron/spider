@@ -166,7 +166,7 @@ void AdventureScreen::onClick(
                 );
                 instance.alive = false;
                 this->core.getMemory().setLocalSwitch(
-                    *(this->level),
+                    this->level->file.c_str(),
                     instance.entity->itemKey.c_str(),
                     true
                 );
