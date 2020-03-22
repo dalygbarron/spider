@@ -359,6 +359,12 @@ class AdventureScreen: public Screen {
         void setScript(char const *name);
 
         /**
+         * Goes through all the instances and makes sure if they have death or
+         * birth switches, they are put into the right state to go with them.
+         */
+        void checkSwitches();
+
+        /**
          * Runs the current coroutine if it is allowed.
          * @param input is the input to the coroutine.
          * @return true if the script ran.
@@ -369,8 +375,10 @@ class AdventureScreen: public Screen {
             if (!result.valid()) {
                 sol::error error = result;
                 spdlog::error("Script Error: {}", error.what());
+                return false;
             }
-            return false;
+            this->checkSwitches();
+            return true;
         };
 };
 

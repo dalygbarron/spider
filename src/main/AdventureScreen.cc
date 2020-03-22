@@ -109,6 +109,8 @@ AdventureScreen::AdventureScreen(Core &core, Level *level): Screen(core) {
     };
     this->script.script(this->level->script);
     this->setScript("_start");
+    // Check switches.
+    this->checkSwitches();
 }
 
 AdventureScreen::~AdventureScreen() {
@@ -166,7 +168,6 @@ void AdventureScreen::onClick(
                 );
                 instance.alive = false;
                 this->core.getMemory().setLocalSwitch(
-                    this->level->file.c_str(),
                     instance.entity->itemKey.c_str(),
                     true
                 );
@@ -262,4 +263,16 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
 
 void AdventureScreen::setScript(char const *name) {
     this->coroutine = this->script[name];
+}
+
+void AdventureScreen::checkSwitches() {
+    Memory const &memory = this->core.getMemory();
+    for (Instance &instance: this->level->instances) {
+        if (instance.birthSwitch && !instance.birthSwitch->evaluate(memory)) {
+            instance.alive = false;
+        }
+        if (instance.deathSwitch && instance.deathSwitch->evaluate(memory)) {
+            instance.alive = false;
+        }
+    }
 }

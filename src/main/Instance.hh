@@ -3,6 +3,7 @@
 
 #include "Entity.hh"
 #include "Mesh.hh"
+#include "Memory.hh"
 #include <string>
 
 /**
@@ -14,8 +15,8 @@
 class Instance {
     public:
         std::string name;
-        std::string birthSwitch;
-        std::string deathSwitch;
+        Memory::SwitchExpression *birthSwitch;
+        Memory::SwitchExpression *deathSwitch;
         Entity const *entity;
         sf::Vector2f pos;
         Mesh mesh;

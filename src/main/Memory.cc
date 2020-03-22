@@ -3,13 +3,11 @@
 Memory::SwitchExpression::SwitchExpression(
     SwitchExpression::Type type,
     char const *name,
-    char const *locale,
     Memory::SwitchExpression *a,
     Memory::SwitchExpression *b
 ) {
     this->type = type;
     if (name) this->name = name;
-    if (locale) this->locale = locale;
     this->a = a;
     this->b = b;
 }
@@ -24,10 +22,7 @@ int Memory::SwitchExpression::evaluate(Memory const &memory) const {
         case Memory::SwitchExpression::Type::Switch:
             return memory.getSwitch(this->name.c_str());
         case Memory::SwitchExpression::Type::LocalSwitch:
-            return memory.getLocalSwitch(
-                this->name.c_str(),
-                this->locale.c_str()
-            );
+            return memory.getLocalSwitch(this->name.c_str());
         case Memory::SwitchExpression::Type::And:
             return this->a->evaluate(memory) && this->b->evaluate(memory);
         case Memory::SwitchExpression::Type::Or:
@@ -56,7 +51,8 @@ void Memory::setSwitch(char const *name, int value) {
     this->switches[name] = value;
 }
 
-int Memory::getLocalSwitch(char const *space, char const *name) const {
+int Memory::getLocalSwitch(char const *name) const {
+    char const *space = this->level.c_str();
     if (this->localSwitches.count(space) == 1 &&
         this->localSwitches.at(space).count(name) == 1
     ) {
@@ -65,8 +61,16 @@ int Memory::getLocalSwitch(char const *space, char const *name) const {
     return false;
 }
 
-void Memory::setLocalSwitch(char const *space, char const *name, int value) {
-    this->localSwitches[space][name] = value;
+void Memory::setLocalSwitch(char const *name, int value) {
+    this->localSwitches[this->level.c_str()][name] = value;
+}
+
+void Memory::setLocalSwitchStatic(
+    char const *locale,
+    char const *name,
+    int value
+) {
+    this->localSwitches[locale][name] = value;
 }
 
 int Memory::getItemCount(char const *item) const {

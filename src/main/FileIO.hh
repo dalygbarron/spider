@@ -20,6 +20,16 @@ namespace FileIO {
         Measurements const &measurements;
         RatPack const &spritesheet;
     };
+    
+    /**
+     * Reads a switch expression from a string in a stack based way where
+     * things are put on a stack and then go into the next things etc also if
+     * the stack is left with multiple things they are anded together.
+     * @param string is the text to parse from.
+     * @return the new switch expression which is null if you gave an empty or
+     *         bad string.
+     */
+    Memory::SwitchExpression *parseSwitchExpression(char const *string);
 
     /**
      * Loads a memory from the file it should be at for you. If there is no

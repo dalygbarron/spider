@@ -1,7 +1,6 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include "Level.hh"
 #include <string>
 #include <unordered_map>
 
@@ -31,14 +30,12 @@ class Memory {
                  * wits about you.
                  * @param type is the type of expression.
                  * @param name is the name of the switch if relevant.
-                 * @param locale is the locale of the switch if relevant.
                  * @param a    is the first child expression if relevant.
                  * @param b    is the second child expression if relevant.
                  */
                 SwitchExpression(
                     SwitchExpression::Type type,
                     char const *name,
-                    char const *locale,
                     SwitchExpression *a,
                     SwitchExpression *b
                 );
@@ -60,7 +57,6 @@ class Memory {
             private:
                 Memory::SwitchExpression::Type type;
                 std::string name;
-                std::string locale;
                 SwitchExpression *a;
                 SwitchExpression *b;
         };
@@ -96,21 +92,32 @@ class Memory {
 
         /**
          * Gives you the value of the given switch as set specifically for the
-         * given level.
-         * @param space is the unique identifier that these switches are in.
+         * current level.
          * @param name  is the name of the switch to get.
          * @return the value of the switch, which is false if it has not been
          *         set.
          */
-        int getLocalSwitch(char const *space, char const *name) const;
+        int getLocalSwitch(char const *name) const;
 
         /**
-         * Sets the value of a given switch specifically for the given level.
-         * @param space is unique identifier that these switches are in.
+         * Sets the value of a given switch specifically for the current level.
          * @param name  is the name of the switch to set.
          * @param value is the value to set the switch to.
          */
-        void setLocalSwitch(char const *space, char const *name, int value);
+        void setLocalSwitch(char const *name, int value);
+
+        /**
+         * Sets the value of a local switch without checking the currently set
+         * level and just using the level that is given.
+         * @param locale is the level to set the switch for.
+         * @param name   is the name of the switch to set.
+         * @param value  is the value to set the switch to.
+         */
+        void setLocalSwitchStatic(
+            char const *locale,
+            char const *name,
+            int value
+        );
 
         /**
          * Gives you the number that the player has of a given item.

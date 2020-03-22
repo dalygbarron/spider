@@ -2,6 +2,83 @@
 #include "Const.hh"
 #include <iostream>
 
+Memory::SwitchExpression *FileIO::parseSwitchExpression(char const *string) {
+    std::stringstream stream(string);
+    std::string token;
+    std::deque<Memory::SwitchExpression *> stack;
+    int i = 1;
+    while (getline(stream, token, ' ')) {
+        int n = stack.size();
+        char const *cString = token.c_str();
+        if (cString[0] == '&') {
+            if (n < 2) goto abort;
+            Memory::SwitchExpression *a = stack.back();
+            stack.pop_back();
+            Memory::SwitchExpression *b = stack.back();
+            stack.back() = new Memory::SwitchExpression(
+                Memory::SwitchExpression::Type::And,
+                NULL,
+                a,
+                b
+            );
+        } else if (cString[0] == '|') {
+            if (n < 2) goto abort;
+            Memory::SwitchExpression *a = stack.back();
+            stack.pop_back();
+            Memory::SwitchExpression *b = stack.back();
+            stack.back() = new Memory::SwitchExpression(
+                Memory::SwitchExpression::Type::Or,
+                NULL,
+                a,
+                b
+            );
+        } else if (cString[0] == '!') {
+            if (n == 0) goto abort;
+            stack.back() = new Memory::SwitchExpression(
+                Memory::SwitchExpression::Type::Not,
+                NULL,
+                stack.back(),
+                NULL
+            );
+        } else if (cString[0] == '.') {
+            stack.push_back(new Memory::SwitchExpression(
+                Memory::SwitchExpression::Type::LocalSwitch,
+                cString + 1,
+                NULL,
+                NULL
+            ));
+        } else {
+            stack.push_back(new Memory::SwitchExpression(
+                Memory::SwitchExpression::Type::Switch,
+                cString,
+                NULL,
+                NULL
+            ));
+        }
+        i++;
+    }
+    while (stack.size() > 1) {
+        Memory::SwitchExpression *a = stack.back();
+        stack.pop_back();
+        Memory::SwitchExpression *b = stack.back();
+        stack.back() = new Memory::SwitchExpression(
+            Memory::SwitchExpression::Type::And,
+            NULL,
+            a,
+            b
+        );
+    }
+    if (stack.size() == 1) return stack.back();
+    return NULL;
+    abort:
+        spdlog::error("Switch expression error at token {}", i);
+        while (!stack.empty()) {
+            delete stack.back();
+            stack.pop_back();
+        }
+        return NULL;
+}
+
 Memory FileIO::loadMemory(int id) {
     char *text;
     asprintf(&text, ".save%d.xml", id);
@@ -35,7 +112,7 @@ Memory FileIO::loadMemory(int id) {
                 );
             } else if (strcmp(type, "local") == 0) {
                 for (pugi::xml_node localChild: child.children()) {
-                    memory.setLocalSwitch(
+                    memory.setLocalSwitchStatic(
                         child.attribute("space").value(),
                         localChild.attribute("name").value(),
                         localChild.attribute("value").as_bool()
