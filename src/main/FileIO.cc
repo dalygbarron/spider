@@ -113,7 +113,7 @@ Memory FileIO::loadMemory(int id) {
             } else if (strcmp(type, "local") == 0) {
                 for (pugi::xml_node localChild: child.children()) {
                     memory.setLocalSwitchStatic(
-                        child.attribute("space").value(),
+                        child.attribute("level").value(),
                         localChild.attribute("name").value(),
                         localChild.attribute("value").as_bool()
                     );
