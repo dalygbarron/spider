@@ -118,6 +118,7 @@ void Core::popScreen(int response) {
 
 void Core::replaceScreen(Screen *screen) {
     this->transitions.push(Transition {true, true, 0, screen});
+    spdlog::info("yeah");
 }
 
 Screen *Core::getTopScreen() {

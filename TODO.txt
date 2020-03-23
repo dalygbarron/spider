@@ -1,21 +1,20 @@
-Local and Global switches
-    This is a useful feature for two reasons. Firstly, it will make it easier
-    to check whether a given item is dead in a given level without
-    concatenating a lot of strings, and also it is just a generally useful
-    thing to so you can make switches called "die" or whatever in more than one
-    level without fucking things up a lot.
-
 Properly Playable Level Screen with items and shit.
     Yep like it says right there.
-
-transferring between advneture screens
-    yep. Scripts and stuff should not fail, birth and death switches should
-    work, etc etc.
 
 Battle Screen
     Should run entirely off a Lua script, and you should be able to start the
     engine by specifying just the game file and a battle script. Make a nice
     little test battle.
+
+Animated Sprites in Battle Screen
+    Yep should have animated sprites which are only controlled by script.
+
+Animated Sprites in Adventure Screen
+    Yep should have animated sprites. Can either be controlled by script or
+    autolooping animations that play as soon as you enter the level.
+
+Invalid level file causes segfault
+    Program should not segfault in any circumstances.
 
 Improve core parsing core
     It sucks ASS. Actually also generally improve all the FileIO code to have

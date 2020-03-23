@@ -15,7 +15,6 @@ AdventureScreen::AdventureScreen(Core &core, Level *level): Screen(core) {
         spdlog::error("Couldn't start the sky shader");
     }
     this->back.setTexture(&this->level->getPic(), true);
-    // TODO: handle birth and death switches again.
     this->script.open_libraries(
         sol::lib::base,
         sol::lib::coroutine,
@@ -61,6 +60,21 @@ AdventureScreen::AdventureScreen(Core &core, Level *level): Screen(core) {
         } else {
             spdlog::error("API: invalid item '{}'", name.c_str());
         }
+    };
+    this->script["_getSwitch"] = [this](std::string const &name) -> bool {
+        return this->core.getMemory().getSwitch(name.c_str());
+    };
+    this->script["_getLocalSwitch"] = [this](std::string const &name) -> bool {
+        return this->core.getMemory().getLocalSwitch(name.c_str());
+    };
+    this->script["_setSwitch"] = [this](std::string const &name, bool value) {
+        return this->core.getMemory().setSwitch(name.c_str(), value);
+    };
+    this->script["_setLocalSwitch"] = [this](
+        std::string const &name,
+        bool value
+    ) {
+        return this->core.getMemory().setLocalSwitch(name.c_str(), value);
     };
     this->script["_saveGame"] = [this]() {
         this->core.saveGame();

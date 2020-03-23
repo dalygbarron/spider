@@ -130,3 +130,14 @@ Improve Script Stuff
     probably add a function for calling the script in which it handles fuck
     ups.
 
+Local and Global switches
+    This is a useful feature for two reasons. Firstly, it will make it easier
+    to check whether a given item is dead in a given level without
+    concatenating a lot of strings, and also it is just a generally useful
+    thing to so you can make switches called "die" or whatever in more than one
+    level without fucking things up a lot.
+
+transferring between advneture screens
+    yep. Scripts and stuff should not fail, birth and death switches should
+    work, etc etc.
+

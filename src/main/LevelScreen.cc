@@ -225,7 +225,7 @@ void LevelScreen::onKey(sf::Keyboard::Key key) {
     }
 }
 
-void LevelScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
+void LevelScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         if (this->selectedInstance) {
             if (this->selectedInstance->entity) {
@@ -251,8 +251,10 @@ void LevelScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
         }
     }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
-        this->camera.x -= delta.x * 0.003;
-        this->camera.y -= delta.y * 0.003;
+        sf::Vector2f current = Util::screenToSphere(pos, this->camera);
+        sf::Vector2f previous = Util::screenToSphere(prev, this->camera);
+        this->camera.x += current.x - previous.x;
+        this->camera.y += current.y - previous.y;
     }
     if (this->camera.y > Const::HALF_PI) this->camera.y = Const::HALF_PI;
     if (this->camera.y < -Const::HALF_PI) this->camera.y = -Const::HALF_PI;
