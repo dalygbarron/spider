@@ -307,9 +307,61 @@ class KnobScreen: public Screen {
 };
 
 /**
+ * Any screen that has a script.
+ */
+class ScriptedScreen: public Screen {
+    public:
+        /**
+         * Initialises parts of the api for scripts that any scriptable screen
+         * uses. Bits only a certain type of screen will use must be
+         * initialised there.
+         * @param core is the core dependencies.
+         * @param code is the textual lua code of the script.
+         */
+        ScriptedScreen(Core &core, std::string const &code);
+
+        /**
+         * Sets the script function that the screen should be running and gets
+         * it set up.
+         * @param name is the name of the function to be running.
+         */
+        void setScript(char const *name);
+
+        /**
+         * To be called after the script has been run if there are aspects of
+         * screen state that now needs to be checked.
+         */
+        virtual void refresh();
+
+        /**
+         * Runs the current coroutine if it is allowed.
+         * @param input is the input to the coroutine.
+         * @return true if the script ran.
+         */
+        template <class T> int runScript(T input) {
+            if (!this->coroutine) return false;
+            auto result = this->coroutine(input);
+            if (!result.valid()) {
+                sol::error error = result;
+                spdlog::error("Script Error: {}", error.what());
+                return false;
+            }
+            this->refresh();
+            return true;
+        };
+
+    protected:
+        // I know it is kind of lame having them still exposed but I don't
+        // really have a choice other than replicating the entire api for
+        // setting stuff up.
+        sol::state script;
+        sol::coroutine coroutine;
+};
+
+/**
  * Screen where the player plays adventure game type bits of the game.
  */
-class AdventureScreen: public Screen {
+class AdventureScreen: public ScriptedScreen {
     public:
         /**
          * Creates the screen by giving it it's dependencies.
@@ -342,44 +394,33 @@ class AdventureScreen: public Screen {
 
         virtual void onKey(sf::Keyboard::Key key) override;
 
+        virtual void refresh() override;
+
     private:
         Level *level;
         sf::Vector2f camera;
         sf::Shader shader;
         sf::RectangleShape back;
-        sol::state script;
-        sol::coroutine coroutine;
         Item const *selected = NULL;
+};
 
-        /**
-         * Sets the script function that the screen should be running and gets
-         * it set up, and then runs it a single time.
-         * @param name is the name of the function to be running.
-         */
-        void setScript(char const *name);
+/**
+ * This is a screen that is purely controlled by stuff that you do with scripts
+ * and is where battles and puzzles take place.
+ */
+class FlatScreen: public Screen {
+    public:
+        FlatScreen(Core &core, char const *code);
 
-        /**
-         * Goes through all the instances and makes sure if they have death or
-         * birth switches, they are put into the right state to go with them.
-         */
-        void checkSwitches();
+        virtual void update(float delta, sf::RenderWindow &window) override;
 
-        /**
-         * Runs the current coroutine if it is allowed.
-         * @param input is the input to the coroutine.
-         * @return true if the script ran.
-         */
-        template <class T> int runScript(T input) {
-            if (!this->coroutine) return false;
-            auto result = this->coroutine(input);
-            if (!result.valid()) {
-                sol::error error = result;
-                spdlog::error("Script Error: {}", error.what());
-                return false;
-            }
-            this->checkSwitches();
-            return true;
-        };
+        virtual void draw(sf::RenderTarget &target, int top) const override;
+
+        virtual void onStart() override;
+
+        virtual void onReveal(int response) override;
+
+        virtual void onKey(sf::Keyboard::Key key) override;
 };
 
 #endif

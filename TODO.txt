@@ -1,10 +1,14 @@
-Properly Playable Level Screen with items and shit.
-    Yep like it says right there.
-
 Battle Screen
     Should run entirely off a Lua script, and you should be able to start the
     engine by specifying just the game file and a battle script. Make a nice
     little test battle.
+
+Running battles synchronously from adventure screen.
+    Not sure how much work I actually need to do here, but I must verify it
+    works at least. Like puzzles, battles should only return a success or
+    failure status, they do not trigger a game over screen. The game over
+    screen should just be triggered by the default battle starting script
+    library function when a failure status is received.
 
 Animated Sprites in Battle Screen
     Yep should have animated sprites which are only controlled by script.
