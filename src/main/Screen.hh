@@ -321,6 +321,20 @@ class ScriptedScreen: public Screen {
         ScriptedScreen(Core &core, std::string const &code);
 
         /**
+         * Same as the other constructor except it loads the script from file.
+         * @param core is the core dependencies.
+         * @param path is the path to the script to run.
+         */
+        ScriptedScreen(Core &core, ghc::filesystem::path const &path);
+
+        /**
+         * Gives you the most recent response from whatever script the screen
+         * was running.
+         * @return the response as an int.
+         */
+        int getLastResponse() const;
+
+        /**
          * Sets the script function that the screen should be running and gets
          * it set up.
          * @param name is the name of the function to be running.
@@ -345,6 +359,8 @@ class ScriptedScreen: public Screen {
                 sol::error error = result;
                 spdlog::error("Script Error: {}", error.what());
                 return false;
+            } else {
+                this->response = result;
             }
             this->refresh();
             return true;
@@ -356,6 +372,14 @@ class ScriptedScreen: public Screen {
         // setting stuff up.
         sol::state script;
         sol::coroutine coroutine;
+
+    private:
+        int response;
+
+        /**
+         * Sets up the stuff the script will need.
+         */
+        void initScript();
 };
 
 /**
@@ -405,12 +429,12 @@ class AdventureScreen: public ScriptedScreen {
 };
 
 /**
- * This is a screen that is purely controlled by stuff that you do with scripts
- * and is where battles and puzzles take place.
+ * This is a screen that does a battle. It is mostly just controlled by
+ * a script, but it moves bullets around and does a gui.
  */
-class FlatScreen: public Screen {
+class BattleScreen: public ScriptedScreen {
     public:
-        FlatScreen(Core &core, char const *code);
+        BattleScreen(Core &core, ghc::filesystem::path const &path);
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 

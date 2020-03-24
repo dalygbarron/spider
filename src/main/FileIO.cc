@@ -118,6 +118,11 @@ Memory FileIO::loadMemory(int id) {
                         localChild.attribute("value").as_bool()
                     );
                 }
+            } else if (strcmp(type, "string") == 0) {
+                memory.setString(
+                    child.attribute("name").value(),
+                    child.attribute("value").value()
+                );
             } else {
                 spdlog::error("Unknown entry type '{}' in memory file", type);
             }

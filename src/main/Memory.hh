@@ -134,6 +134,21 @@ class Memory {
         void setItemCount(char const *item, int count);
 
         /**
+         * Gives you a saved string from memory.
+         * @param name is the name of the string to get.
+         * @return the string, which if it has not been set before will be an
+         *         empty string.
+         */
+        char const *getString(char const *name) const;
+
+        /**
+         * Sets a string to be saved in the memory.
+         * @param name  is the name under which to save the string under.
+         * @param value is the value to give to the saved string.
+         */
+        void setString(char const *name, char const *value);
+
+        /**
          * Gives you read only access to the full item list.
          * @return the item list.
          */
@@ -156,6 +171,7 @@ class Memory {
 
     private:
         int id;
+        std::unordered_map<std::string, std::string> strings;
         std::unordered_map<std::string, int> items;
         std::unordered_map<std::string, int> switches;
         std::unordered_map<std::string, std::unordered_map<std::string, int>>

@@ -5,6 +5,30 @@
 ScriptedScreen::ScriptedScreen(Core &core, std::string const &code):
     Screen(core)
 {
+    this->initScript();
+    this->script.script(code);
+}
+
+ScriptedScreen::ScriptedScreen(Core &core, ghc::filesystem::path const &path):
+    Screen(core)
+{
+    this->initScript();
+    this->script.script_file(path.c_str());
+}
+
+int ScriptedScreen::getLastResponse() const {
+    return this->response;
+}
+
+void ScriptedScreen::setScript(char const *name) {
+    this->coroutine = this->script[name];
+}
+
+void ScriptedScreen::refresh() {
+    // By default this does nothing.
+}
+
+void ScriptedScreen::initScript() {
     this->script.open_libraries(
         sol::lib::base,
         sol::lib::coroutine,
@@ -89,13 +113,4 @@ ScriptedScreen::ScriptedScreen(Core &core, std::string const &code):
     this->script["_exit"] = [this](int response) {
         this->core.popScreen(response);
     };
-    this->script.script(code);
-}
-
-void ScriptedScreen::setScript(char const *name) {
-    this->coroutine = this->script[name];
-}
-
-void ScriptedScreen::refresh() {
-    // By default this does nothing.
 }

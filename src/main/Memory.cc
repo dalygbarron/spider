@@ -84,6 +84,17 @@ void Memory::setItemCount(char const *item, int count) {
     this->items[item] = count;
 }
 
+char const *Memory::getString(char const *name) const {
+    if (this->strings.count(name) == 1) {
+        return this->strings.at(name).c_str();
+    }
+    return "";
+}
+
+void Memory::setString(char const *name, char const *value) {
+    this->strings[name] = value;
+}
+
 std::unordered_map<std::string, int> const &Memory::getItems() const {
     return this->items;
 }

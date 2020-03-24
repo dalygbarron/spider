@@ -33,6 +33,9 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
             this->core.loadLevel(level)
         ));
     };
+    this->script["_battle"] = [this](std::string const &file) {
+        this->core.pushScreen(new BattleScreen(this->core, file));
+    };
     this->script["_getCamera"] = [this]() {
         return std::make_tuple(this->camera.x, this->camera.y);
     };
