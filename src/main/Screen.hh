@@ -5,6 +5,8 @@
 #include "Entity.hh"
 #include "Core.hh"
 #include "Knob.hh"
+#include "Pool.hh"
+#include "Bullet.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -445,6 +447,9 @@ class BattleScreen: public ScriptedScreen {
         virtual void onReveal(int response) override;
 
         virtual void onKey(sf::Keyboard::Key key) override;
+
+    private:
+        Pool<Bullet> bullets;
 };
 
 #endif

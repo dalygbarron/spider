@@ -8,4 +8,10 @@ function battle.start(file)
     return coroutine.yield()
 end
 
+function battle.wait(time)
+    while time > 0 do
+        time = time - coroutine.yield()
+    end
+end
+
 return battle

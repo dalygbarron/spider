@@ -3,13 +3,6 @@ Battle Screen
     engine by specifying just the game file and a battle script. Make a nice
     little test battle. When the script finishes, the screen should pop itself.
 
-Running battles synchronously from adventure screen.
-    Not sure how much work I actually need to do here, but I must verify it
-    works at least. Like puzzles, battles should only return a success or
-    failure status, they do not trigger a game over screen. The game over
-    screen should just be triggered by the default battle starting script
-    library function when a failure status is received.
-
 Animated Sprites in Battle Screen
     Yep should have animated sprites which are only controlled by script.
 
@@ -32,6 +25,11 @@ EntityScreen zooming
     Also make it that the mesh vertex selection zone doesn't get bigger when
     zoom.
 
+Boating screen
+    Yeah so the boating screen is a special kind of adventure screen where you
+    can also have things moving around in 3d behind the photosphere as well as
+    a floor and sky which are drawn with a shader.
+
 Screen where you can browse files and choose to edit entities or levels
     Maybe also let them edit the general config here but I am not sure I will
     allow that as it is complicated. Actually it would be doable, but yeah nah
@@ -40,12 +38,13 @@ Screen where you can browse files and choose to edit entities or levels
 Alt text on buttons
     Yeah so far have been too lazy but it should be easy enough to do and thus
     I ough to do it. It will not be word wrapped, it will just write exactly
-    what is there.
+    what is there. It's important because the inventory kinda needs it.
 
 Hotkeys for buttons
     Yeah would be nice for example to make it that the exit inventory button
     can be activated by pressing escape. The hotkey is the only way because of
-    the fact that gui stuff is running in it's own screen.
+    the fact that gui stuff is running in it's own screen. Would also be nice
+    for knob based puzzles.
 
 Coloured Text
     Yeah should be able to use the font to draw text in any colour probably.

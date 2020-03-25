@@ -144,3 +144,10 @@ transferring between advneture screens
 Properly Playable Level Screen with items and shit.
     Yep like it says right there.
 
+Running battles synchronously from adventure screen.
+    Not sure how much work I actually need to do here, but I must verify it
+    works at least. Like puzzles, battles should only return a success or
+    failure status, they do not trigger a game over screen. The game over
+    screen should just be triggered by the default battle starting script
+    library function when a failure status is received.
+
