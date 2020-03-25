@@ -159,7 +159,7 @@ void Renderer::text(std::string const &content, sf::Vector2f pos) {
                 this->font.character.y
             )
         );
-        pos.x += this->font.character.x;
+        pos.x += this->font.character.x - 1;
     }
 }
 

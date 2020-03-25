@@ -48,24 +48,24 @@ function _programMenu()
             gui.panel(1, gui.text("Paused")),
             gui.panel(
                 1,
-                gui.button("Resume", 1),
-                gui.button("Save", 2),
-                gui.button("Save and Quit", 3)
+                gui.button("Resume", 0),
+                gui.button("Save", 1),
+                gui.button("Save and Quit", 2)
             )
         )
     )
     gui.bake(knob, 384, 100, 256, 400)
     _xmlKnob(gui.xml(knob))
     local choice = coroutine.yield()
-    if choice == 1 then
+    if choice == 0 then
         -- nothing lol
-    elseif choice == 2 then
+    elseif choice == 1 then
         _saveGame()
         gui.say("saveer", "saved")
     else
         gui.say("saveer", "saving and quitting")
         _saveGame()
-        _exit(3)
+        _go("menu.xml")
     end
 end
 

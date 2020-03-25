@@ -18,8 +18,9 @@ TextKnob::TextKnob(
     ) {
         return;
     }
-    int columns = w / measurements.normalFontSize.x;
+    int columns = w / fmax(measurements.normalFontSize.x - 1, 1);
     int rows = h / measurements.normalFontSize.y;
+    if (columns == 0) columns = 1;
     this->text = text;
     int n = this->text.size();
     int start = 0;
@@ -29,7 +30,7 @@ TextKnob::TextKnob(
             end = n - 1;
         } else {
             while (this->text[end] != ' ' && end > start) end--;
-            if (end == start) end = fmin(columns, n - 1);
+            if (end == start) end = fmin(start + columns, n - 1);
         }
         if (end != n - 1) this->text[end] = '\n';
         start = end + 1;

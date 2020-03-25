@@ -23,7 +23,7 @@ void BattleScreen::onStart() {
 }
 
 void BattleScreen::onReveal(int response) {
-
+    this->runScript<int>(response);
 }
 
 void BattleScreen::onKey(sf::Keyboard::Key key) {
