@@ -8,11 +8,6 @@
  * had the id of you will know your one is gone.
  */
 template <class T> class Pool {
-    private:
-        unsigned int size;
-        std::vector<Pool<T>::Item> items;
-        Pool::Item<T> *firstFree;
-
     public:
         /**
          * Represents an item in the pool.
@@ -23,12 +18,25 @@ template <class T> class Pool {
                 //       pool a friend class.
                 unsigned int id;
                 int alive;
-                union {
+                union Content {
                     T live;
                     Item *next;
+
+                    /**
+                     * Default constructor for the content union.
+                     */
+                    Content() {
+                        this->next = NULL;
+                    }
                 } content;
         };
 
+    private:
+        unsigned int size;
+        std::vector<Pool<T>::Item> items;
+        Pool<T>::Item *firstFree;
+
+    public:
         /**
          * Creates an empty pool of given size.
          * @param size is the number of things it can hold at once maximum.
@@ -38,11 +46,11 @@ template <class T> class Pool {
             this->items.resize(size);
             this->firstFree = this->items.data();
             for (int i = 0; i < size; i++) {
-                Pool<T>::Item;
+                Pool<T>::Item item;
                 item.id = i;
                 item.alive = false;
                 item.content.next = this->items.data() + i + 1;
-                this->items.emplace(this->items.end(), i);
+                this->items[i] = item;
             }
             this->items[size - 1].content.next = NULL;
         }
@@ -62,14 +70,16 @@ template <class T> class Pool {
         /**
          * Adds somethign to the pool.
          * @param item is the thing to add.
-         * @return true if it was added and false if there was no room.
+         * @return a pointer to the item in the pool if it was added, and null
+         *         if the pool is closed due to aids.
          */
-        int add(T item) {
-            if (!this->firstFree) return false;
-            Pool<T>::Item *newFirst = this->firstFree->content.next;
-            *(this->firstFree) = item;
-            this->firstFree = newFirst;
-            return true;
+        Pool<T>::Item *add(T item) {
+            if (!this->firstFree) return NULL;
+            Pool<T>::Item *oldFirst = this->firstFree;
+            this->firstFree = this->firstFree->content.next;
+            oldFirst->content.live = std::move(item);
+            oldFirst->alive = true;
+            return oldFirst;
         }
 
         /**
@@ -78,7 +88,7 @@ template <class T> class Pool {
          * @param id is the id of the thingo to remove.
          */
         void remove(unsigned int id) {
-            T *item = &this->items[id % this->size];
+            Pool<T>::Item *item = &this->items[id % this->size];
             if (item->id != id) return;
             item->alive = false;
             item->content.next = this->firstFree;

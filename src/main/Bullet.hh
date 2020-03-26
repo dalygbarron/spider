@@ -14,6 +14,11 @@ class Bullet {
         sf::Vector2f gravity;
 
         /**
+         * Creates a blank bullet.
+         */
+        Bullet();
+
+        /**
          * Moves the bullet.
          * @param delta is the amount of time to simulate passing.
          */

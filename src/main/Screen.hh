@@ -450,6 +450,8 @@ class BattleScreen: public ScriptedScreen {
 
     private:
         Pool<Bullet> bullets;
+        sf::FloatRect const bounds {128, 0, 512, 600};
+        sf::RectangleShape background;
 };
 
 #endif

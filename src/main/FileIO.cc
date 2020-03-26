@@ -323,6 +323,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     core->filename = path;
     core->name = node.attribute("name").value();
     core->start = node.attribute("start").value();
+    core->setTransitionTexture(node.attribute("transition").value());
     // Check some optional things.
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());

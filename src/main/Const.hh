@@ -48,8 +48,7 @@ namespace Const {
     |                ##                                             
      \)              ##       Version %d.%d.%d
                      ##           Created By Dany Burton
-                      ##
-)~~~";
+                      ##)~~~";
     static char const *SKY_SHADER = R"~~~(
         #define PI 3.14159265
 
@@ -72,8 +71,24 @@ namespace Const {
             vec3 rd = normalize(rotateXY(camDir, angle.yx));
             vec2 texCoord = vec2(atan(rd.z, rd.x) + PI, acos(-rd.y)) / vec2(2.0 * PI, PI);
             gl_FragColor = texture2D(picture, texCoord);
+        })~~~";
+    static char const *TRANSITION_SHADER = R"~~~(
+        uniform sampler2D picture;
+        uniform float power;
+        uniform vec3 colour;
+
+        float avg(vec3 col) {
+            return (col.r + col.g + col.b) / 3.0;
         }
-        )~~~";
+
+        void main() {
+            vec2 uv = gl_TexCoord[0].xy;
+            float alpha = 0.0;
+            if (power >= avg(texture2D(picture, uv).rgb)) alpha = 1.0;
+            gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);
+        } 
+    )~~~";
 };
+
 
 #endif

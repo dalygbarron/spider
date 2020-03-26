@@ -12,7 +12,8 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     this->shader.setUniform("angle", this->camera);
     this->shader.setUniform("picture", sf::Shader::CurrentTexture);
     if (!this->shader.loadFromMemory(
-        Const::SKY_SHADER, sf::Shader::Fragment
+        Const::SKY_SHADER,
+        sf::Shader::Fragment
     )) {
         spdlog::error("Couldn't start the sky shader");
     }

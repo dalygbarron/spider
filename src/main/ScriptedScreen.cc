@@ -81,6 +81,21 @@ void ScriptedScreen::initScript() {
     ) {
         return this->core.getMemory().setLocalSwitch(name.c_str(), value);
     };
+    this->script["_setTransitionStrength"] = [this](float strength) {
+        this->core.setTransitionStrength(strength);
+    };
+    this->script["_playSound"] = [this](std::string const &sound) {
+        sf::SoundBuffer *buffer = this->core.soundBufferRepository.get(
+            sound.c_str()
+        );
+        this->core.soundPlayer.playSound(buffer);
+    };
+    this->script["_playMusic"] = [this](std::string const &music) {
+        this->core.soundPlayer.playMusic(music.c_str());
+    };
+    this->script["_stopMusic"] = [this]() {
+        this->core.soundPlayer.stopMusic();
+    };
     this->script["_saveGame"] = [this]() {
         this->core.saveGame();
     };

@@ -10,6 +10,10 @@ Animated Sprites in Adventure Screen
     Yep should have animated sprites. Can either be controlled by script or
     autolooping animations that play as soon as you enter the level.
 
+Make sure bullet ids start at 1 not 0
+    Yeah I need 0 to represent no valid bullet so there must not be anything
+    with id 0 or it will screw up.
+
 Invalid level file causes segfault
     Program should not segfault in any circumstances.
 
@@ -56,3 +60,6 @@ Look into making the projection better fit with the equirectangular shader
 
 Remove ghc::filesystem when c++17 is better supported
     Yes do that, dunno when that is gonna be doable though.
+
+Make it so the same sound can't be played twice in one frame.
+    It sounds loud and annoying. Should be disabled.

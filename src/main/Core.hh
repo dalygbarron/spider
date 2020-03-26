@@ -39,6 +39,7 @@ class Core {
         SoundPlayer soundPlayer;
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
+        sf::Texture transitionTexture;
 
         /**
          * Initialises the core.
@@ -96,6 +97,28 @@ class Core {
         std::unordered_map<std::string, Item> const &getItems();
 
         /**
+         * Sets the strength of the transition that covers the screen.
+         * If it's set to 0 then no rendering is done so there should be no
+         * performance hit when it is not in use. Basically at 0 it should not
+         * be shown at all, and at strength 1 it should fully mask the screen.
+         * @param strength is the strength to set it to.
+         */
+        void setTransitionStrength(float strength);
+
+        /**
+         * Sets the colour that the transition thingy should be drawn with.
+         * Does not turn it on if it is not on.
+         * @param colour is the colour.
+         */
+        void setTransitionColour(sf::Color colour);
+
+        /**
+         * Sets the transition texture to load.
+         * @param path is the name of the file to load the texture from.
+         */
+        void setTransitionTexture(ghc::filesystem::path const &path);
+
+        /**
          * Loads in a level making use of the entity repository for putting in
          * it's entities. There is no repository for levels because they use
          * a lot of memory.
@@ -145,8 +168,11 @@ class Core {
         std::queue<Core::Transition> transitions;
         std::unordered_map<std::string, Item> items;
         std::vector<Screen *> screens;
+        sf::Shader transitionShader;
+        sf::RectangleShape transition;
         int firstVisible = 0;
         int nScreens = 0;
+        float transitionStrength = 0;
 };
 
 #endif

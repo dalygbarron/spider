@@ -1,14 +1,24 @@
 #include "Core.hh"
 #include "Screen.hh"
 #include "FileIO.hh"
+#include "Const.hh"
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
 Core::Core():
     renderer(this->spritesheet.getTexture()),
-    entityRepository(this->spritesheet)
+    entityRepository(this->spritesheet),
+    soundPlayer(16)
 {
-    // Does nothing else.
+    this->transition.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
+    this->transitionShader.setUniform("power", this->transitionStrength);
+    this->transitionShader.setUniform("picture", sf::Shader::CurrentTexture);
+    if (!this->transitionShader.loadFromMemory(
+        Const::TRANSITION_SHADER,
+        sf::Shader::Fragment
+    )) {
+        spdlog::error("Couldn't start the transition shader");
+    }
 }
 
 Item &Core::addItem(
@@ -46,6 +56,25 @@ Memory &Core::getMemory() {
 
 std::unordered_map<std::string, Item> const &Core::getItems() {
     return this->items;
+}
+
+void Core::setTransitionStrength(float strength) {
+    this->transitionStrength = strength;
+    this->transitionShader.setUniform("power", this->transitionStrength);
+}
+
+void Core::setTransitionColour(sf::Color colour) {
+
+}
+
+void Core::setTransitionTexture(ghc::filesystem::path const &path) {
+    if (!this->transitionTexture.loadFromFile(path.c_str())) {
+        spdlog::error(
+            "Could not load transition texture from '{}'",
+            path.c_str()
+        );
+    }
+    this->transition.setTexture(&this->transitionTexture, true);
 }
 
 Level *Core::loadLevel(ghc::filesystem::path const &path) {
@@ -160,11 +189,19 @@ void Core::performTransitions() {
 }
 
 void Core::drawScreens(sf::RenderTarget &target) {
-    if (this->nScreens == 0) return;
-    auto start = this->screens.begin() + this->firstVisible;
-    auto end = this->screens.begin() + this->nScreens;
-    auto almostEnd = this->screens.begin() + this->nScreens - 1;
-    for (auto it = start; it != end; it++) {
-        (*it)->draw(target, it == almostEnd);
+    // Draw the screens.
+    if (this->nScreens > 0) {
+        auto start = this->screens.begin() + this->firstVisible;
+        auto end = this->screens.begin() + this->nScreens;
+        auto almostEnd = this->screens.begin() + this->nScreens - 1;
+        for (auto it = start; it != end; it++) {
+            (*it)->draw(target, it == almostEnd);
+        }
+    }
+    // draw the transition thingy.
+    if (this->transitionStrength > 0) {
+        sf::RenderStates states;
+        states.shader = &(this->transitionShader);
+        target.draw(this->transition, states);
     }
 }
