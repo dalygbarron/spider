@@ -18,6 +18,8 @@ namespace Const {
         Const::HALF_WIDTH,
         Const::HALF_HEIGHT
     );
+    static int const MAX_BULLETS = 1024;
+    static int const MAX_ACTORS = 32;
     static float PI = 3.141592653589793238462643383279;
     static float DOUBLE_PI = 6.283185307179586;
     static float HALF_PI = 1.570796326794897;

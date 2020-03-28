@@ -64,6 +64,29 @@ class Core {
         );
 
         /**
+         * Gives you the map of all the items that are in the game, with the
+         * keys being their names.
+         * @return a reference to the const map.
+         */
+        std::unordered_map<std::string, Item> const &getItems();
+
+        /**
+         * Creates a new bullet prototype with the given id and rat. If the id
+         * is already in use you get nothing.
+         * @param id  is the id to give the prototype.
+         * @param rat is the rat to draw the bullets of this type with.
+         */
+        void addBulletPrototype(unsigned int id, sf::IntRect rat);
+
+        /**
+         * Gives you a pointer to a given bullet prototype if it exists.
+         * @param id is the id of the prototype you are looking for.
+         * @return a pointer to the prototype if it exists or null if there is
+         *         not any.
+         */
+        Bullet::Prototype const *getBulletPrototype(unsigned int id);
+
+        /**
          * Starts a new game.
          * @param id is the id to use which determines the file it is saved in
          *           and the number the player sees it as being.
@@ -88,13 +111,6 @@ class Core {
          * @return a reference to the memory object.
          */
         Memory &getMemory();
-
-        /**
-         * Gives you the map of all the items that are in the game, with the
-         * keys being their names.
-         * @return a reference to the const map.
-         */
-        std::unordered_map<std::string, Item> const &getItems();
 
         /**
          * Sets the strength of the transition that covers the screen.
@@ -167,6 +183,7 @@ class Core {
         Memory memory = Memory(0);
         std::queue<Core::Transition> transitions;
         std::unordered_map<std::string, Item> items;
+        std::vector<Bullet::Prototype> bulletPrototypes;
         std::vector<Screen *> screens;
         sf::Shader transitionShader;
         sf::RectangleShape transition;

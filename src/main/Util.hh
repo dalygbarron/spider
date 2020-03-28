@@ -59,6 +59,15 @@ namespace Util {
     int inSlice(float a, float b, float point);
 
     /**
+     * Takes a position and clamps that position within the rectangle axis by
+     * axis so angle is not relevant.
+     * @param point is the point to clamp.
+     * @param rect  is the rectangle within to clamp it.
+     * @return the clamped version of the point.
+     */
+    sf::Vector2f clampInRect(sf::Vector2f point, sf::FloatRect rect);
+
+    /**
      * Rotates a latitude and longitude first around the X axis, and then
      * around the Y axis to create a fully new latitude and longitude.
      * @param coordinate is the latitude and longitude to rotate.

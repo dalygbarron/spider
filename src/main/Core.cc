@@ -38,6 +38,10 @@ Item &Core::addItem(
     return this->items[name];
 }
 
+std::unordered_map<std::string, Item> const &Core::getItems() {
+    return this->items;
+}
+
 void Core::newGame(int id) {
     this->memory = Memory(id);
 }
@@ -52,10 +56,6 @@ void Core::saveGame() {
 
 Memory &Core::getMemory() {
     return this->memory;
-}
-
-std::unordered_map<std::string, Item> const &Core::getItems() {
-    return this->items;
 }
 
 void Core::setTransitionStrength(float strength) {

@@ -56,6 +56,20 @@ int Util::inSlice(float a, float b, float point) {
     return (point >= a && point >= b) || (point <= a && point <= b);
 }
 
+sf::Vector2f Util::clampInRect(sf::Vector2f point, sf::FloatRect rect) {
+    if (point.x < rect.left) {
+        point.x = rect.left;
+    } else if (point.x >= rect.left + rect.width) {
+        point.x = rect.left + rect.width;
+    }
+    if (point.y < rect.top) {
+        point.y = rect.top;
+    } else if (point.y >= rect.top + rect.height) {
+        point.y = rect.top + rect.height;
+    }
+    return point;
+}
+
 sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
     float cosY = cos(coordinate.y);
     sf::Vector3f vector(
