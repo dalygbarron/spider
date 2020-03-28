@@ -62,4 +62,9 @@ Remove ghc::filesystem when c++17 is better supported
     Yes do that, dunno when that is gonna be doable though.
 
 Make it so the same sound can't be played twice in one frame.
-    It sounds loud and annoying. Should be disabled.
+    It sounds loud and annoying. Should be disabled. I don't really know any
+    way to do this without looping for each sound player and checking what it's
+    playing and when it started playing it which kinda sucks.
+    Maybe instead I could just make it that if two sounds have the same
+    priority, normally the newer one will take over, but not if it is still the
+    same frame that that one started in.

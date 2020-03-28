@@ -1,28 +1,31 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include <SFML/Graphics.hpp>
+#include "Mob.hh"
+#include "Actor.hh"
 
 /**
  * A nice bullet flying through the air.
  */
-class Bullet {
+class Bullet: public Mob {
     public:
-        int type;
-        sf::Vector2f position;
-        sf::Vector2f velocity;
-        sf::Vector2f gravity;
+        /**
+         * Prototypal bullet.
+         */
+        class Prototype {
+            public:
+                sf::IntRect rat;
+
+        };
+
+        Bullet::Prototype const &prototype;
+        Actor const &parent;
 
         /**
-         * Creates a blank bullet.
+         * Creates the bullet by telling it what it's prototype is.
+         * @param prototype is the prototype of the bullet.
          */
-        Bullet();
-
-        /**
-         * Moves the bullet.
-         * @param delta is the amount of time to simulate passing.
-         */
-        void update(float delta);
+        Bullet(Bullet::Prototype const &prototype, Actor const &parent);
 };
 
 #endif

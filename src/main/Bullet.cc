@@ -1,12 +1,9 @@
 #include "Bullet.hh"
 
-Bullet::Bullet() {
+Bullet::Bullet(Bullet::Prototype const &prototype, Actor const &parent):
+    Mob((float)prototype.rat.width / 2),
+    prototype(prototype), 
+    parent(parent)
+{
     // Does nothing.
-}
-
-void Bullet::update(float delta) {
-    this->position.x += this->velocity.x * delta;
-    this->position.y += this->velocity.y * delta;
-    this->velocity.x += this->gravity.x * delta;
-    this->velocity.y += this->gravity.y * delta;
 }
