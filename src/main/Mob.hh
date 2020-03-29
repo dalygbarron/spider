@@ -8,6 +8,11 @@
  */
 class Mob {
     public:
+        sf::Vector2f position;
+        sf::Vector2f velocity;
+        sf::Vector2f gravity;
+        float radius;
+
         /**
          * Sets the mob's radius. Yeah I know this kinda fucks the flyweight
          * pattern but otherwise I have to lose the collide function or make
@@ -33,12 +38,6 @@ class Mob {
          * @return true if they are colliding.
          */
         static int collide(Mob const &a, Mob const &b);
-
-    private:
-        sf::Vector2f position;
-        sf::Vector2f velocity;
-        sf::Vector2f gravity;
-        float const radius;
 };
 
 #endif

@@ -67,13 +67,13 @@ class Memory {
          * Creates the memory and sets it's id.
          * @param id is the id to give it.
          */
-        Memory(int id);
+        Memory(unsigned int id);
 
         /**
          * Gives you the memory's id.
          * @return the id.
          */
-        int getId() const;
+        unsigned int getId() const;
 
         /**
          * Gives you the value of a switch.
@@ -170,7 +170,7 @@ class Memory {
             const &getLocalSwitches() const;
 
     private:
-        int id;
+        unsigned int id;
         std::unordered_map<std::string, std::string> strings;
         std::unordered_map<std::string, int> items;
         std::unordered_map<std::string, int> switches;

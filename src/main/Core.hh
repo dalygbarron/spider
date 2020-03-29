@@ -5,6 +5,7 @@
 #include "RatPack.hh"
 #include "Renderer.hh"
 #include "RatBatch.hh"
+#include "Bullet.hh"
 #include "SoundPlayer.hh"
 #include "Item.hh"
 #include "Memory.hh"
@@ -76,7 +77,7 @@ class Core {
          * @param id  is the id to give the prototype.
          * @param rat is the rat to draw the bullets of this type with.
          */
-        void addBulletPrototype(unsigned int id, sf::IntRect rat);
+        void addBulletPrototype(int id, sf::IntRect rat);
 
         /**
          * Gives you a pointer to a given bullet prototype if it exists.
@@ -84,21 +85,21 @@ class Core {
          * @return a pointer to the prototype if it exists or null if there is
          *         not any.
          */
-        Bullet::Prototype const *getBulletPrototype(unsigned int id);
+        Bullet::Prototype const *getBulletPrototype(int id);
 
         /**
          * Starts a new game.
          * @param id is the id to use which determines the file it is saved in
          *           and the number the player sees it as being.
          */
-        void newGame(int id);
+        void newGame(unsigned int id);
 
         /**
          * Loads the game from file based on the given id.
          * @param id is the id to use which determines the file it is loaded
          *           from and also the file it will save to later.
          */
-        void loadGame(int id);
+        void loadGame(unsigned int id);
 
         /**
          * Saves the game to file with it's already set id.
@@ -183,7 +184,7 @@ class Core {
         Memory memory = Memory(0);
         std::queue<Core::Transition> transitions;
         std::unordered_map<std::string, Item> items;
-        std::vector<Bullet::Prototype> bulletPrototypes;
+        std::unordered_map<int, Bullet::Prototype> bulletPrototypes;
         std::vector<Screen *> screens;
         sf::Shader transitionShader;
         sf::RectangleShape transition;

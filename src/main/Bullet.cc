@@ -1,16 +1,8 @@
 #include "Bullet.hh"
 
-Bullet::Prototype Prototype(sf::IntRect rat, float radius):
-    rat(rat),
-    radius(radius)
+Bullet::Bullet(Bullet::Prototype const *prototype, unsigned int parent):
+    Mob((float)prototype->rat.width / 2),
+    prototype(prototype)
 {
-    // does nothign.
-}
-
-Bullet::Bullet(Bullet::Prototype const &prototype, Actor const &parent):
-    Mob((float)prototype.rat.width / 2),
-    prototype(prototype), 
-    parent(parent)
-{
-    // Does nothing.
+    this->parent = parent;
 }

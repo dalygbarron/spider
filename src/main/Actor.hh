@@ -10,11 +10,7 @@
 class Actor: public Mob {
     public:
         sf::IntRect rat;
-
-        Actor(sf::IntRect rat, float radius);
-
-    private:
-
+        float radius;
 };
 
 #endif

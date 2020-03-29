@@ -42,11 +42,25 @@ std::unordered_map<std::string, Item> const &Core::getItems() {
     return this->items;
 }
 
-void Core::newGame(int id) {
+void Core::addBulletPrototype(int id, sf::IntRect rat) {
+    Bullet::Prototype prototype;
+    prototype.rat = rat;
+    prototype.radius = (float)rat.width / 2;
+    this->bulletPrototypes[id] = std::move(prototype);
+}
+
+Bullet::Prototype const *Core::getBulletPrototype(int id) {
+    if (this->bulletPrototypes.count(id)) {
+        return &this->bulletPrototypes.at(id);
+    }
+    return NULL;
+}
+
+void Core::newGame(unsigned int id) {
     this->memory = Memory(id);
 }
 
-void Core::loadGame(int id) {
+void Core::loadGame(unsigned int id) {
     this->memory = FileIO::loadMemory(id);
 }
 
@@ -64,7 +78,7 @@ void Core::setTransitionStrength(float strength) {
 }
 
 void Core::setTransitionColour(sf::Color colour) {
-
+    // TODO: stuff.
 }
 
 void Core::setTransitionTexture(ghc::filesystem::path const &path) {

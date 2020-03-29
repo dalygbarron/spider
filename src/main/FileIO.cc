@@ -374,6 +374,13 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
                 child.attribute("rat").value(),
                 core->spritesheet.get(child.attribute("rat").value())
             );
+        } else if (strcmp(type, "bullet") == 0) {
+            core->addBulletPrototype(
+                child.attribute("id").as_int(),
+                core->spritesheet.get(child.attribute("rat").value())
+            );
+        } else {
+            spdlog::warn("Unknown child type '{}' in game file", type);
         }
     }
     return core;

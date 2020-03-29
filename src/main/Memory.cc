@@ -34,11 +34,11 @@ int Memory::SwitchExpression::evaluate(Memory const &memory) const {
     }
 }
 
-Memory::Memory(int id) {
+Memory::Memory(unsigned int id) {
     this->id = id;
 }
 
-int Memory::getId() const {
+unsigned int Memory::getId() const {
     return this->id;
 }
 

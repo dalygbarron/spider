@@ -37,6 +37,12 @@ void ScriptedScreen::initScript() {
         sol::lib::table,
         sol::lib::string
     );
+    sol::usertype<sf::Vector2f> vectorType = this->script.new_usertype<sf::Vector2f>(
+        "Vector2f",
+        sol::constructors<sf::Vector2f(), sf::Vector2f(float, float)>()
+    );
+    vectorType["x"] = &sf::Vector2f::x;
+    vectorType["y"] = &sf::Vector2f::y;
     sol::usertype<Item> itemType = this->script.new_usertype<Item>(
         "Item",
         sol::constructors<Item()>()

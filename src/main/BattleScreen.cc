@@ -8,7 +8,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
 {
     this->script["_addBullet"] = [this](
         unsigned int parentId,
-        unsigned int type,
+        int type,
         float x,
         float y,
         float vX,
@@ -16,11 +16,11 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         float gX,
         float gY
     ) -> int {
-        Actor *parent = this->actors.get(parentId);
-        if (!parent) return 0;
-        Bullet::Prototype *prototype = this->core.getBulletPrototype(type);
+        Bullet::Prototype const *prototype = this->core.getBulletPrototype(
+            type
+        );
         if (!prototype) return 0;
-        Bullet bullet(*prototype, *parent);
+        Bullet bullet(prototype, parentId);
         bullet.position.x = x;
         bullet.position.y = y;
         bullet.velocity.x = vX;
@@ -31,6 +31,19 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         Pool<Bullet>::Item *item = this->bullets.add(bullet);
         if (item) return item->id;
         return 0;
+    };
+    this->script["_addActor"] = [this](
+        float x,
+        float y,
+        std::string const &rat
+    ) {
+        Actor actor;
+        actor.rat 
+    };
+    this->script["_getActorPos"] = [this](unsigned int id) -> sf::Vector2f{
+        Pool<Actor>::Item *actorItem = this->actors.get(id);
+        if (!actorItem) return sf::Vector2f(-1, -1);
+        return actorItem.content.live.position;
     };
     this->background.setPosition(sf::Vector2f(128, 0));
     this->background.setSize(sf::Vector2f(512, 600));
@@ -74,10 +87,13 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     for (Pool<Bullet>::Item const &item: this->bullets.getItems()) {
         if (!item.alive) continue;
-        this->core.renderer.node(item.content.live.position, false);
+        this->core.renderer.batch.draw(
+            item.content.live.prototype->rat,
+            item.content.live.position
+        );
     }
     // Draw the actors.
-    for (Pool<Actor>::Item const &item; this->actors.getItems()) {
+    for (Pool<Actor>::Item const &item: this->actors.getItems()) {
         if (!item.alive) continue;
         this->core.renderer.batch.draw(
             item.content.live.rat,
