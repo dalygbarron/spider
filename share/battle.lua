@@ -9,6 +9,39 @@ function battle.wait(time)
     end
 end
 
+function battle.distance(aX, aY, bX, bY)
+    local x = math.abs(aX - bX)
+    local y = math.abs(aY - bY)
+    return math.sqrt(x * x + y * y)
+end
+
+function battle.angleTo(aX, aY, bX, bY)
+    print(bX - aX)
+    print(bY - aY)
+    return math.atan((bY - aY) / (bX - aX))
+end
+
+function battle.walk(actor, speed, dX, dY)
+    local x, y = _getActorPosition(actor)
+    if x == -1 or y == -1 then
+        return
+    end
+    local distance = battle.distance(x, y, dX, dY)
+    local angle = battle.angleTo(x, y, dX, dY)
+    print(x..","..y..","..dX..","..dY..","..angle)
+    _setActorTransform(
+        actor,
+        x,
+        y,
+        math.cos(angle) * speed,
+        math.sin(angle) * speed,
+        0,
+        0
+    )
+    battle.wait(distance / speed)
+    _setActorTransform(actor, dX, dY, 0, 0, 0, 0)
+end
+
 function battle.start(file)
     _stopMusic()
     _playSound("sound/transition.wav")

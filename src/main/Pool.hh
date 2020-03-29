@@ -62,8 +62,8 @@ template <class T> class Pool {
          * @return a pointer to the item if found or null.
          */
         Pool<T>::Item *get(unsigned int id) {
-            T *item = &this->items[id % this->size];
-            if (item->id == id) return item;
+            Pool<T>::Item &item = this->items[id % this->size];
+            if (item.id == id) return &item;
             return NULL;
         }
 

@@ -10,7 +10,8 @@
 class Actor: public Mob {
     public:
         sf::IntRect rat;
-        float radius;
+
+        Actor(sf::IntRect rat, float radius);
 };
 
 #endif
