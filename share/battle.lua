@@ -16,9 +16,7 @@ function battle.distance(aX, aY, bX, bY)
 end
 
 function battle.angleTo(aX, aY, bX, bY)
-    print(bX - aX)
-    print(bY - aY)
-    return math.atan((bY - aY) / (bX - aX))
+    return math.atan((bX - aX) / (bY - aY))
 end
 
 function battle.walk(actor, speed, dX, dY)
@@ -33,8 +31,8 @@ function battle.walk(actor, speed, dX, dY)
         actor,
         x,
         y,
-        math.cos(angle) * speed,
         math.sin(angle) * speed,
+        math.cos(angle) * speed,
         0,
         0
     )
