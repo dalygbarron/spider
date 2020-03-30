@@ -20,16 +20,17 @@ namespace Const {
     );
     static int const MAX_BULLETS = 1024;
     static int const MAX_ACTORS = 32;
-    static float PI = 3.141592653589793238462643383279;
-    static float DOUBLE_PI = 6.283185307179586;
-    static float HALF_PI = 1.570796326794897;
-    static float FOV_X = 2.094395102;
-    static float FOV_Y = 1.570796327;
-    static float RENDER_LENGTH_X = 1.732050807;
-    static float RENDER_LENGTH_Y = 1;
-    static float INVERSE_RENDER_LENGTH_X = 0.577350269;
-    static float INVERSE_RENDER_LENGTH_Y = 1;
-    static float RADIAN_CONVERT = 57.2957795131;
+    static float const PI = 3.141592653589793238462643383279;
+    static float const DOUBLE_PI = 6.283185307179586;
+    static float const HALF_PI = 1.570796326794897;
+    static float const FOV_X = 2.094395102;
+    static float const FOV_Y = 1.570796327;
+    static float const RENDER_LENGTH_X = 1.732050807;
+    static float const RENDER_LENGTH_Y = 1;
+    static float const INVERSE_RENDER_LENGTH_X = 0.577350269;
+    static float const INVERSE_RENDER_LENGTH_Y = 1;
+    static float const RADIAN_CONVERT = 57.2957795131;
+    static float const FRAME_TIME = 0.016666666666667;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
           #######                          ##                       

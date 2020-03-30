@@ -102,7 +102,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->setScript("_main");
 }
 
-void BattleScreen::update(float delta, sf::RenderWindow &window) {
+void BattleScreen::update(sf::RenderWindow &window) {
     if (this->coroutine) {
         // Update the input records.
         this->script["_input"][0] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
@@ -110,11 +110,11 @@ void BattleScreen::update(float delta, sf::RenderWindow &window) {
         this->script["_input"][2] = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
         this->script["_input"][3] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         // run the script.
-        this->runScript<float>(delta);
+        this->runScript<float>(0);
         // update the bullets.
         for (Pool<Bullet>::Item &item: this->bullets.getItemsMutable()) {
             if (!item.alive) continue;
-            item.content.live.update(delta);
+            item.content.live.update();
             if (!this->bounds.contains(item.content.live.position)) {
                 this->bullets.remove(item.id);
             }
@@ -122,7 +122,7 @@ void BattleScreen::update(float delta, sf::RenderWindow &window) {
         // update the actors.
         for (Pool<Actor>::Item &item: this->actors.getItemsMutable()) {
             if (!item.alive) continue;
-            item.content.live.update(delta);
+            item.content.live.update();
             item.content.live.position = Util::clampInRect(
                 item.content.live.position,
                 this->bounds

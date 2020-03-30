@@ -5,6 +5,18 @@
 #include <stdio.h>
 #include <cmath>
 
+void Util::sleep(double delta) {
+    static constexpr std::chrono::duration<double> minSleepDuration(0);
+    std::chrono::high_resolution_clock::time_point start =
+        std::chrono::high_resolution_clock::now();
+    while (std::chrono::duration<double>(
+            std::chrono::high_resolution_clock::now() - start
+        ).count() < delta
+    ) {
+        std::this_thread::sleep_for(minSleepDuration);
+    }
+}
+
 sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     float windowRatio = dimensions.x / (float)dimensions.y;
     float viewRatio = view.getSize().x / (float)view.getSize().y;

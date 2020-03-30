@@ -53,8 +53,8 @@ AdventureScreen::~AdventureScreen() {
     delete this->level;
 }
 
-void AdventureScreen::update(float delta, sf::RenderWindow &window) {
-    if (this->runScript<float>(delta)) return;
+void AdventureScreen::update(sf::RenderWindow &window) {
+    if (this->runScript<float>(0)) return;
     Util::centreMouse(window);
     this->shader.setUniform("angle", camera);
 }

@@ -10,6 +10,12 @@
  */
 namespace Util {
     /**
+     * Sleep for the given armound of time.
+     * @param delta is the amount of time to sleep for.
+     */
+    void sleep(double delta);
+
+    /**
      * Gives you a view that makes the screen letterbox so it scales stuff and
      * does blah blah blah you know.
      * @param view       is the view that was currently on.

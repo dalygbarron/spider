@@ -5,11 +5,11 @@ Mob::Mob(float radius): radius(radius) {
     // nothing else.
 }
 
-void Mob::update(float delta) {
-    this->position.x += this->velocity.x * delta;
-    this->position.y += this->velocity.y * delta;
-    this->velocity.x += this->gravity.x * delta;
-    this->velocity.y += this->gravity.y * delta;
+void Mob::update() {
+    this->position.x += this->velocity.x;
+    this->position.y += this->velocity.y;
+    this->velocity.x += this->gravity.x;
+    this->velocity.y += this->gravity.y;
 }
 
 int Mob::collide(Mob const &a, Mob const &b) {

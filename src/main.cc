@@ -91,7 +91,6 @@ int process(Core &core) {
         sf::VideoMode(Const::WIDTH, Const::HEIGHT),
         Const::TITLE// TODO: add to core and get from core.
     );
-    window.setVerticalSyncEnabled(true);
     window.setMouseCursorVisible(false);
     ImGui::SFML::Init(window);
     window.resetGLStates();
@@ -106,6 +105,7 @@ int process(Core &core) {
     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) buttons[i] = 0;
     Screen *screen = core.getTopScreen();
     while (window.isOpen() && screen) {
+        deltaClock.restart();
         // Handle Events.
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -143,8 +143,7 @@ int process(Core &core) {
             }
         }
         // Update Screen.
-        sf::Time delta = deltaClock.restart();
-        screen->update(delta.asSeconds(), window);
+        screen->update(window);
         // Render.
         window.setView(view);
         window.clear();
@@ -160,6 +159,10 @@ int process(Core &core) {
         // Re get the screen for if there has been a transition.
         core.performTransitions();
         screen = core.getTopScreen();
+        // Lock framerate.
+        sf::Time delta = deltaClock.restart();
+        float sleepTime = Const::FRAME_TIME - delta.asSeconds();
+        if (sleepTime > 0) Util::sleep(sleepTime);
     }
     return 0;
 }

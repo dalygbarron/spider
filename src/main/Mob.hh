@@ -25,9 +25,8 @@ class Mob {
 
         /**
          * moves the mob based on the passage of time.
-         * @param delta is the amount of time passed.
          */
-        void update(float delta);
+        void update();
 
         /**
          * Checks if two mobs are colliding. First it does a manhattan test to

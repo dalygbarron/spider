@@ -3,10 +3,9 @@ local battle = {}
 battle.FAILURE = 0
 battle.SUCCESS = 1
 
-function battle.wait(time)
-    while time > 0 do
-        local delta = coroutine.yield()
-        time = time - delta
+function battle.wait(n)
+    for i = 1, n, 1 do
+        coroutine.yield()
     end
 end
 
@@ -43,10 +42,9 @@ end
 function battle.start(file)
     _stopMusic()
     _playSound("sound/transition.wav")
-    local strength = 0
-    while strength < 1 do
-        strength = strength + coroutine.yield()
-        _setTransitionStrength(strength)
+    for i = 1, 60, 1 do
+        _setTransitionStrength(i / 60)
+        coroutine.yield()
     end
     _battle(file)
     return coroutine.yield()
@@ -54,10 +52,9 @@ end
 
 function battle.main(actors)
     -- untransition
-    local strength = 1
-    while strength > 0 do
-        strength = strength - coroutine.yield()
-        _setTransitionStrength(strength)
+    for i = 60, 0, -1 do
+        _setTransitionStrength(i / 60)
+        coroutine.yield()
     end
     _setTransitionStrength(0)
     _playMusic("music/battle.ogg")

@@ -1,11 +1,11 @@
 #include "Screen.hh"
 #include "Const.hh"
 
-void RatScreen::Rat::update(float delta) {
-    this->rotation += this->angularVelocity * delta;
-    this->position += this->velocity * delta;
-    this->velocity.x += this->gravity.x * delta;
-    this->velocity.y += this->gravity.y * delta;
+void RatScreen::Rat::update() {
+    this->rotation += this->angularVelocity;
+    this->position += this->velocity;
+    this->velocity.x += this->gravity.x;
+    this->velocity.y += this->gravity.y;
     if (this->position.x < 0) this->position.x += Const::WIDTH;
     if (this->position.x >= Const::WIDTH) this->position.x -= Const::WIDTH;
     if (this->position.y < 0) this->position.y += Const::HEIGHT;
@@ -57,8 +57,8 @@ RatScreen::RatScreen(Core &core): Screen(core) {
     }
 }
 
-void RatScreen::update(float delta, sf::RenderWindow &window) {
-    for (int i = 0; i < this->rats.size(); i++) this->rats[i].update(delta);
+void RatScreen::update(sf::RenderWindow &window) {
+    for (int i = 0; i < this->rats.size(); i++) this->rats[i].update();
 }
 
 void RatScreen::draw(sf::RenderTarget &target, int top) const {
