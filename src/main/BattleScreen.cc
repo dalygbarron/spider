@@ -6,6 +6,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     bullets(Const::MAX_BULLETS),
     actors(Const::MAX_ACTORS)
 {
+    this->script["_input"] = this->script.create_table();
     this->script["_addBullet"] = [this](
         unsigned int parentId,
         int type,
@@ -15,7 +16,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         float vY,
         float gX,
         float gY
-    ) -> int {
+    ) -> unsigned int {
         Bullet::Prototype const *prototype = this->core.getBulletPrototype(
             type
         );
@@ -27,7 +28,29 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         bullet.velocity.y = vY;
         bullet.gravity.x = gX;
         bullet.gravity.y = gY;
-        // TODO: can we get it's location in the pool before we set everything?
+        Pool<Bullet>::Item *item = this->bullets.add(bullet);
+        if (item) return item->id;
+        return 0;
+    };
+    this->script["_shoot"] = [this](
+        unsigned int parentId,
+        int type,
+        float vX,
+        float vY
+    ) -> unsigned int {
+        Bullet::Prototype const *prototype = this->core.getBulletPrototype(
+            type
+        );
+        if (!prototype) return 0;
+        Pool<Actor>::Item *parent = this->actors.get(parentId);
+        if (!parent) return 0;
+        Bullet bullet(prototype, parentId);
+        bullet.position.x = parent->content.live.position.x;
+        bullet.position.y = parent->content.live.position.y;
+        bullet.velocity.x = vX;
+        bullet.velocity.y = vY;
+        bullet.gravity.x = 0;
+        bullet.gravity.y = 0;
         Pool<Bullet>::Item *item = this->bullets.add(bullet);
         if (item) return item->id;
         return 0;
@@ -81,6 +104,11 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
 
 void BattleScreen::update(float delta, sf::RenderWindow &window) {
     if (this->coroutine) {
+        // Update the input records.
+        this->script["_input"][0] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
+        this->script["_input"][1] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
+        this->script["_input"][2] = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
+        this->script["_input"][3] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
         // run the script.
         this->runScript<float>(delta);
         // update the bullets.
