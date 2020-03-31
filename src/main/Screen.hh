@@ -448,6 +448,7 @@ class BattleScreen: public ScriptedScreen {
     private:
         Pool<Bullet> bullets;
         Pool<Actor> actors;
+        std::vector<sf::IntRect> portraits;
         sf::FloatRect const bounds {128, 0, 512, 600};
         sf::RectangleShape background;
         std::string title;

@@ -21,6 +21,7 @@ void SoundPlayer::playMusic(ghc::filesystem::path const &path) {
     if (!this->music.openFromFile(filename)) {
         spdlog::error("Could not open music '{}'", filename);
     }
+    this->music.setLoop(true);
     this->music.play();
 }
 

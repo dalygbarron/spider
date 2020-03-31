@@ -118,6 +118,11 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->script["_setSubtitle"] = [this](std::string const &subtitle) {
         this->subtitle = subtitle;
     };
+    this->script["_addPortrait"] = [this](std::string const &subtitle) {
+        this->portraits.push_back(
+            this->core.spritesheet.get(subtitle.c_str())
+        );
+    };
     this->background.setPosition(sf::Vector2f(128, 0));
     this->background.setSize(sf::Vector2f(512, 600));
     this->background.setFillColor(sf::Color::Green);
@@ -233,6 +238,15 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
         this->subtitle,
         sf::Vector2f(this->bounds.left, this->bounds.top + 16)
     );
+    int i = 0;
+    for (sf::IntRect rat: this->portraits) {
+        this->core.renderer.panel(sf::FloatRect(8, 8 + 112 * i, 112, 112));
+        this->core.renderer.batch.draw(
+            rat,
+            sf::FloatRect(16, 16 + 112 * i, 96, 96)
+        );
+        i++;
+    }
     target.draw(this->core.renderer.batch);
 }
 
