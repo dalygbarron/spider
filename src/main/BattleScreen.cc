@@ -6,6 +6,14 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     bullets(Const::MAX_BULLETS),
     actors(Const::MAX_ACTORS)
 {
+    // do the shade loading
+    if (!this->backgroundShader.loadFromFile(
+        "shader/dots.frag",
+        sf::Shader::Fragment
+    )) {
+        spdlog::error("shader can't load");
+    }
+    // Battle script api.
     this->script["_input"] = this->script.create_table();
     this->script["_addBullet"] = [this](
         unsigned int parentId,
@@ -118,11 +126,6 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->script["_setSubtitle"] = [this](std::string const &subtitle) {
         this->subtitle = subtitle;
     };
-    this->script["_addPortrait"] = [this](std::string const &subtitle) {
-        this->portraits.push_back(
-            this->core.spritesheet.get(subtitle.c_str())
-        );
-    };
     this->background.setPosition(sf::Vector2f(128, 0));
     this->background.setSize(sf::Vector2f(512, 600));
     this->background.setFillColor(sf::Color::Green);
@@ -130,6 +133,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
 }
 
 void BattleScreen::update(sf::RenderWindow &window) {
+    this->backgroundShader.setUniform("time", this->frame * Const::FRAME_TIME);
     if (this->coroutine) {
         // Update the input records.
         this->script["_input"][0] = sf::Keyboard::isKeyPressed(
@@ -183,11 +187,14 @@ void BattleScreen::update(sf::RenderWindow &window) {
     } else {
         this->core.popScreen(this->getLastResponse());
     }
+    this->frame++;
 }
 
 void BattleScreen::draw(sf::RenderTarget &target, int top) const {
     // Draw the background.
-    target.draw(this->background);
+    sf::RenderStates states;
+    states.shader = &(this->backgroundShader);
+    target.draw(this->background, states);
     this->core.renderer.batch.clear();
     // Draw the actors.
     for (Pool<Actor>::Item const &item: this->actors.getItems()) {
@@ -238,15 +245,6 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
         this->subtitle,
         sf::Vector2f(this->bounds.left, this->bounds.top + 16)
     );
-    int i = 0;
-    for (sf::IntRect rat: this->portraits) {
-        this->core.renderer.panel(sf::FloatRect(8, 8 + 112 * i, 112, 112));
-        this->core.renderer.batch.draw(
-            rat,
-            sf::FloatRect(16, 16 + 112 * i, 96, 96)
-        );
-        i++;
-    }
     target.draw(this->core.renderer.batch);
 }
 
