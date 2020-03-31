@@ -74,6 +74,12 @@ class Renderer: public sf::Drawable {
         void setNodeHighlightRat(sf::IntRect rat);
 
         /**
+         * Sets the rat to use to draw arcs.
+         * @param rat is the rat to use.
+         */
+        void setArcRat(sf::IntRect rat);
+
+        /**
          * Sets the rat for drawing a given type of cursor for.
          * @param rat    is the rat to draw with.
          * @param cursor is the cursor type to draw with that rat.
@@ -193,6 +199,15 @@ class Renderer: public sf::Drawable {
         void sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight);
 
         /**
+         * Renders an arc from one angle to another.
+         * @param pos    is the middle of the arc.
+         * @param radius is the radius of the arc.
+         * @param a      is the starting angle.
+         * @param b      is the ending angle.
+         */
+        void arc(sf::Vector2f pos, float radius, float a, float b);
+
+        /**
          * Writes some text on the screen using the font.
          * @param content is the text to write.
          * @param pos     is the location to write it at.
@@ -206,6 +221,7 @@ class Renderer: public sf::Drawable {
         sf::IntRect lineHighlightRat;
         sf::IntRect nodeRat;
         sf::IntRect nodeHighlightRat;
+        sf::IntRect arcRat;
         sf::IntRect cursorRats[static_cast<int>(Renderer::CursorType::n)];
         Patch boxPatch;
         Patch boxHighlightPatch;

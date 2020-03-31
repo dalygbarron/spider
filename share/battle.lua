@@ -1,3 +1,21 @@
+function playerController(player)
+    local input = require("script.input")
+    while true do
+        local x, y = _getActorPosition(player)
+        local vX = 0
+        local vY = 0
+        if _input[input.LEFT] then vX = -3.5
+        elseif _input[input.RIGHT] then vX = 3.5
+        end
+        if _input[input.UP] then vY = -3.5
+        elseif _input[input.DOWN] then vY = 3.5
+        end
+        _setActorTransform(player, x, y, vX, vY, 0, 0)
+        coroutine.yield()
+    end
+    return battle.FAILURE
+end
+
 local battle = {}
 
 battle.FAILURE = 0
@@ -50,25 +68,31 @@ function battle.start(file)
     return coroutine.yield()
 end
 
-function battle.main(actors)
+function battle.main(title, actors)
+    local player = _addActor(400, 500, "grease", true)
     -- untransition
+    _setTitle(title)
     for i = 60, 0, -1 do
         _setTransitionStrength(i / 60)
         coroutine.yield()
     end
     _setTransitionStrength(0)
     _playMusic("music/battle.ogg")
-    -- main loop
+    -- set up actor routines.
     local actorRoutines = {}
     for i, actor in ipairs(actors) do
         local routine = coroutine.create(actor.routine)
-        coroutine.resume(routine, actor.actor)
+        coroutine.resume(routine, actor.actor, player)
         actorRoutines[i] = routine
     end
+    local playerRoutine = coroutine.create(playerController)
+    coroutine.resume(playerRoutine, player)
+    table.insert(actorRoutines, playerRoutine)
+    -- iterate the routines until they are done.
     while true do
-        local delta = coroutine.yield()
+        coroutine.yield()
         for i, routine in ipairs(actorRoutines) do
-            local running, response = coroutine.resume(routine, delta)
+            local running, response = coroutine.resume(routine)
             if response == battle.SUCCESS then
                 return battle.SUCCESS
             elseif response == battle.FAILURE then

@@ -58,12 +58,14 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->script["_addActor"] = [this](
         float x,
         float y,
-        std::string const &ratName
+        std::string const &ratName,
+        bool dainty
     ) -> unsigned int {
         sf::IntRect rat = this->core.spritesheet.get(ratName.c_str());
         Actor actor(rat, fmin(rat.width, rat.height) / 2);
         actor.position.x = x;
         actor.position.y = y;
+        actor.dainty = dainty;
         Pool<Actor>::Item *item = this->actors.add(std::move(actor));
         return item->id;
     };
@@ -96,6 +98,21 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
             actorItem->content.live.gravity.y = gY;
         }
     };
+    this->script["_getHp"] = [this](unsigned int id) -> int {
+        Pool<Actor>::Item *actorItem = this->actors.get(id);
+        if (actorItem) return actorItem->content.live.hp;
+        return 0;
+    };
+    this->script["_setHp"] = [this](unsigned int id, int hp) {
+        Pool<Actor>::Item *actorItem = this->actors.get(id);
+        if (actorItem) {
+            actorItem->content.live.hp = hp;
+            actorItem->content.live.maxHp = hp;
+        }
+    };
+    this->script["_setTitle"] = [this](std::string const &title) {
+        this->title = title;
+    };
     this->background.setPosition(sf::Vector2f(128, 0));
     this->background.setSize(sf::Vector2f(512, 600));
     this->background.setFillColor(sf::Color::Green);
@@ -127,6 +144,7 @@ void BattleScreen::update(sf::RenderWindow &window) {
                 item.content.live.position,
                 this->bounds
             );
+            item.content.live.hp -= 1;
         }
     } else {
         this->core.popScreen(this->getLastResponse());
@@ -140,6 +158,14 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
     // Draw the actors.
     for (Pool<Actor>::Item const &item: this->actors.getItems()) {
         if (!item.alive) continue;
+        if (!item.content.live.dainty && item.content.live.maxHp > 0) {
+            this->core.renderer.arc(
+                item.content.live.position,
+                item.content.live.radius * 1.2,
+                0,
+                (float)item.content.live.hp / item.content.live.maxHp * Const::PI * 2
+            );
+        }
         this->core.renderer.batch.draw(
             item.content.live.rat,
             item.content.live.position
@@ -156,6 +182,10 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
     // Draw the GUI.
     this->core.renderer.panel(sf::FloatRect(0, 0, 128, 600));
     this->core.renderer.panel(sf::FloatRect(640, 0, 384, 600));
+    this->core.renderer.text(
+        this->title,
+        sf::Vector2f(this->bounds.left, this->bounds.top)
+    );
     target.draw(this->core.renderer.batch);
 }
 

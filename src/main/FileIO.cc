@@ -294,6 +294,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     sf::IntRect lineHighlightRat(0, 0, 0, 0);
     sf::IntRect nodeRat(0, 0, 0, 0);
     sf::IntRect nodeHighlightRat(0, 0, 0, 0);
+    sf::IntRect arcRat(0, 0, 0, 0);
     sf::IntRect boxRat(0, 0, 0, 0);
     sf::IntRect boxHighlightRat(0, 0, 0, 0);
     if (!ghc::filesystem::exists(path)) {
@@ -357,6 +358,9 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     ));
     core->renderer.setNodeHighlightRat(core->spritesheet.get(
         node.attribute("nodeHighlight").value()
+    ));
+    core->renderer.setArcRat(core->spritesheet.get(
+        node.attribute("arc").value()
     ));
     core->renderer.setFont(core->spritesheet.get(
         node.attribute("font").value()

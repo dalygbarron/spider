@@ -10,6 +10,9 @@
 class Actor: public Mob {
     public:
         sf::IntRect rat;
+        int dainty = false;
+        int maxHp = 0;
+        int hp = 0;
 
         Actor(sf::IntRect rat, float radius);
 };

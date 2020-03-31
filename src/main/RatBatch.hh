@@ -16,6 +16,8 @@
  */
 class RatBatch: public sf::Drawable {
     public:
+        static int const CIRCLE_SEGMENTS = 6;
+
         /**
          * Create the rat batch by telling it what texture to draw with.
          * @param texture is the texture that the given sprites will belong to.
@@ -74,6 +76,25 @@ class RatBatch: public sf::Drawable {
          * @param end    is the end to stop drawing at.
          */
         void draw(sf::IntRect sprite, sf::Vector2f start, sf::Vector2f end);
+
+        /**
+         * Draws an arc from one angle to the other consisting of a hard coded
+         * number of diamond shaped segments.
+         * @param sprite is the sprite to draw on each segment where the top
+         *               and right of the sprite face the outside edges.
+         * @param pos    is where the centre of the circle will be on the
+         *               screen.
+         * @param radius is the radius for the circle to have.
+         * @param a      is the starting angle.
+         * @param b      is the ending angle.
+         */
+        void draw(
+            sf::IntRect sprite,
+            sf::Vector2f pos,
+            float radius,
+            float a,
+            float b
+        );
 
     private:
         int n;
