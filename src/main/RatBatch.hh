@@ -16,7 +16,7 @@
  */
 class RatBatch: public sf::Drawable {
     public:
-        static int const CIRCLE_SEGMENTS = 6;
+        static int const CIRCLE_SEGMENTS = 10;
 
         /**
          * Create the rat batch by telling it what texture to draw with.

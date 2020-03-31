@@ -62,7 +62,9 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         bool dainty
     ) -> unsigned int {
         sf::IntRect rat = this->core.spritesheet.get(ratName.c_str());
-        Actor actor(rat, fmin(rat.width, rat.height) / 2);
+        float radius = fmin(rat.width, rat.height) / 2;
+        if (dainty) radius = Const::DAINTY_RADIUS;
+        Actor actor(rat, radius);
         actor.position.x = x;
         actor.position.y = y;
         actor.dainty = dainty;
@@ -113,6 +115,9 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->script["_setTitle"] = [this](std::string const &title) {
         this->title = title;
     };
+    this->script["_setSubtitle"] = [this](std::string const &subtitle) {
+        this->subtitle = subtitle;
+    };
     this->background.setPosition(sf::Vector2f(128, 0));
     this->background.setSize(sf::Vector2f(512, 600));
     this->background.setFillColor(sf::Color::Green);
@@ -122,10 +127,24 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
 void BattleScreen::update(sf::RenderWindow &window) {
     if (this->coroutine) {
         // Update the input records.
-        this->script["_input"][0] = sf::Keyboard::isKeyPressed(sf::Keyboard::Left);
-        this->script["_input"][1] = sf::Keyboard::isKeyPressed(sf::Keyboard::Right);
-        this->script["_input"][2] = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
-        this->script["_input"][3] = sf::Keyboard::isKeyPressed(sf::Keyboard::Down);
+        this->script["_input"][0] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Left
+        );
+        this->script["_input"][1] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Right
+        );
+        this->script["_input"][2] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Up
+        );
+        this->script["_input"][3] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Down
+        );
+        this->script["_input"][4] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::LShift
+        );
+        this->script["_input"][5] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Z
+        );
         // run the script.
         this->runScript<float>(0);
         // update the bullets.
@@ -136,7 +155,7 @@ void BattleScreen::update(sf::RenderWindow &window) {
                 this->bullets.remove(item.id);
             }
         }
-        // update the actors.
+        // update the actors and cololide them with bullets.
         for (Pool<Actor>::Item &item: this->actors.getItemsMutable()) {
             if (!item.alive) continue;
             item.content.live.update();
@@ -144,7 +163,17 @@ void BattleScreen::update(sf::RenderWindow &window) {
                 item.content.live.position,
                 this->bounds
             );
-            item.content.live.hp -= 1;
+            for (Pool<Bullet>::Item &bulletItem:
+                this->bullets.getItemsMutable()
+            ) {
+                if (!bulletItem.alive) continue;
+                if (bulletItem.content.live.parent == item.id) continue;
+                if (Mob::collide(item.content.live, bulletItem.content.live)) {
+                    item.content.live.hp--;
+                    this->bullets.remove(bulletItem.id);
+                    // TODO: special effects.
+                }
+            }
         }
     } else {
         this->core.popScreen(this->getLastResponse());
@@ -162,8 +191,9 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
             this->core.renderer.arc(
                 item.content.live.position,
                 item.content.live.radius * 1.2,
-                0,
-                (float)item.content.live.hp / item.content.live.maxHp * Const::PI * 2
+                -Const::HALF_PI,
+                (float)item.content.live.hp / item.content.live.maxHp *
+                    Const::PI * 2 - Const::HALF_PI
             );
         }
         this->core.renderer.batch.draw(
@@ -179,12 +209,29 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
             item.content.live.position
         );
     }
+    // Draw hit boxes on dainty actors.
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LShift)) {
+        for (Pool<Actor>::Item const &item: this->actors.getItems()) {
+            if (item.alive && item.content.live.dainty) {
+                this->core.renderer.arc(
+                    item.content.live.position,
+                    item.content.live.radius + 1,
+                    0,
+                    Const::DOUBLE_PI
+                );
+            }
+        }
+    }
     // Draw the GUI.
     this->core.renderer.panel(sf::FloatRect(0, 0, 128, 600));
     this->core.renderer.panel(sf::FloatRect(640, 0, 384, 600));
     this->core.renderer.text(
         this->title,
         sf::Vector2f(this->bounds.left, this->bounds.top)
+    );
+    this->core.renderer.text(
+        this->subtitle,
+        sf::Vector2f(this->bounds.left, this->bounds.top + 16)
     );
     target.draw(this->core.renderer.batch);
 }

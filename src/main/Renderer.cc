@@ -147,7 +147,7 @@ void Renderer::sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) 
 }
 
 void Renderer::arc(sf::Vector2f pos, float radius, float a, float b) {
-    this->batch.draw(this->arcRat, pos, radius, a, b);
+    this->batch.draw(this->lineRat, pos, radius, a, b);
 }
 
 void Renderer::text(std::string const &content, sf::Vector2f pos) {

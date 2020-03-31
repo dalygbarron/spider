@@ -1,20 +1,4 @@
-function playerController(player)
-    local input = require("script.input")
-    while true do
-        local x, y = _getActorPosition(player)
-        local vX = 0
-        local vY = 0
-        if _input[input.LEFT] then vX = -3.5
-        elseif _input[input.RIGHT] then vX = 3.5
-        end
-        if _input[input.UP] then vY = -3.5
-        elseif _input[input.DOWN] then vY = 3.5
-        end
-        _setActorTransform(player, x, y, vX, vY, 0, 0)
-        coroutine.yield()
-    end
-    return battle.FAILURE
-end
+local input = require("script.input")
 
 local battle = {}
 
@@ -86,20 +70,66 @@ function battle.main(title, actors)
         actorRoutines[i] = routine
     end
     local playerRoutine = coroutine.create(playerController)
-    coroutine.resume(playerRoutine, player)
+    local ok, response = coroutine.resume(playerRoutine, player)
+    if not ok then error(response) end
     table.insert(actorRoutines, playerRoutine)
     -- iterate the routines until they are done.
     while true do
         coroutine.yield()
         for i, routine in ipairs(actorRoutines) do
-            local running, response = coroutine.resume(routine)
+            local ok, response = coroutine.resume(routine)
             if response == battle.SUCCESS then
                 return battle.SUCCESS
             elseif response == battle.FAILURE then
                 return battle.FAILURE
+            elseif not ok then
+                error(response)
             end
         end
     end
+end
+
+function playerShoot(player, interval, bullet)
+    while true do
+        if _input[input.SHOOT] then
+            local spread = _input[input.STRAFE] and 0.5 or 1
+            local angle = 0 - math.pi / 2 + math.random() * spread - spread / 2
+            local x, y = _getActorPosition(player)
+            _addBullet(
+                player,
+                bullet,
+                x,
+                y,
+                math.cos(angle) * 9,
+                math.sin(angle) * 9,
+                0,
+                0
+            )
+        end
+        battle.wait(interval)
+    end
+end
+
+function playerController(player)
+    local shoot = coroutine.create(playerShoot)
+    coroutine.resume(shoot, player, 2, 4)
+    _setHp(player, 3)
+    while _getHp(player) > 0 do
+        local x, y = _getActorPosition(player)
+        local vX = 0
+        local vY = 0
+        local speed = _input[input.STRAFE] and 2 or 3.5
+        if _input[input.LEFT] then vX = -speed
+        elseif _input[input.RIGHT] then vX = speed
+        end
+        if _input[input.UP] then vY = -speed
+        elseif _input[input.DOWN] then vY = speed
+        end
+        _setActorTransform(player, x, y, vX, vY, 0, 0)
+        coroutine.resume(shoot)
+        coroutine.yield()
+    end
+    return battle.FAILURE
 end
 
 return battle

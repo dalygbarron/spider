@@ -31,6 +31,7 @@ namespace Const {
     static float const INVERSE_RENDER_LENGTH_Y = 1;
     static float const RADIAN_CONVERT = 57.2957795131;
     static float const FRAME_TIME = 0.016666666666667;
+    static float const DAINTY_RADIUS = 6;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
           #######                          ##                       

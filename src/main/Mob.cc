@@ -18,5 +18,5 @@ int Mob::collide(Mob const &a, Mob const &b) {
     if (dX > join) return false;
     float dY = fabs(a.position.y - b.position.y);
     if (dY > join) return false;
-    return (sqrt(dX * dX + dY * dY) <= join);
+    return (sqrt(dX * dX + dY * dY) < fmax(join - 1, 1));
 }

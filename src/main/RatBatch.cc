@@ -229,42 +229,43 @@ void RatBatch::draw(
     int nVertices = this->n * 4;
     int newSize = nVertices + 4 * RatBatch::CIRCLE_SEGMENTS;
     if (newSize > this->vertices.size()) this->vertices.resize(newSize);
-    // TODO: this is shitty.
-    while (b < a) b += Const::PI * 2;
     float delta = (b - a) / RatBatch::CIRCLE_SEGMENTS;
     for (int i = 0; i < RatBatch::CIRCLE_SEGMENTS; i++) {
-        this->vertices[nVertices + i * 4].position = pos;
-        this->vertices[nVertices + i * 4].color = sf::Color::White;
-        this->vertices[nVertices + i * 4].texCoords = sf::Vector2f(
-            sprite.left,
-            sprite.top + sprite.height
-        );
-        this->vertices[nVertices + i * 4 + 1].position = sf::Vector2f(
+        this->vertices[nVertices + i * 4].position = sf::Vector2f(
             pos.x + cos(a + delta * i) * radius,
             pos.y + sin(a + delta * i) * radius
         );
-        this->vertices[nVertices + i * 4 + 1].color = sf::Color::White;
-        this->vertices[nVertices + i * 4 + 1].texCoords = sf::Vector2f(
-            sprite.left,
-            sprite.top
-        );
-        this->vertices[nVertices + i * 4 + 2].position = sf::Vector2f(
-            pos.x + cos(a + delta * i + delta / 2) * radius,
-            pos.y + sin(a + delta * i + delta / 2) * radius
-        );
-        this->vertices[nVertices + i * 4 + 2].color = sf::Color::White;
-        this->vertices[nVertices + i * 4 + 2].texCoords = sf::Vector2f(
+        this->vertices[nVertices + i * 4].color = sf::Color::White;
+        this->vertices[nVertices + i * 4].texCoords = sf::Vector2f(
             sprite.left + sprite.width,
-            sprite.top
+            sprite.top + sprite.height
         );
-        this->vertices[nVertices + i * 4 + 3].position = sf::Vector2f(
+        this->vertices[nVertices + i * 4 + 1].position = sf::Vector2f(
             pos.x + cos(a + delta * i + delta) * radius,
             pos.y + sin(a + delta * i + delta) * radius
         );
+        this->vertices[nVertices + i * 4 + 1].color = sf::Color::White;
+        this->vertices[nVertices + i * 4 + 1].texCoords = sf::Vector2f(
+            sprite.left + sprite.width,
+            sprite.top
+        );
+        this->vertices[nVertices + i * 4 + 2].position = sf::Vector2f(
+            pos.x + cos(a + delta * i + delta) * (radius - sprite.width),
+            pos.y + sin(a + delta * i + delta) * (radius - sprite.width)
+        );
+        this->vertices[nVertices + i * 4 + 2].color = sf::Color::White;
+        this->vertices[nVertices + i * 4 + 2].texCoords = sf::Vector2f(
+            sprite.left,
+            sprite.top + sprite.height
+        );
+        this->vertices[nVertices + i * 4 + 3].position = sf::Vector2f(
+            pos.x + cos(a + delta * i) * (radius - sprite.width),
+            pos.y + sin(a + delta * i) * (radius - sprite.width)
+        );
         this->vertices[nVertices + i * 4 + 3].color = sf::Color::White;
         this->vertices[nVertices + i * 4 + 3].texCoords = sf::Vector2f(
-            sprite.left + sprite.width,
-            sprite.top + sprite.height
+            sprite.left,
+            sprite.top
         );
     }
     this->n += RatBatch::CIRCLE_SEGMENTS;

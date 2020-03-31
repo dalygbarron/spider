@@ -451,6 +451,7 @@ class BattleScreen: public ScriptedScreen {
         sf::FloatRect const bounds {128, 0, 512, 600};
         sf::RectangleShape background;
         std::string title;
+        std::string subtitle;
 };
 
 #endif
