@@ -53,7 +53,7 @@ function battle.start(file)
 end
 
 function battle.main(title, actors)
-    local player = _addActor(400, 500, "grease", true)
+    local player = _addActor(512, 500, "grease", true)
     _setPlayer(player)
     -- untransition
     _setTitle(title)
