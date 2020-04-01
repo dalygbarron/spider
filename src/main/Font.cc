@@ -14,7 +14,7 @@ Font::Font(sf::IntRect bounds):
     // Nothing else.
 }
 
-sf::IntRect Font::get(char c) {
+sf::IntRect Font::get(char c) const {
     return sf::IntRect(
         this->bounds.left + (c % 16) * this->character.x,
         this->bounds.top + (c / 16) * this->character.y,

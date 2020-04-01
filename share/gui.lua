@@ -11,10 +11,16 @@ gui.FONT_HEIGHT = fontHeight
 --- Creates a representation of a text node for use within this module.
 -- @param content is the text to write.
 -- @return the representation.
-function gui.text(content)
+function gui.text(content, font)
+    if not font then
+        font = _defaultFont
+    end
+    print(font)
+    print("erg")
     return {
         type = "text",
         content = content,
+        font = font,
         x = 0,
         y = 0,
         w = 0,
@@ -237,6 +243,32 @@ function gui.say(speaker, ...)
             gui.hsplit(
                 0.9,
                 gui.text(speech),
+                gui.button("\x01")
+            )
+        )
+    )
+    gui.bake(knob, 192, 400, 640, 200)
+    _xmlKnob(gui.xml(knob))
+    coroutine.yield()
+end
+
+--- Writes some text in a gui box with a heading using a font of your choice.
+-- @param speaker is the name of the thing speaker / the heading.
+-- @param font    is the font to write the text in.
+-- @param ...     is just a bunch of text that is concatenated with spaces.
+function gui.sayAccent(speaker, font, ...)
+    local speech = ""
+    for i, bit in ipairs({...}) do
+        speech = speech..bit.." "
+    end
+    local knob = gui.panel(
+        1,
+        gui.vsplit(
+            0.20,
+            gui.panel(1, gui.text(speaker)),
+            gui.hsplit(
+                0.9,
+                gui.text(speech, font),
                 gui.button("\x01")
             )
         )

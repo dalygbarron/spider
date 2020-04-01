@@ -14,14 +14,6 @@
  */
 namespace FileIO {
     /**
-     * Contains all the info needed to parse knobs from xml.
-     */
-    struct KnobInfo {
-        Measurements const &measurements;
-        RatPack const &spritesheet;
-    };
-    
-    /**
      * Reads a switch expression from a string in a stack based way where
      * things are put on a stack and then go into the next things etc also if
      * the stack is left with multiple things they are anded together.
@@ -84,12 +76,11 @@ namespace FileIO {
 
     /**
      * TUrns an xml node into the knob it represents recursively.
-     * @param knob     is the xml node.
-     * @param knobInfo is a struct containing the sizing stuff needed to parse
-     *                 knobs correctly.
+     * @param knob        is the xml node.
+     * @param spritesheet is the spritesheet to get stuff out of.
      * @return the knob or null if it's no good.
      */
-    Knob *parseKnob(pugi::xml_node node, KnobInfo const &knobInfo);
+    Knob *parseKnob(pugi::xml_node node, RatPack const &spritesheet);
 
     /**
      * Loads in XML from a file, then parses it into your desired type using

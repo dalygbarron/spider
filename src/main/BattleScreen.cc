@@ -126,12 +126,6 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->script["_setSubtitle"] = [this](std::string const &subtitle) {
         this->subtitle = subtitle;
     };
-    this->script["_setText"] = [this](
-        std::string const &name,
-        std::string const &value
-    ) {
-        this->texts[name] = value;
-    };
     this->background.setPosition(sf::Vector2f(128, 0));
     this->background.setSize(sf::Vector2f(512, 600));
     this->background.setFillColor(sf::Color::Green);
@@ -244,37 +238,13 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.panel(sf::FloatRect(0, 0, 128, 600));
     this->core.renderer.panel(sf::FloatRect(640, 0, 384, 600));
     this->core.renderer.text(
-        this->title,
+        this->title.c_str(),
         sf::Vector2f(this->bounds.left, this->bounds.top)
     );
     this->core.renderer.text(
-        this->subtitle,
+        this->subtitle.c_str(),
         sf::Vector2f(this->bounds.left, this->bounds.top + 16)
     );
-    int i = 0;
-    for (std::pair<std::string, std::string> const &item: this->texts) {
-        this->core.renderer.panel(sf::FloatRect(
-            this->bounds.left + this->bounds.width + 8,
-            8 + 32 * i,
-            184,
-            32
-        ));
-        this->core.renderer.panel(sf::FloatRect(
-            this->bounds.left + this->bounds.width + 192,
-            8 + 32 * i,
-            184,
-            32
-        ));
-        this->core.renderer.text(
-            item.first,
-            sf::Vector2f(this->bounds.left + this->bounds.width + 16, 16 + 32 * i)
-        );
-        this->core.renderer.text(
-            item.second,
-            sf::Vector2f(this->bounds.left + this->bounds.width + 16 + 192, 16 + 32 * i)
-        );
-        i++;
-    }
     target.draw(this->core.renderer.batch);
 }
 

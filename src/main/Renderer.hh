@@ -21,14 +21,27 @@ class Renderer: public sf::Drawable {
          * A mouse cursor type.
          */
         enum class CursorType {
-            pointer,
-            talk,
-            move,
-            use,
-            n
+            Pointer,
+            Talk,
+            Move,
+            Use,
+            N
         };
 
-        RatBatch batch;
+        sf::IntRect pointRat;
+        sf::IntRect pointHighlightRat;
+        sf::IntRect lineRat;
+        sf::IntRect lineHighlightRat;
+        sf::IntRect nodeRat;
+        sf::IntRect nodeHighlightRat;
+        sf::IntRect font;
+        sf::IntRect cursorRats[static_cast<int>(Renderer::CursorType::N)];
+        Patch boxPatch;
+        Patch boxHighlightPatch;
+        Patch panelPatch;
+        Patch buttonPatch;
+        Patch buttonDepressedPatch;
+        mutable RatBatch batch;
 
         /**
          * Passes in the texture of the spritesheet, and also the rectangles
@@ -38,138 +51,52 @@ class Renderer: public sf::Drawable {
         Renderer(sf::Texture const &sprites);
 
         /**
-         * Sets the rat to use to draw points.
-         * @param rat is the rat to use.
+         * Sets the cursor rat for a certain type of cursor.
+         * @param rat  is the rat to use.
+         * @param type is the type of cursor this is for.
          */
-        void setPointRat(sf::IntRect rat);
-        
-        /**
-         * Sets the rat to use to draw highlighted points.
-         * @param rat is the rat to use.
-         */
-        void setPointHighlightRat(sf::IntRect rat);
-
-        /**
-         * Sets the rat to use to draw lines.
-         * @param rat is the rat.
-         */
-        void setLineRat(sf::IntRect rat);
-
-        /**
-         * Set the rat to use to draw highlighted lines.
-         * @param rat is the rat to use.
-         */
-        void setLineHighlightRat(sf::IntRect rat);
-
-        /**
-         * Sets the rat to use to draw nodes.
-         * @param rat is the rat to use.
-         */
-        void setNodeRat(sf::IntRect rat);
-
-        /**
-         * Sets the rat to use to draw highlighted nodes.
-         * @param rat is the rat to use.
-         */
-        void setNodeHighlightRat(sf::IntRect rat);
-
-        /**
-         * Sets the rat to use to draw arcs.
-         * @param rat is the rat to use.
-         */
-        void setArcRat(sf::IntRect rat);
-
-        /**
-         * Sets the rat for drawing a given type of cursor for.
-         * @param rat    is the rat to draw with.
-         * @param cursor is the cursor type to draw with that rat.
-         */
-        void setCursorRat(sf::IntRect rat, CursorType cursor);
-
-        /**
-         * Sets the 9 patch to use to draw boxes.
-         * @param patch is the patch to use.
-         */
-        void setBoxPatch(Patch patch);
-
-        /**
-         * Sets the 9 patch to use to draw highlighted boxes.
-         * @param patch is the rat to use.
-         */
-        void setBoxHighlightPatch(Patch patch);
-
-        /**
-         * Sets the patch for drawing panels.
-         * @param patch is the patch to draw panels with.
-         */
-        void setPanelPatch(Patch patch);
-
-        /**
-         * Sets the patch for drawing buttons.
-         * @param patch is the patch to draw buttons with.
-         */
-        void setButtonPatch(Patch patch);
-
-        /**
-         * Sets the patch for drawing depressed buttons for.
-         * @param patch is the patch to draw depressed buttons with.
-         */
-        void setButtonDepressedPatch(Patch patch);
-
-        /**
-         * Gives you some measurements that are useful in non rendering
-         * contexts to that stuff lines up with what is rendered.
-         * @return a constant reference to the measurements which are kept up
-         *         to date.
-         */
-        Measurements const &getMeasurements();
-
-        /**
-         * Sets the font to use for normal text drawing.
-         * @param font is the font to use from now on.
-         */
-        void setFont(Font font);
+        void setCursorRat(sf::IntRect rat, Renderer::CursorType type);
 
         /**
          * Draw a crosshair over the given point on the screen.
          * @param pos       is the position to put it.
          * @param highlight is whether to make the point highlighted.
          */
-        void point(sf::Vector2f pos, int highlight);
+        void point(sf::Vector2f pos, int highlight) const;
 
         /**
          * Draw a round node thingy over the given point on the screen.
          * @param pos is the position to put it.
          * @param highlight is whether to make the point highlighted.
          */
-        void node(sf::Vector2f pos, int highlight);
+        void node(sf::Vector2f pos, int highlight) const;
 
         /**
          * Draw a cursor pointing to the given point on the screen.
          * @param pos    is the location the cursor should point to.
          * @param cursor is the cursor type to draw.
          */
-        void cursor(sf::Vector2f pos, Renderer::CursorType cursor);
+        void cursor(sf::Vector2f pos, Renderer::CursorType cursor) const;
 
         /**
          * Draw a box around the given rectangle on the screen.
          * @param pos is the rectangle to draw around.
          * @param highlight is whether to make the box highlighted.
          */
-        void box(sf::FloatRect pos, int highlight);
+        void box(sf::FloatRect pos, int highlight) const;
 
         /**
          * Draw a panel around the given rectangle on the screen.
          * @param pos is the rectangle to draw the panel around.
          */
-        void panel(sf::FloatRect pos);
+        void panel(sf::FloatRect pos) const;
 
         /**
          * Draw a button around the given rectangle on the screen.
          * @param pos       is the rectangle to draw the button around.
          * @param depressed is whether to draw the button as depressed or not.
          */
-        void button(sf::FloatRect pos, int depressed);
+        void button(sf::FloatRect pos, int depressed) const;
 
         /**
          * Draw a line between two points.
@@ -177,7 +104,7 @@ class Renderer: public sf::Drawable {
          * @param end       is where on the screen the line ends.
          * @param highlight is whether to draw the line highlighted.
          */
-        void line(sf::Vector2f start, sf::Vector2f, int highlight);
+        void line(sf::Vector2f start, sf::Vector2f, int highlight) const;
 
         /**
          * Draw a node with a line coming out of it.
@@ -185,7 +112,7 @@ class Renderer: public sf::Drawable {
          * @param end       is where the line ends.
          * @param highlight is whether to draw it highlighted or normal.
          */
-        void club(sf::Vector2f start, sf::Vector2f end, int highlight);
+        void club(sf::Vector2f start, sf::Vector2f end, int highlight) const;
 
         /**
          * Render a sphere mesh rotated in accordance with the given camera
@@ -196,7 +123,11 @@ class Renderer: public sf::Drawable {
          *                  none to be highlighted give an index that does not
          *                  appear eg -1.
          */
-        void sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight);
+        void sphereMesh(
+            Mesh const &mesh,
+            sf::Vector2f camera,
+            int highlight
+        ) const;
 
         /**
          * Renders an arc from one angle to another.
@@ -205,31 +136,29 @@ class Renderer: public sf::Drawable {
          * @param a      is the starting angle.
          * @param b      is the ending angle.
          */
-        void arc(sf::Vector2f pos, float radius, float a, float b);
+        void arc(sf::Vector2f pos, float radius, float a, float b) const;
 
         /**
-         * Writes some text on the screen using the font.
+         * Writes some text on the screen using the default font.
          * @param content is the text to write.
          * @param pos     is the location to write it at.
+         * @param 
          */
-        void text(std::string const &content, sf::Vector2f pos);
+        void text(char const *content, sf::Vector2f pos) const;
+
+        /**
+         * Writes some text on the screen using a given font.
+         * @param content is the text to write.
+         * @param pos     is the location to write it at.
+         * @param font    is the font to use to write the text.
+         */
+        void text(
+            char const *content,
+            sf::Vector2f pos,
+            sf::IntRect font
+        ) const;
 
     private:
-        sf::IntRect pointRat;
-        sf::IntRect pointHighlightRat;
-        sf::IntRect lineRat;
-        sf::IntRect lineHighlightRat;
-        sf::IntRect nodeRat;
-        sf::IntRect nodeHighlightRat;
-        sf::IntRect arcRat;
-        sf::IntRect cursorRats[static_cast<int>(Renderer::CursorType::n)];
-        Patch boxPatch;
-        Patch boxHighlightPatch;
-        Patch panelPatch;
-        Patch buttonPatch;
-        Patch buttonDepressedPatch;
-        Font font;
-        Measurements measurements;
 
         void draw(
             sf::RenderTarget &target,

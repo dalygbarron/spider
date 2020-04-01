@@ -34,6 +34,7 @@ class Core {
 
         std::string name;
         std::string start;
+        std::string defaultFont;
         ghc::filesystem::path filename;
         RatPack spritesheet;
         Renderer renderer;

@@ -57,6 +57,7 @@ void ScriptedScreen::initScript() {
         this->script["_itemInfo"][i] = item.second;
         i++;
     }
+    this->script["_defaultFont"] = this->core.defaultFont.c_str();
     this->script["_inventory"] = [this]() {
         sol::table inventoryTable = this->script.create_table();
         for (std::pair<std::string, int> const &item:
@@ -117,13 +118,10 @@ void ScriptedScreen::initScript() {
     };
     this->script["_xmlKnob"] = [this](std::string const &xml) {
         spdlog::debug("Adding knob xml: '{}'", xml.c_str());
-        Knob *knob = FileIO::readXml<Knob, FileIO::KnobInfo>(
+        Knob *knob = FileIO::readXml<Knob, RatPack const &>(
             xml.c_str(),
             FileIO::parseKnob,
-            FileIO::KnobInfo {
-                this->core.renderer.getMeasurements(),
-                this->core.spritesheet
-            }
+            this->core.spritesheet
         );
         if (knob) {
             this->core.pushScreen(new KnobScreen(this->core, knob));

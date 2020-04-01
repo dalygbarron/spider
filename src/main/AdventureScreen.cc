@@ -190,7 +190,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         }
         this->core.renderer.cursor(
             sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
-            Renderer::CursorType::pointer
+            Renderer::CursorType::Pointer
         );
 
     }

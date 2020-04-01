@@ -146,21 +146,21 @@ class TextKnob: public Knob {
     public:
         /**
          * Gives the text knob tghe text that it can write.
-         * @param x            is the position of the text from left.
-         * @param y            is the position of the text from top.
-         * @param w            is the width within which to fit the text.
-         * @param h            is the height within which to fit the text.
-         * @param measurements tells you how the text can be fitted.
-         * @param text         is the text to write. The knob copies this data
-         *                     and then discards it so if you allocated it
-         *                     dynamically, you must delete it yourself.
+         * @param x    is the position of the text from left.
+         * @param y    is the position of the text from top.
+         * @param w    is the width within which to fit the text.
+         * @param h    is the height within which to fit the text.
+         * @param font is the 16 x 16 bitmap font rat to draw with.
+         * @param text is the text to write. The knob copies this data and then
+         *             discards it so if you allocated it dynamically, you must
+         *             delete it yourself.
          */
         TextKnob(
             int x,
             int y,
             int w,
             int h,
-            Measurements const &measurements,
+            sf::IntRect font,
             char const *text
         );
 
@@ -171,6 +171,7 @@ class TextKnob: public Knob {
     
     private:
         std::string text;
+        sf::IntRect font;
 };
 
 /**

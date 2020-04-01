@@ -175,15 +175,15 @@ void FileIO::parsePatch(Core &core, pugi::xml_node const &node) {
     );
     char const *role = node.attribute("role").value();
     if (strcmp(role, "box") == 0) {
-        core.renderer.setBoxPatch(patch);
+        core.renderer.boxPatch = patch;
     } else if (strcmp(role, "boxHighlight") == 0) {
-        core.renderer.setBoxHighlightPatch(patch);
+        core.renderer.boxHighlightPatch = patch;
     } else if (strcmp(role, "panel") == 0) {
-        core.renderer.setPanelPatch(patch);
+        core.renderer.panelPatch = patch;
     } else if (strcmp(role, "button") == 0) {
-        core.renderer.setButtonPatch(patch);
+        core.renderer.buttonPatch = patch;
     } else if (strcmp(role, "buttonDepressed") == 0) {
-        core.renderer.setButtonDepressedPatch(patch);
+        core.renderer.buttonDepressedPatch = patch;
     } else {
         spdlog::error("No such role in gui for patch as '{}'", role);
     }
@@ -324,47 +324,41 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     core->filename = path;
     core->name = node.attribute("name").value();
     core->start = node.attribute("start").value();
+    core->defaultFont = node.attribute("default-font").value();
+    core->renderer.font = core->spritesheet.get(core->defaultFont.c_str());
     core->setTransitionTexture(node.attribute("transition").value());
     // Check some optional things.
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());
     // now set the gui bits
-    core->renderer.setPointRat(core->spritesheet.get(
-        node.attribute("point").value()
-    ));
-    core->renderer.setCursorRat(core->spritesheet.get(
-        node.attribute("pointer").value()
-    ), Renderer::CursorType::pointer);
-    core->renderer.setCursorRat(core->spritesheet.get(
-        node.attribute("talk").value()
-    ), Renderer::CursorType::talk);
-    core->renderer.setCursorRat(core->spritesheet.get(
-        node.attribute("move").value()
-    ), Renderer::CursorType::move);
-    core->renderer.setCursorRat(core->spritesheet.get(
-        node.attribute("use").value()
-    ), Renderer::CursorType::use);
-    core->renderer.setPointHighlightRat(core->spritesheet.get(
-        node.attribute("pointHighlight").value()
-    ));
-    core->renderer.setLineRat(core->spritesheet.get(
-        node.attribute("line").value()
-    ));
-    core->renderer.setLineHighlightRat(core->spritesheet.get(
-        node.attribute("lineHighlight").value()
-    ));
-    core->renderer.setNodeRat(core->spritesheet.get(
-        node.attribute("node").value()
-    ));
-    core->renderer.setNodeHighlightRat(core->spritesheet.get(
-        node.attribute("nodeHighlight").value()
-    ));
-    core->renderer.setArcRat(core->spritesheet.get(
-        node.attribute("arc").value()
-    ));
-    core->renderer.setFont(core->spritesheet.get(
-        node.attribute("font").value()
-    ));
+    core->renderer.setCursorRat(
+        core->spritesheet.get(node.attribute("pointer").value()),
+        Renderer::CursorType::Pointer
+    );
+    core->renderer.setCursorRat(
+        core->spritesheet.get(node.attribute("talk").value()),
+        Renderer::CursorType::Talk
+    );
+    core->renderer.setCursorRat(
+        core->spritesheet.get(node.attribute("move").value()),
+        Renderer::CursorType::Move
+    );
+    core->renderer.setCursorRat(
+        core->spritesheet.get(node.attribute("use").value()),
+        Renderer::CursorType::Use
+    );
+    core->renderer.pointRat =
+        core->spritesheet.get(node.attribute("point").value());
+    core->renderer.pointHighlightRat =
+        core->spritesheet.get(node.attribute("pointHighlight").value());
+    core->renderer.lineRat =
+        core->spritesheet.get(node.attribute("line").value());
+    core->renderer.lineHighlightRat =
+        core->spritesheet.get(node.attribute("lineHighlight").value());
+    core->renderer.nodeRat =
+        core->spritesheet.get(node.attribute("node").value());
+    core->renderer.nodeHighlightRat =
+        core->spritesheet.get(node.attribute("nodeHighlight").value());
     // Now look for child nodes to deal with.
     for (pugi::xml_node child: node.children()) {
         char const *type = child.name();
@@ -390,10 +384,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     return core;
 }
 
-Knob *FileIO::parseKnob(
-    pugi::xml_node node,
-    FileIO::KnobInfo const &knobInfo
-) {
+Knob *FileIO::parseKnob(pugi::xml_node node, RatPack const &spritesheet) {
     int x = node.attribute("x").as_int();
     int y = node.attribute("y").as_int();
     int w = node.attribute("w").as_int();
@@ -409,7 +400,7 @@ Knob *FileIO::parseKnob(
             node.attribute("parts").as_int()
         );
         for (pugi::xml_node child: node.children()) {
-            panel->addChild(FileIO::parseKnob(child, knobInfo));
+            panel->addChild(FileIO::parseKnob(child, spritesheet));
         }
         return panel;
     } else if (strcmp(type, "button") == 0) {
@@ -420,12 +411,19 @@ Knob *FileIO::parseKnob(
             w,
             h,
             id,
-            FileIO::parseKnob(child, knobInfo)
+            FileIO::parseKnob(child, spritesheet)
         );
     } else if (strcmp(type, "text") == 0) {
-        return new TextKnob(x, y, w, h, knobInfo.measurements, node.child_value());
+        return new TextKnob(
+            x,
+            y,
+            w,
+            h,
+            spritesheet.get(node.attribute("font").value()),
+            node.child_value()
+        );
     } else if (strcmp(type, "frame") == 0) {
-        return new FrameKnob(x, y, w, h, knobInfo.spritesheet.get(
+        return new FrameKnob(x, y, w, h, spritesheet.get(
             node.attribute("rat").value()
         ));
     } else {

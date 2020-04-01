@@ -26,7 +26,7 @@ class Font {
         /**
          * Gives you the bounds for a given character drawn with this font.
          */
-        sf::IntRect get(char c);
+        sf::IntRect get(char c) const;
 };
 
 #endif

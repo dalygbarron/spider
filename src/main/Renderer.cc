@@ -5,101 +5,48 @@ Renderer::Renderer(sf::Texture const &sprites): batch(sprites) {
     // does nothing else.
 }
 
-void Renderer::setPointRat(sf::IntRect rat) {
-    this->pointRat = rat;
+void Renderer::setCursorRat(sf::IntRect rat, Renderer::CursorType type) {
+    this->cursorRats[static_cast<int>(type)] = rat;
 }
 
-void Renderer::setPointHighlightRat(sf::IntRect rat) {
-    this->pointHighlightRat = rat;
-}
-
-void Renderer::setLineRat(sf::IntRect rat) {
-    this->lineRat = rat;
-}
-
-void Renderer::setLineHighlightRat(sf::IntRect rat) {
-    this->lineHighlightRat = rat; }
-
-void Renderer::setNodeRat(sf::IntRect rat) {
-    this->nodeRat = rat;
-}
-
-void Renderer::setNodeHighlightRat(sf::IntRect rat) {
-    this->nodeHighlightRat = rat;
-}
-
-void Renderer::setArcRat(sf::IntRect rat) {
-    this->arcRat = rat;
-}
-
-void Renderer::setCursorRat(sf::IntRect rat, Renderer::CursorType cursor) {
-    this->cursorRats[static_cast<int>(cursor)] = rat;
-}
-
-void Renderer::setBoxPatch(Patch patch) {
-    this->boxPatch = patch;
-}
-
-void Renderer::setBoxHighlightPatch(Patch patch) {
-    this->boxHighlightPatch = patch;
-}
-
-void Renderer::setPanelPatch(Patch patch) {
-    this->panelPatch = patch;
-}
-
-void Renderer::setButtonPatch(Patch patch) {
-    this->buttonPatch = patch;
-}
-
-void Renderer::setButtonDepressedPatch(Patch patch) {
-    this->buttonDepressedPatch = patch;
-}
-
-void Renderer::setFont(Font font) {
-    this->font = font;
-    this->measurements.normalFontSize.x = font.bounds.width / 16;
-    this->measurements.normalFontSize.y = font.bounds.height / 16;
-}
-
-Measurements const &Renderer::getMeasurements() {
-    return measurements;
-}
-
-void Renderer::point(sf::Vector2f pos, int highlight) {
+void Renderer::point(sf::Vector2f pos, int highlight) const {
     this->batch.draw(
         highlight ? this->pointHighlightRat : this->pointRat,
         pos
     );
 }
 
-void Renderer::node(sf::Vector2f pos, int highlight) {
+void Renderer::node(sf::Vector2f pos, int highlight) const {
     this->batch.draw(highlight ? this->nodeHighlightRat : this->nodeRat, pos);
 }
 
-void Renderer::cursor(sf::Vector2f pos, Renderer::CursorType cursor) {
+void Renderer::cursor(sf::Vector2f pos, Renderer::CursorType cursor) const {
     this->batch.draw(this->cursorRats[static_cast<int>(cursor)], pos);
 }
 
-void Renderer::box(sf::FloatRect pos, int highlight) {
+void Renderer::box(sf::FloatRect pos, int highlight) const {
     this->batch.draw(
         highlight ? this->boxHighlightPatch : this->boxPatch,
         pos
     );
 }
 
-void Renderer::panel(sf::FloatRect pos) {
+void Renderer::panel(sf::FloatRect pos) const {
     this->batch.draw(this->panelPatch, pos);
 }
 
-void Renderer::button(sf::FloatRect pos, int depressed) {
+void Renderer::button(sf::FloatRect pos, int depressed) const {
     this->batch.draw(
         depressed ? this->buttonDepressedPatch : this->buttonPatch,
         pos
     );
 }
 
-void Renderer::line(sf::Vector2f start, sf::Vector2f end, int highlight) {
+void Renderer::line(
+    sf::Vector2f start,
+    sf::Vector2f end,
+    int highlight
+) const {
     this->batch.draw(
         highlight ? this->lineHighlightRat : this->lineRat,
         start,
@@ -107,12 +54,20 @@ void Renderer::line(sf::Vector2f start, sf::Vector2f end, int highlight) {
     );
 }
 
-void Renderer::club(sf::Vector2f start, sf::Vector2f end, int highlight) {
+void Renderer::club(
+    sf::Vector2f start,
+    sf::Vector2f end,
+    int highlight
+) const {
     this->line(start, end, highlight);
     this->node(start, highlight);
 }
 
-void Renderer::sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) {
+void Renderer::sphereMesh(
+    Mesh const &mesh,
+    sf::Vector2f camera,
+    int highlight
+) const {
     std::vector<sf::Vector2f> const &vertices = mesh.getVertices();
     int n = vertices.size();
     for (int i = 0; i < n; i++) {
@@ -146,28 +101,44 @@ void Renderer::sphereMesh(Mesh const &mesh, sf::Vector2f camera, int highlight) 
     }
 }
 
-void Renderer::arc(sf::Vector2f pos, float radius, float a, float b) {
+void Renderer::arc(sf::Vector2f pos, float radius, float a, float b) const {
     this->batch.draw(this->lineRat, pos, radius, a, b);
 }
 
-void Renderer::text(std::string const &content, sf::Vector2f pos) {
+void Renderer::text(char const *content, sf::Vector2f pos) const {
+    this->text(content, pos, this->font);
+}
+
+void Renderer::text(
+    char const *content,
+    sf::Vector2f pos,
+    sf::IntRect font
+) const {
     float originX = pos.x;
-    for (int i = 0; i < content.size(); i++) {
-        if (content[i] == '\n') {
+    int characterWidth = font.width / 16;
+    int characterHeight = font.height / 16;
+    for (int i = 0; content[i]; i++) {
+        char c = content[i];
+        if (c == '\n') {
             pos.x = originX;
-            pos.y += this->font.character.y;
+            pos.y += characterHeight;
             continue;
         }
         this->batch.draw(
-            this->font.get(content[i]),
+            sf::IntRect(
+                font.left + (c % 16) * characterWidth,
+                font.top + (c / 16) * characterHeight,
+                characterWidth,
+                characterHeight
+            ),
             sf::FloatRect(
                 pos.x,
                 pos.y,
-                this->font.character.x,
-                this->font.character.y
+                characterWidth,
+                characterHeight
             )
         );
-        pos.x += this->font.character.x - 1;
+        pos.x += characterWidth - 1;
     }
 }
 

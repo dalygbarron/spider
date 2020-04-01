@@ -453,7 +453,6 @@ class BattleScreen: public ScriptedScreen {
         sf::Shader backgroundShader;
         std::string title;
         std::string subtitle;
-        std::unordered_map<std::string, std::string> texts;
         int frame = 0;
 };
 

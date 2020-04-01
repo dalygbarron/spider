@@ -27,7 +27,7 @@ void KnobScreen::update(sf::RenderWindow &window) {
 void KnobScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     if (this->knob) this->knob->draw(target, this->core.renderer);
-    this->core.renderer.cursor(this->mouse, Renderer::CursorType::pointer);
+    this->core.renderer.cursor(this->mouse, Renderer::CursorType::Pointer);
     target.draw(this->core.renderer.batch);
 }
 
