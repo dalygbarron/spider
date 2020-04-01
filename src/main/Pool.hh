@@ -68,6 +68,17 @@ template <class T> class Pool {
         }
 
         /**
+         * Exactly the same as get but const.
+         * @param id is the id of the thing to look for.
+         * @return a pointer to the item if found or null.
+         */
+        Pool<T>::Item const *getConst(unsigned int id) const {
+            Pool<T>::Item const &item = this->items[id % this->size];
+            if (item.id == id) return &item;
+            return NULL;
+        }
+
+        /**
          * Adds somethign to the pool.
          * @param item is the thing to add.
          * @return a pointer to the item in the pool if it was added, and null

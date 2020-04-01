@@ -54,9 +54,7 @@ end
 
 function battle.main(title, actors)
     local player = _addActor(400, 500, "grease", true)
-    _setText("Life", "\03\03\03")
-    _setText("Party", "\04\02\08")
-    _setText("Score", "123456789")
+    _setPlayer(player)
     -- untransition
     _setTitle(title)
     for i = 60, 0, -1 do
@@ -139,7 +137,6 @@ function playerController(player)
             for i = 1, newHealth, 1 do
                 lifeText = lifeText.."\03"
             end
-            _setText("Life", lifeText)
             currentHealth = newHealth
         end
     end

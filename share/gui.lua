@@ -15,8 +15,6 @@ function gui.text(content, font)
     if not font then
         font = _defaultFont
     end
-    print(font)
-    print("erg")
     return {
         type = "text",
         content = content,
@@ -45,10 +43,7 @@ function gui.button(content, id)
         h = 0
     }
     if (kind == "string") then
-        knob.child = {
-            type = "text",
-            content = content
-        }
+        knob.child = gui.text(content)
     elseif (kind == "table") then
         knob.child = content
     end
@@ -205,11 +200,12 @@ function gui.xml(knob)
         return text.."</panel>"
     elseif (knob.type == "text") then
         return string.format(
-            "<text x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\">%s</text>",
+            "<text x=\"%d\" y=\"%d\" w=\"%d\" h=\"%d\" font=\"%s\">%s</text>",
             knob.x,
             knob.y,
             knob.w,
             knob.h,
+            knob.font,
             knob.content
         )
     elseif (knob.type == "frame") then
@@ -265,7 +261,7 @@ function gui.sayAccent(speaker, font, ...)
         1,
         gui.vsplit(
             0.20,
-            gui.panel(1, gui.text(speaker)),
+            gui.panel(1, gui.text(speaker, font)),
             gui.hsplit(
                 0.9,
                 gui.text(speech, font),

@@ -68,3 +68,8 @@ Make it so the same sound can't be played twice in one frame.
     Maybe instead I could just make it that if two sounds have the same
     priority, normally the newer one will take over, but not if it is still the
     same frame that that one started in.
+
+Indicate FPS on battle screen
+    Yeah it is necessary to show the frame rate so people can't cheat, but it
+    seems kinda wasteful to convert the FPS to a string every frame.
+    THen again, does it really stop cheating anyway??

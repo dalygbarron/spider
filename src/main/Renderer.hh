@@ -34,7 +34,9 @@ class Renderer: public sf::Drawable {
         sf::IntRect lineHighlightRat;
         sf::IntRect nodeRat;
         sf::IntRect nodeHighlightRat;
+        sf::IntRect battleRat;
         sf::IntRect font;
+        sf::IntRect battleFont;
         sf::IntRect cursorRats[static_cast<int>(Renderer::CursorType::N)];
         Patch boxPatch;
         Patch boxHighlightPatch;

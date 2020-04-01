@@ -324,12 +324,12 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     core->filename = path;
     core->name = node.attribute("name").value();
     core->start = node.attribute("start").value();
-    core->defaultFont = node.attribute("default-font").value();
-    core->renderer.font = core->spritesheet.get(core->defaultFont.c_str());
-    core->setTransitionTexture(node.attribute("transition").value());
-    // Check some optional things.
+    // load spritesheet.
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());
+    // load sprite related stuff.
+    core->defaultFont = node.attribute("default-font").value();
+    core->setTransitionTexture(node.attribute("transition").value());
     // now set the gui bits
     core->renderer.setCursorRat(
         core->spritesheet.get(node.attribute("pointer").value()),
@@ -347,6 +347,11 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
         core->spritesheet.get(node.attribute("use").value()),
         Renderer::CursorType::Use
     );
+    core->renderer.font = core->spritesheet.get(core->defaultFont.c_str());
+    core->renderer.battleFont =
+        core->spritesheet.get(node.attribute("battle-font").value());
+    core->renderer.battleRat =
+        core->spritesheet.get(node.attribute("battle").value());
     core->renderer.pointRat =
         core->spritesheet.get(node.attribute("point").value());
     core->renderer.pointHighlightRat =

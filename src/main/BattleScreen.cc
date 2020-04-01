@@ -120,14 +120,21 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
             actorItem->content.live.maxHp = hp;
         }
     };
+    this->script["_setPlayer"] = [this](unsigned int id) {
+        this->player = id;
+    };
     this->script["_setTitle"] = [this](std::string const &title) {
         this->title = title;
     };
     this->script["_setSubtitle"] = [this](std::string const &subtitle) {
         this->subtitle = subtitle;
     };
-    this->background.setPosition(sf::Vector2f(128, 0));
-    this->background.setSize(sf::Vector2f(512, 600));
+    this->background.setPosition(
+        sf::Vector2f(this->bounds.left, this->bounds.top)
+    );
+    this->background.setSize(
+        sf::Vector2f(this->bounds.width, this->bounds.height)
+    );
     this->background.setFillColor(sf::Color::Green);
     this->setScript("_main");
 }
@@ -235,16 +242,53 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
         }
     }
     // Draw the GUI.
-    this->core.renderer.panel(sf::FloatRect(0, 0, 128, 600));
-    this->core.renderer.panel(sf::FloatRect(640, 0, 384, 600));
+    this->core.renderer.panel(sf::FloatRect(0, 0, 256, 600));
+    this->core.renderer.panel(sf::FloatRect(768, 0, 256, 600));
     this->core.renderer.text(
         this->title.c_str(),
-        sf::Vector2f(this->bounds.left, this->bounds.top)
+        sf::Vector2f(this->bounds.left, this->bounds.top),
+        this->core.renderer.battleFont
     );
     this->core.renderer.text(
         this->subtitle.c_str(),
-        sf::Vector2f(this->bounds.left, this->bounds.top + 16)
+        sf::Vector2f(
+            this->bounds.left,
+            this->bounds.top + this->core.renderer.font.height / 16
+        ),
+        this->core.renderer.battleFont
     );
+    this->core.renderer.batch.draw(
+        this->core.renderer.battleRat,
+        sf::FloatRect(
+            this->bounds.left + this->bounds.width + this->core.renderer.panelPatch.left.width,
+            this->core.renderer.panelPatch.top.height,
+            256 - this->core.renderer.panelPatch.left.width * 2,
+            600 - this->core.renderer.panelPatch.top.height * 2
+        )
+    );
+    this->core.renderer.batch.draw(
+        this->core.renderer.battleRat,
+        sf::FloatRect(
+            this->core.renderer.panelPatch.left.width,
+            this->core.renderer.panelPatch.top.height,
+            256 - this->core.renderer.panelPatch.left.width * 2,
+            600 - this->core.renderer.panelPatch.top.height * 2
+        )
+    );
+    Pool<Actor>::Item const *playerItem = this->actors.getConst(this->player);
+    if (playerItem && playerItem->alive) {
+        for (int i = 0; i < playerItem->content.live.hp; i++) {
+            this->core.renderer.node(
+                sf::Vector2f(
+                    this->bounds.left + this->bounds.width -
+                        this->core.renderer.nodeHighlightRat.width / 2 -
+                        this->core.renderer.nodeHighlightRat.width * i,
+                    Const::HEIGHT - this->core.renderer.nodeHighlightRat.height / 2
+                ),
+                true
+            );
+        }
+    }
     target.draw(this->core.renderer.batch);
 }
 
