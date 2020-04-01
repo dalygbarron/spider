@@ -54,6 +54,9 @@ end
 
 function battle.main(title, actors)
     local player = _addActor(400, 500, "grease", true)
+    _setText("Life", "\03\03\03")
+    _setText("Party", "\04\02\08")
+    _setText("Score", "123456789")
     -- untransition
     _setTitle(title)
     for i = 60, 0, -1 do
@@ -61,7 +64,7 @@ function battle.main(title, actors)
         coroutine.yield()
     end
     _setTransitionStrength(0)
-    _playMusic("music/battle.ogg")
+    _playMusic("music/theme.ogg")
     -- set up actor routines.
     local actorRoutines = {}
     for i, actor in ipairs(actors) do
@@ -114,7 +117,8 @@ function playerController(player)
     local shoot = coroutine.create(playerShoot)
     coroutine.resume(shoot, player, 2, 4)
     _setHp(player, 3)
-    while _getHp(player) > 0 do
+    local currentHealth = 3
+    while currentHealth > 0 do
         local x, y = _getActorPosition(player)
         local vX = 0
         local vY = 0
@@ -128,6 +132,16 @@ function playerController(player)
         _setActorTransform(player, x, y, vX, vY, 0, 0)
         coroutine.resume(shoot)
         coroutine.yield()
+        local newHealth = _getHp(player)
+        if newHealth ~= currentHealth then
+            _playSound("sound/ow.wav")
+            local lifeText = ""
+            for i = 1, newHealth, 1 do
+                lifeText = lifeText.."\03"
+            end
+            _setText("Life", lifeText)
+            currentHealth = newHealth
+        end
     end
     return battle.FAILURE
 end

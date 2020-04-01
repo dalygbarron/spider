@@ -37,13 +37,14 @@ void help() {
         Const::VERSION_MINOR,
         Const::VERSION_REV
     );
-    printf("Usage: spider [-h] [-v] [-g=gameFile] -r|-e=entityFile|-l=levelFile\n");
+    printf("Usage: spider [-h] [-v] [-g=gameFile] -r|-e=entityFile|-l=levelFile|-b=battleFile\n");
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
     printf(" -g means game file, it is required.\n");
     printf(" -e means entity file to edit. It is relative to the game file.\n");
     printf(" -l means level file to edit. It is relative to the game file\n");
     printf(" -r means open in rat mode.\n");
+    printf(" -b means open straight into the given battle script.\n");
     printf("To play normally, provide just a game");
     printf("\nIf you run it and it says shaders are not available, it's fucked\n");
 }
@@ -52,7 +53,7 @@ void help() {
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
-    while ((opt = getopt(argc, argv, "hvrg:e:l:")) != -1) {
+    while ((opt = getopt(argc, argv, "hvrg:e:l:b:")) != -1) {
         switch (opt) {
             case 'h':
                 options.helpFlag = true;
@@ -73,6 +74,10 @@ int parseOptions(Options &options, int argc, char **argv) {
             case 'l':
                 options.file = optarg;
                 options.levelFlag = true;
+                break;
+            case 'b':
+                options.file = optarg;
+                options.battleFlag = true;
                 break;
             default:
                 return 1;
@@ -211,6 +216,8 @@ int main(int argc, char **argv) {
     } else if (options.entityFlag) {
         Entity *entity = core->entityRepository.get(options.file.c_str());
         core->pushScreen(new EntityScreen(*core, *entity));
+    } else if (options.battleFlag) {
+        core->pushScreen(new BattleScreen(*core, options.file));
     } else {
         core->pushScreen(new AdventureScreen(
             *core,

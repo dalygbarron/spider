@@ -11,6 +11,7 @@ class Options {
         ghc::filesystem::path file;
         int entityFlag = false;
         int levelFlag = false;
+        int battleFlag = false;
         int ratFlag = false;
         int helpFlag = false;
         int versionFlag = false;
