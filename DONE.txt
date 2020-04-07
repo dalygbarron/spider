@@ -151,3 +151,8 @@ Running battles synchronously from adventure screen.
     screen should just be triggered by the default battle starting script
     library function when a failure status is received.
 
+Battle Screen
+    Should run entirely off a Lua script, and you should be able to start the
+    engine by specifying just the game file and a battle script. Make a nice
+    little test battle. When the script finishes, the screen should pop itself.
+

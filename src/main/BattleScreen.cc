@@ -67,18 +67,23 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         float x,
         float y,
         std::string const &ratName,
-        bool dainty
+        bool dainty,
+        unsigned int ratX = 1,
+        unsigned int ratY = 1
     ) -> unsigned int {
-        sf::IntRect rat = this->core.spritesheet.get(ratName.c_str());
-        float radius = fmin(rat.width, rat.height) / 2;
+        Rat rat(this->core.spritesheet.get(ratName.c_str()), ratX, ratY);
+        sf::Vector2u dimensions = rat.getSize();
+        float radius = fmin(dimensions.x, dimensions.y) / 2;
         if (dainty) radius = Const::DAINTY_RADIUS;
-        Actor actor(rat, radius);
+        Actor actor(std::move(rat), radius);
         actor.position.x = x;
         actor.position.y = y;
         actor.dainty = dainty;
         Pool<Actor>::Item *item = this->actors.add(std::move(actor));
         return item->id;
     };
+    this->script["_"]:
+
     this->script["_getActorPosition"] = [this](
         unsigned int id
     ) -> std::tuple<float, float> {
@@ -216,7 +221,7 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
             );
         }
         this->core.renderer.batch.draw(
-            item.content.live.rat,
+            item.content.live.rat.getFrame(),
             item.content.live.position
         );
     }

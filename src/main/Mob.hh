@@ -26,7 +26,7 @@ class Mob {
         /**
          * moves the mob based on the passage of time.
          */
-        void update();
+        virtual void update();
 
         /**
          * Checks if two mobs are colliding. First it does a manhattan test to

@@ -1,8 +1,3 @@
-Battle Screen
-    Should run entirely off a Lua script, and you should be able to start the
-    engine by specifying just the game file and a battle script. Make a nice
-    little test battle. When the script finishes, the screen should pop itself.
-
 Animated Sprites in Battle Screen
     Yep should have animated sprites which are only controlled by script.
 
@@ -33,6 +28,8 @@ Boating screen
     Yeah so the boating screen is a special kind of adventure screen where you
     can also have things moving around in 3d behind the photosphere as well as
     a floor and sky which are drawn with a shader.
+    So in order to enable the boating screen, you will just need to call some
+    kind of script endpoint 
 
 Screen where you can browse files and choose to edit entities or levels
     Maybe also let them edit the general config here but I am not sure I will

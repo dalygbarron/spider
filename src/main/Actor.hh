@@ -2,6 +2,7 @@
 #define ACTOR_H
 
 #include "Mob.hh"
+#include "Rat.hh"
 
 /**
  * A character that can move around in a bullet screen and get hit by bullets
@@ -9,12 +10,14 @@
  */
 class Actor: public Mob {
     public:
-        sf::IntRect rat;
+        Rat rat;
         int dainty = false;
         int maxHp = 0;
         int hp = 0;
 
-        Actor(sf::IntRect rat, float radius);
+        Actor(Rat rat, float radius);
+
+        virtual void update();
 };
 
 #endif
