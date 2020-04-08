@@ -18,15 +18,15 @@ sf::Vector2u Rat::getSize() const {
 }
 
 sf::IntRect Rat::getFrame() const {
-    int index;
+    int index = 1;
     if (!this->current) {
         index = (this->timer / Rat::DEFAULT_SPEED) %
             (this->dimensions.x * this->dimensions.y);
-    } else if (this->current->loop) {
+    } else if (this->current->loop && this->current->frameTime) {
         spdlog::error("frame time seta {}", this->current->frameTime);
         index = (this->timer / this->current->frameTime) %
             this->current->frames.size();
-    } else {
+    } else if (this->current->frameTime) {
         spdlog::error("frame time setb {}", this->current->frameTime);
         index = fmin(
             this->timer / this->current->frameTime,

@@ -10,11 +10,11 @@
  */
 class Actor: public Mob {
     public:
+        Rat rat;
         int dainty = false;
         int maxHp = 0;
         int hp = 0;
         Rat::Animation const *walkAnimation = NULL;
-        Rat rat;
 
         /**
          * Creates the actor.
