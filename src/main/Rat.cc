@@ -1,56 +1,71 @@
 #include "Rat.hh"
+#include "spdlog/spdlog.h"
 
-Rat::Rat(sf::IntRect sprite, sf::Vector2u dimensions) {
-    this->sprite = sprite;
+Rat::Rat(sf::IntRect rat, sf::Vector2u dimensions) {
+    this->rat = rat;
     this->dimensions = dimensions;
 }
 
 void Rat::update() {
-    if (this->current && this->rolling) this->timer++;
+    if (this->rolling) this->timer++;
 }
 
-sf::IntRect Rat::getFrame() {
-    int index;
-    if (!this->current) {
-        index = 0;
-    } else if (this->current->loop) {
-        index = (this->timer / this->current->frameTime) %
-            this->current->frames.size();
-    } else {
-        index = min(
-            this->timer / this->current->frameTime,
-            this->current->frames.size()
-        );
-    }
-    return sf::IntRect(
-        (index % this->dimensions.x) * this->rat.width / this->dimensions.x,
-        (index / this->dimensions.x) * this->rat.height / this->dimensions.y,
+sf::Vector2u Rat::getSize() const {
+    return sf::Vector2u(
         this->rat.width / this->dimensions.x,
         this->rat.height / this->dimensions.y
     );
 }
 
-void Rat::addAnimation(char const *name, Rat::Animation animation) {
-    this->animations[name] = animation;
+sf::IntRect Rat::getFrame() const {
+    int index;
+    if (!this->current) {
+        index = (this->timer / Rat::DEFAULT_SPEED) %
+            (this->dimensions.x * this->dimensions.y);
+    } else if (this->current->loop) {
+        spdlog::error("{}", this->current->frames.size());
+        index = (this->timer / this->current->frameTime) %
+            this->current->frames.size();
+    } else {
+        index = fmin(
+            this->timer / this->current->frameTime,
+            this->current->frames.size()
+        );
+    }
+    return sf::IntRect(
+        this->rat.left + (index % this->dimensions.x) *
+            this->rat.width / this->dimensions.x,
+        this->rat.top + (index / this->dimensions.x) *
+            this->rat.height / this->dimensions.y,
+        this->rat.width / this->dimensions.x,
+        this->rat.height / this->dimensions.y
+    );
 }
 
-void Rat::play(char const *name) {
-    if (this->animations.count(name) == 1) {
-        this->current = this->animations.at(name);
+Rat::Animation const *Rat::getCurrent() const {
+    return this->current;
+}
+
+void Rat::play(Rat::Animation const *animation, int priority) {
+    if ((priority >= this->priority && animation != this->current) ||
+        !this->isPlaying()
+    ) {
+        this->current = animation;
         this->rolling = true;
         this->timer = 0;
-    } else {
-        spdlog::error("Couldn't find animation '{}'", name);
+        this->priority = priority;
     }
 }
 
 void Rat::stop() {
     this->rolling = false;
-
+    this->priority = INT_MIN;
 }
 
 int Rat::isPlaying() const {
     if (!this->current) {
+        return true;
+    } else if (!this->rolling) {
         return false;
     } else if (this->current->loop) {
         return true;

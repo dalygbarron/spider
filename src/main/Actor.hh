@@ -10,14 +10,23 @@
  */
 class Actor: public Mob {
     public:
-        Rat rat;
         int dainty = false;
         int maxHp = 0;
         int hp = 0;
+        Rat::Animation const *walkAnimation = NULL;
+        Rat rat;
 
-        Actor(Rat rat, float radius);
-
-        virtual void update();
+        /**
+         * Creates the actor.
+         * @param radius is their radius for getting hit by bullets and stuff.
+         * @param rat    is the spritesheet to draw them with.
+         */
+        Actor(float radius, Rat rat);
+    
+        /**
+         * Does some more update stuff that is only specific to actors.
+         */
+        void actorUpdate();
 };
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef MOB_H
 #define MOB_H
 
+#include "Rat.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -19,14 +20,14 @@ class Mob {
          * getRadius an abstract function or something else inefficient or
          * stupid. The question ought to be "will I suffer for lack of these
          * 4 bytes per mob?" and the answer is no so I don't give a fuck.
-         * @param radius is the radius to give to the mob.
+         * @param radius     is the radius to give to the mob.
          */
         Mob(float radius);
 
         /**
          * moves the mob based on the passage of time.
          */
-        virtual void update();
+        void update();
 
         /**
          * Checks if two mobs are colliding. First it does a manhattan test to

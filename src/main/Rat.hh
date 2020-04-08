@@ -1,36 +1,46 @@
 #ifndef RAT_H
 #define RAT_H
 
+#include <SFML/Graphics.hpp>
+#include <unordered_map>
+
 /**
  * takes a single rat from a rat pack, and allows you to treat that one rat as
  * a spritesheet.
  */
 class Rat {
     public:
+        static int const DEFAULT_SPEED = 11;
+
         /**
          * Represents a nice little animation that the frames of this rat can
          * make.
          */
         class Animation {
             public:
-                vector<int> frames;
+                std::vector<int> frames;
                 unsigned int frameTime;
                 int loop;
         };
 
         /**
-         * Creates the rat with the sprite pic and the number of sub frames in
-         * each dimension.
-         * @param sprite     is the full spritesheet pic.
-         * @param dimensions is the number of sub sprites in each dimension.
+         * Creates the rat.
+         * @param rat        is the full spritesheet.
+         * @param dimensions the number of sprites along each axis.
          */
-        Rat(sf::IntRect sprite, sf::Vector2u dimensions);
+        Rat(sf::IntRect rat, sf::Vector2u dimensions);
 
         /**
          * Moves the rat forward in time one frame's worth. this should be done
          * once per frame.
          */
         void update();
+
+        /**
+         * Gives you the size of a single item from this.
+         * @return the size in each dimension.
+         */
+        sf::Vector2u getSize() const;
 
         /**
          * Gives you the right frame to show for the current time and the rat's
@@ -40,19 +50,20 @@ class Rat {
         sf::IntRect getFrame() const;
 
         /**
-         * Adds an animation to the rat, and validates you are not trying to
-         * animate indices that are not there since this is used by game
-         * developers.
-         * @param name      is the name is the name to give the animation.
-         * @param animation is the animation that shall go by that name.
+         * Gives you a pointer to the currently playing animation if there is
+         * one.
+         * @return a pointer to the animation or null.
          */
-        void addAnimation(char const *name, Rat::Animation animation);
+        Rat::Animation const *getCurrent() const;
 
         /**
          * Make it start playing the given animation.
-         * @param name is the name of the animation to start playing.
+         * @param animation is the animation to play. Don't pass null pointers.
+         * @param priority  is how important this animation is and if the
+         *                  currently playing one is more important this one
+         *                  will not play.
          */
-        void play(char const *name);
+        void play(Rat::Animation const *animation, int priority);
 
         /**
          * Makes it stop playing the given animation and just stay frozen as it
@@ -68,11 +79,11 @@ class Rat {
 
     private:
         unsigned int timer = 0;
-        int rolling = false;
+        int rolling = true;
+        int priority = INT_MIN;
         Rat::Animation const *current = NULL;
         sf::IntRect rat;
         sf::Vector2u dimensions;
-        unordered_map<std::string, Rat::Animation> animations;
 };
 
 #endif

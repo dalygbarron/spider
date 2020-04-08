@@ -4,6 +4,7 @@
 #include "Level.hh"
 #include "Entity.hh"
 #include "Core.hh"
+#include "Rat.hh"
 #include "Knob.hh"
 #include "Pool.hh"
 #include "Bullet.hh"
@@ -448,6 +449,7 @@ class BattleScreen: public ScriptedScreen {
     private:
         Pool<Bullet> bullets;
         Pool<Actor> actors;
+        std::vector<Rat::Animation> animations;
         sf::FloatRect const bounds {256, 0, 512, 600};
         sf::RectangleShape background;
         sf::Shader backgroundShader;

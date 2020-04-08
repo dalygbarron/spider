@@ -63,27 +63,67 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         if (item) return item->id;
         return 0;
     };
+    this->script["_addAnimation"] = [this](
+        bool loop,
+        unsigned int frameTime,
+        sol::table const &frames
+    ) -> unsigned int {
+        Rat::Animation animation;
+        animation.loop = loop;
+        animation.frameTime = frameTime;
+        for (std::pair<sol::object, sol::object> frame: frames) {
+            animation.frames.push_back(frame.second.as<unsigned int>());
+        }
+        this->animations.push_back(std::move(animation));
+        return this->animations.size() - 1;
+    };
+    this->script["_setWalkAnimation"] = [this](
+        unsigned int actorId,
+        unsigned int animationId
+    ) {
+        Pool<Actor>::Item *actorItem = this->actors.get(actorId);
+        if (!actorItem) return;
+        if (animationId < this->animations.size()) {
+            actorItem->content.live.walkAnimation = this->animations.data() +
+                animationId;
+            actorItem->content.live.rat.stop();
+        }
+    };
+    this->script["_playAnimation"] = [this](
+        unsigned int actorId,
+        unsigned int animationId,
+        int priority
+    ) {
+        if (animationId >= this->animations.size()) return;
+        Pool<Actor>::Item *actorItem = this->actors.get(actorId);
+        if (!actorItem) return;
+        actorItem->content.live.rat.play(
+            this->animations.data() + animationId,
+            priority
+        );
+    };
     this->script["_addActor"] = [this](
         float x,
         float y,
         std::string const &ratName,
         bool dainty,
-        unsigned int ratX = 1,
-        unsigned int ratY = 1
+        unsigned int ratX,
+        unsigned int ratY
     ) -> unsigned int {
-        Rat rat(this->core.spritesheet.get(ratName.c_str()), ratX, ratY);
+        Rat rat(
+            this->core.spritesheet.get(ratName.c_str()),
+            sf::Vector2u(ratX, ratY)
+        );
         sf::Vector2u dimensions = rat.getSize();
         float radius = fmin(dimensions.x, dimensions.y) / 2;
         if (dainty) radius = Const::DAINTY_RADIUS;
-        Actor actor(std::move(rat), radius);
+        Actor actor(radius, std::move(rat));
         actor.position.x = x;
         actor.position.y = y;
         actor.dainty = dainty;
         Pool<Actor>::Item *item = this->actors.add(std::move(actor));
         return item->id;
     };
-    this->script["_"]:
-
     this->script["_getActorPosition"] = [this](
         unsigned int id
     ) -> std::tuple<float, float> {
@@ -180,6 +220,9 @@ void BattleScreen::update(sf::RenderWindow &window) {
         for (Pool<Actor>::Item &item: this->actors.getItemsMutable()) {
             if (!item.alive) continue;
             item.content.live.update();
+            item.content.live.actorUpdate();
+            // TODO: just make it all mobs have a rat or something.
+            item.content.live.rat.update();
             item.content.live.position = Util::clampInRect(
                 item.content.live.position,
                 this->bounds

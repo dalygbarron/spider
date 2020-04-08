@@ -1,7 +1,8 @@
 #include "Mob.hh"
 #include <cmath>
 
-Mob::Mob(float radius): radius(radius) {
+Mob::Mob(float radius): radius(radius)
+{
     // nothing else.
 }
 
