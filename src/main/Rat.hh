@@ -10,7 +10,7 @@
  */
 class Rat {
     public:
-        static int const DEFAULT_SPEED = 11;
+        static unsigned int const DEFAULT_SPEED = 11;
 
         /**
          * Represents a nice little animation that the frames of this rat can
@@ -19,8 +19,8 @@ class Rat {
         class Animation {
             public:
                 std::vector<int> frames;
-                unsigned int frameTime;
-                int loop;
+                unsigned int frameTime = Rat::DEFAULT_SPEED;
+                int loop = true;
         };
 
         /**

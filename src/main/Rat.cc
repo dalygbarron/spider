@@ -23,10 +23,11 @@ sf::IntRect Rat::getFrame() const {
         index = (this->timer / Rat::DEFAULT_SPEED) %
             (this->dimensions.x * this->dimensions.y);
     } else if (this->current->loop) {
-        spdlog::error("{}", this->current->frames.size());
+        spdlog::error("frame time seta {}", this->current->frameTime);
         index = (this->timer / this->current->frameTime) %
             this->current->frames.size();
     } else {
+        spdlog::error("frame time setb {}", this->current->frameTime);
         index = fmin(
             this->timer / this->current->frameTime,
             this->current->frames.size()
@@ -50,6 +51,7 @@ void Rat::play(Rat::Animation const *animation, int priority) {
     if ((priority >= this->priority && animation != this->current) ||
         !this->isPlaying()
     ) {
+        spdlog::error("animation {}", animation->frameTime);
         this->current = animation;
         this->rolling = true;
         this->timer = 0;

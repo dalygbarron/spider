@@ -74,7 +74,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         for (std::pair<sol::object, sol::object> frame: frames) {
             animation.frames.push_back(frame.second.as<unsigned int>());
         }
-        this->animations.push_back(std::move(animation));
+        this->animations.push_back(animation);
         return this->animations.size() - 1;
     };
     this->script["_setWalkAnimation"] = [this](
@@ -84,8 +84,8 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         Pool<Actor>::Item *actorItem = this->actors.get(actorId);
         if (!actorItem) return;
         if (animationId < this->animations.size()) {
-            actorItem->content.live.walkAnimation = this->animations.data() +
-                animationId;
+            actorItem->content.live.walkAnimation =
+                &this->animations.at(animationId);
             actorItem->content.live.rat.stop();
         }
     };
@@ -97,8 +97,9 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         if (animationId >= this->animations.size()) return;
         Pool<Actor>::Item *actorItem = this->actors.get(actorId);
         if (!actorItem) return;
+        spdlog::error("playing animation {} for actor {} with frametime {}", animationId, actorId, this->animations[animationId].frameTime);
         actorItem->content.live.rat.play(
-            this->animations.data() + animationId,
+            &this->animations.at(animationId),
             priority
         );
     };
