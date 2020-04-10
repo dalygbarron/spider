@@ -73,6 +73,17 @@ void ScriptedScreen::initScript() {
         memory.setItemCount(nameString, memory.getItemCount(nameString) + 1);
         return this->core.getMemory().getItemCount(name.c_str());
     };
+    this->script["_getString"] = [this](
+        std::string const &name
+    ) -> char const * {
+        return this->core.getMemory().getString(name.c_str());
+    };
+    this->script["_setString"] = [this](
+        std::string const &name,
+        std::string const &value
+    ) {
+        this->core.getMemory().setString(name.c_str(), value.c_str());
+    };
     this->script["_getSwitch"] = [this](std::string const &name) -> bool {
         return this->core.getMemory().getSwitch(name.c_str());
     };
@@ -128,6 +139,15 @@ void ScriptedScreen::initScript() {
         } else {
             spdlog::error("API: Invalid argument to _xmlKnob");
         }
+    };
+    this->script["_logInfo"] = [this](std::string const &value) {
+        spdlog::info(value);
+    };
+    this->script["_logWarning"] = [this](std::string const &value) {
+        spdlog::warn(value);
+    };
+    this->script["_logError"] = [this](std::string const &value) {
+        spdlog::error(value);
     };
     this->script["_exit"] = [this](int response) {
         this->core.popScreen(response);

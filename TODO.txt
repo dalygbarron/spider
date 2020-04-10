@@ -1,20 +1,14 @@
-Animated Sprites in Battle Screen
-    Yep should have animated sprites which are only controlled by script.
-
 Animated Sprites in Adventure Screen
     Yep should have animated sprites. Can either be controlled by script or
     autolooping animations that play as soon as you enter the level.
 
-Make sure bullet ids start at 1 not 0
+Make sure bullet and actor ids start at 1 not 0
     Yeah I need 0 to represent no valid bullet so there must not be anything
     with id 0 or it will screw up.
 
 Invalid level file causes segfault
-    Program should not segfault in any circumstances.
-
-Improve core parsing core
-    It sucks ASS. Actually also generally improve all the FileIO code to have
-    less of the same stuff over and over.
+    Program should not segfault in any circumstances. Same thing when passing
+    a battle script too.
 
 Set Origin in EntityScreen
     Yeah I forgot to do that last time so I need to do it now.
@@ -31,24 +25,27 @@ Boating screen
     So in order to enable the boating screen, you will just need to call some
     kind of script endpoint 
 
+Alt text on buttons
+    Yeah so far have been too lazy but it should be easy enough to do and thus
+    I ough to do it. It will not be word wrapped, it will just write exactly
+    what is there. It's important because the inventory kinda needs it.
+
+-------------------- complete to here before bwotd 2 --------------------------
+
 Screen where you can browse files and choose to edit entities or levels
     Maybe also let them edit the general config here but I am not sure I will
     allow that as it is complicated. Actually it would be doable, but yeah nah
     why bother.
 
-Alt text on buttons
-    Yeah so far have been too lazy but it should be easy enough to do and thus
-    I ough to do it. It will not be word wrapped, it will just write exactly
-    what is there. It's important because the inventory kinda needs it.
+Improve core parsing core
+    It sucks ASS. Actually also generally improve all the FileIO code to have
+    less of the same stuff over and over.
 
 Hotkeys for buttons
     Yeah would be nice for example to make it that the exit inventory button
     can be activated by pressing escape. The hotkey is the only way because of
     the fact that gui stuff is running in it's own screen. Would also be nice
     for knob based puzzles.
-
-Coloured Text
-    Yeah should be able to use the font to draw text in any colour probably.
 
 Look into making the projection better fit with the equirectangular shader
     Or vice versa, but it will at some point be necessary that they rightly
@@ -70,3 +67,5 @@ Indicate FPS on battle screen
     Yeah it is necessary to show the frame rate so people can't cheat, but it
     seems kinda wasteful to convert the FPS to a string every frame.
     THen again, does it really stop cheating anyway??
+
+------------------ complete to here before piss 2 -----------------------------

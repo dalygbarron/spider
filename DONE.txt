@@ -156,3 +156,10 @@ Battle Screen
     engine by specifying just the game file and a battle script. Make a nice
     little test battle. When the script finishes, the screen should pop itself.
 
+Animated Sprites in Battle Screen
+    Yep should have animated sprites which are only controlled by script.
+
+Fix weird animations at start of battle screen
+    When the battle screen first starts, actors play their entire animation set
+    until the transition ends at which point they get proper animations set.
+

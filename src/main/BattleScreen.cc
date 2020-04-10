@@ -107,6 +107,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
             this->core.spritesheet.get(ratName.c_str()),
             sf::Vector2u(ratX, ratY)
         );
+        rat.stop();
         sf::Vector2u dimensions = rat.getSize();
         float radius = fmin(dimensions.x, dimensions.y) / 2;
         if (dainty) radius = Const::DAINTY_RADIUS;
