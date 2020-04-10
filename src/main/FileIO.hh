@@ -69,10 +69,11 @@ namespace FileIO {
     /**
      * Opens up a game xml file and adds all the info in it to the given core
      * objct, including loading a ratpack if necessary.
-     * @param path is the path to the file to load.
+     * @param path       is the path to the file to load.
+     * @param allowMusic is whether to allow it to play music.
      * @return the new core.
      */
-    Core *loadCoreFromFile(ghc::filesystem::path const &path);
+    Core *loadCoreFromFile(ghc::filesystem::path const &path, int allowMusic);
 
     /**
      * TUrns an xml node into the knob it represents recursively.

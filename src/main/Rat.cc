@@ -18,20 +18,18 @@ sf::Vector2u Rat::getSize() const {
 }
 
 sf::IntRect Rat::getFrame() const {
-    int index = 1;
+    int index = 0;
     if (!this->current) {
         index = (this->timer / Rat::DEFAULT_SPEED) %
             (this->dimensions.x * this->dimensions.y);
     } else if (this->current->loop && this->current->frameTime) {
-        spdlog::error("frame time seta {}", this->current->frameTime);
-        index = (this->timer / this->current->frameTime) %
-            this->current->frames.size();
+        index = this->current->frames[(this->timer / this->current->frameTime) %
+            this->current->frames.size()];
     } else if (this->current->frameTime) {
-        spdlog::error("frame time setb {}", this->current->frameTime);
-        index = fmin(
+        index = this->current->frames[fmin(
             this->timer / this->current->frameTime,
             this->current->frames.size()
-        );
+        )];
     }
     return sf::IntRect(
         this->rat.left + (index % this->dimensions.x) *
@@ -51,7 +49,6 @@ void Rat::play(Rat::Animation const *animation, int priority) {
     if ((priority >= this->priority && animation != this->current) ||
         !this->isPlaying()
     ) {
-        spdlog::error("animation {}", animation->frameTime);
         this->current = animation;
         this->rolling = true;
         this->timer = 0;
@@ -65,10 +62,10 @@ void Rat::stop() {
 }
 
 int Rat::isPlaying() const {
-    if (!this->current) {
-        return true;
-    } else if (!this->rolling) {
+    if (!this->rolling) {
         return false;
+    } else if (!this->current) {
+        return true;
     } else if (this->current->loop) {
         return true;
     } else {

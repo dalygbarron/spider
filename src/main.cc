@@ -37,9 +37,10 @@ void help() {
         Const::VERSION_MINOR,
         Const::VERSION_REV
     );
-    printf("Usage: spider [-h] [-v] [-g=gameFile] -r|-e=entityFile|-l=levelFile|-b=battleFile\n");
+    printf("Usage: spider [-h] [-v] [-m] [-g=gameFile] -r|-e=entityFile|-l=levelFile|-b=battleFile\n");
     printf(" -h means output help message and stop.\n");
     printf(" -v means output version number and stop.\n");
+    printf(" -m means mute the music but not the sounds.\n");
     printf(" -g means game file, it is required.\n");
     printf(" -e means entity file to edit. It is relative to the game file.\n");
     printf(" -l means level file to edit. It is relative to the game file\n");
@@ -53,7 +54,7 @@ void help() {
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
-    while ((opt = getopt(argc, argv, "hvrg:e:l:b:")) != -1) {
+    while ((opt = getopt(argc, argv, "hvmrg:e:l:b:")) != -1) {
         switch (opt) {
             case 'h':
                 options.helpFlag = true;
@@ -61,6 +62,9 @@ int parseOptions(Options &options, int argc, char **argv) {
             case 'v':
                 options.versionFlag = true;
                 return 0;
+            case 'm':
+                options.muteFlag = true;
+                break;
             case 'r':
                 options.ratFlag = true;
                 break;
@@ -203,7 +207,7 @@ int main(int argc, char **argv) {
     ghc::filesystem::path coreFile = options.game.filename();
     root.remove_filename();
     ghc::filesystem::current_path(root);
-    Core *core = FileIO::loadCoreFromFile(coreFile);
+    Core *core = FileIO::loadCoreFromFile(coreFile, !options.muteFlag);
     // set up the first screen.
     Screen *screen = NULL;
     Level *level = NULL;

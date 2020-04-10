@@ -5,10 +5,10 @@
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
-Core::Core():
+Core::Core(int allowMusic):
     renderer(this->spritesheet.getTexture()),
     entityRepository(this->spritesheet),
-    soundPlayer(16)
+    soundPlayer(16, allowMusic)
 {
     this->transition.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     this->transitionShader.setUniform("power", this->transitionStrength);

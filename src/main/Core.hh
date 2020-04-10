@@ -45,8 +45,9 @@ class Core {
 
         /**
          * Initialises the core.
+         * @param allowMusic is whether to allow music to be played.
          */
-        Core();
+        Core(int allowMusic);
 
         /**
          * Adds an item to the game, and returns a nice reference to it.

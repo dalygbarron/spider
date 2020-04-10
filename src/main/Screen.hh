@@ -14,6 +14,7 @@
 #include "TextEditor.h"
 #include "sol.hh"
 #include <SFML/Graphics.hpp>
+#include <list>
 
 /**
  * A screen that has different functionality ya know.
@@ -449,7 +450,7 @@ class BattleScreen: public ScriptedScreen {
     private:
         Pool<Bullet> bullets;
         Pool<Actor> actors;
-        std::vector<Rat::Animation> animations;
+        std::list<Rat::Animation> animations;
         sf::FloatRect const bounds {256, 0, 512, 600};
         sf::RectangleShape background;
         sf::Shader backgroundShader;

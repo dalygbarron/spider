@@ -15,6 +15,7 @@ class Options {
         int ratFlag = false;
         int helpFlag = false;
         int versionFlag = false;
+        int muteFlag = false;
 };
 
 #endif

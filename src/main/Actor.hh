@@ -14,6 +14,7 @@ class Actor: public Mob {
         int dainty = false;
         int maxHp = 0;
         int hp = 0;
+        int flip = false;
         Rat::Animation const *walkAnimation = NULL;
 
         /**

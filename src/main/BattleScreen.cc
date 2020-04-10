@@ -67,7 +67,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
         bool loop,
         unsigned int frameTime,
         sol::table const &frames
-    ) -> unsigned int {
+    ) -> Rat::Animation const * {
         Rat::Animation animation;
         animation.loop = loop;
         animation.frameTime = frameTime;
@@ -75,33 +75,25 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
             animation.frames.push_back(frame.second.as<unsigned int>());
         }
         this->animations.push_back(animation);
-        return this->animations.size() - 1;
+        return &this->animations.back();
     };
     this->script["_setWalkAnimation"] = [this](
         unsigned int actorId,
-        unsigned int animationId
+        const Rat::Animation *animation
     ) {
         Pool<Actor>::Item *actorItem = this->actors.get(actorId);
         if (!actorItem) return;
-        if (animationId < this->animations.size()) {
-            actorItem->content.live.walkAnimation =
-                &this->animations.at(animationId);
-            actorItem->content.live.rat.stop();
-        }
+        actorItem->content.live.walkAnimation = animation;
+        actorItem->content.live.rat.stop();
     };
     this->script["_playAnimation"] = [this](
         unsigned int actorId,
-        unsigned int animationId,
+        Rat::Animation const *animation,
         int priority
     ) {
-        if (animationId >= this->animations.size()) return;
         Pool<Actor>::Item *actorItem = this->actors.get(actorId);
         if (!actorItem) return;
-        spdlog::error("playing animation {} for actor {} with frametime {}", animationId, actorId, this->animations[animationId].frameTime);
-        actorItem->content.live.rat.play(
-            &this->animations.at(animationId),
-            priority
-        );
+        actorItem->content.live.rat.play(animation, priority);
     };
     this->script["_addActor"] = [this](
         float x,
@@ -260,13 +252,16 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
                 item.content.live.position,
                 item.content.live.radius * 1.2,
                 -Const::HALF_PI,
-                (float)item.content.live.hp / item.content.live.maxHp *
-                    Const::PI * 2 - Const::HALF_PI
+                fmax((float)item.content.live.hp / item.content.live.maxHp, 0)
+                    * Const::DOUBLE_PI - Const::HALF_PI
             );
         }
-        this->core.renderer.batch.draw(
-            item.content.live.rat.getFrame(),
-            item.content.live.position
+        this->core.renderer.rat(
+            item.content.live.rat,
+            item.content.live.position,
+            0,
+            sf::Vector2f(1, 1),
+            item.content.live.flip
         );
     }
     // Draw the bullets.

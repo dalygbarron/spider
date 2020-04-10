@@ -9,7 +9,13 @@
  */
 class SoundPlayer {
     public:
-        SoundPlayer(int size);
+        /**
+         * Creates the sound player.
+         * @param size       is the number of sounds it can have at once.
+         * @param allowMusic is whether to actually play music. if not it just
+         *                   pretends.
+         */
+        SoundPlayer(int size, int allowMusic);
 
         /**
          * Finds a free sound player and plays this souind in it.
@@ -34,7 +40,7 @@ class SoundPlayer {
         std::vector<sf::Sound> sounds;
         sf::Music music;
         std::string musicName;
-
+        int allowMusic;
 };
 
 #endif

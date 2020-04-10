@@ -1,8 +1,9 @@
 #include "SoundPlayer.hh"
 #include "spdlog/spdlog.h"
 
-SoundPlayer::SoundPlayer(int size) {
+SoundPlayer::SoundPlayer(int size, int allowMusic) {
     this->sounds.resize(size);
+    this->allowMusic = allowMusic;
 }
 
 void SoundPlayer::playSound(sf::SoundBuffer *sound) {
@@ -21,8 +22,11 @@ void SoundPlayer::playMusic(ghc::filesystem::path const &path) {
     if (!this->music.openFromFile(filename)) {
         spdlog::error("Could not open music '{}'", filename);
     }
-    this->music.setLoop(true);
-    this->music.play();
+    spdlog::info("Playing song {}", filename);
+    if (this->allowMusic) {
+        this->music.setLoop(true);
+        this->music.play();
+    }
 }
 
 void SoundPlayer::stopMusic() {

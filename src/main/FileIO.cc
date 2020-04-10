@@ -288,7 +288,10 @@ void FileIO::initRatPackFromFile(
     }
 }
 
-Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
+Core *FileIO::loadCoreFromFile(
+    ghc::filesystem::path const &path,
+    int allowMusic
+) {
     sf::IntRect pointRat(0, 0, 0, 0);
     sf::IntRect lineRat(0, 0, 0, 0);
     sf::IntRect lineHighlightRat(0, 0, 0, 0);
@@ -300,7 +303,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
     if (!ghc::filesystem::exists(path)) {
         spdlog::info("Creating new game core at '{}'", path.c_str());
         // TODO: is this still ok?
-        Core *core = new Core();
+        Core *core = new Core(allowMusic);
         core->filename = path;
         return core;
     }
@@ -320,7 +323,7 @@ Core *FileIO::loadCoreFromFile(ghc::filesystem::path const &path) {
         return NULL;
     }
     // Load names of sprites.
-    Core *core = new Core();
+    Core *core = new Core(allowMusic);
     core->filename = path;
     core->name = node.attribute("name").value();
     core->start = node.attribute("start").value();
