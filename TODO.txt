@@ -30,6 +30,14 @@ Alt text on buttons
     I ough to do it. It will not be word wrapped, it will just write exactly
     what is there. It's important because the inventory kinda needs it.
 
+Build for all platforms
+    Need to figure out an automatic way of building for linux, mac, and windows
+    at the same time. Also test it works on windows since that will be freaky.
+
+Put save files in home
+    This is necessary because otherwise when they update their save file will
+    be lost, and they need to be able to update.
+
 -------------------- complete to here before bwotd 2 --------------------------
 
 Screen where you can browse files and choose to edit entities or levels
