@@ -51,6 +51,13 @@ float Util::distance(sf::Vector2f a, sf::Vector2f b) {
     return sqrt(dX * dX + dY * dY);
 }
 
+float Util::distance3(sf::Vector3f a, sf::Vector3f b) {
+    float dX = fabs(a.x - b.x);
+    float dY = fabs(a.y - b.y);
+    float dZ = fabs(a.z - b.z);
+    return sqrt(dX * dX + dY * dY + dZ * dZ);
+}
+
 float Util::length(sf::Vector3f vector) {
     return sqrt(
         vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
@@ -100,7 +107,15 @@ sf::Vector2f Util::rotate(sf::Vector2f coordinate, sf::Vector2f angle) {
 }
 
 float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
-    return fabs(a.x - b.x) + fabs(a.y + b.y);
+    return fabs(a.x - b.x) + fabs(a.y - b.y);
+}
+
+float Util::manhattan3(sf::Vector3f a, sf::Vector3f b) {
+    return fabs(a.x - b.x) + fabs(a.y - b.y) + fabs(a.z - b.z);
+}
+
+sf::Vector3f Util::toSphere(sf::Vector3f pos, sf::Vector3f camera) {
+
 }
 
 sf::Vector2f Util::screenToSphere(

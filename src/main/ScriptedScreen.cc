@@ -128,7 +128,7 @@ void ScriptedScreen::initScript() {
         return std::make_tuple(8, 8);
     };
     this->script["_xmlKnob"] = [this](std::string const &xml) {
-        spdlog::debug("Adding knob xml: '{}'", xml.c_str());
+        spdlog::debug("Adding knob xml: {}", xml.c_str());
         Knob *knob = FileIO::readXml<Knob, RatPack const &>(
             xml.c_str(),
             FileIO::parseKnob,

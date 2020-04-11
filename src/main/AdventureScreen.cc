@@ -44,6 +44,10 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
         this->camera.x = x;
         this->camera.y = y;
     };
+    this->script["_world"] = [this](std::string const &xml) {
+        spdlog::debug("Adding world xml: {}", xml.c_str());
+        World *world = FileIO::readXml<World, 
+    };
     this->setScript("_start");
     // Check switches.
     this->refresh();
@@ -149,16 +153,43 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 }
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
+    this->core.renderer.batch.clear();
     target.clear();
     sf::RenderStates states;
     states.shader = &(this->shader);
     target.draw(back, states);
-    this->core.renderer.batch.clear();
     sf::Vector3f floor = Util::sphereToScreen(
         sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
         this->camera
     );
     sf::Vector2f floorScreen(floor.x, floor.y);
+    // drawing fish.
+    for (Fish const &fish: this->fishes) {
+        if (!fish.alive) continue;
+        sf::Vector3f spherePos = Util::toSphere(
+            fish.position,
+            this->cameraPosition
+        );
+        sf::Vector3f screenPos = Util::sphereToScreen(sf::Vector2f(
+            spherePos.x,
+            spherePos.y
+        ), this->camera);
+        if (screenPos.z < 0) continue;
+        float angle = Util::upAngle(
+            this->camera,
+            floorScreen,
+            sf::Vector2f(screenPos.x, screenPos.y)
+        );
+        float scale = 1 / screenPos.z;
+        this->core.renderer.batch.draw(
+            fish.entity->sprite,
+            sf::Vector2f(screenPos.x, screenPos.y),
+            fish.entity->offset,
+            angle,
+            sf::Vector2f(scale, scale)
+        );
+    }
+    // drawing entity instances.
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
@@ -181,6 +212,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
             );
         }
     }
+    // Cursor and stuff.
     if (top) {
         if (this->selected) {
             this->core.renderer.batch.draw(

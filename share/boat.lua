@@ -61,4 +61,13 @@ function boat.xml(item, x, y)
     end
 end
 
+function boat.worldXml(sky, ground, mobs)
+    return string.format(
+        "<world sky=\"%s\" ground=\"%s\"><mobs>%s</mobs></world>",
+        sky,
+        ground,
+        boat.xml(mobs)
+    )
+end
+
 return boat

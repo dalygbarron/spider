@@ -47,6 +47,14 @@ namespace Util {
     float distance(sf::Vector2f a, sf::Vector2f b);
 
     /**
+     * Gives you the distance between two 3d points.
+     * @param a is the first point.
+     * @param b is the second point.
+     * @return the distance between them.
+     */
+    float distance3(sf::Vector3f a, sf::Vector3f b);
+
+    /**
      * Gives you the length of the given vector.
      * @param vector is the vector to measure.
      * @return the length.
@@ -90,6 +98,24 @@ namespace Util {
      * @return the manhattan distance between the two positions.
      */
     float manhattan(sf::Vector2f a, sf::Vector2f b);
+
+    /**
+     * Gives you the manhattan distance between two 3d points.
+     * @param a is the first point.
+     * @param b is the second point.
+     * @return the manhattan distance between the two 3d points.
+     */
+    float manhattan3(sf::Vector3f a, sf::Vector3f b);
+
+    /**
+     * Converts a 3d position to a location on the surface of a sphere that
+     * corresponds to it, with the third parameter being the distance from the
+     * centre of the sphere.
+     * @param pos is the position to convert.
+     * @param camera is the location of the camera.
+     * @return the longitude, latitude, and radius of the point from camera.
+     */
+    sf::Vector3f toSphere(sf::Vector3f pos, sf::Vector3f camera);
 
     /**
      * Converts a location on the screen to an angle from the centre of

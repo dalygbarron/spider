@@ -5,6 +5,7 @@
 #include "Entity.hh"
 #include "Core.hh"
 #include "Rat.hh"
+#include "Fish.hh"
 #include "Knob.hh"
 #include "Pool.hh"
 #include "Bullet.hh"
@@ -423,9 +424,13 @@ class AdventureScreen: public ScriptedScreen {
 
     private:
         Level *level;
+        std::vector<Fish> fishes;
         sf::Vector2f camera;
+        sf::Vector2f rotation;
+        sf::Vector3f cameraPosition;
         sf::Shader shader;
         sf::RectangleShape back;
+        sf::RectangleShape farBack;
         Item const *selected = NULL;
 };
 
