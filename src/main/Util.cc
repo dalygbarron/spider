@@ -115,7 +115,7 @@ float Util::manhattan3(sf::Vector3f a, sf::Vector3f b) {
 }
 
 sf::Vector3f Util::toSphere(sf::Vector3f pos, sf::Vector3f camera) {
-
+    // TODO: this.
 }
 
 sf::Vector2f Util::screenToSphere(

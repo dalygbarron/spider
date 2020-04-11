@@ -46,7 +46,11 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     };
     this->script["_world"] = [this](std::string const &xml) {
         spdlog::debug("Adding world xml: {}", xml.c_str());
-        World *world = FileIO::readXml<World, 
+        World *world = FileIO::readXml<World, void *>(
+            xml.c_str(),
+            FileIO::parseFish,
+            NULL
+        );
     };
     this->setScript("_start");
     // Check switches.
