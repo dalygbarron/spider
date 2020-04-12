@@ -20,5 +20,8 @@ std::pair<char const *, char const *> World::update(sf::Vector2f camera) {
 
 void World::draw(sf::RenderTarget &target, sf::Vector2f camera) const {
     // Draw the ground and sky.
+    sf::RenderStates states;
+    states.shader = &(this->shader);
+    target.draw(back, states);
     // Draw the fishes.
 }
