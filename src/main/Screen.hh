@@ -424,13 +424,10 @@ class AdventureScreen: public ScriptedScreen {
 
     private:
         Level *level;
-        std::vector<Fish> fishes;
+        World *world = NULL;
         sf::Vector2f camera;
-        sf::Vector2f rotation;
-        sf::Vector3f cameraPosition;
         sf::Shader shader;
         sf::RectangleShape back;
-        sf::RectangleShape farBack;
         Item const *selected = NULL;
 };
 

@@ -159,6 +159,9 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     target.clear();
+    if (this->world) {
+        this->world->draw(target, this->camera);
+    }
     sf::RenderStates states;
     states.shader = &(this->shader);
     target.draw(back, states);
