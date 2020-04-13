@@ -54,10 +54,17 @@ namespace Const {
                      ##           Created By Dany Burton
                       ##)~~~";
     static char const *SKY_SHADER = R"~~~(
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+
         #define PI 3.14159265
 
-        uniform sampler2D picture;
+        uniform sampler2D texture;
         uniform vec2 angle;
+        uniform vec2 offset;
+        uniform vec2 resolution;
+        uniform int time;
 
         float hfovDegrees = 2.094395102;
         float vfovDegrees = 1.570796327;
@@ -70,14 +77,18 @@ namespace Const {
         }
 
         void main() {
-            vec2 uv = gl_TexCoord[0].xy - vec2(0.5, 0.5);
+            vec2 uv = (offset + gl_TexCoord[0].xy) / resolution - vec2(0.5, 0.5);
             vec3 camDir = normalize(vec3(uv.xy * vec2(tan(0.5 * hfovDegrees), tan(0.5 * vfovDegrees)), 1.0));
             vec3 rd = normalize(rotateXY(camDir, angle.yx));
             vec2 texCoord = vec2(atan(rd.z, rd.x) + PI, acos(-rd.y)) / vec2(2.0 * PI, PI);
-            gl_FragColor = texture2D(picture, texCoord);
+            gl_FragColor = texture2D(texture, texCoord);
         })~~~";
     static char const *TRANSITION_SHADER = R"~~~(
-        uniform sampler2D picture;
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+
+        uniform sampler2D texture;
         uniform float power;
         uniform vec3 colour;
 
@@ -88,11 +99,19 @@ namespace Const {
         void main() {
             vec2 uv = gl_TexCoord[0].xy;
             float alpha = 0.0;
-            if (power >= avg(texture2D(picture, uv).rgb)) alpha = 1.0;
+            if (power >= avg(texture2D(texture, uv).rgb)) alpha = 1.0;
             gl_FragColor = vec4(0.0, 0.0, 0.0, alpha);
-        } 
-    )~~~";
-};
+        })~~~";
+    static char const *BLANK_SHADER = R"~~~(
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
 
+        uniform int time;
+
+        void main() {
+            gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        })~~~";
+};
 
 #endif

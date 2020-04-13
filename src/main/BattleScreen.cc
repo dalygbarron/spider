@@ -4,15 +4,16 @@
 BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     ScriptedScreen(core, path),
     bullets(Const::MAX_BULLETS),
-    actors(Const::MAX_ACTORS)
+    actors(Const::MAX_ACTORS),
+    background(sf::IntRect(
+        this->bounds.left,
+        this->bounds.top,
+        this->bounds.width,
+        this->bounds.height
+    ))
 {
     // do the shade loading
-    if (!this->backgroundShader.loadFromFile(
-        "shader/dots.frag",
-        sf::Shader::Fragment
-    )) {
-        spdlog::error("shader can't load");
-    }
+    this->background.initFromString(Const::BLANK_SHADER);
     // Battle script api.
     this->script["_input"] = this->script.create_table();
     this->script["_addBullet"] = [this](
@@ -168,18 +169,14 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->script["_setSubtitle"] = [this](std::string const &subtitle) {
         this->subtitle = subtitle;
     };
-    this->background.setPosition(
-        sf::Vector2f(this->bounds.left, this->bounds.top)
-    );
-    this->background.setSize(
-        sf::Vector2f(this->bounds.width, this->bounds.height)
-    );
-    this->background.setFillColor(sf::Color::Green);
+    this->script["_setBackground"] = [this](std::string const &file) {
+        this->background.initFromFile(file.c_str());
+    };
     this->setScript("_main");
 }
 
 void BattleScreen::update(sf::RenderWindow &window) {
-    this->backgroundShader.setUniform("time", this->frame * Const::FRAME_TIME);
+    this->background.update();
     if (this->coroutine) {
         // Update the input records.
         this->script["_input"][0] = sf::Keyboard::isKeyPressed(
@@ -240,11 +237,9 @@ void BattleScreen::update(sf::RenderWindow &window) {
 }
 
 void BattleScreen::draw(sf::RenderTarget &target, int top) const {
-    // Draw the background.
-    sf::RenderStates states;
-    states.shader = &(this->backgroundShader);
-    target.draw(this->background, states);
     this->core.renderer.batch.clear();
+    // Draw the background.
+    this->background.draw(target);
     // Draw the actors.
     for (Pool<Actor>::Item const &item: this->actors.getItems()) {
         if (!item.alive) continue;

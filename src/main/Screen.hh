@@ -7,8 +7,10 @@
 #include "Rat.hh"
 #include "Fish.hh"
 #include "Knob.hh"
+#include "Background.hh"
 #include "Pool.hh"
 #include "Bullet.hh"
+#include "World.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -426,8 +428,7 @@ class AdventureScreen: public ScriptedScreen {
         Level *level;
         World *world = NULL;
         sf::Vector2f camera;
-        sf::Shader shader;
-        sf::RectangleShape back;
+        Background background;
         Item const *selected = NULL;
 };
 
@@ -437,6 +438,12 @@ class AdventureScreen: public ScriptedScreen {
  */
 class BattleScreen: public ScriptedScreen {
     public:
+        /**
+         * Creates the battle screene, giving it the core, and the path to
+         * a script to run the batellelllllellelel.
+         * @param core is the core dependencies.
+         * @param path is a path to the battle script file.
+         */
         BattleScreen(Core &core, ghc::filesystem::path const &path);
 
         virtual void update(sf::RenderWindow &window) override;
@@ -454,8 +461,7 @@ class BattleScreen: public ScriptedScreen {
         Pool<Actor> actors;
         std::list<Rat::Animation> animations;
         sf::FloatRect const bounds {256, 0, 512, 600};
-        sf::RectangleShape background;
-        sf::Shader backgroundShader;
+        Background background;
         std::string title;
         std::string subtitle;
         int frame = 0;

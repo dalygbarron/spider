@@ -1,6 +1,9 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include "Fish.hh"
+#include "Util.hh"
+#include "Renderer.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -25,11 +28,16 @@ class World {
         std::pair<char const *, char const *> update(sf::Vector2f camera);
 
         /**
-         * draws the worlde.
-         * @param target is the screen to draw on.
-         * @param camera is the angle of the camera in latitude and longitude.
+         * draws the worlde upon thy screene.
+         * @param target   is the screen to draw on.
+         * @param renderer is used to draw cool shit.
+         * @param camera   is the angle of camera in latitude and longitude.
          */
-        void draw(sf::RenderTarget &target, sf::Vector2f camera) const;
+        void draw(
+            sf::RenderTarget &target,
+            Renderer &renderer,
+            sf::Vector2f camera
+        ) const;
 
     private:
         sf::Vector3f position;

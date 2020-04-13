@@ -5,19 +5,12 @@
 #include "FileIO.hh"
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
-    ScriptedScreen(core, level->script)
+    ScriptedScreen(core, level->script),
+    background(sf::IntRect(0, 0, Const::WIDTH, Const::HEIGHT))
 {
     this->level = level;
-    this->back.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
-    this->shader.setUniform("angle", this->camera);
-    this->shader.setUniform("picture", sf::Shader::CurrentTexture);
-    if (!this->shader.loadFromMemory(
-        Const::SKY_SHADER,
-        sf::Shader::Fragment
-    )) {
-        spdlog::error("Couldn't start the sky shader");
-    }
-    this->back.setTexture(&this->level->getPic(), true);
+    this->background.initFromString(Const::SKY_SHADER);
+    this->background.setTexture(&level->getPic());
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -46,11 +39,12 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     };
     this->script["_world"] = [this](std::string const &xml) {
         spdlog::debug("Adding world xml: {}", xml.c_str());
-        World *world = FileIO::readXml<World, void *>(
-            xml.c_str(),
-            FileIO::parseFish,
-            NULL
-        );
+        // TODO: restore this.
+        // World *world = FileIO::readXml<World, void *>(
+        //     xml.c_str(),
+        //     FileIO::parseFish,
+        //     NULL
+        // );
     };
     this->setScript("_start");
     // Check switches.
@@ -62,9 +56,10 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(sf::RenderWindow &window) {
+    this->background.update();
     if (this->runScript<float>(0)) return;
     Util::centreMouse(window);
-    this->shader.setUniform("angle", camera);
+    this->background.setUniform("angle", this->camera);
 }
 
 void AdventureScreen::onClick(
@@ -158,45 +153,18 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
-    target.clear();
+    // draw the behind world if applicable.
     if (this->world) {
-        this->world->draw(target, this->camera);
+        this->world->draw(target, this->core.renderer, this->camera);
     }
-    sf::RenderStates states;
-    states.shader = &(this->shader);
-    target.draw(back, states);
+    // draw the level.
+    this->background.draw(target);
+    // drawing entity instances.
     sf::Vector3f floor = Util::sphereToScreen(
         sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
         this->camera
     );
     sf::Vector2f floorScreen(floor.x, floor.y);
-    // drawing fish.
-    for (Fish const &fish: this->fishes) {
-        if (!fish.alive) continue;
-        sf::Vector3f spherePos = Util::toSphere(
-            fish.position,
-            this->cameraPosition
-        );
-        sf::Vector3f screenPos = Util::sphereToScreen(sf::Vector2f(
-            spherePos.x,
-            spherePos.y
-        ), this->camera);
-        if (screenPos.z < 0) continue;
-        float angle = Util::upAngle(
-            this->camera,
-            floorScreen,
-            sf::Vector2f(screenPos.x, screenPos.y)
-        );
-        float scale = 1 / screenPos.z;
-        this->core.renderer.batch.draw(
-            fish.entity->sprite,
-            sf::Vector2f(screenPos.x, screenPos.y),
-            fish.entity->offset,
-            angle,
-            sf::Vector2f(scale, scale)
-        );
-    }
-    // drawing entity instances.
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
