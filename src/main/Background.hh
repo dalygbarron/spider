@@ -59,6 +59,11 @@ class Background {
         mutable sf::RenderTexture buffer;
         sf::Shader shader;
         int timer = 0;
+
+        /**
+         * Resets some uniforms that need to be set in multiple places.
+         */
+        void resetUniforms();
 };
 
 #endif

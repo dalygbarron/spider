@@ -10,6 +10,7 @@ Background::Background(sf::IntRect bounds) {
     this->mask.setPosition(sf::Vector2f(bounds.left, bounds.top));
     this->mask.setSize(sf::Vector2f(bounds.width, bounds.height));
     this->mask.setTexture(&this->buffer.getTexture());
+    this->resetUniforms();
 }
 
 void Background::initFromFile(char const *file) {
@@ -19,22 +20,14 @@ void Background::initFromFile(char const *file) {
             file
         );
     }
-    this->shader.setUniform(
-        "resolution",
-        sf::Glsl::Vec2(bounds.width, bounds.height)
-    );
-    this->shader.setUniform("time", this->timer);
+    this->resetUniforms();
 }
 
 void Background::initFromString(char const *string) {
     if (!this->shader.loadFromMemory(string, sf::Shader::Fragment)) {
         spdlog::error("Couldn't read background shader from string");
     }
-    this->shader.setUniform(
-        "resolution",
-        sf::Glsl::Vec2(bounds.width, bounds.height)
-    );
-    this->shader.setUniform("time", this->timer);
+    this->resetUniforms();
 }
 
 void Background::update() {
@@ -52,9 +45,23 @@ void Background::draw(sf::RenderTarget &target) const {
 
 void Background::setTexture(sf::Texture const *texture) {
     this->back.setTexture(texture);
+    this->back.setTextureRect(bounds);
     this->shader.setUniform("texture", sf::Shader::CurrentTexture);
+    this->resetUniforms();
 }
 
 void Background::setUniform(char const *name, sf::Vector2f value) {
     this->shader.setUniform(name, (sf::Glsl::Vec2)value);
+}
+
+void Background::resetUniforms() {
+    this->shader.setUniform(
+        "offset",
+        sf::Glsl::Vec2(bounds.left, bounds.top)
+    );
+    this->shader.setUniform(
+        "resolution",
+        sf::Glsl::Vec2(bounds.width, bounds.height)
+    );
+    this->shader.setUniform("time", this->timer);
 }
