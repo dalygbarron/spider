@@ -18,9 +18,9 @@ local xmlConversions = {
         end
         return accumulation
     end,
-    mob = function(item, x, y)
+    lindel = function(item, x, y)
         return string.format(
-            "<mob name=\"%s\" x=\"%f\" y=\"%f\" />",
+            "<lindel name=\"%s\" x=\"%f\" y=\"%f\" />",
             item.name,
             x,
             y
@@ -44,9 +44,9 @@ function boat.distribution(n, deviance, content)
     }
 end
 
-function boat.mob(name)
+function boat.lindel(name)
     return {
-        type = "mob",
+        type = "lindel",
         name = name
     }
 end
@@ -58,15 +58,19 @@ function boat.xml(item, x, y)
         return xmlConversions[item.type](item, x, y)
     else
         _logError(string.format("no boating type '%s'", item.type))
+        return ""
     end
 end
 
-function boat.worldXml(sky, ground, mobs)
+function boat.worldXml(ground, horizon, skyBottom, skyTop, lindels)
     return string.format(
-        "<world sky=\"%s\" ground=\"%s\"><mobs>%s</mobs></world>",
-        sky,
+        "<world ground=\"%s\" horizon=\"%s\" bottomSky=\"%s\" "..
+            "topSky=\"%s\">%s</world>",
         ground,
-        boat.xml(mobs)
+        horizon,
+        skyBottom,
+        skyTop,
+        boat.xml(lindels)
     )
 end
 

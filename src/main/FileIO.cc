@@ -1,6 +1,7 @@
 #include "FileIO.hh"
 #include "Const.hh"
 #include <iostream>
+#include <cstdlib>
 
 Memory::SwitchExpression *FileIO::parseSwitchExpression(char const *string) {
     std::stringstream stream(string);
@@ -438,4 +439,37 @@ Knob *FileIO::parseKnob(pugi::xml_node node, RatPack const &spritesheet) {
         spdlog::error("No knob type '{}'", type);
         return NULL;
     }
+}
+
+World *FileIO::parseWorld(
+    pugi::xml_node node,
+    EntityRepository &entityRepository
+) {
+    sf::Texture *ground = new sf::Texture();
+    if (!ground->loadFromFile(node.attribute("ground").value())) {
+        spdlog::error(
+            "Couldn't load file '{}' as ground texture for world",
+            node.attribute("ground").value()
+        );
+    }
+    sf::Color col(strtoul(node.attribute("horizon").value(), NULL, 16));
+    World *world = new World(
+        ground,
+        sf::Color(strtoul(node.attribute("horizon").value(), NULL, 16)),
+        sf::Color(strtoul(node.attribute("bottomSky").value(), NULL, 16)),
+        sf::Color(strtoul(node.attribute("topSky").value(), NULL, 16))
+    );
+    for (pugi::xml_node child: node.children()) {
+        Entity const *entity = entityRepository.get(
+            child.attribute("name").value()
+        );
+        if (entity) {
+            world->addLindel(*entity, sf::Vector3f(
+                child.attribute("x").as_float(),
+                child.attribute("y").as_float(),
+                child.attribute("z").as_float()
+            ));
+        }
+    }
+    return world;
 }

@@ -34,25 +34,26 @@ namespace Const {
     static float const DAINTY_RADIUS = 6;
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
-          #######                          ##                       
-        /       ###              #          ##                      
-       /         ##             ###         ##                      
-       ##        #               #          ##                      
-        ###                                 ##                      
-       ## ###           /###   ###      ### ##    /##  ###  /###    
-        ### ###        / ###  / ###    ######### / ###  ###/ #### / 
-          ### ###     /   ###/   ##   ##   #### /   ###  ##   ###/  
-            ### /##  ##    ##    ##   ##    ## ##    ### ##         
-              #/ /## ##    ##    ##   ##    ## ########  ##         
-               #/ ## ##    ##    ##   ##    ## #######   ##         
-                # /  ##    ##    ##   ##    ## ##        ##         
-      /##        /   ##    ##    ##   ##    /# ####    / ##         
-     /  ########/    #######     ### / ####/    ######/  ###        
-    /     #####      ######       ##/   ###      #####    ###       
-    |                ##                                             
+          #######                          ##
+        /       ###              #          ##
+       /         ##             ###         ##
+       ##        #               #          ##
+        ###                                 ##
+       ## ###           /###   ###      ### ##    /##  ###  /###
+        ### ###        / ###  / ###    ######### / ###  ###/ #### /
+          ### ###     /   ###/   ##   ##   #### /   ###  ##   ###/
+            ### /##  ##    ##    ##   ##    ## ##    ### ##
+              #/ /## ##    ##    ##   ##    ## ########  ##
+               #/ ## ##    ##    ##   ##    ## #######   ##
+                # /  ##    ##    ##   ##    ## ##        ##
+      /##        /   ##    ##    ##   ##    /# ####    / ##
+     /  ########/    #######     ### / ####/    ######/  ###
+    /     #####      ######       ##/   ###      #####    ###
+    |                ##
      \)              ##       Version %d.%d.%d
-                     ##           Created By Dany Burton
-                      ##)~~~";
+                     ##              Created By Liquid Pig Studios
+                      ##                       www.liquidpigstudios.com
+)~~~";
     static char const *SKY_SHADER = R"~~~(
         #ifdef GL_ES
         precision mediump float;
@@ -77,12 +78,13 @@ namespace Const {
         }
 
         void main() {
-            vec2 uv = (gl_TexCoord[0].xy - offset) / resolution - vec2(0.5, 0.5);
+            vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
+            uv.y = 0.0 - uv.y;
             vec3 camDir = normalize(vec3(uv.xy * vec2(tan(0.5 * hfovDegrees), tan(0.5 * vfovDegrees)), 1.0));
             vec3 rd = normalize(rotateXY(camDir, angle.yx));
             vec2 texCoord = vec2(atan(rd.z, rd.x) + PI, acos(-rd.y)) / vec2(2.0 * PI, PI);
-            //gl_FragColor = texture2D(texture, texCoord);
-            gl_FragColor = vec4(uv.x, uv.y, 0.0, 1.0);
+            gl_FragColor = texture2D(texture, texCoord);
+            //gl_FragColor = vec4(mod(gl_TexCoord[0].x, 1.0), mod(gl_TexCoord[0].y, 1.0), 0.0, 1.0);
         })~~~";
     static char const *TRANSITION_SHADER = R"~~~(
         #ifdef GL_ES

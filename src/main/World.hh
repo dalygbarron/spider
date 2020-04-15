@@ -1,9 +1,10 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "Fish.hh"
+#include "Lindel.hh"
 #include "Util.hh"
 #include "Renderer.hh"
+#include "Background.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -12,12 +13,39 @@
  */
 class World {
     public:
+        constexpr static char const *BACKGROUND_SHADER = R"~~~(
+            #ifdef GL_ES
+            precision mediump float;
+            #endif
+
+            uniform sampler2D texture;
+            uniform vec2 offset;
+            uniform vec2 resolution;
+            uniform int time;
+            uniform vec4 horizon;
+            uniform vec4 bottomSky;
+            uniform vec4 topSky;
+            uniform vec3 position;
+            uniform vec2 rotation;
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution;
+                gl_FragColor = mix(bottomSky, topSky, uv.y);
+            })~~~";
+
         /**
          * Creates and empty world that has a ground texture and a sky texture.
-         * @param ground is the ground texture.
-         * @param sky    is the sky texture.
+         * @param ground    is the ground texture.
+         * @param bottomSky is the colour to put at the bottom of the sky
+         *                  gradient.
+         * @param topSky    is the colour to put at the top of the sky.
          */
-        World(sf::Texture const *ground, sf::Texture const *sky);
+        World(
+            sf::Texture const *ground,
+            sf::Color horizon,
+            sf::Color bottomSky,
+            sf::Color topSky
+        );
 
         /**
          * Updates the world, and if something has been interacted with then it
@@ -39,14 +67,21 @@ class World {
             sf::Vector2f camera
         ) const;
 
+        /**
+         * Adds a lindel into the world.
+         * @param entity   is the entity that the lindel is ripping off.
+         * @param position is the position that the lindel will have.
+         */
+        void addLindel(Entity const &entity, sf::Vector3f position);
+
     private:
         sf::Vector3f position;
         sf::Vector3f velocity;
         sf::Vector3f gravity;
         sf::Vector2f rotation;
         sf::Shader shader;
-        sf::RectangleShape back;
-        std::vector<Fish> fishes;
+        Background background;
+        std::vector<Lindel> lindels;
 };
 
 #endif

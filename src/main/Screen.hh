@@ -5,7 +5,7 @@
 #include "Entity.hh"
 #include "Core.hh"
 #include "Rat.hh"
-#include "Fish.hh"
+#include "Lindel.hh"
 #include "Knob.hh"
 #include "Background.hh"
 #include "Pool.hh"

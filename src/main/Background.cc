@@ -10,6 +10,7 @@ Background::Background(sf::IntRect bounds) {
     this->mask.setPosition(sf::Vector2f(bounds.left, bounds.top));
     this->mask.setSize(sf::Vector2f(bounds.width, bounds.height));
     this->mask.setTexture(&this->buffer.getTexture());
+    this->shader.setUniform("texture", sf::Shader::CurrentTexture);
     this->resetUniforms();
 }
 
@@ -36,6 +37,7 @@ void Background::update() {
 }
 
 void Background::draw(sf::RenderTarget &target) const {
+    this->buffer.clear(sf::Color::Transparent);
     sf::RenderStates states;
     states.shader = &this->shader;
     this->buffer.draw(this->back, states);
@@ -44,14 +46,16 @@ void Background::draw(sf::RenderTarget &target) const {
 }
 
 void Background::setTexture(sf::Texture const *texture) {
-    this->back.setTexture(texture);
-    this->back.setTextureRect(bounds);
-    this->shader.setUniform("texture", sf::Shader::CurrentTexture);
+    this->back.setTexture(texture, true);
     this->resetUniforms();
 }
 
-void Background::setUniform(char const *name, sf::Vector2f value) {
+void Background::setUniform(char const *name, sf::Vector2f const &value) {
     this->shader.setUniform(name, (sf::Glsl::Vec2)value);
+}
+
+void Background::setUniform(char const *name, sf::Color const &value) {
+    this->shader.setUniform(name, (sf::Glsl::Vec4 const &)value);
 }
 
 void Background::resetUniforms() {

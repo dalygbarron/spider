@@ -33,12 +33,12 @@ RatScreen::RatScreen(Core &core): Screen(core) {
         float gravityAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
         float rotationAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
         float scale = (float)(rand() % 100) / 80;
-        this->rats[i].velocity.x = 65 * scale * cos(moveAngle);
-        this->rats[i].velocity.y = 65 * scale * sin(moveAngle);
-        this->rats[i].gravity.x = 12 * scale * cos(gravityAngle);
-        this->rats[i].gravity.y = 12 * scale * sin(gravityAngle);
+        this->rats[i].velocity.x = 0.1 * scale * cos(moveAngle);
+        this->rats[i].velocity.y = 0.1 * scale * sin(moveAngle);
+        this->rats[i].gravity.x = 0.01 * scale * cos(gravityAngle);
+        this->rats[i].gravity.y = 0.01 * scale * sin(gravityAngle);
         this->rats[i].rotation = rotationAngle;
-        this->rats[i].angularVelocity = (float)(rand() % 30) / 5 - 3;
+        this->rats[i].angularVelocity = (float)(rand() % 30) / 120 - 0.125;
         this->rats[i].scale = sf::Vector2f(scale, scale);
         i++;
     }

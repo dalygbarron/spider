@@ -6,6 +6,7 @@
 #include "Patch.hh"
 #include "RatPack.hh"
 #include "Core.hh"
+#include "World.hh"
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -82,6 +83,14 @@ namespace FileIO {
      * @return the knob or null if it's no good.
      */
     Knob *parseKnob(pugi::xml_node node, RatPack const &spritesheet);
+
+    /**
+     * Parses a 3d world out of xml.
+     * @param node             is the xml node to load from.
+     * @param entityRepository is thing for getting entities and all that.
+     * @return the world that was created or null if there was a fuckup.
+     */
+    World *parseWorld(pugi::xml_node node, EntityRepository &entityRepository);
 
     /**
      * Loads in XML from a file, then parses it into your desired type using
