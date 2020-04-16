@@ -12,8 +12,8 @@ local xmlConversions = {
         local accumulation = ""
         for i = 1, item.n, 1 do
             -- TODO: proper distribution
-            local nX = x + math.random() * item.deviance
-            local nY = y + math.random() * item.deviance
+            local nX = x + math.random() * item.deviance - item.deviance / 2
+            local nY = y + math.random() * item.deviance - item.deviance / 2
             accumulation = accumulation..boat.xml(item.content, nX, nY)
         end
         return accumulation

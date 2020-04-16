@@ -5,6 +5,7 @@
 Background::Background(sf::IntRect bounds) {
     this->bounds = bounds;
     this->buffer.create(bounds.width, bounds.height);
+    this->buffer.setSmooth(true);
     this->back.setSize(sf::Vector2f(bounds.width, bounds.height));
     this->back.setTextureRect(bounds);
     this->mask.setPosition(sf::Vector2f(bounds.left, bounds.top));
@@ -52,6 +53,10 @@ void Background::setTexture(sf::Texture const *texture) {
 
 void Background::setUniform(char const *name, sf::Vector2f const &value) {
     this->shader.setUniform(name, (sf::Glsl::Vec2)value);
+}
+
+void Background::setUniform(char const *name, sf::Vector3f const &value) {
+    this->shader.setUniform(name, value);
 }
 
 void Background::setUniform(char const *name, sf::Color const &value) {

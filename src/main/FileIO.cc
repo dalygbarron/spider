@@ -452,6 +452,8 @@ World *FileIO::parseWorld(
             node.attribute("ground").value()
         );
     }
+    ground->setRepeated(true);
+    ground->setSmooth(true);
     sf::Color col(strtoul(node.attribute("horizon").value(), NULL, 16));
     World *world = new World(
         ground,
@@ -469,6 +471,11 @@ World *FileIO::parseWorld(
                 child.attribute("y").as_float(),
                 child.attribute("z").as_float()
             ));
+        } else {
+            spdlog::error(
+                "'{}' does not name an entity",
+                child.attribute("name").value()
+            );
         }
     }
     return world;

@@ -13,26 +13,6 @@
  */
 class World {
     public:
-        constexpr static char const *BACKGROUND_SHADER = R"~~~(
-            #ifdef GL_ES
-            precision mediump float;
-            #endif
-
-            uniform sampler2D texture;
-            uniform vec2 offset;
-            uniform vec2 resolution;
-            uniform int time;
-            uniform vec4 horizon;
-            uniform vec4 bottomSky;
-            uniform vec4 topSky;
-            uniform vec3 position;
-            uniform vec2 rotation;
-
-            void main() {
-                vec2 uv = gl_FragCoord.xy / resolution;
-                gl_FragColor = mix(bottomSky, topSky, uv.y);
-            })~~~";
-
         /**
          * Creates and empty world that has a ground texture and a sky texture.
          * @param ground    is the ground texture.
@@ -49,6 +29,7 @@ class World {
 
         /**
          * Updates the world, and if something has been interacted with then it
+         * @param camera is the rotation of the camera.
          * @return the name of the function to run and the argument to pass it.
          *         Hold no illusions that these string will persist because
          *         they shall not.

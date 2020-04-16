@@ -115,7 +115,14 @@ float Util::manhattan3(sf::Vector3f a, sf::Vector3f b) {
 }
 
 sf::Vector3f Util::toSphere(sf::Vector3f pos, sf::Vector3f camera) {
-    // TODO: this.
+    sf::Vector3f delta = pos - camera;
+    float distance = Util::distance3(pos, camera);
+    if (distance == 0) return sf::Vector3f(0, 0, 0);
+    return sf::Vector3f(
+        atan2(delta.y, delta.x),
+        asin(delta.z / distance),
+        distance
+    );
 }
 
 sf::Vector2f Util::screenToSphere(
@@ -151,6 +158,11 @@ sf::Vector3f Util::sphereToScreen(
     sf::Vector2f coordinate,
     sf::Vector2f camera
 ) {
+    return sf::Vector3f(
+        (coordinate.x - camera.x) / Const::FOV_X * Const::WIDTH + Const::HALF_WIDTH,
+        (coordinate.y - camera.y) / Const::FOV_Y * Const::HEIGHT + Const::HALF_HEIGHT,
+        abs(coordinate.x - camera.x) + abs(coordinate.y - camera.y)
+    );
     coordinate = rotate(coordinate, sf::Vector2f(-camera.x, -camera.y));
     return sf::Vector3f(
         tan(coordinate.x) * Const::INVERSE_RENDER_LENGTH_X * Const::WIDTH +

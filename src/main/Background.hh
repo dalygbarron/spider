@@ -52,6 +52,13 @@ class Background {
         void setUniform(char const *name, sf::Vector2f const &value);
 
         /**
+         * Sets a uniform for the background shader.
+         * @param name  is the name of the uniform to set.
+         * @param value is the value to give the uniform.
+         */
+        void setUniform(char const *name, sf::Vector3f const &value);
+
+        /**
          * Sets a colour uniform on the background shader.
          * @oaram name  is the name of the uniform.
          * @param value is the value to set the uniform to.

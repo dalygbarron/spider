@@ -38,7 +38,7 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
         this->camera.y = y;
     };
     this->script["_world"] = [this](std::string const &xml) {
-        spdlog::debug("Adding world xml: {}", xml.c_str());
+        spdlog::info("Adding world xml: {}", xml.c_str());
         this->world = FileIO::readXml<World, EntityRepository &>(
             xml.c_str(),
             FileIO::parseWorld,
@@ -56,6 +56,7 @@ AdventureScreen::~AdventureScreen() {
 
 void AdventureScreen::update(sf::RenderWindow &window) {
     this->background.update();
+    if (this->world) this->world->update(this->camera);
     if (this->runScript<float>(0)) return;
     Util::centreMouse(window);
     this->background.setUniform("angle", this->camera);
@@ -156,6 +157,8 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     if (this->world) {
         this->world->draw(target, this->core.renderer, this->camera);
     }
+    target.draw(this->core.renderer.batch);
+    this->core.renderer.batch.clear();
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.
