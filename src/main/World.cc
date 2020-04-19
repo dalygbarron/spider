@@ -52,11 +52,13 @@ World::World(
     this->background.setUniform("bottomSky", bottomSky);
     this->background.setUniform("topSky", topSky);
     this->position.z = 1;
-    this->velocity.y = -0.02;
+    this->velocity.y = -0.03;
+    this->gravity.z = -0.02;
 }
 
-std::pair<char const *, char const *> World::update(sf::Vector2f camera) {
-    this->background.setUniform("rotation", camera);
+std::pair<char const *, char const *> World::update(sf::Transform camera) {
+    // TODO: make camera and position into one 4x4 matrix
+    this->background.setUniform("camera", camera);
     this->background.setUniform("position", this->position);
     this->background.update();
     char const *function = NULL;
@@ -66,6 +68,7 @@ std::pair<char const *, char const *> World::update(sf::Vector2f camera) {
         lindel.update();
         // TODO: collisions and that kind of thing maybe.
     }
+    if (this->position.z < 0.5) this->velocity.z = 0.3;
     // Update the player.
     this->position.x += this->velocity.x;
     this->position.y += this->velocity.y;
@@ -80,32 +83,27 @@ std::pair<char const *, char const *> World::update(sf::Vector2f camera) {
 void World::draw(
     sf::RenderTarget &target,
     Renderer &renderer,
-    sf::Vector2f camera
+    sf::Transform camera
 ) const {
     this->background.draw(target);
     // Draw the lindels.
-    sf::Vector3f floor = Util::sphereToScreen(
-        sf::Vector2f(0, Const::HALF_PI * ((camera.y > 0) ? 1 : -1)),
+    sf::Vector3f floor = Util::transformPoint(
+        sf::Vector3f(0, -1, 0),
         camera
     );
+    // TODO: floorscreen is wrong I think.
     sf::Vector2f floorScreen(floor.x, floor.y);
     for (Lindel const &lindel: this->lindels) {
         if (!lindel.alive) continue;
-        sf::Vector3f spherePos = Util::toSphere(
-            this->position,
-            lindel.position
-        );
-        sf::Vector3f screenPos = Util::sphereToScreen(sf::Vector2f(
-            spherePos.x,
-            spherePos.y
-        ), camera);
-        if (screenPos.z < 0) continue;
+        sf::Vector3f pos = Util::transformPoint(lindel.position, camera);
+        sf::Vector2f screenPos(pos.x, pos.y);
+        // TODO: still need to project camera coordinates toscreen.
         float angle = Util::upAngle(
-            camera,
+            floorScreen,
             floorScreen,
             sf::Vector2f(screenPos.x, screenPos.y)
         );
-        float scale = 2 / spherePos.z;
+        float scale = 1;
         renderer.batch.draw(
             lindel.entity.sprite,
             sf::Vector2f(screenPos.x, screenPos.y),

@@ -11,6 +11,8 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     this->level = level;
     this->background.initFromString(Const::SKY_SHADER);
     this->background.setTexture(&level->getPic());
+    this->cameraMatrix = Util::cameraToWorldMatrix(this->camera).getInverse();
+    this->background.setUniform("camera", cameraMatrix);
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -31,11 +33,12 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
         this->core.pushScreen(new BattleScreen(this->core, file));
     };
     this->script["_getCamera"] = [this]() {
-        return std::make_tuple(this->camera.x, this->camera.y);
+        return std::make_tuple(this->camera.x, this->camera.y, this->camera.z);
     };
-    this->script["_setCamera"] = [this](float x, float y) {
+    this->script["_setCamera"] = [this](float x, float y, float z) {
         this->camera.x = x;
         this->camera.y = y;
+        this->camera.z = z;
     };
     this->script["_world"] = [this](std::string const &xml) {
         spdlog::info("Adding world xml: {}", xml.c_str());
@@ -55,11 +58,13 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(sf::RenderWindow &window) {
+    this->camera.y += 0.01;
+    this->cameraMatrix = Util::cameraToWorldMatrix(this->camera).getInverse();
+    if (this->world) this->world->update(this->cameraMatrix);
+    this->background.setUniform("camera", cameraMatrix);
     this->background.update();
-    if (this->world) this->world->update(this->camera);
     if (this->runScript<float>(0)) return;
     Util::centreMouse(window);
-    this->background.setUniform("angle", this->camera);
 }
 
 void AdventureScreen::onClick(
@@ -67,22 +72,24 @@ void AdventureScreen::onClick(
     sf::Vector2f pos
 ) {
     if (this->coroutine) return;
-    sf::Vector3f floor = Util::sphereToScreen(
-        sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
-        this->camera
+    sf::Vector3f floor = Util::transformPoint(
+        sf::Vector3f(0, -1, 0),
+        this->cameraMatrix
     );
+    // TODO: floorscreen is wrong I think.
     sf::Vector2f floorScreen(floor.x, floor.y);
     for (Instance &instance: this->level->instances) {
         if (!instance.alive) continue;
         int hit = false;
         if (instance.entity) {
-            sf::Vector3f screenPos = Util::sphereToScreen(
-                instance.pos,
-                this->camera
+            sf::Vector3f screenPos = Util::transformPoint(
+                Util::sphericalToCartesian(instance.pos),
+                this->cameraMatrix
             );
             if (screenPos.z < 0) continue;
+            // TODO: Broken
             float angle = Util::upAngle(
-                this->camera,
+                sf::Vector2f(this->camera.x, this->camera.y),
                 floorScreen,
                 sf::Vector2f(screenPos.x, screenPos.y)
             );
@@ -96,7 +103,11 @@ void AdventureScreen::onClick(
                 instance.entity->offset
             );
         } else {
-            hit = instance.mesh.inSphere(this->camera);
+            sf::Vector2f ray = Util::cartesianToSpherical(Util::transformPoint(
+                sf::Vector3f(0, 0, -1),
+                this->cameraMatrix
+            ));
+            hit = instance.mesh.inSphere(ray);
         }
         if (hit) {
             if (instance.entity && !instance.entity->item.empty()) {
@@ -134,8 +145,9 @@ void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
     if (this->coroutine) return;
     if (prev == pos) return;
     //spdlog::info("{} {}", pos.x, pos.y);
-    sf::Vector2f current = Util::screenToSphere(pos, this->camera);
-    this->camera = current;
+    // TODO: figure out doing this.
+    //sf::Vector2f current = Util::screenToSphere(pos, this->camera);
+    //this->camera = current;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -155,30 +167,32 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     // draw the behind world if applicable.
     if (this->world) {
-        this->world->draw(target, this->core.renderer, this->camera);
+        this->world->draw(target, this->core.renderer, this->cameraMatrix);
     }
     target.draw(this->core.renderer.batch);
     this->core.renderer.batch.clear();
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.
-    sf::Vector3f floor = Util::sphereToScreen(
-        sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
-        this->camera
+    sf::Vector3f floor = Util::transformPoint(
+        sf::Vector3f(0, -1, 0),
+        this->cameraMatrix
     );
+    // TODO: floorscreen is wrong I think.
     sf::Vector2f floorScreen(floor.x, floor.y);
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
-            sf::Vector3f pos = Util::sphereToScreen(
-                instance.pos,
-                this->camera
-            );
+            sf::Vector3f pos = Util::sphericalToCartesian(instance.pos);
+            pos = Util::transformPoint(pos, this->cameraMatrix);
+            sf::Vector2f screenPos(pos.x, pos.y);
+            // TODO: still need to project camera coordinates toscreen.
             if (pos.z < 0) continue;
+            // TODO: Broken
             float angle = Util::upAngle(
-                this->camera,
+                sf::Vector2f(this->camera.x, this->camera.y),
                 floorScreen,
-                sf::Vector2f(pos.x, pos.y)
+                sf::Vector2f(screenPos.x, screenPos.y)
             );
             this->core.renderer.batch.draw(
                 instance.entity->sprite,

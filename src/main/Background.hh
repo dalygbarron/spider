@@ -65,6 +65,13 @@ class Background {
          */
         void setUniform(char const *name, sf::Color const &value);
 
+        /**
+         * Sets a 3x3 matrix uniform on the background shader.
+         * @param name  is the name of the uniform.
+         * @param value is the value to give it.
+         */
+        void setUniform(char const *name, sf::Transform const &value);
+
     private:
         sf::IntRect bounds;
         sf::RectangleShape back;

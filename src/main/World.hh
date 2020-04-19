@@ -29,23 +29,24 @@ class World {
 
         /**
          * Updates the world, and if something has been interacted with then it
-         * @param camera is the rotation of the camera.
+         * @param camera is a 3x3 matrix converting from the rotated camera to
+         *               world coordinates.
          * @return the name of the function to run and the argument to pass it.
          *         Hold no illusions that these string will persist because
          *         they shall not.
          */
-        std::pair<char const *, char const *> update(sf::Vector2f camera);
+        std::pair<char const *, char const *> update(sf::Transform camera);
 
         /**
          * draws the worlde upon thy screene.
          * @param target   is the screen to draw on.
          * @param renderer is used to draw cool shit.
-         * @param camera   is the angle of camera in latitude and longitude.
+         * @param camera   is the 3x3 camera to world matrix.
          */
         void draw(
             sf::RenderTarget &target,
             Renderer &renderer,
-            sf::Vector2f camera
+            sf::Transform camera
         ) const;
 
         /**

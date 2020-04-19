@@ -60,21 +60,29 @@ namespace Const {
         #endif
 
         #define PI 3.14159265
-        #define DOUBLE_PI 6.28318530718
 
         uniform sampler2D texture;
-        uniform vec2 angle;
         uniform vec2 offset;
         uniform vec2 resolution;
         uniform int time;
+        uniform mat3 camera;
 
         vec2 fov = vec2(2.094395102, 1.570796327);
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
-            vec2 rotation = angle + uv * fov / vec2(DOUBLE_PI, DOUBLE_PI);
-            gl_FragColor = texture2D(texture, rotation);
-            //gl_FragColor = vec4(mod(gl_TexCoord[0].x, 1.0), mod(gl_TexCoord[0].y, 1.0), 0.0, 1.0);
+            vec2 angle = uv * fov;
+            vec3 point = vec3(
+                cos(angle.y) * cos(angle.x),
+                sin(angle.y),
+                cos(angle.y) * sin(angle.x)
+            );
+            vec3 cameraPoint = camera * point;
+            vec2 cameraAngle = vec2(
+                atan2(cameraPoint.z, cameraPoint.x),
+                asin(cameraPoint.y)
+            );
+            gl_FragColor = texture2D(texture, cameraAngle / vec2(PI * 2, PI * 2));
         })~~~";
     static char const *TRANSITION_SHADER = R"~~~(
         #ifdef GL_ES

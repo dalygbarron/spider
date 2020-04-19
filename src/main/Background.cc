@@ -63,6 +63,10 @@ void Background::setUniform(char const *name, sf::Color const &value) {
     this->shader.setUniform(name, (sf::Glsl::Vec4 const &)value);
 }
 
+void Background::setUniform(char const *name, sf::Transform const &value) {
+    this->shader.setUniform(name, (sf::Glsl::Mat3 const &)value);
+}
+
 void Background::resetUniforms() {
     this->shader.setUniform(
         "offset",

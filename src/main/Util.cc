@@ -201,3 +201,39 @@ sf::Vector2f Util::rotateAround(
     pos.y += origin.y;
     return pos;
 }
+
+sf::Vector3f Util::sphericalToCartesian(sf::Vector2f spherical) {
+    return sf::Vector3f(
+        cos(spherical.y) * cos(spherical.x),
+        sin(spherical.y),
+        cos(spherical.y) * sin(spherical.x)
+    );
+}
+
+sf::Vector2f Util::cartesianToSpherical(sf::Vector3f cartesian) {
+    return sf::Vector2f(
+        atan(cartesian.z / cartesian.x),
+        asin(cartesian.y)
+    );
+}
+
+sf::Glsl::Mat4 Util::cameraToWorldMatrix(sf::Vector3f c) {
+    sf::Transform x(1, 0, 0, 0, cos(c.x), sin(c.x), 0, -sin(c.x), cos(c.x));
+    sf::Transform y(cos(c.y), 0, -sin(c.y), 0, 1, 0, sin(c.y), 0, cos(c.y));
+    sf::Transform z(cos(c.z), sin(c.z), 0, -sin(c.z), cos(c.z), 0, 0, 0, 1);
+    sf::Transform n(1, 2, 3, 4, 5, 6, 7, 8, 9);
+    sf::Transform out = y;
+    float const *m = n.getMatrix();
+    spdlog::info("{}", cos(c.y));
+    spdlog::info("({} {} {}) {} {} {} {} {} {} {} {} {}", c.x, c.y, c.z, m[0], m[1], m[2], m[4], m[5], m[6], m[8], m[9], m[10]);
+    return out;
+}
+
+sf::Vector3f Util::transformPoint(sf::Vector3f point, sf::Glsl::Mat4 const &c) {
+    float const *matrix = c.getMatrix();
+    return sf::Vector3f(
+        point.x * matrix[0] + point.y * matrix[1] + point.z * matrix[2],
+        point.x * matrix[4] + point.y * matrix[5] + point.z * matrix[6],
+        point.x * matrix[8] + point.y * matrix[9] + point.z * matrix[10]
+    );
+}

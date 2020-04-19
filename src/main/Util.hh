@@ -161,6 +161,42 @@ namespace Util {
         float angle,
         float scale=1
     );
+
+    /**
+     * Converts spherical coordinates to cartesian coordinates.
+     * @param spherical is the spherical coordinates to convert.
+     * @return the relevant cartesian coordinates assuming that the sphere had
+     *         a radius of 1 and was centred at (0, 0, 0).
+     */
+    sf::Vector3f sphericalToCartesian(sf::Vector2f spherical);
+
+    /**
+     * Converts spherical coordinates to cartesian coordinates with the
+     * assumption the sphere is centered at (0, 0, 0) and has a radius of 1.
+     * @param cartesian is the cartesian coordinates.
+     * @return the spherical coordinates.
+     */
+    sf::Vector2f cartesianToSpherical(sf::Vector3f cartesian);
+
+    /**
+     * Creates a transformation matrix that rotates things around the three
+     * axes in xyz order.
+     * @param c is the three angles of rotation.
+     * @return the transformation matrix.
+     */
+    sf::Transform cameraToWorldMatrix(sf::Vector3f c);
+
+    /**
+     * Transforms a 3d point with a 3x3 matrix since they didn't add it for
+     * some stupid reason.
+     * @param point is the point to transform.
+     * @param c     is the transformation matrix.
+     * @return the transformed version.
+     */
+    sf::Vector3f transformPoint(
+        sf::Vector3f point,
+        sf::Transform const &c
+    );
 }
 
 #endif
