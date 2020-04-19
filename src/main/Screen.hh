@@ -428,7 +428,7 @@ class AdventureScreen: public ScriptedScreen {
         Level *level;
         World *world = NULL;
         sf::Vector3f camera;
-        sf::Transform cameraMatrix;
+        Matrix cameraMatrix;
         Background background;
         Item const *selected = NULL;
 };

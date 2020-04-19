@@ -1,6 +1,7 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
+#include "Matrix.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -66,11 +67,11 @@ class Background {
         void setUniform(char const *name, sf::Color const &value);
 
         /**
-         * Sets a 3x3 matrix uniform on the background shader.
+         * Sets a 4x4 matrix uniform on the background shader.
          * @param name  is the name of the uniform.
          * @param value is the value to give it.
          */
-        void setUniform(char const *name, sf::Transform const &value);
+        void setUniform(char const *name, Matrix const &value);
 
     private:
         sf::IntRect bounds;

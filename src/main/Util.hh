@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include "Knob.hh"
+#include "Matrix.hh"
 #include "sol.hh"
 #include <SFML/Graphics.hpp>
 
@@ -184,7 +185,7 @@ namespace Util {
      * @param c is the three angles of rotation.
      * @return the transformation matrix.
      */
-    sf::Transform cameraToWorldMatrix(sf::Vector3f c);
+    Matrix cameraToWorldMatrix(sf::Vector3f c);
 
     /**
      * Transforms a 3d point with a 3x3 matrix since they didn't add it for
@@ -195,8 +196,8 @@ namespace Util {
      */
     sf::Vector3f transformPoint(
         sf::Vector3f point,
-        sf::Transform const &c
+        Matrix const &c
     );
-}
+};
 
 #endif

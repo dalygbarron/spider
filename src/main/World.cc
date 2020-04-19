@@ -56,7 +56,7 @@ World::World(
     this->gravity.z = -0.02;
 }
 
-std::pair<char const *, char const *> World::update(sf::Transform camera) {
+std::pair<char const *, char const *> World::update(Matrix const &camera) {
     // TODO: make camera and position into one 4x4 matrix
     this->background.setUniform("camera", camera);
     this->background.setUniform("position", this->position);
@@ -83,7 +83,7 @@ std::pair<char const *, char const *> World::update(sf::Transform camera) {
 void World::draw(
     sf::RenderTarget &target,
     Renderer &renderer,
-    sf::Transform camera
+    Matrix const &camera
 ) const {
     this->background.draw(target);
     // Draw the lindels.

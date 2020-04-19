@@ -11,7 +11,9 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     this->level = level;
     this->background.initFromString(Const::SKY_SHADER);
     this->background.setTexture(&level->getPic());
-    this->cameraMatrix = Util::cameraToWorldMatrix(this->camera).getInverse();
+    this->cameraMatrix = Util::cameraToWorldMatrix(
+        sf::Vector3f(-this->camera.x, -this->camera.y, -this->camera.z)
+    );
     this->background.setUniform("camera", cameraMatrix);
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
@@ -59,7 +61,9 @@ AdventureScreen::~AdventureScreen() {
 
 void AdventureScreen::update(sf::RenderWindow &window) {
     this->camera.y += 0.01;
-    this->cameraMatrix = Util::cameraToWorldMatrix(this->camera).getInverse();
+    this->cameraMatrix = Util::cameraToWorldMatrix(
+        sf::Vector3f(-this->camera.x, -this->camera.y, -this->camera.z)
+    );
     if (this->world) this->world->update(this->cameraMatrix);
     this->background.setUniform("camera", cameraMatrix);
     this->background.update();
