@@ -90,7 +90,7 @@ Instance &LevelScreen::addInstance(Entity const *entity) {
 void LevelScreen::update(sf::RenderWindow &window) {
     this->shader.setUniform("angle", camera);
     // Now do the gui.
-    ImGui::SFML::Update(window, sf::seconds(0));
+    ImGui::SFML::Update(window, sf::seconds(Const::FRAME_TIME));
     if (ImGui::Begin(this->level.file.c_str())) {
         if (ImGui::Button("Save")) {
             this->level.script = this->textEditor.GetText();
