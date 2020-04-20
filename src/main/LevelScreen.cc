@@ -1,6 +1,7 @@
 #include "Screen.hh"
 #include "FileIO.hh"
 #include "Const.hh"
+#include "Shaders.hh"
 #include "Util.hh"
 
 LevelScreen::LevelScreen(Core &core, Level &level):
@@ -22,7 +23,7 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     this->shader.setUniform("angle", this->camera);
     this->shader.setUniform("picture", sf::Shader::CurrentTexture);
     if (!this->shader.loadFromMemory(
-        Const::SKY_SHADER, sf::Shader::Fragment
+        Shaders::SKY_SHADER, sf::Shader::Fragment
     )) {
         spdlog::error("Couldn't start the sky shader");
     }

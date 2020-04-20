@@ -1,5 +1,6 @@
 #include "Screen.hh"
 #include "Const.hh"
+#include "Shaders.hh"
 
 BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     ScriptedScreen(core, path),
@@ -13,7 +14,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     ))
 {
     // do the shade loading
-    this->background.initFromString(Const::BLANK_SHADER);
+    this->background.initFromString(Shaders::BLANK_SHADER);
     // Battle script api.
     this->script["_input"] = this->script.create_table();
     this->script["_addBullet"] = [this](

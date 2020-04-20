@@ -2,6 +2,7 @@
 #include "Screen.hh"
 #include "FileIO.hh"
 #include "Const.hh"
+#include "Shaders.hh"
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
@@ -14,7 +15,7 @@ Core::Core(int allowMusic):
     this->transitionShader.setUniform("power", this->transitionStrength);
     this->transitionShader.setUniform("picture", sf::Shader::CurrentTexture);
     if (!this->transitionShader.loadFromMemory(
-        Const::TRANSITION_SHADER,
+        Shaders::TRANSITION_SHADER,
         sf::Shader::Fragment
     )) {
         spdlog::error("Couldn't start the transition shader");

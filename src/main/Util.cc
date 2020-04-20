@@ -221,6 +221,7 @@ Matrix Util::cameraToWorldMatrix(sf::Vector3f c) {
     Matrix x(1, 0, 0, 0, cos(c.x), sin(c.x), 0, -sin(c.x), cos(c.x));
     Matrix y(cos(c.y), 0, -sin(c.y), 0, 1, 0, sin(c.y), 0, cos(c.y));
     Matrix z(cos(c.z), sin(c.z), 0, -sin(c.z), cos(c.z), 0, 0, 0, 1);
+    spdlog::info("{}, {}, {}", x, y, z);
     x.combine(y).combine(z);
     spdlog::info("{}", x);
     return x;

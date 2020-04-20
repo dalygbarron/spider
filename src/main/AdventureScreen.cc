@@ -3,13 +3,14 @@
 #include "Knob.hh"
 #include "Util.hh"
 #include "FileIO.hh"
+#include "Shaders.hh"
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
     ScriptedScreen(core, level->script),
     background(sf::IntRect(0, 0, Const::WIDTH, Const::HEIGHT))
 {
     this->level = level;
-    this->background.initFromString(Const::SKY_SHADER);
+    this->background.initFromString(Shaders::SKY_SHADER);
     this->background.setTexture(&level->getPic());
     this->cameraMatrix = Util::cameraToWorldMatrix(
         sf::Vector3f(-this->camera.x, -this->camera.y, -this->camera.z)
@@ -61,6 +62,8 @@ AdventureScreen::~AdventureScreen() {
 
 void AdventureScreen::update(sf::RenderWindow &window) {
     this->camera.y += 0.01;
+    this->camera.x += 0.01;
+    //this->camera.z += 0.01;
     this->cameraMatrix = Util::cameraToWorldMatrix(
         sf::Vector3f(-this->camera.x, -this->camera.y, -this->camera.z)
     );
