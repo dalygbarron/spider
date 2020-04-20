@@ -64,7 +64,24 @@ void Background::setUniform(char const *name, sf::Color const &value) {
 }
 
 void Background::setUniform(char const *name, Matrix const &value) {
-    sf::Glsl::Mat4 glslMatrix(value.content);
+    float values[16];
+    values[0] = value.content[0][0];
+    values[1] = value.content[0][1];
+    values[2] = value.content[0][2];
+    values[3] = value.content[0][3];
+    values[4] = value.content[1][0];
+    values[5] = value.content[1][1];
+    values[6] = value.content[1][2];
+    values[7] = value.content[1][3];
+    values[8] = value.content[2][0];
+    values[9] = value.content[2][1];
+    values[10] = value.content[2][2];
+    values[11] = value.content[2][3];
+    values[12] = value.content[3][0];
+    values[13] = value.content[3][1];
+    values[14] = value.content[3][2];
+    values[15] = value.content[3][3];
+    sf::Glsl::Mat4 glslMatrix(values);
     this->shader.setUniform(name, glslMatrix);
 }
 

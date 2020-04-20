@@ -64,6 +64,29 @@ float Util::length(sf::Vector3f vector) {
     );
 }
 
+float Util::dotProduct(sf::Vector3f a, sf::Vector3f b) {
+    return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+sf::Vector3f Util::normalise(sf::Vector3f in) {
+    float squareLength = Util::dotProduct(in, in);
+    if (squareLength > 0) {
+        float inverseLength(1 / sqrt(squareLength));
+        in.x *= inverseLength;
+        in.y *= inverseLength;
+        in.z *= inverseLength;
+    }
+    return in;
+}
+
+sf::Vector3f Util::crossProduct(sf::Vector3f a, sf::Vector3f b) {
+    return sf::Vector3f(
+        a.y * b.z - a.z * b.y,
+        a.z * b.x - a.x * b.z,
+        a.x * b.y - a.y * b.x
+    );
+}
+
 int Util::inSlice(float a, float b, float point) {
     a = fmod(a, Const::DOUBLE_PI);
     b = fmod(b, Const::DOUBLE_PI);
@@ -204,33 +227,69 @@ sf::Vector2f Util::rotateAround(
 
 sf::Vector3f Util::sphericalToCartesian(sf::Vector2f spherical) {
     return sf::Vector3f(
-        cos(spherical.y) * cos(spherical.x),
+        cos(spherical.y) * sin(spherical.x),
         sin(spherical.y),
-        cos(spherical.y) * sin(spherical.x)
+        cos(spherical.y) * -cos(spherical.x)
     );
 }
 
 sf::Vector2f Util::cartesianToSpherical(sf::Vector3f cartesian) {
     return sf::Vector2f(
-        atan(cartesian.z / cartesian.x),
+        atan2(cartesian.z, cartesian.x),
         asin(cartesian.y)
     );
 }
 
-Matrix Util::cameraToWorldMatrix(sf::Vector3f c) {
-    Matrix x(1, 0, 0, 0, cos(c.x), sin(c.x), 0, -sin(c.x), cos(c.x));
-    Matrix y(cos(c.y), 0, -sin(c.y), 0, 1, 0, sin(c.y), 0, cos(c.y));
-    Matrix z(cos(c.z), sin(c.z), 0, -sin(c.z), cos(c.z), 0, 0, 0, 1);
-    spdlog::info("{}, {}, {}", x, y, z);
-    x.combine(y).combine(z);
-    spdlog::info("{}", x);
-    return x;
+Matrix Util::lookAt(sf::Vector3f from, sf::Vector3f to) {
+    sf::Vector3f forward = Util::normalise(to - from);
+    sf::Vector3f right = Util::crossProduct(sf::Vector3f(0, 1, 0), forward);
+    sf::Vector3f up = Util::crossProduct(forward, right);
+    return Matrix(
+        right.x,
+        right.y,
+        right.z,
+        up.x,
+        up.y,
+        up.z,
+        forward.x,
+        forward.y,
+        forward.z,
+        from.x,
+        from.y,
+        from.z
+    );
+}
+
+Matrix Util::rotationMatrix(sf::Vector3f c) {
+    Matrix identity;
+    if (c.z != 0) {
+        identity = identity.combine(Matrix(
+            cos(c.z), sin(c.z), 0,
+            -sin(c.z), cos(c.z), 0,
+            0, 0, 1
+        ));
+    }
+    if (c.y != 0) {
+        identity = identity.combine(Matrix(
+            cos(c.y), 0, -sin(c.y),
+            0, 1, 0,
+            sin(c.y), 0, cos(c.y)
+        ));
+    }
+    if (c.x != 0) {
+        identity = identity.combine(Matrix(
+            1, 0, 0,
+            0, cos(c.x), sin(c.x),
+            0, -sin(c.x), cos(c.x)
+        ));
+    }
+    return identity;
 }
 
 sf::Vector3f Util::transformPoint(sf::Vector3f point, Matrix const &c) {
     return sf::Vector3f(
-        point.x * c.content[0] + point.y * c.content[4] + point.z * c.content[8] + c.content[12],
-        point.x * c.content[1] + point.y * c.content[5] + point.z * c.content[9] + c.content[13],
-        point.x * c.content[2] + point.y * c.content[6] + point.z * c.content[10] + c.content[14]
+        point.x * c.content[0][0] + point.y * c.content[1][0] + point.z * c.content[2][0] + c.content[3][0],
+        point.x * c.content[0][1] + point.y * c.content[1][1] + point.z * c.content[2][1] + c.content[3][1],
+        point.x * c.content[0][2] + point.y * c.content[1][2] + point.z * c.content[2][2] + c.content[3][2]
     );
 }

@@ -59,6 +59,7 @@ int Mesh::in(sf::Vector2f pos) const {
 
 int Mesh::inSphere(sf::Vector2f coordinate) const {
     coordinate.x = fmod(coordinate.x, Const::DOUBLE_PI);
+    coordinate.y = fmod(coordinate.y, Const::PI);
     int size = this->vertices.size();
     if (size < 3) return false;
     int inside = false;

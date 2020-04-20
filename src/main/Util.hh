@@ -63,6 +63,29 @@ namespace Util {
     float length(sf::Vector3f vector);
 
     /**
+     * Gives you the dot product of two vectors.
+     * @param a is the first vector.
+     * @param b is the second vector.
+     * @return their dot product.
+     */
+    float dotProduct(sf::Vector3f a, sf::Vector3f b);
+
+    /**
+     * Gives you the normalised version of a given vector.
+     * @param in is the vector to normalise.
+     * @return the normalised version.
+     */
+    sf::Vector3f normalise(sf::Vector3f in);
+
+    /**
+     * Gives you the cross product of two vectors.
+     * @param a is the first vector.
+     * @param b is the second vector.
+     * @return the cross product of them.
+     */
+    sf::Vector3f crossProduct(sf::Vector3f a, sf::Vector3f b);
+
+    /**
      * Tells you if a given latitude is between two other latitudes, under the
      * assumption that the "inner" part between the latitudes is the shorter
      * part.
@@ -180,12 +203,21 @@ namespace Util {
     sf::Vector2f cartesianToSpherical(sf::Vector3f cartesian);
 
     /**
+     * Creates a matrix for a camera to look at a given thing.
+     * @param from is the place to look from.
+     * @param to   is the place to look at.
+     * @return a transformation matrix converting things into such a camera's
+     *         coordinates.
+     */
+    Matrix lookAt(sf::Vector3f from, sf::Vector3f to);
+
+    /**
      * Creates a transformation matrix that rotates things around the three
      * axes in xyz order.
      * @param c is the three angles of rotation.
      * @return the transformation matrix.
      */
-    Matrix cameraToWorldMatrix(sf::Vector3f c);
+    Matrix rotationMatrix(sf::Vector3f c);
 
     /**
      * Transforms a 3d point with a 3x3 matrix since they didn't add it for

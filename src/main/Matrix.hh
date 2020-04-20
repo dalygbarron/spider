@@ -9,7 +9,7 @@
  */
 class Matrix {
     public:
-        float content[16];
+        float content[4][4];
 
         /**
          * Creates an identity matrix.
@@ -43,11 +43,43 @@ class Matrix {
         );
 
         /**
-         * Combines this matrix with another and edits this one as a result.
-         * @param other is the other matrix.
-         * @return this matrix so you can chain calls.
+         * Creates a matrix where the top left 3x3 matrix is filled with the
+         * given values and the rest are 0 except for the bottom right one
+         * which is 1.
+         * @param c00 is the first coefficient of the first row.
+         * @param c01 is the second coefficient of the first row.
+         * @param c02 is the third coefficient of the first row.
+         * @param c10 is the first coefficient of the second row.
+         * @param c11 is the second coefficient of the second row.
+         * @param c12 is the third coefficient of the second row.
+         * @param c20 is the first coefficient of the third row.
+         * @param c21 is the second coefficient of the third row.
+         * @param c22 is the third coefficient of the third row.
+         * @param c10 is the first coefficient of the fourth row.
+         * @param c11 is the second coefficient of the fourth row.
+         * @param c12 is the third coefficient of the fourth row.
          */
-        Matrix &combine(Matrix const &other);
+        Matrix(
+            float c00,
+            float c01,
+            float c02,
+            float c10,
+            float c11,
+            float c12,
+            float c20,
+            float c21,
+            float c22,
+            float c30,
+            float c31,
+            float c32
+        );
+
+        /**
+         * Combines this matrix with another and returns the result.
+         * @param other is the other matrix.
+         * @return the result.
+         */
+        Matrix combine(Matrix const &other) const;
 
         /**
          * Stream operator for writing down matrix.

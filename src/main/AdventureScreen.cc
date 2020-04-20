@@ -10,11 +10,14 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     background(sf::IntRect(0, 0, Const::WIDTH, Const::HEIGHT))
 {
     this->level = level;
+    this->camera = sf::Vector2f(0, Const::PI);
+    this->cameraMatrix = Util::rotationMatrix(sf::Vector3f(
+        -this->camera.y,
+        -this->camera.x,
+        0
+    ));
     this->background.initFromString(Shaders::SKY_SHADER);
     this->background.setTexture(&level->getPic());
-    this->cameraMatrix = Util::cameraToWorldMatrix(
-        sf::Vector3f(-this->camera.x, -this->camera.y, -this->camera.z)
-    );
     this->background.setUniform("camera", cameraMatrix);
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
@@ -36,12 +39,11 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
         this->core.pushScreen(new BattleScreen(this->core, file));
     };
     this->script["_getCamera"] = [this]() {
-        return std::make_tuple(this->camera.x, this->camera.y, this->camera.z);
+        return std::make_tuple(this->camera.x, this->camera.y);
     };
-    this->script["_setCamera"] = [this](float x, float y, float z) {
+    this->script["_setCamera"] = [this](float x, float y) {
         this->camera.x = x;
         this->camera.y = y;
-        this->camera.z = z;
     };
     this->script["_world"] = [this](std::string const &xml) {
         spdlog::info("Adding world xml: {}", xml.c_str());
@@ -61,12 +63,6 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(sf::RenderWindow &window) {
-    this->camera.y += 0.01;
-    this->camera.x += 0.01;
-    //this->camera.z += 0.01;
-    this->cameraMatrix = Util::cameraToWorldMatrix(
-        sf::Vector3f(-this->camera.x, -this->camera.y, -this->camera.z)
-    );
     if (this->world) this->world->update(this->cameraMatrix);
     this->background.setUniform("camera", cameraMatrix);
     this->background.update();
@@ -110,11 +106,7 @@ void AdventureScreen::onClick(
                 instance.entity->offset
             );
         } else {
-            sf::Vector2f ray = Util::cartesianToSpherical(Util::transformPoint(
-                sf::Vector3f(0, 0, -1),
-                this->cameraMatrix
-            ));
-            hit = instance.mesh.inSphere(ray);
+            hit = instance.mesh.inSphere(this->camera);
         }
         if (hit) {
             if (instance.entity && !instance.entity->item.empty()) {
@@ -150,11 +142,18 @@ void AdventureScreen::onReveal(int response) {
 
 void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
     if (this->coroutine) return;
-    if (prev == pos) return;
-    //spdlog::info("{} {}", pos.x, pos.y);
-    // TODO: figure out doing this.
-    //sf::Vector2f current = Util::screenToSphere(pos, this->camera);
-    //this->camera = current;
+    if (prev == pos || (pos.x == Const::HALF_WIDTH && pos.y == Const::HALF_HEIGHT)) return;
+    sf::Vector2f screenAngle(
+        (pos.x - Const::HALF_WIDTH) / Const::WIDTH * Const::FOV_X,
+        (pos.y - Const::HALF_HEIGHT) / Const::HEIGHT * Const::FOV_Y
+    );
+    this->camera.x += screenAngle.x;
+    this->camera.y -= screenAngle.y;
+    this->cameraMatrix = Util::rotationMatrix(sf::Vector3f(
+        -this->camera.y,
+        -this->camera.x,
+        0
+    ));
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
