@@ -71,6 +71,13 @@ namespace Util {
     float dotProduct(sf::Vector3f a, sf::Vector3f b);
 
     /**
+     * Gives you the normalised version fo a given vector.
+     * @param in is the vector.
+     * @return the normalised version.
+     */
+    sf::Vector2f normalise(sf::Vector2f in);
+
+    /**
      * Gives you the normalised version of a given vector.
      * @param in is the vector to normalise.
      * @return the normalised version.

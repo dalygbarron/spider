@@ -68,6 +68,16 @@ float Util::dotProduct(sf::Vector3f a, sf::Vector3f b) {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
+sf::Vector2f Util::normalise(sf::Vector2f in) {
+    float length = sqrt(in.x * in.x + in.y * in.y);
+    if (length > 0) {
+        float inverseLength = 1 / length;
+        in.x *= inverseLength;
+        in.y *= inverseLength;
+    }
+    return in;
+}
+
 sf::Vector3f Util::normalise(sf::Vector3f in) {
     float squareLength = Util::dotProduct(in, in);
     if (squareLength > 0) {
@@ -196,8 +206,8 @@ sf::Vector2f Util::cartesianToScreen(sf::Vector3f point, Matrix const &c) {
     point = Util::transformPoint(point, c);
     sf::Vector2f angle = Util::cartesianToSpherical(point);
     return sf::Vector2f(
-        (point.x / -point.z) / tan(Const::FOV_X * 0.5) * Const::WIDTH + Const::HALF_WIDTH,
-        -(point.y / -point.z) / tan(Const::FOV_Y * 0.5) * Const::HEIGHT + Const::HALF_HEIGHT
+        point.x / -point.z / tan(Const::FOV_X * 0.5) * Const::WIDTH + Const::HALF_WIDTH,
+        -point.y / -point.z / tan(Const::FOV_Y * 0.5) * Const::HEIGHT + Const::HALF_HEIGHT
     );
 }
 
