@@ -205,10 +205,9 @@ sf::Vector2f Util::cartesianToSpherical(sf::Vector3f cartesian) {
 sf::Vector2f Util::cartesianToScreen(sf::Vector3f point, Matrix const &c) {
     point = Util::transformPoint(point, c);
     sf::Vector2f angle = Util::cartesianToSpherical(point);
-    
     return sf::Vector2f(
-        tan(angle.x) / tan(Const::FOV_X / 2) * Const::WIDTH + Const::HALF_WIDTH,
-        tan(-angle.y) / tan(Const::FOV_Y / 2) * Const::HEIGHT + Const::HALF_HEIGHT
+        point.x / -point.z / tan(Const::FOV_X * 0.5) * Const::WIDTH + Const::HALF_WIDTH,
+        -point.y / -point.z / tan(Const::FOV_Y * 0.5) * Const::HEIGHT + Const::HALF_HEIGHT
     );
 }
 

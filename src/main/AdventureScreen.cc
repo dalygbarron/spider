@@ -170,12 +170,10 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.
-    sf::Vector3f floor = Util::transformPoint(
+    sf::Vector2f floor = Util::cartesianToScreen(
         sf::Vector3f(0, -1, 0),
         this->camera.toMatrix()
     );
-    // TODO: floorscreen is wrong I think.
-    sf::Vector2f floorScreen(floor.x, floor.y);
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
@@ -185,7 +183,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
             );
             float angle = Util::upAngle(
                 this->camera.getAngle(),
-                floorScreen,
+                floor,
                 screenPos
             );
             this->core.renderer.batch.draw(
