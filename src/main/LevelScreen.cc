@@ -187,7 +187,7 @@ void LevelScreen::update(sf::RenderWindow &window) {
 
 void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
     if (button == sf::Mouse::Button::Left) {
-        sf::Vector2f coordinate = Util::screenToSphere(pos, this->camera);
+        sf::Vector2f coordinate = sf::Vector2f(0, 0);
         // Find the closest thing.
         float distance = 0.2;
         this->selectedInstance = NULL;
@@ -230,10 +230,7 @@ void LevelScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         if (this->selectedInstance) {
             if (this->selectedInstance->entity) {
-                    sf::Vector2f spherePos = Util::screenToSphere(
-                        pos,
-                        this->camera
-                    );
+                    sf::Vector2f spherePos = sf::Vector2f(0, 0);
                     this->selectedInstance->pos.x = spherePos.x;
                     this->selectedInstance->pos.y = spherePos.y;
             } else {
@@ -241,10 +238,7 @@ void LevelScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
                     this->selected
                 );
                 if (vertex) {
-                    sf::Vector2f spherePos = Util::screenToSphere(
-                        pos,
-                        this->camera
-                    );
+                    sf::Vector2f spherePos = sf::Vector2f(0, 0);
                     vertex->x = spherePos.x;
                     vertex->y = spherePos.y;
                 }
@@ -252,8 +246,8 @@ void LevelScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
         }
     }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
-        sf::Vector2f current = Util::screenToSphere(pos, this->camera);
-        sf::Vector2f previous = Util::screenToSphere(prev, this->camera);
+        sf::Vector2f current = sf::Vector2f(0, 0);
+        sf::Vector2f previous = sf::Vector2f(0, 0);
         this->camera.x += current.x - previous.x;
         this->camera.y += current.y - previous.y;
     }
@@ -314,16 +308,10 @@ void LevelScreen::draw(sf::RenderTarget &target, int top) const {
     sf::RenderStates states;
     states.shader = &(this->shader);
     target.draw(back, states);
-    sf::Vector3f floor = Util::sphereToScreen(
-        sf::Vector2f(0, Const::HALF_PI * ((this->camera.y > 0) ? 1 : -1)),
-        this->camera
-    );
+    sf::Vector3f floor = sf::Vector3f();
     for (Instance const &instance: this->level.instances) {
         if (instance.entity) {
-            sf::Vector3f pos = Util::sphereToScreen(
-                instance.pos,
-                this->camera
-            );
+            sf::Vector3f pos = sf::Vector3f();
             if (pos.z < 0) continue;
             float angle;
             if (this->camera.y > 0) {

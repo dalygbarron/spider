@@ -148,54 +148,6 @@ sf::Vector3f Util::toSphere(sf::Vector3f pos, sf::Vector3f camera) {
     );
 }
 
-sf::Vector2f Util::screenToSphere(
-    sf::Vector2f pos,
-    sf::Vector2f camera
-) {
-    // yeah, dunno why but for this you have to rotate around the y axis first
-    // and then the x axis, but for the rotate function it was the other way
-    // round in order to work so who knows lol.
-    sf::Vector2f coordinate(
-        atan((pos.x - Const::HALF_WIDTH) /
-            Const::WIDTH * Const::RENDER_LENGTH_X),
-        atan((pos.y - Const::HALF_HEIGHT) /
-            Const::HEIGHT * Const::RENDER_LENGTH_Y)
-    );
-    float cosY = cos(coordinate.y);
-    sf::Vector3f vector(
-        cosY * sin(coordinate.x),
-        sin(coordinate.y),
-        cos(coordinate.x) * cosY
-    );
-    float sideLength = sqrt(vector.z * vector.z + vector.y * vector.y);
-    float sideAngle = atan2(vector.y, vector.z);
-    vector.z = cos(sideAngle + camera.y) * sideLength;
-    vector.y = sin(sideAngle + camera.y) * sideLength;
-    return sf::Vector2f(
-        atan2(vector.x, vector.z) + camera.x,
-        atan2(vector.y, sqrt(vector.x * vector.x + vector.z * vector.z))
-    );
-}
-
-sf::Vector3f Util::sphereToScreen(
-    sf::Vector2f coordinate,
-    sf::Vector2f camera
-) {
-    return sf::Vector3f(
-        (coordinate.x - camera.x) / Const::FOV_X * Const::WIDTH + Const::HALF_WIDTH,
-        (coordinate.y - camera.y) / Const::FOV_Y * Const::HEIGHT + Const::HALF_HEIGHT,
-        abs(coordinate.x - camera.x) + abs(coordinate.y - camera.y)
-    );
-    coordinate = rotate(coordinate, sf::Vector2f(-camera.x, -camera.y));
-    return sf::Vector3f(
-        tan(coordinate.x) * Const::INVERSE_RENDER_LENGTH_X * Const::WIDTH +
-            Const::HALF_WIDTH,
-        tan(coordinate.y) * Const::INVERSE_RENDER_LENGTH_Y * Const::HEIGHT +
-            Const::HALF_HEIGHT,
-        cos(coordinate.x)
-    );
-}
-
 float Util::upAngle(
     sf::Vector2f camera,
     sf::Vector2f floor,
@@ -235,28 +187,17 @@ sf::Vector3f Util::sphericalToCartesian(sf::Vector2f spherical) {
 
 sf::Vector2f Util::cartesianToSpherical(sf::Vector3f cartesian) {
     return sf::Vector2f(
-        atan2(cartesian.z, cartesian.x),
+        atan2(cartesian.z, cartesian.x) + Const::HALF_PI,
         asin(cartesian.y)
     );
 }
 
-Matrix Util::lookAt(sf::Vector3f from, sf::Vector3f to) {
-    sf::Vector3f forward = Util::normalise(to - from);
-    sf::Vector3f right = Util::crossProduct(sf::Vector3f(0, 1, 0), forward);
-    sf::Vector3f up = Util::crossProduct(forward, right);
-    return Matrix(
-        right.x,
-        right.y,
-        right.z,
-        up.x,
-        up.y,
-        up.z,
-        forward.x,
-        forward.y,
-        forward.z,
-        from.x,
-        from.y,
-        from.z
+sf::Vector2f Util::cartesianToScreen(sf::Vector3f point, Matrix const &c) {
+    point = Util::transformPoint(point, c);
+    sf::Vector2f angle = Util::cartesianToSpherical(point);
+    return sf::Vector2f(
+        (point.x / -point.z) / tan(Const::FOV_X * 0.5) * Const::WIDTH + Const::HALF_WIDTH,
+        -(point.y / -point.z) / tan(Const::FOV_Y * 0.5) * Const::HEIGHT + Const::HALF_HEIGHT
     );
 }
 
@@ -281,6 +222,32 @@ Matrix Util::rotationMatrix(sf::Vector3f c) {
             1, 0, 0,
             0, cos(c.x), sin(c.x),
             0, -sin(c.x), cos(c.x)
+        ));
+    }
+    return identity;
+}
+
+Matrix Util::inverseRotationMatrix(sf::Vector3f c) {
+    Matrix identity;
+    if (c.x != 0) {
+        identity = identity.combine(Matrix(
+            1, 0, 0,
+            0, cos(-c.x), sin(-c.x),
+            0, -sin(-c.x), cos(-c.x)
+        ));
+    }
+    if (c.y != 0) {
+        identity = identity.combine(Matrix(
+            cos(-c.y), 0, -sin(-c.y),
+            0, 1, 0,
+            sin(-c.y), 0, cos(-c.y)
+        ));
+    }
+    if (c.z != 0) {
+        identity = identity.combine(Matrix(
+            cos(-c.z), sin(-c.z), 0,
+            -sin(-c.z), cos(-c.z), 0,
+            0, 0, 1
         ));
     }
     return identity;

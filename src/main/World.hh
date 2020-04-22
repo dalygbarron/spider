@@ -3,6 +3,7 @@
 
 #include "Lindel.hh"
 #include "Util.hh"
+#include "Camera.hh"
 #include "Renderer.hh"
 #include "Background.hh"
 #include <SFML/Graphics.hpp>
@@ -29,24 +30,23 @@ class World {
 
         /**
          * Updates the world, and if something has been interacted with then it
-         * @param camera is a 4x4 matrix converting from the rotated camera to
-         *               world coordinates.
+         * @param camera has the matrices for the camera transformation.
          * @return the name of the function to run and the argument to pass it.
          *         Hold no illusions that these string will persist because
          *         they shall not.
          */
-        std::pair<char const *, char const *> update(Matrix const &camera);
+        std::pair<char const *, char const *> update(Camera const &camera);
 
         /**
          * draws the worlde upon thy screene.
          * @param target   is the screen to draw on.
          * @param renderer is used to draw cool shit.
-         * @param camera   is the 4x4 camera to world matrix.
+         * @param camera   has the camera transformation matrices.
          */
         void draw(
             sf::RenderTarget &target,
             Renderer &renderer,
-            Matrix const &camera
+            Camera const &camera
         ) const;
 
         /**

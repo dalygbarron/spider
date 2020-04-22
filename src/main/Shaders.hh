@@ -24,17 +24,12 @@ namespace Shaders {
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
-            vec2 angle = uv * fov;
-            vec4 point = vec4(
-                cos(angle.y) * sin(angle.x),
-                sin(angle.y),
-                cos(angle.y) * -cos(angle.x),
-                1
-            );
+            vec2 angle = uv * vec2(tan(fov.x * 0.5), tan(fov.y * 0.5));
+            vec4 point = vec4(normalize(vec3(-angle.x, -angle.y, 1.0)), 1.0);
             vec4 cameraPoint = point * camera;
             vec2 cameraAngle = vec2(
                 atan(cameraPoint.z, cameraPoint.x) + PI,
-                asin(cameraPoint.y) + PI / 2.0
+                acos(cameraPoint.y)
             );
             //gl_FragColor = vec4(mod(cameraAngle.x, 1.0), mod(cameraAngle.y, 1.0), 1.0, 1.0);
             gl_FragColor = texture2D(texture, cameraAngle / vec2(DOUBLE_PI, PI));

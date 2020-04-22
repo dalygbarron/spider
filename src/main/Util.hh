@@ -142,26 +142,6 @@ namespace Util {
     sf::Vector3f toSphere(sf::Vector3f pos, sf::Vector3f camera);
 
     /**
-     * Converts a location on the screen to an angle from the centre of
-     * a sphere that is around the screen.
-     * @param pos    is the position on the screen.
-     * @param camera is the rotation of the camera.
-     * @return the coordinates of that point on the sphere.
-     */
-    sf::Vector2f screenToSphere(sf::Vector2f pos, sf::Vector2f camera);
-
-    /**
-     * Converts a coordinate on the surface of a sphere to a location on the
-     * screen assuming the camera is inside the centre of the sphere.
-     * @param coordinate is the latitude and longitude of the point converted.
-     * @param camera     is the current angle of the camera.
-     * @return the position to place it on the screen. The third dimension is
-     *         whether it is appearing on the front of the screen or on the
-     *         back of the screen.
-     */
-    sf::Vector3f sphereToScreen(sf::Vector2f coordinate, sf::Vector2f camera);
-
-    /**
      * Gives you the angle that images should be given thus that they appear to
      * be facing upwards given their position and the angle of the camera.
      * @param camera is the angle of the camera.
@@ -203,21 +183,30 @@ namespace Util {
     sf::Vector2f cartesianToSpherical(sf::Vector3f cartesian);
 
     /**
-     * Creates a matrix for a camera to look at a given thing.
-     * @param from is the place to look from.
-     * @param to   is the place to look at.
-     * @return a transformation matrix converting things into such a camera's
-     *         coordinates.
+     * Converts natural cartesian coordinates into an x and y value on the
+     * screen.
+     * @param point is the point to project to the screen.
+     * @param m     is the camera matrix containing both a translation and
+     *              rotation.
+     * @return the position on the screen.
      */
-    Matrix lookAt(sf::Vector3f from, sf::Vector3f to);
+    sf::Vector2f cartesianToScreen(sf::Vector3f point, Matrix const &m);
 
     /**
      * Creates a transformation matrix that rotates things around the three
-     * axes in xyz order.
+     * axes in zyx order.
      * @param c is the three angles of rotation.
      * @return the transformation matrix.
      */
     Matrix rotationMatrix(sf::Vector3f c);
+
+    /**
+     * Creates a transformation matrix that rotates things around the three
+     * axes in xyz order by the opposite of the angles you specified.
+     * @param c is the three angles of rotation.
+     * @return the inverse transformation matrix.
+     */
+    Matrix inverseRotationMatrix(sf::Vector3f c);
 
     /**
      * Transforms a 3d point with a 3x3 matrix since they didn't add it for

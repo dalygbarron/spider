@@ -10,15 +10,10 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     background(sf::IntRect(0, 0, Const::WIDTH, Const::HEIGHT))
 {
     this->level = level;
-    this->camera = sf::Vector2f(0, Const::PI);
-    this->cameraMatrix = Util::rotationMatrix(sf::Vector3f(
-        -this->camera.y,
-        -this->camera.x,
-        0
-    ));
+    this->camera.set(Const::PI, Const::PI);
     this->background.initFromString(Shaders::SKY_SHADER);
     this->background.setTexture(&level->getPic());
-    this->background.setUniform("camera", cameraMatrix);
+    this->background.setUniform("camera", this->camera.fromMatrix());
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -39,11 +34,10 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
         this->core.pushScreen(new BattleScreen(this->core, file));
     };
     this->script["_getCamera"] = [this]() {
-        return std::make_tuple(this->camera.x, this->camera.y);
+        return this->camera.getAngle();
     };
     this->script["_setCamera"] = [this](float x, float y) {
-        this->camera.x = x;
-        this->camera.y = y;
+        this->camera.set(x, y);
     };
     this->script["_world"] = [this](std::string const &xml) {
         spdlog::info("Adding world xml: {}", xml.c_str());
@@ -63,8 +57,8 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(sf::RenderWindow &window) {
-    if (this->world) this->world->update(this->cameraMatrix);
-    this->background.setUniform("camera", cameraMatrix);
+    if (this->world) this->world->update(this->camera);
+    this->background.setUniform("camera", this->camera.fromMatrix());
     this->background.update();
     if (this->runScript<float>(0)) return;
     Util::centreMouse(window);
@@ -77,7 +71,7 @@ void AdventureScreen::onClick(
     if (this->coroutine) return;
     sf::Vector3f floor = Util::transformPoint(
         sf::Vector3f(0, -1, 0),
-        this->cameraMatrix
+        this->camera.toMatrix()
     );
     // TODO: floorscreen is wrong I think.
     sf::Vector2f floorScreen(floor.x, floor.y);
@@ -87,12 +81,12 @@ void AdventureScreen::onClick(
         if (instance.entity) {
             sf::Vector3f screenPos = Util::transformPoint(
                 Util::sphericalToCartesian(instance.pos),
-                this->cameraMatrix
+                this->camera.toMatrix()
             );
             if (screenPos.z < 0) continue;
             // TODO: Broken
             float angle = Util::upAngle(
-                sf::Vector2f(this->camera.x, this->camera.y),
+                sf::Vector2f(0, 1),
                 floorScreen,
                 sf::Vector2f(screenPos.x, screenPos.y)
             );
@@ -106,7 +100,7 @@ void AdventureScreen::onClick(
                 instance.entity->offset
             );
         } else {
-            hit = instance.mesh.inSphere(this->camera);
+            hit = instance.mesh.inSphere(this->camera.getAngle());
         }
         if (hit) {
             if (instance.entity && !instance.entity->item.empty()) {
@@ -141,19 +135,15 @@ void AdventureScreen::onReveal(int response) {
 }
 
 void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
-    if (this->coroutine) return;
-    if (prev == pos || (pos.x == Const::HALF_WIDTH && pos.y == Const::HALF_HEIGHT)) return;
-    sf::Vector2f screenAngle(
-        (pos.x - Const::HALF_WIDTH) / Const::WIDTH * Const::FOV_X,
+    if (this->coroutine || prev == pos ||
+        (pos.x == Const::HALF_WIDTH && pos.y == Const::HALF_HEIGHT)
+    ) {
+        return;
+    }
+    this->camera.add(
+        -(pos.x - Const::HALF_WIDTH) / Const::WIDTH * Const::FOV_X,
         (pos.y - Const::HALF_HEIGHT) / Const::HEIGHT * Const::FOV_Y
     );
-    this->camera.x += screenAngle.x;
-    this->camera.y -= screenAngle.y;
-    this->cameraMatrix = Util::rotationMatrix(sf::Vector3f(
-        -this->camera.y,
-        -this->camera.x,
-        0
-    ));
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -173,7 +163,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     // draw the behind world if applicable.
     if (this->world) {
-        this->world->draw(target, this->core.renderer, this->cameraMatrix);
+        this->world->draw(target, this->core.renderer, this->camera);
     }
     target.draw(this->core.renderer.batch);
     this->core.renderer.batch.clear();
@@ -182,29 +172,27 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     // drawing entity instances.
     sf::Vector3f floor = Util::transformPoint(
         sf::Vector3f(0, -1, 0),
-        this->cameraMatrix
+        this->camera.toMatrix()
     );
     // TODO: floorscreen is wrong I think.
     sf::Vector2f floorScreen(floor.x, floor.y);
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
-            sf::Vector3f pos = Util::sphericalToCartesian(instance.pos);
-            pos = Util::transformPoint(pos, this->cameraMatrix);
-            sf::Vector2f screenPos(pos.x, pos.y);
-            // TODO: still need to project camera coordinates toscreen.
-            if (pos.z < 0) continue;
-            // TODO: Broken
+            sf::Vector2f screenPos = Util::cartesianToScreen(
+                Util::sphericalToCartesian(instance.pos),
+                this->camera.toMatrix()
+            );
             float angle = Util::upAngle(
-                sf::Vector2f(this->camera.x, this->camera.y),
+                this->camera.getAngle(),
                 floorScreen,
-                sf::Vector2f(screenPos.x, screenPos.y)
+                screenPos
             );
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                sf::Vector2f(pos.x, pos.y),
+                screenPos,
                 instance.entity->offset,
-                angle,
+                0,
                 sf::Vector2f(instance.size, instance.size)
             );
         }

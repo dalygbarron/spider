@@ -8,19 +8,16 @@ TEST_CASE("Switch expression XOR test", "[memory][switch]") {
         Memory::SwitchExpression::Type::Switch,
         "a",
         NULL,
-        NULL,
         NULL
     );
     Memory::SwitchExpression *b = new Memory::SwitchExpression(
         Memory::SwitchExpression::Type::Switch,
         "b",
         NULL,
-        NULL,
         NULL
     );
     Memory::SwitchExpression *andExpression = new Memory::SwitchExpression(
         Memory::SwitchExpression::Type::And,
-        NULL,
         NULL,
         a,
         b
@@ -28,20 +25,17 @@ TEST_CASE("Switch expression XOR test", "[memory][switch]") {
     Memory::SwitchExpression *orExpression = new Memory::SwitchExpression(
         Memory::SwitchExpression::Type::Or,
         NULL,
-        NULL,
         a,
         b
     );
     Memory::SwitchExpression *nand = new Memory::SwitchExpression(
         Memory::SwitchExpression::Type::Not,
         NULL,
-        NULL,
         andExpression,
         NULL
     );
     Memory::SwitchExpression *finalAnd = new Memory::SwitchExpression(
         Memory::SwitchExpression::Type::And,
-        NULL,
         NULL,
         nand,
         orExpression

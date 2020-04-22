@@ -56,9 +56,9 @@ World::World(
     this->gravity.z = -0.02;
 }
 
-std::pair<char const *, char const *> World::update(Matrix const &camera) {
+std::pair<char const *, char const *> World::update(Camera const &camera) {
     // TODO: make camera and position into one 4x4 matrix
-    this->background.setUniform("camera", camera);
+    this->background.setUniform("camera", camera.fromMatrix());
     this->background.setUniform("position", this->position);
     this->background.update();
     char const *function = NULL;
@@ -83,19 +83,19 @@ std::pair<char const *, char const *> World::update(Matrix const &camera) {
 void World::draw(
     sf::RenderTarget &target,
     Renderer &renderer,
-    Matrix const &camera
+    Camera const &camera
 ) const {
     this->background.draw(target);
     // Draw the lindels.
     sf::Vector3f floor = Util::transformPoint(
         sf::Vector3f(0, -1, 0),
-        camera
+        camera.toMatrix()
     );
     // TODO: floorscreen is wrong I think.
     sf::Vector2f floorScreen(floor.x, floor.y);
     for (Lindel const &lindel: this->lindels) {
         if (!lindel.alive) continue;
-        sf::Vector3f pos = Util::transformPoint(lindel.position, camera);
+        sf::Vector3f pos = Util::transformPoint(lindel.position, camera.toMatrix());
         sf::Vector2f screenPos(pos.x, pos.y);
         // TODO: still need to project camera coordinates toscreen.
         float angle = Util::upAngle(
