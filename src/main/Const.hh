@@ -25,6 +25,8 @@ namespace Const {
     static float const HALF_PI = 1.570796326794897;
     static float const FOV_X = 2;
     static float const FOV_Y = 1;
+    static float const INVERSE_HALF_TAN_X = 0.642092615936352;
+    static float const INVERSE_HALF_TAN_Y = 1.830487721725153;
     static float const RADIAN_CONVERT = 57.2957795131;
     static float const FRAME_TIME = 0.016666666666667;
     static float const DAINTY_RADIUS = 6;
