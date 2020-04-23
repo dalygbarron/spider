@@ -9,18 +9,18 @@ void Renderer::setCursorRat(sf::IntRect rat, Renderer::CursorType type) {
     this->cursorRats[static_cast<int>(type)] = rat;
 }
 
-void Renderer::point(sf::Vector2f pos, int highlight) const {
+void Renderer::point(glm::vec2 pos, int highlight) const {
     this->batch.draw(
         highlight ? this->pointHighlightRat : this->pointRat,
         pos
     );
 }
 
-void Renderer::node(sf::Vector2f pos, int highlight) const {
+void Renderer::node(glm::vec2 pos, int highlight) const {
     this->batch.draw(highlight ? this->nodeHighlightRat : this->nodeRat, pos);
 }
 
-void Renderer::cursor(sf::Vector2f pos, Renderer::CursorType cursor) const {
+void Renderer::cursor(glm::vec2 pos, Renderer::CursorType cursor) const {
     this->batch.draw(this->cursorRats[static_cast<int>(cursor)], pos);
 }
 
@@ -43,8 +43,8 @@ void Renderer::button(sf::FloatRect pos, int depressed) const {
 }
 
 void Renderer::line(
-    sf::Vector2f start,
-    sf::Vector2f end,
+    glm::vec2 start,
+    glm::vec2 end,
     int highlight
 ) const {
     this->batch.draw(
@@ -55,8 +55,8 @@ void Renderer::line(
 }
 
 void Renderer::club(
-    sf::Vector2f start,
-    sf::Vector2f end,
+    glm::vec2 start,
+    glm::vec2 end,
     int highlight
 ) const {
     this->line(start, end, highlight);
@@ -65,18 +65,18 @@ void Renderer::club(
 
 void Renderer::sphereMesh(
     Mesh const &mesh,
-    sf::Vector2f camera,
+    glm::vec2 camera,
     int highlight
 ) const {
-    std::vector<sf::Vector2f> const &vertices = mesh.getVertices();
+    std::vector<glm::vec2> const &vertices = mesh.getVertices();
     int n = vertices.size();
     for (int i = 0; i < n; i++) {
         int next = (i == n - 1) ? 0 : i + 1;
-        sf::Vector2f delta = vertices[next] - vertices[i];
+        glm::vec2 delta = vertices[next] - vertices[i];
         delta.x /= Renderer::SPHERE_INTERPOLATION;
         delta.y /= Renderer::SPHERE_INTERPOLATION;
         for (int j = 0; j < Renderer::SPHERE_INTERPOLATION; j++) {
-            sf::Vector2f multipliedDelta = sf::Vector2f(
+            glm::vec2 multipliedDelta = glm::vec2(
                 delta.x * j,
                 delta.y * j
             );
@@ -84,28 +84,28 @@ void Renderer::sphereMesh(
             sf::Vector3f end = sf::Vector3f(0, 0, 0);
             if (start.z < 0) continue;
             this->line(
-                sf::Vector2f(start.x, start.y),
-                sf::Vector2f(end.x, end.y),
+                glm::vec2(start.x, start.y),
+                glm::vec2(end.x, end.y),
                 i == highlight
             );
         }
         sf::Vector3f nodePos = sf::Vector3f(0, 0, 0);
         if (nodePos.z < 0) continue;
-        this->node(sf::Vector2f(nodePos.x, nodePos.y), i == highlight);
+        this->node(glm::vec2(nodePos.x, nodePos.y), i == highlight);
     }
 }
 
-void Renderer::arc(sf::Vector2f pos, float radius, float a, float b) const {
+void Renderer::arc(glm::vec2 pos, float radius, float a, float b) const {
     this->batch.draw(this->lineRat, pos, radius, a, b);
 }
 
-void Renderer::text(char const *content, sf::Vector2f pos) const {
+void Renderer::text(char const *content, glm::vec2 pos) const {
     this->text(content, pos, this->font);
 }
 
 void Renderer::text(
     char const *content,
-    sf::Vector2f pos,
+    glm::vec2 pos,
     sf::IntRect font
 ) const {
     float originX = pos.x;
@@ -136,22 +136,22 @@ void Renderer::text(
     }
 }
 
-void Renderer::rat(Rat const &rat, sf::Vector2f pos) {
+void Renderer::rat(Rat const &rat, glm::vec2 pos) {
     this->batch.draw(rat.getFrame(), pos);
 }
 
 void Renderer::rat(
     Rat const &rat,
-    sf::Vector2f position,
+    glm::vec2 position,
     float rotation,
-    sf::Vector2f scale,
+    glm::vec2 scale,
     int flip
 ) {
     if (flip) scale.x *= -1;
     this->batch.draw(
         rat.getFrame(),
         position,
-        sf::Vector2f(0, 0),
+        glm::vec2(0, 0),
         rotation,
         scale
     );

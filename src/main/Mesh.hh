@@ -1,7 +1,8 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <SFML/Graphics.hpp>
+#include "glm/vec2.hpp"
+#include <vector>
 
 /**
  * Represents a concave polygon.
@@ -18,7 +19,7 @@ class Mesh {
          * Adds a vertex to the mesh.
          * @param vertex is the vertex to add.
          */
-        void addVertex(sf::Vector2f vertex);
+        void addVertex(glm::vec2 vertex);
 
         /**
          * Adds a vertex in after the given vertex that is halfway between it
@@ -40,7 +41,7 @@ class Mesh {
          * Tells you the centrepoint of the mesh.
          * @return the centre.
          */
-        sf::Vector2f getCentre();
+        glm::vec2 getCentre();
 
         /**
          * Gives you a mutable pointer to some vertex. Obviously this will not
@@ -50,20 +51,20 @@ class Mesh {
          * @return a mutable pointer to it, which is null if you gave an
          *         invalid index.
          */
-        sf::Vector2f *getVertex(int index);
+        glm::vec2 *getVertex(int index);
 
         /**
          * Gives you the vertices in the mesh.
          * @return a constant vector of them.
          */
-        std::vector<sf::Vector2f> const &getVertices() const;
+        std::vector<glm::vec2> const &getVertices() const;
 
         /**
          * Tells you if the given position is in this shape.
          * @param pos is the position to check.
          * @return true if it is inside and false if not.
          */
-        int in(sf::Vector2f pos) const;
+        int in(glm::vec2 pos) const;
 
         /**
          * Tells you if the given latitude and longitude would be in this shape
@@ -71,7 +72,7 @@ class Mesh {
          * @param coordinate is the location to check.
          * @return true if it is inside and false otherwise.
          */
-        int inSphere(sf::Vector2f coordinate) const;
+        int inSphere(glm::vec2 coordinate) const;
 
         /**
          * Gives you the index of the vertex closest to the given position.
@@ -82,10 +83,10 @@ class Mesh {
          *         were particularly close or the mesh has no vertices or
          *         something.
          */
-        int getClosestVertex(sf::Vector2f pos, float theshold) const;
+        int getClosestVertex(glm::vec2 pos, float theshold) const;
 
     private:
-        std::vector<sf::Vector2f> vertices;
+        std::vector<glm::vec2> vertices;
 };
 
 #endif

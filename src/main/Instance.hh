@@ -4,6 +4,7 @@
 #include "Entity.hh"
 #include "Mesh.hh"
 #include "Memory.hh"
+#include "glm/vec2.hpp"
 #include <string>
 
 /**
@@ -17,7 +18,7 @@ class Instance {
         std::string name;
         Memory::SwitchExpression *lifeSwitch;
         Entity const *entity;
-        sf::Vector2f pos;
+        glm::vec2 pos;
         Mesh mesh;
         int alive = true;
         float size = 1;
@@ -31,7 +32,7 @@ class Instance {
          *                   finding the distance from.
          * @return the distance.
          */
-        float distance(sf::Vector2f coordinate) const;
+        float distance(glm::vec2 coordinate) const;
 };
 
 #endif

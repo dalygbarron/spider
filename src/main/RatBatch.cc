@@ -12,7 +12,7 @@ void RatBatch::clear() {
     this->clean = true;
 }
 
-void RatBatch::draw(sf::IntRect sprite, sf::Vector2f pos) {
+void RatBatch::draw(sf::IntRect sprite, glm::vec2 pos) {
     sf::FloatRect box;
     box.left = pos.x - sprite.width / 2;
     box.top = pos.y - sprite.height / 2;
@@ -23,10 +23,10 @@ void RatBatch::draw(sf::IntRect sprite, sf::Vector2f pos) {
 
 void RatBatch::draw(
     sf::IntRect sprite,
-    sf::Vector2f pos,
-    sf::Vector2f offset,
+    glm::vec2 pos,
+    glm::vec2 offset,
     float rot,
-    sf::Vector2f scale
+    glm::vec2 scale
 ) {
     sf::Transform transform;
     transform.translate(pos)
@@ -34,42 +34,36 @@ void RatBatch::draw(
         .scale(scale)
         .translate(offset);
     int nVertices = this->n * 4;
-    if (nVertices + 4 > this->vertices.size()) {
-        this->vertices.resize(this->vertices.size() + 4);
-    }
+    this->reserve(nVertices + 4);
     this->vertices[nVertices].position = transform.transformPoint(
         -sprite.width / 2,
         -sprite.height / 2
     );
-    this->vertices[nVertices].texCoords = sf::Vector2f(sprite.left, sprite.top);
-    this->vertices[nVertices].color = sf::Color::White;
+    this->vertices[nVertices].texCoords = glm::vec2(sprite.left, sprite.top);
     this->vertices[nVertices + 1].position = transform.transformPoint(
         sprite.width / 2,
         -sprite.height / 2
     );
-    this->vertices[nVertices + 1].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 1].texCoords = glm::vec2(
         sprite.left + sprite.width,
         sprite.top
     );
-    this->vertices[nVertices + 1].color = sf::Color::White;
     this->vertices[nVertices + 2].position = transform.transformPoint(
         sprite.width / 2,
         sprite.height / 2
     );
-    this->vertices[nVertices + 2].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 2].texCoords = glm::vec2(
         sprite.left + sprite.width,
         sprite.top + sprite.height
     );
-    this->vertices[nVertices + 2].color = sf::Color::White;
     this->vertices[nVertices + 3].position = transform.transformPoint(
         -sprite.width / 2,
         sprite.height / 2
     );
-    this->vertices[nVertices + 3].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 3].texCoords = glm::vec2(
         sprite.left,
         sprite.top + sprite.height
     );
-    this->vertices[nVertices + 3].color = sf::Color::White;
     this->n++;
 }
 
@@ -132,45 +126,39 @@ void RatBatch::draw(Patch const &patch, sf::FloatRect pos) {
 
 void RatBatch::draw(sf::IntRect sprite, sf::FloatRect pos) {
     int nVertices = this->n * 4;
-    if (nVertices + 4 > this->vertices.size()) {
-        this->vertices.resize(this->vertices.size() + 4);
-    }
-    this->vertices[nVertices].position = sf::Vector2f(pos.left, pos.top);
-    this->vertices[nVertices].texCoords = sf::Vector2f(sprite.left, sprite.top);
-    this->vertices[nVertices].color = sf::Color::White;
-    this->vertices[nVertices + 1].position = sf::Vector2f(
+    this->reserve(nVertices + 4);
+    this->vertices[nVertices].position = glm::vec2(pos.left, pos.top);
+    this->vertices[nVertices].texCoords = glm::vec2(sprite.left, sprite.top);
+    this->vertices[nVertices + 1].position = glm::vec2(
         pos.left + pos.width,
         pos.top
     );
-    this->vertices[nVertices + 1].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 1].texCoords = glm::vec2(
         sprite.left + sprite.width,
         sprite.top
     );
-    this->vertices[nVertices + 1].color = sf::Color::White;
-    this->vertices[nVertices + 2].position = sf::Vector2f(
+    this->vertices[nVertices + 2].position = glm::vec2(
         pos.left + pos.width,
         pos.top + pos.height
     );
-    this->vertices[nVertices + 2].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 2].texCoords = glm::vec2(
         sprite.left + sprite.width,
         sprite.top + sprite.height
     );
-    this->vertices[nVertices + 2].color = sf::Color::White;
-    this->vertices[nVertices + 3].position = sf::Vector2f(
+    this->vertices[nVertices + 3].position = glm::vec2(
         pos.left,
         pos.top + pos.height
     );
-    this->vertices[nVertices + 3].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 3].texCoords = glm::vec2(
         sprite.left,
         sprite.top + sprite.height
     );
-    this->vertices[nVertices + 3].color = sf::Color::White;
     this->n++;
 }
 
-void RatBatch::draw(sf::IntRect sprite, sf::Vector2f start, sf::Vector2f end) {
+void RatBatch::draw(sf::IntRect sprite, glm::vec2 start, glm::vec2 end) {
     // Figure out what orientation to draw them with.
-    sf::Vector2f edge(0, 0);
+    glm::vec2 edge(0, 0);
     if (fabs(end.x - start.x) > fabs(end.y - start.y)) {
         edge.y = sprite.height / 2;
     } else {
@@ -180,90 +168,82 @@ void RatBatch::draw(sf::IntRect sprite, sf::Vector2f start, sf::Vector2f end) {
     if (nVertices + 4 > this->vertices.size()) {
         this->vertices.resize(this->vertices.size() + 4);
     }
-    this->vertices[nVertices].position = sf::Vector2f(
+    this->vertices[nVertices].position = glm::vec2(
         start.x - edge.x,
         start.y - edge.y
     );
-    this->vertices[nVertices].texCoords = sf::Vector2f(
+    this->vertices[nVertices].texCoords = glm::vec2(
         sprite.left,
         sprite.top + sprite.height
     );
-    this->vertices[nVertices].color = sf::Color::White;
-    this->vertices[nVertices + 1].position = sf::Vector2f(
+    this->vertices[nVertices + 1].position = glm::vec2(
         end.x - edge.x,
         end.y - edge.y
     );
-    this->vertices[nVertices + 1].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 1].texCoords = glm::vec2(
         sprite.left,
         sprite.top
     );
-    this->vertices[nVertices + 1].color = sf::Color::White;
-    this->vertices[nVertices + 2].position = sf::Vector2f(
+    this->vertices[nVertices + 2].position = glm::vec2(
         end.x + edge.x,
         end.y + edge.y
     );
-    this->vertices[nVertices + 2].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 2].texCoords = glm::vec2(
         sprite.left + sprite.width,
         sprite.top
     );
-    this->vertices[nVertices + 2].color = sf::Color::White;
-    this->vertices[nVertices + 3].position = sf::Vector2f(
+    this->vertices[nVertices + 3].position = glm::vec2(
         start.x + edge.x,
         start.y + edge.y
     );
-    this->vertices[nVertices + 3].texCoords = sf::Vector2f(
+    this->vertices[nVertices + 3].texCoords = glm::vec2(
         sprite.left + sprite.width,
         sprite.top + sprite.height
     );
-    this->vertices[nVertices + 3].color = sf::Color::White;
     this->n++;
 }
 
 void RatBatch::draw(
     sf::IntRect sprite,
-    sf::Vector2f pos,
+    glm::vec2 pos,
     float radius,
     float a,
     float b
 ) {
     int nVertices = this->n * 4;
     int newSize = nVertices + 4 * RatBatch::CIRCLE_SEGMENTS;
-    if (newSize > this->vertices.size()) this->vertices.resize(newSize);
+    this->reserve(newSize);
     float delta = (b - a) / RatBatch::CIRCLE_SEGMENTS;
     for (int i = 0; i < RatBatch::CIRCLE_SEGMENTS; i++) {
-        this->vertices[nVertices + i * 4].position = sf::Vector2f(
+        this->vertices[nVertices + i * 4].position = glm::vec2(
             pos.x + cos(a + delta * i) * radius,
             pos.y + sin(a + delta * i) * radius
         );
-        this->vertices[nVertices + i * 4].color = sf::Color::White;
-        this->vertices[nVertices + i * 4].texCoords = sf::Vector2f(
+        this->vertices[nVertices + i * 4].texCoords = glm::vec2(
             sprite.left + sprite.width,
             sprite.top + sprite.height
         );
-        this->vertices[nVertices + i * 4 + 1].position = sf::Vector2f(
+        this->vertices[nVertices + i * 4 + 1].position = glm::vec2(
             pos.x + cos(a + delta * i + delta) * radius,
             pos.y + sin(a + delta * i + delta) * radius
         );
-        this->vertices[nVertices + i * 4 + 1].color = sf::Color::White;
-        this->vertices[nVertices + i * 4 + 1].texCoords = sf::Vector2f(
+        this->vertices[nVertices + i * 4 + 1].texCoords = glm::vec2(
             sprite.left + sprite.width,
             sprite.top
         );
-        this->vertices[nVertices + i * 4 + 2].position = sf::Vector2f(
+        this->vertices[nVertices + i * 4 + 2].position = glm::vec2(
             pos.x + cos(a + delta * i + delta) * (radius - sprite.width),
             pos.y + sin(a + delta * i + delta) * (radius - sprite.width)
         );
-        this->vertices[nVertices + i * 4 + 2].color = sf::Color::White;
-        this->vertices[nVertices + i * 4 + 2].texCoords = sf::Vector2f(
+        this->vertices[nVertices + i * 4 + 2].texCoords = glm::vec2(
             sprite.left,
             sprite.top + sprite.height
         );
-        this->vertices[nVertices + i * 4 + 3].position = sf::Vector2f(
+        this->vertices[nVertices + i * 4 + 3].position = glm::vec2(
             pos.x + cos(a + delta * i) * (radius - sprite.width),
             pos.y + sin(a + delta * i) * (radius - sprite.width)
         );
-        this->vertices[nVertices + i * 4 + 3].color = sf::Color::White;
-        this->vertices[nVertices + i * 4 + 3].texCoords = sf::Vector2f(
+        this->vertices[nVertices + i * 4 + 3].texCoords = glm::vec2(
             sprite.left,
             sprite.top
         );
@@ -285,4 +265,12 @@ void RatBatch::draw(sf::RenderTarget &target, sf::RenderStates states) const {
         sf::PrimitiveType::Quads,
         states
     );
+}
+
+void RatBatch::reserve(int more) {
+    int current = this->vertices.size();
+    if (more > current) this->vertices.resize(more);
+    for (int i = current; i < more; i++) {
+        this->vertices[i].color = sf::Color::White;
+    }
 }

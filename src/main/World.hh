@@ -3,7 +3,6 @@
 
 #include "Lindel.hh"
 #include "Util.hh"
-#include "Camera.hh"
 #include "Renderer.hh"
 #include "Background.hh"
 #include <SFML/Graphics.hpp>
@@ -35,7 +34,7 @@ class World {
          *         Hold no illusions that these string will persist because
          *         they shall not.
          */
-        std::pair<char const *, char const *> update(Camera const &camera);
+        std::pair<char const *, char const *> update(glm::mat4 const &c);
 
         /**
          * draws the worlde upon thy screene.
@@ -46,7 +45,7 @@ class World {
         void draw(
             sf::RenderTarget &target,
             Renderer &renderer,
-            Camera const &camera
+            glm::mat4 const &c
         ) const;
 
         /**

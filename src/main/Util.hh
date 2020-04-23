@@ -2,8 +2,8 @@
 #define UTIL_H
 
 #include "Knob.hh"
-#include "Matrix.hh"
 #include "sol.hh"
+#include "glm/glm.hpp"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -166,9 +166,9 @@ namespace Util {
      * @param scale  is the scale to multiply the final result by.
      * @return the rotated point.
      */
-    sf::Vector2f rotateAround(
-        sf::Vector2f pos,
-        sf::Vector2f origin,
+    glm::vec2 rotateAround(
+        glm::vec2 pos,
+        glm::vec2 origin,
         float angle,
         float scale=1
     );
@@ -178,7 +178,7 @@ namespace Util {
      * @param angle is the two angles with longitude being first.
      * @return camera matrix.
      */
-    glm::mat4 camera(sf::Vector2f angle);
+    glm::mat4 camera(glm::vec2 angle);
 
     /**
      * Converts spherical coordinates to cartesian coordinates.
@@ -186,7 +186,7 @@ namespace Util {
      * @return the relevant cartesian coordinates assuming that the sphere had
      *         a radius of 1 and was centred at (0, 0, 0).
      */
-    sf::Vector3f sphericalToCartesian(sf::Vector2f spherical);
+    glm::vec3 sphericalToCartesian(glm::vec2 spherical);
 
     /**
      * Converts spherical coordinates to cartesian coordinates with the
@@ -194,37 +194,7 @@ namespace Util {
      * @param cartesian is the cartesian coordinates.
      * @return the spherical coordinates.
      */
-    sf::Vector2f cartesianToSpherical(sf::Vector3f cartesian);
-
-    /**
-     * Projects a spherical coordinate to the screen.
-     * @param coordinate is the spherical coordinatre.
-     * @param m          is the camera transformation matrix.
-     * @return the screen position.
-     */
-    sf::Vector2f sphericalToScreen(sf::Vector2f coordinate, Matrix const &m);
-
-    /**
-     * Converts natural cartesian coordinates into an x and y value on the
-     * screen.
-     * @param point is the point to project to the screen.
-     * @param m     is the camera matrix containing both a translation and
-     *              rotation.
-     * @return the position on the screen.
-     */
-    sf::Vector2f cartesianToScreen(sf::Vector3f point, Matrix const &m);
-
-    /**
-     * Transforms a 3d point with a 3x3 matrix since they didn't add it for
-     * some stupid reason.
-     * @param point is the point to transform.
-     * @param c     is the transformation matrix.
-     * @return the transformed version.
-     */
-    sf::Vector3f transformPoint(
-        sf::Vector3f point,
-        Matrix const &c
-    );
+    glm::vec2 cartesianToSpherical(glm::vec3 cartesian);
 };
 
 #endif

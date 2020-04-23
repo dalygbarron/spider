@@ -427,7 +427,7 @@ class AdventureScreen: public ScriptedScreen {
     private:
         Level *level;
         World *world = NULL;
-        Camera camera;
+        glm::vec2 angle;
         Background background;
         Item const *selected = NULL;
 };

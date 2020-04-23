@@ -1,7 +1,6 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
-#include "Matrix.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -71,7 +70,7 @@ class Background {
          * @param name  is the name of the uniform.
          * @param value is the value to give it.
          */
-        void setUniform(char const *name, Matrix const &value);
+        void setUniform(char const *name, glm::mat4 const &value);
 
     private:
         sf::IntRect bounds;

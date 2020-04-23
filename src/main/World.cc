@@ -56,9 +56,9 @@ World::World(
     this->gravity.z = -0.02;
 }
 
-std::pair<char const *, char const *> World::update(Camera const &camera) {
+std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
     // TODO: make camera and position into one 4x4 matrix
-    this->background.setUniform("camera", camera.fromMatrix());
+    this->background.setUniform("camera", c);
     this->background.setUniform("position", this->position);
     this->background.update();
     char const *function = NULL;
@@ -83,32 +83,24 @@ std::pair<char const *, char const *> World::update(Camera const &camera) {
 void World::draw(
     sf::RenderTarget &target,
     Renderer &renderer,
-    Camera const &camera
+    glm::mat4 const &c
 ) const {
     this->background.draw(target);
     // Draw the lindels.
-    sf::Vector3f floor = Util::transformPoint(
-        sf::Vector3f(0, -1, 0),
-        camera.toMatrix()
-    );
-    // TODO: floorscreen is wrong I think.
-    sf::Vector2f floorScreen(floor.x, floor.y);
     for (Lindel const &lindel: this->lindels) {
         if (!lindel.alive) continue;
-        sf::Vector3f pos = Util::transformPoint(lindel.position, camera.toMatrix());
-        sf::Vector2f screenPos(pos.x, pos.y);
-        // TODO: still need to project camera coordinates toscreen.
-        float angle = Util::upAngle(
-            floorScreen,
-            floorScreen,
-            sf::Vector2f(screenPos.x, screenPos.y)
-        );
+        glm::vector4 screen = glm::vec4(
+            lindel.position.x,
+            lindel.position.y,
+            lindel.position.z,
+            1
+        ) * c;
         float scale = 1;
         renderer.batch.draw(
             lindel.entity.sprite,
-            sf::Vector2f(screenPos.x, screenPos.y),
+            sf::Vector2f(screen.x, screen.y),
             lindel.entity.offset,
-            angle,
+            0,
             sf::Vector2f(scale, scale)
         );
     }

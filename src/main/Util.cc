@@ -2,6 +2,7 @@
 #include "Const.hh"
 #include "spdlog/spdlog.h"
 #include <SFML/Graphics.hpp>
+#include <glm/ext.hpp>
 #include <stdio.h>
 #include <cmath>
 
@@ -170,9 +171,9 @@ float Util::upAngle(
     }
 }
 
-sf::Vector2f Util::rotateAround(
-    sf::Vector2f pos,
-    sf::Vector2f origin,
+glm::vec2 Util::rotateAround(
+    glm::vec2 pos,
+    glm::vec2 origin,
     float angle,
     float scale
 ) {
@@ -187,51 +188,24 @@ sf::Vector2f Util::rotateAround(
     return pos;
 }
 
-glm::mat4 Util::camera(sf::Vector2f angle) {
+glm::mat4 Util::camera(glm::vec2 angle) {
     glm::mat4 projection = glm::perspective(Const::FOV, 1.5, 0.1, 100);
     glm::mat4 view = glm::rotate(glm::mat4(1), angle.y, glm::vec3(-1, 0, 0));
     view = glm::rotate(view, angle.x, glm::vec3(0, 1, 0));
     return projection * view;
 }
 
-sf::Vector3f Util::sphericalToCartesian(sf::Vector2f spherical) {
-    return sf::Vector3f(
+glm::vec3 Util::sphericalToCartesian(glm::vec2 spherical) {
+    return glm::vec3(
         cos(spherical.y) * sin(spherical.x),
         sin(spherical.y),
         cos(spherical.y) * -cos(spherical.x)
     );
 }
 
-sf::Vector2f Util::cartesianToSpherical(sf::Vector3f cartesian) {
-    return sf::Vector2f(
+glm::vec2 Util::cartesianToSpherical(glm::vec3 cartesian) {
+    return glm::vec2(
         atan2(cartesian.z, cartesian.x) + Const::HALF_PI,
         asin(cartesian.y)
-    );
-}
-
-sf::Vector2f Util::sphericalToScreen(sf::Vector2f coordinate, Matrix const &c) {
-    sf::Vector3f point = Util::sphericalToCartesian(coordinate);
-    point = Util::transformPoint(point, c);
-    sf::Vector2f angle = Util::cartesianToSpherical(point);
-    return sf::Vector2f(
-        tan(angle.x) / cos(angle.y / Const::FOV_Y) * Const::INVERSE_HALF_TAN_X * Const::WIDTH + Const::HALF_WIDTH,
-        tan(-angle.y) / cos(angle.x / Const::FOV_X) * Const::INVERSE_HALF_TAN_Y * Const::HEIGHT + Const::HALF_HEIGHT
-    );
-}
-
-sf::Vector2f Util::cartesianToScreen(sf::Vector3f point, Matrix const &c) {
-    point = Util::transformPoint(point, c);
-    sf::Vector2f angle = Util::cartesianToSpherical(point);
-    return sf::Vector2f(
-        tan(angle.x) * Const::INVERSE_HALF_TAN_X * Const::WIDTH + Const::HALF_WIDTH,
-        tan(-angle.y) * Const::INVERSE_HALF_TAN_Y * Const::HEIGHT + Const::HALF_HEIGHT
-    );
-}
-
-sf::Vector3f Util::transformPoint(sf::Vector3f point, Matrix const &c) {
-    return sf::Vector3f(
-        point.x * c.content[0][0] + point.y * c.content[1][0] + point.z * c.content[2][0] + c.content[3][0],
-        point.x * c.content[0][1] + point.y * c.content[1][1] + point.z * c.content[2][1] + c.content[3][1],
-        point.x * c.content[0][2] + point.y * c.content[1][2] + point.z * c.content[2][2] + c.content[3][2]
     );
 }

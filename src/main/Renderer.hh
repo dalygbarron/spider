@@ -65,21 +65,21 @@ class Renderer: public sf::Drawable {
          * @param pos       is the position to put it.
          * @param highlight is whether to make the point highlighted.
          */
-        void point(sf::Vector2f pos, int highlight) const;
+        void point(glm::vec2 pos, int highlight) const;
 
         /**
          * Draw a round node thingy over the given point on the screen.
          * @param pos is the position to put it.
          * @param highlight is whether to make the point highlighted.
          */
-        void node(sf::Vector2f pos, int highlight) const;
+        void node(glm::vec2 pos, int highlight) const;
 
         /**
          * Draw a cursor pointing to the given point on the screen.
          * @param pos    is the location the cursor should point to.
          * @param cursor is the cursor type to draw.
          */
-        void cursor(sf::Vector2f pos, Renderer::CursorType cursor) const;
+        void cursor(glm::vec2 pos, Renderer::CursorType cursor) const;
 
         /**
          * Draw a box around the given rectangle on the screen.
@@ -107,7 +107,7 @@ class Renderer: public sf::Drawable {
          * @param end       is where on the screen the line ends.
          * @param highlight is whether to draw the line highlighted.
          */
-        void line(sf::Vector2f start, sf::Vector2f, int highlight) const;
+        void line(glm::vec2 start, glm::vec2, int highlight) const;
 
         /**
          * Draw a node with a line coming out of it.
@@ -115,7 +115,7 @@ class Renderer: public sf::Drawable {
          * @param end       is where the line ends.
          * @param highlight is whether to draw it highlighted or normal.
          */
-        void club(sf::Vector2f start, sf::Vector2f end, int highlight) const;
+        void club(glm::vec2 start, glm::vec2 end, int highlight) const;
 
         /**
          * Render a sphere mesh rotated in accordance with the given camera
@@ -128,7 +128,7 @@ class Renderer: public sf::Drawable {
          */
         void sphereMesh(
             Mesh const &mesh,
-            sf::Vector2f camera,
+            glm::vec2 camera,
             int highlight
         ) const;
 
@@ -139,7 +139,7 @@ class Renderer: public sf::Drawable {
          * @param a      is the starting angle.
          * @param b      is the ending angle.
          */
-        void arc(sf::Vector2f pos, float radius, float a, float b) const;
+        void arc(glm::vec2 pos, float radius, float a, float b) const;
 
         /**
          * Writes some text on the screen using the default font.
@@ -147,7 +147,7 @@ class Renderer: public sf::Drawable {
          * @param pos     is the location to write it at.
          * @param 
          */
-        void text(char const *content, sf::Vector2f pos) const;
+        void text(char const *content, glm::vec2 pos) const;
 
         /**
          * Writes some text on the screen using a given font.
@@ -157,7 +157,7 @@ class Renderer: public sf::Drawable {
          */
         void text(
             char const *content,
-            sf::Vector2f pos,
+            glm::vec2 pos,
             sf::IntRect font
         ) const;
 
@@ -166,7 +166,7 @@ class Renderer: public sf::Drawable {
          * @param rat is the rat to render.
          * @param pos is the place on the screen to render it.
          */
-        void rat(Rat const &rat, sf::Vector2f pos);
+        void rat(Rat const &rat, glm::vec2 pos);
 
         /**
          * Renders the given rat in the given spot with rotation and shit.
@@ -178,9 +178,9 @@ class Renderer: public sf::Drawable {
          */
         void rat(
             Rat const &rat,
-            sf::Vector2f pos,
+            glm::vec2 pos,
             float rotation,
-            sf::Vector2f scale,
+            glm::vec2 scale,
             int flip
         );
 

@@ -4,16 +4,18 @@
 #include "Util.hh"
 #include "FileIO.hh"
 #include "Shaders.hh"
+#include "glm/vec4.hpp"
+#include "glm/mat4x4.hpp"
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
     ScriptedScreen(core, level->script),
-    background(sf::IntRect(0, 0, Const::WIDTH, Const::HEIGHT))
+    background(sf::IntRect(0, 0, core.size.x, core.size.y))
 {
     this->level = level;
-    this->camera.set(Const::PI, Const::PI);
+    this->angle = glm::vec2(Const::PI, Const::PI);
     this->background.initFromString(Shaders::SKY_SHADER);
     this->background.setTexture(&level->getPic());
-    this->background.setUniform("camera", this->camera.fromMatrix());
+    this->background.setUniform("camera", glm::mat4(1));
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -34,10 +36,11 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
         this->core.pushScreen(new BattleScreen(this->core, file));
     };
     this->script["_getCamera"] = [this]() {
-        return this->camera.getAngle();
+        return this->angle;
     };
     this->script["_setCamera"] = [this](float x, float y) {
-        this->camera.set(x, y);
+        this->angle.x = x;
+        this->angle.y = y;
     };
     this->script["_world"] = [this](std::string const &xml) {
         spdlog::info("Adding world xml: {}", xml.c_str());
@@ -57,8 +60,9 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(sf::RenderWindow &window) {
-    if (this->world) this->world->update(this->camera);
-    this->background.setUniform("camera", this->camera.fromMatrix());
+    glm::mat4 camera = Util::camera(this->angle);
+    if (this->world) this->world->update(camera);
+    this->background.setUniform("camera", camera);
     this->background.update();
     if (this->runScript<float>(0)) return;
     Util::centreMouse(window);
@@ -69,38 +73,24 @@ void AdventureScreen::onClick(
     sf::Vector2f pos
 ) {
     if (this->coroutine) return;
-    sf::Vector3f floor = Util::transformPoint(
-        sf::Vector3f(0, -1, 0),
-        this->camera.toMatrix()
-    );
-    // TODO: floorscreen is wrong I think.
-    sf::Vector2f floorScreen(floor.x, floor.y);
+    glm::mat4 camera = Util::camera(this->angle);
     for (Instance &instance: this->level->instances) {
         if (!instance.alive) continue;
         int hit = false;
         if (instance.entity) {
-            sf::Vector3f screenPos = Util::transformPoint(
-                Util::sphericalToCartesian(instance.pos),
-                this->camera.toMatrix()
-            );
-            if (screenPos.z < 0) continue;
-            // TODO: Broken
-            float angle = Util::upAngle(
-                sf::Vector2f(0, 1),
-                floorScreen,
-                sf::Vector2f(screenPos.x, screenPos.y)
-            );
+            glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
+            glm::vec4 screen = glm::vec4(cartesian, 1) * camera;
+            if (screen.z > 0) continue;
             hit = instance.entity->mesh.in(
                 Util::rotateAround(
-                    sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
-                    sf::Vector2f(screenPos.x, screenPos.y),
-                    -angle,
+                    glm::vec2(),
+                    glm::vec2(screen.x, screen.y),
+                    0,
                     1 / instance.size
-                ) - sf::Vector2f(screenPos.x, screenPos.y) -
-                instance.entity->offset
+                ) - instance.entity->offset
             );
         } else {
-            hit = instance.mesh.inSphere(this->camera.getAngle());
+            hit = instance.mesh.inSphere(this->angle);
         }
         if (hit) {
             if (instance.entity && !instance.entity->item.empty()) {
@@ -135,15 +125,11 @@ void AdventureScreen::onReveal(int response) {
 }
 
 void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
-    if (this->coroutine || prev == pos ||
-        (pos.x == Const::HALF_WIDTH && pos.y == Const::HALF_HEIGHT)
-    ) {
+    if (this->coroutine || prev == pos) {
         return;
     }
-    this->camera.add(
-        -(pos.x - Const::HALF_WIDTH) / Const::WIDTH * Const::FOV_X,
-        (pos.y - Const::HALF_HEIGHT) / Const::HEIGHT * Const::FOV_Y
-    );
+    this->angle.x += pos.x;
+    this->angle.y += pos.y;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -161,37 +147,27 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
+    glm::mat camera = Util::camera(this->angle);
     // draw the behind world if applicable.
     if (this->world) {
-        this->world->draw(target, this->core.renderer, this->camera);
+        this->world->draw(target, this->core.renderer, camera);
     }
     target.draw(this->core.renderer.batch);
     this->core.renderer.batch.clear();
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.
-    sf::Vector2f floor = Util::cartesianToScreen(
-        sf::Vector3f(0, -1, 0),
-        this->camera.toMatrix()
-    );
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
-            sf::Vector2f screenPos = Util::sphericalToScreen(
-                instance.pos,
-                this->camera.toMatrix()
-            );
-            float angle = Util::upAngle(
-                this->camera.getAngle(),
-                floor,
-                screenPos
-            );
+            glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
+            glm::vec2 screen = glm::vec4(cartesian, 1) * camera;
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                screenPos,
+                screen,
                 instance.entity->offset,
                 0,
-                sf::Vector2f(instance.size, instance.size)
+                glm::vec2(instance.size, instance.size)
             );
         }
     }
@@ -200,11 +176,17 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         if (this->selected) {
             this->core.renderer.batch.draw(
                 this->selected->sprite,
-                sf::Vector2f(Const::HALF_WIDTH + 32, Const::HALF_HEIGHT + 32)
+                glm::vec2(
+                    this->core.size.x + 32,
+                    this->core.size.y + 32
+                )
             );
         }
         this->core.renderer.cursor(
-            sf::Vector2f(Const::HALF_WIDTH, Const::HALF_HEIGHT),
+            glm::vec2(
+                this->core.size.x + this->core.renderer.cursorRats[static_cast<int>(Renderer::CursorType::Pointer)].width / 2,
+                this->core.size.y + this->core.renderer.cursorRats[static_cast<int>(Renderer::CursorType::Pointer)].height / 2
+            ),
             Renderer::CursorType::Pointer
         );
 

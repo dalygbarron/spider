@@ -42,6 +42,8 @@ class Core {
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
         sf::Texture transitionTexture;
+        sf::Vector2f size;
+        float fov;
 
         /**
          * Initialises the core.

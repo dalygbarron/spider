@@ -331,6 +331,10 @@ Core *FileIO::loadCoreFromFile(
     // load spritesheet.
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());
+    // load display params.
+    core->size.x = node.attribute("width").as_int();
+    core->size.y = node.attribute("height").as_int();
+    core->fov = node.attribute("fov").as_float();
     // load sprite related stuff.
     core->defaultFont = node.attribute("default-font").value();
     core->setTransitionTexture(node.attribute("transition").value());

@@ -3,6 +3,7 @@
 
 #include "Mesh.hh"
 #include "filesystem.hh"
+#include "glm/vec2.hpp"
 #include <SFML/Graphics.hpp>
 #include <vector>
 
@@ -19,7 +20,7 @@ class Entity {
         std::string itemKey;
         std::string spriteName;
         sf::IntRect sprite;
-        sf::Vector2f offset;
+        glm::vec2 offset;
         Mesh mesh;
 };
 

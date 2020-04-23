@@ -4,13 +4,13 @@
 #include "spdlog/spdlog.h"
 #include <cmath>
 
-void Mesh::addVertex(sf::Vector2f vertex) {
+void Mesh::addVertex(glm::vec2 vertex) {
     this->vertices.push_back(vertex);
 }
 
 void Mesh::split(int index) {
     if (index < 0 || index >= this->vertices.size()) return;
-    sf::Vector2f vertex = this->vertices[index];
+    glm::vec2 vertex = this->vertices[index];
     int next = index + 1;
     if (next >= this->vertices.size()) next = 0;
     vertex.x += this->vertices[next].x;
@@ -23,23 +23,23 @@ void Mesh::remove(int index) {
     this->vertices.erase(this->vertices.begin() + index);
 }
 
-sf::Vector2f Mesh::getCentre() {
-    sf::Vector2f total(0, 0);
-    for (sf::Vector2f vertex: this->vertices) total += vertex;
+glm::vec2 Mesh::getCentre() {
+    glm::vec2 total;
+    for (glm::vec2 vertex: this->vertices) total += vertex;
     int n = this->vertices.size();
-    return sf::Vector2f(total.x / n, total.y / n);
+    return glm::vec2(total.x / n, total.y / n);
 }
 
-sf::Vector2f *Mesh::getVertex(int index) {
+glm::vec2 *Mesh::getVertex(int index) {
     if (index < 0 || index >= this->vertices.size()) return NULL;
     return this->vertices.data() + index;
 }
 
-std::vector<sf::Vector2f> const &Mesh::getVertices() const {
+std::vector<glm::vec2> const &Mesh::getVertices() const {
     return this->vertices;
 }
 
-int Mesh::in(sf::Vector2f pos) const {
+int Mesh::in(glm::vec2 pos) const {
     int size = this->vertices.size();
     if (size < 3) return false;
     int inside = false;
@@ -57,7 +57,7 @@ int Mesh::in(sf::Vector2f pos) const {
     return inside;
 }
 
-int Mesh::inSphere(sf::Vector2f coordinate) const {
+int Mesh::inSphere(glm::vec2 coordinate) const {
     coordinate.x = fmod(coordinate.x, Const::DOUBLE_PI);
     coordinate.y = fmod(coordinate.y, Const::PI);
     int size = this->vertices.size();
@@ -86,7 +86,7 @@ int Mesh::inSphere(sf::Vector2f coordinate) const {
     return inside;
 }
 
-int Mesh::getClosestVertex(sf::Vector2f pos, float threshold) const {
+int Mesh::getClosestVertex(glm::vec2 pos, float threshold) const {
     int index = -1;
     float distance = threshold;
     for (int i = 0; i < this->vertices.size(); i++) {

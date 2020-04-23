@@ -8,11 +8,6 @@
  * Batches draw calls into one big call where they are all using portions of
  * the same texture, also has to implement various primitive ways of arranging
  * vertices.
- * TODO: if we are not going to implement changing the colour of a sprite drawn
- *       then there is no reason to add code setting vertices to white
- *       everywhere and the code would be a lot less massive without it.
- *       Actually, if I ever want drawing with a tint, maybe I should add
- *       a setTint function to this which then affects drawing after.
  */
 class RatBatch: public sf::Drawable {
     public:
@@ -35,7 +30,7 @@ class RatBatch: public sf::Drawable {
          * @param sprite is the portion of the batch's texture to draw.
          * @param pos    is the point on the screen to draw it.
          */
-        void draw(sf::IntRect sprite, sf::Vector2f pos);
+        void draw(sf::IntRect sprite, glm::vec2 pos);
 
         /**
          * Draw the given sprite with a given scale on the given spot.
@@ -47,10 +42,10 @@ class RatBatch: public sf::Drawable {
          */
         void draw(
             sf::IntRect sprite,
-            sf::Vector2f pos,
-            sf::Vector2f offset,
+            glm::vec2 pos,
+            glm::vec2 offset,
             float rot,
-            sf::Vector2f scale
+            glm::vec2 scale
         );
 
         /**
@@ -75,7 +70,7 @@ class RatBatch: public sf::Drawable {
          * @param start  is the start to start drawing from.
          * @param end    is the end to stop drawing at.
          */
-        void draw(sf::IntRect sprite, sf::Vector2f start, sf::Vector2f end);
+        void draw(sf::IntRect sprite, glm::vec2 start, glm::vec2 end);
 
         /**
          * Draws an arc from one angle to the other consisting of a hard coded
@@ -90,7 +85,7 @@ class RatBatch: public sf::Drawable {
          */
         void draw(
             sf::IntRect sprite,
-            sf::Vector2f pos,
+            glm::vec2 pos,
             float radius,
             float a,
             float b
@@ -103,6 +98,12 @@ class RatBatch: public sf::Drawable {
         std::vector<sf::Vertex> vertices;
 
         void draw(sf::RenderTarget &target, sf::RenderStates states) const;
+
+        /**
+         * Adds more verices.
+         * @param more is the amount to add.
+         */
+        void reserve(int more);
 };
 
 #endif
