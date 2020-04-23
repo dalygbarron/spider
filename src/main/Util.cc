@@ -187,6 +187,13 @@ sf::Vector2f Util::rotateAround(
     return pos;
 }
 
+glm::mat4 Util::camera(sf::Vector2f angle) {
+    glm::mat4 projection = glm::perspective(Const::FOV, 1.5, 0.1, 100);
+    glm::mat4 view = glm::rotate(glm::mat4(1), angle.y, glm::vec3(-1, 0, 0));
+    view = glm::rotate(view, angle.x, glm::vec3(0, 1, 0));
+    return projection * view;
+}
+
 sf::Vector3f Util::sphericalToCartesian(sf::Vector2f spherical) {
     return sf::Vector3f(
         cos(spherical.y) * sin(spherical.x),
@@ -202,65 +209,23 @@ sf::Vector2f Util::cartesianToSpherical(sf::Vector3f cartesian) {
     );
 }
 
+sf::Vector2f Util::sphericalToScreen(sf::Vector2f coordinate, Matrix const &c) {
+    sf::Vector3f point = Util::sphericalToCartesian(coordinate);
+    point = Util::transformPoint(point, c);
+    sf::Vector2f angle = Util::cartesianToSpherical(point);
+    return sf::Vector2f(
+        tan(angle.x) / cos(angle.y / Const::FOV_Y) * Const::INVERSE_HALF_TAN_X * Const::WIDTH + Const::HALF_WIDTH,
+        tan(-angle.y) / cos(angle.x / Const::FOV_X) * Const::INVERSE_HALF_TAN_Y * Const::HEIGHT + Const::HALF_HEIGHT
+    );
+}
+
 sf::Vector2f Util::cartesianToScreen(sf::Vector3f point, Matrix const &c) {
     point = Util::transformPoint(point, c);
     sf::Vector2f angle = Util::cartesianToSpherical(point);
     return sf::Vector2f(
-        point.x / -point.z / tan(Const::FOV_X * 0.5) * Const::WIDTH + Const::HALF_WIDTH,
-        -point.y / -point.z / tan(Const::FOV_Y * 0.5) * Const::HEIGHT + Const::HALF_HEIGHT
+        tan(angle.x) * Const::INVERSE_HALF_TAN_X * Const::WIDTH + Const::HALF_WIDTH,
+        tan(-angle.y) * Const::INVERSE_HALF_TAN_Y * Const::HEIGHT + Const::HALF_HEIGHT
     );
-}
-
-Matrix Util::rotationMatrix(sf::Vector3f c) {
-    Matrix identity;
-    if (c.z != 0) {
-        identity = identity.combine(Matrix(
-            cos(c.z), sin(c.z), 0,
-            -sin(c.z), cos(c.z), 0,
-            0, 0, 1
-        ));
-    }
-    if (c.y != 0) {
-        identity = identity.combine(Matrix(
-            cos(c.y), 0, -sin(c.y),
-            0, 1, 0,
-            sin(c.y), 0, cos(c.y)
-        ));
-    }
-    if (c.x != 0) {
-        identity = identity.combine(Matrix(
-            1, 0, 0,
-            0, cos(c.x), sin(c.x),
-            0, -sin(c.x), cos(c.x)
-        ));
-    }
-    return identity;
-}
-
-Matrix Util::inverseRotationMatrix(sf::Vector3f c) {
-    Matrix identity;
-    if (c.x != 0) {
-        identity = identity.combine(Matrix(
-            1, 0, 0,
-            0, cos(-c.x), sin(-c.x),
-            0, -sin(-c.x), cos(-c.x)
-        ));
-    }
-    if (c.y != 0) {
-        identity = identity.combine(Matrix(
-            cos(-c.y), 0, -sin(-c.y),
-            0, 1, 0,
-            sin(-c.y), 0, cos(-c.y)
-        ));
-    }
-    if (c.z != 0) {
-        identity = identity.combine(Matrix(
-            cos(-c.z), sin(-c.z), 0,
-            -sin(-c.z), cos(-c.z), 0,
-            0, 0, 1
-        ));
-    }
-    return identity;
 }
 
 sf::Vector3f Util::transformPoint(sf::Vector3f point, Matrix const &c) {

@@ -177,8 +177,8 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
-            sf::Vector2f screenPos = Util::cartesianToScreen(
-                Util::sphericalToCartesian(instance.pos),
+            sf::Vector2f screenPos = Util::sphericalToScreen(
+                instance.pos,
                 this->camera.toMatrix()
             );
             float angle = Util::upAngle(

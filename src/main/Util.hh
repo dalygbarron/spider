@@ -174,6 +174,13 @@ namespace Util {
     );
 
     /**
+     * Creates a camera matrix based on a latitude and longitude angle.
+     * @param angle is the two angles with longitude being first.
+     * @return camera matrix.
+     */
+    glm::mat4 camera(sf::Vector2f angle);
+
+    /**
      * Converts spherical coordinates to cartesian coordinates.
      * @param spherical is the spherical coordinates to convert.
      * @return the relevant cartesian coordinates assuming that the sphere had
@@ -190,6 +197,14 @@ namespace Util {
     sf::Vector2f cartesianToSpherical(sf::Vector3f cartesian);
 
     /**
+     * Projects a spherical coordinate to the screen.
+     * @param coordinate is the spherical coordinatre.
+     * @param m          is the camera transformation matrix.
+     * @return the screen position.
+     */
+    sf::Vector2f sphericalToScreen(sf::Vector2f coordinate, Matrix const &m);
+
+    /**
      * Converts natural cartesian coordinates into an x and y value on the
      * screen.
      * @param point is the point to project to the screen.
@@ -198,22 +213,6 @@ namespace Util {
      * @return the position on the screen.
      */
     sf::Vector2f cartesianToScreen(sf::Vector3f point, Matrix const &m);
-
-    /**
-     * Creates a transformation matrix that rotates things around the three
-     * axes in zyx order.
-     * @param c is the three angles of rotation.
-     * @return the transformation matrix.
-     */
-    Matrix rotationMatrix(sf::Vector3f c);
-
-    /**
-     * Creates a transformation matrix that rotates things around the three
-     * axes in xyz order by the opposite of the angles you specified.
-     * @param c is the three angles of rotation.
-     * @return the inverse transformation matrix.
-     */
-    Matrix inverseRotationMatrix(sf::Vector3f c);
 
     /**
      * Transforms a 3d point with a 3x3 matrix since they didn't add it for

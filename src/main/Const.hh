@@ -10,10 +10,10 @@ namespace Const {
     static int const VERSION_MAJOR = 0;
     static int const VERSION_MINOR = 0;
     static int const VERSION_REV = 0;
-    static int const WIDTH = 1024;
-    static int const HEIGHT = 600;
-    static int const HALF_WIDTH = 512;
-    static int const HALF_HEIGHT = 300;
+    static int const WIDTH = 1008;
+    static int const HEIGHT = 672;
+    static int const HALF_WIDTH = 504;
+    static int const HALF_HEIGHT = 336;
     static sf::Vector2i const MOUSE_ORIGIN(
         Const::HALF_WIDTH,
         Const::HALF_HEIGHT
@@ -23,8 +23,7 @@ namespace Const {
     static float const PI = 3.141592653589793238462643383279;
     static float const DOUBLE_PI = 6.283185307179586;
     static float const HALF_PI = 1.570796326794897;
-    static float const FOV_X = 2;
-    static float const FOV_Y = 1;
+    static float const FOV = 1;
     static float const INVERSE_HALF_TAN_X = 0.642092615936352;
     static float const INVERSE_HALF_TAN_Y = 1.830487721725153;
     static float const RADIAN_CONVERT = 57.2957795131;
