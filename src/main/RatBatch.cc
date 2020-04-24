@@ -12,17 +12,12 @@ void RatBatch::clear() {
     this->clean = true;
 }
 
-void RatBatch::draw(sf::IntRect sprite, glm::vec2 pos) {
-    sf::FloatRect box;
-    box.left = pos.x - sprite.width / 2;
-    box.top = pos.y - sprite.height / 2;
-    box.width = sprite.width;
-    box.height = sprite.height;
-    this->draw(sprite, box);
+void RatBatch::draw(Rectangle sprite, glm::vec2 pos) {
+    this->draw(sprite, Rectangle(pos - sprite.size / 2, sprite.size));
 }
 
 void RatBatch::draw(
-    sf::IntRect sprite,
+    Rectangle sprite,
     glm::vec2 pos,
     glm::vec2 offset,
     float rot,
@@ -67,96 +62,94 @@ void RatBatch::draw(
     this->n++;
 }
 
-void RatBatch::draw(Patch const &patch, sf::FloatRect pos) {
-    this->draw(patch.topLeft, sf::FloatRect(
-        pos.left,
-        pos.top,
-        patch.topLeft.width,
-        patch.topLeft.height
+void RatBatch::draw(Patch const &p, Rectangle pos) {
+    this->draw(p.topLeft, Rectangle(pos.pos, p.topLeft.size));
+    this->draw(p.top, Rectangle(
+        pos.pos + vec2(p.topLeft.size.x, 0),
+        pos.size - vec2(p.topLeft.size.x + p.topRight.size.x, 0)
     ));
-    this->draw(patch.top, sf::FloatRect(
-        pos.left + patch.topLeft.width,
-        pos.top,
-        pos.width - (patch.topLeft.width + patch.topRight.width),
-        patch.top.height
+    this->draw(p.topRight, Rectangle(
+        pos.pos + glm::vec2(pos.size.x - p.topRight.size.x, 0),
+        p.topRight.size
     ));
-    this->draw(patch.topRight, sf::FloatRect(
-        pos.left + pos.width - patch.topRight.width,
-        pos.top,
-        patch.topRight.width,
-        patch.topRight.height
+    this->draw(p.right, Rectangle(
+        pos.pos + glm::vec2(pos.size.x - p.right.size.x, p.topRight.size.y),
+        vec2(
+            p.right.size.x,
+            pos.size.y - (p.topRight.size.y + p.topLeft.size.y)
+        )
     ));
-    this->draw(patch.right, sf::FloatRect(
-        pos.left + pos.width - patch.right.width,
-        pos.top + patch.topRight.height,
-        patch.right.width,
-        pos.height - (patch.topRight.height + patch.topLeft.height)
+    this->draw(p.bottomRight, Rectangle(
+        pos.pos + pos.size - glm::vec2(p.right.size.x, p.bottomRight.size.y),
+        p.bottomRight.size
     ));
-    this->draw(patch.bottomRight, sf::FloatRect(
-        pos.left + pos.width - patch.right.width,
-        pos.top + pos.height - patch.bottomRight.height,
-        patch.bottomRight.width,
-        patch.bottomRight.height
+    this->draw(p.bottom, Rectangle(
+        pos.pos + glm::vec2(p.bottomLeft.size.x, pos.size.y - p.bottom.size.y),
+        vec2(
+            pos.size.x - (p.bottomLeft.size.x + p.bottomRight.size.x),
+            p.bottom.size.y
+        )
     ));
-    this->draw(patch.bottom, sf::FloatRect(
-        pos.left + patch.bottomLeft.width,
-        pos.top + pos.height - patch.bottom.height,
-        pos.width - (patch.bottomLeft.width + patch.bottomRight.width),
-        patch.bottom.height
+    this->draw(p.bottomLeft, Rectangle(
+        pos.pos + glm::vec2(0, pos.size.y - p.bottomLeft.size.y),
+        patch.bottomLeft.size
     ));
-    this->draw(patch.bottomLeft, sf::FloatRect(
-        pos.left,
-        pos.top + pos.height - patch.bottomLeft.height,
-        patch.bottomLeft.width,
-        patch.bottomLeft.height
+    this->draw(p.left, Rectangle(
+        pos.pos + glm::vec2(0, p.topLeft.size.y),
+        vec2(
+            p.left.size.x,
+            pos.size.y - (p.topLeft.size.y + p.bottomLeft.size.y)
+        )
     ));
-    this->draw(patch.left, sf::FloatRect(
-        pos.left,
-        pos.top + patch.topLeft.height,
-        patch.left.width,
-        pos.height - (patch.topLeft.height + patch.bottomLeft.height)
-    ));
-    this->draw(patch.middle, sf::FloatRect(
-        pos.left + patch.left.width,
-        pos.top + patch.top.height,
-        pos.width - (patch.left.width + patch.right.width),
-        pos.height - (patch.top.height + patch.bottom.height)
+    this->draw(p.middle, Rectangle(
+        pos.pos + glm::vec2(p.left.size.x, p.top.size.y),
+        pos.size - glm::vec2(
+            p.left.size.x + p.right.size.x,
+            p.top.size.y + p.bottom.size.y
+        )
     ));
 }
 
-void RatBatch::draw(sf::IntRect sprite, sf::FloatRect pos) {
+void RatBatch::draw(Rectangle sprite, Rectangle pos) {
     int nVertices = this->n * 4;
     this->reserve(nVertices + 4);
-    this->vertices[nVertices].position = glm::vec2(pos.left, pos.top);
-    this->vertices[nVertices].texCoords = glm::vec2(sprite.left, sprite.top);
-    this->vertices[nVertices + 1].position = glm::vec2(
-        pos.left + pos.width,
-        pos.top
+    this->vertices[nVertices].position = sf::Vector2f(pos.pos.x, pos.pos.y);
+    this->vertices[nVertices].texCoords = sf::Vector2f(
+        sprite.pos.x,
+        sprite.pos.y
     );
-    this->vertices[nVertices + 1].texCoords = glm::vec2(
-        sprite.left + sprite.width,
-        sprite.top
+    this->vertices[nVertices + 1].position = sf::Vector2f(
+        pos.pos.x + pos.size.x,
+        pos.pos.y
     );
-    this->vertices[nVertices + 2].position = glm::vec2(
-        pos.left + pos.width,
-        pos.top + pos.height
+    this->vertices[nVertices + 1].texCoords = sf::Vector2f(
+        sprite.pos.x + sprite.size.x,
+        sprite.pos.y
     );
-    this->vertices[nVertices + 2].texCoords = glm::vec2(
-        sprite.left + sprite.width,
-        sprite.top + sprite.height
+    this->vertices[nVertices + 2].position = sf::Vector2f(
+        pos.pos.x + pos.size.x,
+        pos.pos.y + pos.size.y
     );
-    this->vertices[nVertices + 3].position = glm::vec2(
-        pos.left,
-        pos.top + pos.height
+    this->vertices[nVertices + 2].texCoords = sf::Vector2f(
+        sprite.pos.x + sprite.size.x,
+        sprite.pos.y + sprite.size.y
     );
-    this->vertices[nVertices + 3].texCoords = glm::vec2(
-        sprite.left,
-        sprite.top + sprite.height
+    this->vertices[nVertices + 3].position = sf::Vector2f(
+        pos.pos.x,
+        pos.pos.y + pos.size.y
+    );
+    this->vertices[nVertices + 3].texCoords = sf::Vector2f(
+        sprite.pos.x,
+        sprite.pos.y + sprite.size.y
     );
     this->n++;
 }
 
 void RatBatch::draw(sf::IntRect sprite, glm::vec2 start, glm::vec2 end) {
+    int nVertices = this->n * 4;
+    if (nVertices + 4 > this->vertices.size()) {
+        this->vertices.resize(this->vertices.size() + 4);
+    }
     // Figure out what orientation to draw them with.
     glm::vec2 edge(0, 0);
     if (fabs(end.x - start.x) > fabs(end.y - start.y)) {
@@ -164,47 +157,43 @@ void RatBatch::draw(sf::IntRect sprite, glm::vec2 start, glm::vec2 end) {
     } else {
         edge.x = sprite.width / 2;
     }
-    int nVertices = this->n * 4;
-    if (nVertices + 4 > this->vertices.size()) {
-        this->vertices.resize(this->vertices.size() + 4);
-    }
-    this->vertices[nVertices].position = glm::vec2(
+    this->vertices[nVertices].position = sf::Vector2f(
         start.x - edge.x,
         start.y - edge.y
     );
-    this->vertices[nVertices].texCoords = glm::vec2(
-        sprite.left,
-        sprite.top + sprite.height
+    this->vertices[nVertices].texCoords = sf::Vector2f(
+        sprite.pos.x,
+        sprite.pos.y + sprite.size.y
     );
-    this->vertices[nVertices + 1].position = glm::vec2(
+    this->vertices[nVertices + 1].position = sf::Vector2f(
         end.x - edge.x,
         end.y - edge.y
     );
-    this->vertices[nVertices + 1].texCoords = glm::vec2(
-        sprite.left,
-        sprite.top
+    this->vertices[nVertices + 1].texCoords = sf::Vector2f(
+        sprite.pos.x,
+        sprite.pos.y
     );
-    this->vertices[nVertices + 2].position = glm::vec2(
+    this->vertices[nVertices + 2].position = sf::Vector2f(
         end.x + edge.x,
         end.y + edge.y
     );
-    this->vertices[nVertices + 2].texCoords = glm::vec2(
-        sprite.left + sprite.width,
-        sprite.top
+    this->vertices[nVertices + 2].texCoords = sf::Vector2f(
+        sprite.pos.x + sprite.size.x,
+        sprite.pos.y
     );
-    this->vertices[nVertices + 3].position = glm::vec2(
+    this->vertices[nVertices + 3].position = sf::Vector2f(
         start.x + edge.x,
         start.y + edge.y
     );
-    this->vertices[nVertices + 3].texCoords = glm::vec2(
-        sprite.left + sprite.width,
-        sprite.top + sprite.height
+    this->vertices[nVertices + 3].texCoords = sf::Vector2f(
+        sprite.pos.x + sprite.size.x,
+        sprite.pos.y + sprite.size.y
     );
     this->n++;
 }
 
 void RatBatch::draw(
-    sf::IntRect sprite,
+    Rectangle sprite,
     glm::vec2 pos,
     float radius,
     float a,
@@ -215,37 +204,37 @@ void RatBatch::draw(
     this->reserve(newSize);
     float delta = (b - a) / RatBatch::CIRCLE_SEGMENTS;
     for (int i = 0; i < RatBatch::CIRCLE_SEGMENTS; i++) {
-        this->vertices[nVertices + i * 4].position = glm::vec2(
+        this->vertices[nVertices + i * 4].position = sf::Vector2f(
             pos.x + cos(a + delta * i) * radius,
             pos.y + sin(a + delta * i) * radius
         );
-        this->vertices[nVertices + i * 4].texCoords = glm::vec2(
-            sprite.left + sprite.width,
-            sprite.top + sprite.height
+        this->vertices[nVertices + i * 4].texCoords = sf::Vector2f(
+            sprite.pos.x + sprite.size.x,
+            sprite.pos.y + sprite.size.y
         );
-        this->vertices[nVertices + i * 4 + 1].position = glm::vec2(
+        this->vertices[nVertices + i * 4 + 1].position = sf::Vector2f(
             pos.x + cos(a + delta * i + delta) * radius,
             pos.y + sin(a + delta * i + delta) * radius
         );
-        this->vertices[nVertices + i * 4 + 1].texCoords = glm::vec2(
-            sprite.left + sprite.width,
-            sprite.top
+        this->vertices[nVertices + i * 4 + 1].texCoords = sf::Vector2f(
+            sprite.pos.x + sprite.size.x,
+            sprite.pos.y
         );
-        this->vertices[nVertices + i * 4 + 2].position = glm::vec2(
-            pos.x + cos(a + delta * i + delta) * (radius - sprite.width),
-            pos.y + sin(a + delta * i + delta) * (radius - sprite.width)
+        this->vertices[nVertices + i * 4 + 2].position = sf::Vector2f(
+            pos.x + cos(a + delta * i + delta) * (radius - sprite.size.x),
+            pos.y + sin(a + delta * i + delta) * (radius - sprite.size.x)
         );
-        this->vertices[nVertices + i * 4 + 2].texCoords = glm::vec2(
-            sprite.left,
-            sprite.top + sprite.height
+        this->vertices[nVertices + i * 4 + 2].texCoords = sf::Vector2f(
+            sprite.pos.x,
+            sprite.pos.y + sprite.size.y
         );
-        this->vertices[nVertices + i * 4 + 3].position = glm::vec2(
-            pos.x + cos(a + delta * i) * (radius - sprite.width),
-            pos.y + sin(a + delta * i) * (radius - sprite.width)
+        this->vertices[nVertices + i * 4 + 3].position = sf::Vector2f(
+            pos.x + cos(a + delta * i) * (radius - sprite.size.x),
+            pos.y + sin(a + delta * i) * (radius - sprite.size.x)
         );
-        this->vertices[nVertices + i * 4 + 3].texCoords = glm::vec2(
-            sprite.left,
-            sprite.top
+        this->vertices[nVertices + i * 4 + 3].texCoords = sf::Vector2f(
+            sprite.pos.x,
+            sprite.pos.y
         );
     }
     this->n += RatBatch::CIRCLE_SEGMENTS;

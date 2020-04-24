@@ -6,11 +6,9 @@ Mob::Mob(float radius): radius(radius)
     // nothing else.
 }
 
-void Mob::update() {
-    this->position.x += this->velocity.x;
-    this->position.y += this->velocity.y;
-    this->velocity.x += this->gravity.x;
-    this->velocity.y += this->gravity.y;
+voidsf::Vector2f Mob::update() {
+    this->position += this->velocity;
+    this->velocity += this->gravity;
 }
 
 int Mob::collide(Mob const &a, Mob const &b) {

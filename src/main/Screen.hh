@@ -428,7 +428,6 @@ class AdventureScreen: public ScriptedScreen {
         Level *level;
         World *world = NULL;
         glm::vec2 angle;
-        Background background;
         Item const *selected = NULL;
 };
 
@@ -460,7 +459,7 @@ class BattleScreen: public ScriptedScreen {
         Pool<Bullet> bullets;
         Pool<Actor> actors;
         std::list<Rat::Animation> animations;
-        sf::FloatRect const bounds {256, 0, 512, 600};
+        sf::FloatRect const bounds;
         Background background;
         std::string title;
         std::string subtitle;

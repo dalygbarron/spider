@@ -1,7 +1,7 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include <SFML/Graphics.hpp>
+#include "Rectangle.hh"
 #include <string>
 
 /**
@@ -13,7 +13,7 @@ class Item {
         std::string displayName;
         std::string description;
         std::string rat;
-        sf::IntRect sprite;
+        Rectangle sprite;
 };
 
 #endif

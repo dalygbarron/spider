@@ -8,14 +8,10 @@
 #include "glm/mat4x4.hpp"
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
-    ScriptedScreen(core, level->script),
-    background(sf::IntRect(0, 0, core.size.x, core.size.y))
+    ScriptedScreen(core, level->script)
 {
     this->level = level;
     this->angle = glm::vec2(Const::PI, Const::PI);
-    this->background.initFromString(Shaders::SKY_SHADER);
-    this->background.setTexture(&level->getPic());
-    this->background.setUniform("camera", glm::mat4(1));
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -62,8 +58,6 @@ AdventureScreen::~AdventureScreen() {
 void AdventureScreen::update(sf::RenderWindow &window) {
     glm::mat4 camera = Util::camera(this->angle);
     if (this->world) this->world->update(camera);
-    this->background.setUniform("camera", camera);
-    this->background.update();
     if (this->runScript<float>(0)) return;
     Util::centreMouse(window);
 }
@@ -155,7 +149,8 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     target.draw(this->core.renderer.batch);
     this->core.renderer.batch.clear();
     // draw the level.
-    this->background.draw(target);
+    // TODO: create a skybox class or something since I am gonna draw them as
+    //       6 textured quads with a cubemap type of thing.
     // drawing entity instances.
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
@@ -183,10 +178,9 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
             );
         }
         this->core.renderer.cursor(
-            glm::vec2(
-                this->core.size.x + this->core.renderer.cursorRats[static_cast<int>(Renderer::CursorType::Pointer)].width / 2,
-                this->core.size.y + this->core.renderer.cursorRats[static_cast<int>(Renderer::CursorType::Pointer)].height / 2
-            ),
+            this->core.size + this->core.renderer.cursorRats[
+                static_cast<int>(Renderer::CursorType::Pointer)
+            ].size / 2,
             Renderer::CursorType::Pointer
         );
 

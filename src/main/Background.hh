@@ -1,6 +1,8 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
+#include "glm/vec2.hpp"
+#include "glm/mat4x4.hpp"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -64,13 +66,6 @@ class Background {
          * @param value is the value to set the uniform to.
          */
         void setUniform(char const *name, sf::Color const &value);
-
-        /**
-         * Sets a 4x4 matrix uniform on the background shader.
-         * @param name  is the name of the uniform.
-         * @param value is the value to give it.
-         */
-        void setUniform(char const *name, glm::mat4 const &value);
 
     private:
         sf::IntRect bounds;

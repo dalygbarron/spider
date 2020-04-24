@@ -2,16 +2,16 @@
 #define MOB_H
 
 #include "Rat.hh"
-#include <SFML/Graphics.hpp>
+#include "glm/vec2.hpp"
 
 /**
  * Something that moves around in 2D and has a radius like a coicle.
  */
 class Mob {
     public:
-        sf::Vector2f position;
-        sf::Vector2f velocity;
-        sf::Vector2f gravity;
+        glm::vec2 position;
+        glm::vec2 velocity;
+        glm::vec2 gravity;
         float radius;
 
         /**

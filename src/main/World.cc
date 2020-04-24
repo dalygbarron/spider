@@ -2,44 +2,6 @@
 #include "Const.hh"
 #include "spdlog/spdlog.h"
 
-static char const *BACKGROUND_SHADER = R"~~~(
-    #ifdef GL_ES
-    precision mediump float;
-    #endif
-
-    #define HALF_PI 1.57079632679
-
-    uniform sampler2D texture;
-    uniform vec2 offset;
-    uniform vec2 resolution;
-    uniform int time;
-    uniform vec4 horizon;
-    uniform vec4 bottomSky;
-    uniform vec4 topSky;
-    uniform vec3 position;
-    uniform vec2 rotation;
-
-    vec2 fov = vec2(2.094395102, 1.570796327);
-
-    void main() {
-        vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
-        uv.y = 1.0 - uv.y;
-        vec2 angle = rotation + uv * fov;
-        vec4 colour = vec4(1.0);
-        if (angle.y > HALF_PI) {
-            float distance = tan(angle.y) * position.z;
-            vec2 texturePoint = vec2(
-                cos(angle.x) * distance,
-                sin(angle.x) * distance
-            );
-            colour = texture2D(texture, position.xy + texturePoint);
-        } else {
-            colour = mix(bottomSky, topSky, uv.y + 0.5);
-        }
-        float haze = 1.0 - abs(angle.y - HALF_PI);
-        gl_FragColor = colour + horizon * haze / 2.0;
-    })~~~";
-
 World::World(
     sf::Texture const *ground,
     sf::Color horizon,

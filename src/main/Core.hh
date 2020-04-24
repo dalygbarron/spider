@@ -9,6 +9,7 @@
 #include "SoundPlayer.hh"
 #include "Item.hh"
 #include "Memory.hh"
+#include "glm/vec2.hpp"
 #include <queue>
 
 /**
@@ -42,7 +43,7 @@ class Core {
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
         sf::Texture transitionTexture;
-        sf::Vector2f size;
+        glm::ivec2 size;
         float fov;
 
         /**

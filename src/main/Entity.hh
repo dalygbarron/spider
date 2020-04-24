@@ -2,10 +2,9 @@
 #define ENTITY_H
 
 #include "Mesh.hh"
+#include "Rectangle.hh"
 #include "filesystem.hh"
 #include "glm/vec2.hpp"
-#include <SFML/Graphics.hpp>
-#include <vector>
 
 /**
  * Represents an entity. This is not the same as an instance of an entity that
@@ -19,7 +18,7 @@ class Entity {
         std::string item;
         std::string itemKey;
         std::string spriteName;
-        sf::IntRect sprite;
+        Rectangle sprite;
         glm::vec2 offset;
         Mesh mesh;
 };

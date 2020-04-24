@@ -1,7 +1,7 @@
 #ifndef PATCH_H
 #define PATCH_H
 
-#include <SFML/Graphics.hpp>
+#include "Rectangle.hh"
 
 /**
  * A 9 patch is used to draw boxes with borders using 9 distinct segments with
@@ -9,15 +9,15 @@
  */
 class Patch {
     public:
-        sf::IntRect bottomLeft;
-        sf::IntRect left;
-        sf::IntRect topLeft;
-        sf::IntRect top;
-        sf::IntRect topRight;
-        sf::IntRect right;
-        sf::IntRect bottomRight;
-        sf::IntRect bottom;
-        sf::IntRect middle;
+        Rectangle bottomLeft;
+        Rectangle left;
+        Rectangle topLeft;
+        Rectangle top;
+        Rectangle topRight;
+        Rectangle right;
+        Rectangle bottomRight;
+        Rectangle bottom;
+        Rectangle middle;
 
         /**
          * Creates the patch and sets the inner rectangles correctly.
@@ -28,7 +28,7 @@ class Patch {
          * @param bottom is the number of pixels on the buttom to cut off.
          */
         void fill(
-            sf::IntRect sprite,
+            Rectangle sprite,
             int left,
             int top,
             int right,

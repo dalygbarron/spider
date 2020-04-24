@@ -6,12 +6,8 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     ScriptedScreen(core, path),
     bullets(Const::MAX_BULLETS),
     actors(Const::MAX_ACTORS),
-    background(sf::IntRect(
-        this->bounds.left,
-        this->bounds.top,
-        this->bounds.width,
-        this->bounds.height
-    ))
+    bounds(core.size.x / 4, 0, core.size.x / 2, core.size.y),
+    background(this->bounds)
 {
     // do the shade loading
     this->background.initFromString(Shaders::BLANK_SHADER);

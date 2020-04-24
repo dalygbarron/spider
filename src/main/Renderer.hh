@@ -29,16 +29,16 @@ class Renderer: public sf::Drawable {
             N
         };
 
-        sf::IntRect pointRat;
-        sf::IntRect pointHighlightRat;
-        sf::IntRect lineRat;
-        sf::IntRect lineHighlightRat;
-        sf::IntRect nodeRat;
-        sf::IntRect nodeHighlightRat;
-        sf::IntRect battleRat;
-        sf::IntRect font;
-        sf::IntRect battleFont;
-        sf::IntRect cursorRats[static_cast<int>(Renderer::CursorType::N)];
+        Rectangle pointRat;
+        Rectangle pointHighlightRat;
+        Rectangle lineRat;
+        Rectangle lineHighlightRat;
+        Rectangle nodeRat;
+        Rectangle nodeHighlightRat;
+        Rectangle battleRat;
+        Rectangle font;
+        Rectangle battleFont;
+        Rectangle cursorRats[static_cast<int>(Renderer::CursorType::N)];
         Patch boxPatch;
         Patch boxHighlightPatch;
         Patch panelPatch;
@@ -58,7 +58,7 @@ class Renderer: public sf::Drawable {
          * @param rat  is the rat to use.
          * @param type is the type of cursor this is for.
          */
-        void setCursorRat(sf::IntRect rat, Renderer::CursorType type);
+        void setCursorRat(Rectangle rat, Renderer::CursorType type);
 
         /**
          * Draw a crosshair over the given point on the screen.
@@ -86,20 +86,20 @@ class Renderer: public sf::Drawable {
          * @param pos is the rectangle to draw around.
          * @param highlight is whether to make the box highlighted.
          */
-        void box(sf::FloatRect pos, int highlight) const;
+        void box(Rectangle pos, int highlight) const;
 
         /**
          * Draw a panel around the given rectangle on the screen.
          * @param pos is the rectangle to draw the panel around.
          */
-        void panel(sf::FloatRect pos) const;
+        void panel(Rectangle pos) const;
 
         /**
          * Draw a button around the given rectangle on the screen.
          * @param pos       is the rectangle to draw the button around.
          * @param depressed is whether to draw the button as depressed or not.
          */
-        void button(sf::FloatRect pos, int depressed) const;
+        void button(Rectangle pos, int depressed) const;
 
         /**
          * Draw a line between two points.
@@ -158,7 +158,7 @@ class Renderer: public sf::Drawable {
         void text(
             char const *content,
             glm::vec2 pos,
-            sf::IntRect font
+            Rectangle font
         ) const;
 
         /**

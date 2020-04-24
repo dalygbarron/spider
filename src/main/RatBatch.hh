@@ -30,7 +30,7 @@ class RatBatch: public sf::Drawable {
          * @param sprite is the portion of the batch's texture to draw.
          * @param pos    is the point on the screen to draw it.
          */
-        void draw(sf::IntRect sprite, glm::vec2 pos);
+        void draw(Rectangle sprite, glm::vec2 pos);
 
         /**
          * Draw the given sprite with a given scale on the given spot.
@@ -41,7 +41,7 @@ class RatBatch: public sf::Drawable {
          * @param scale  is the scale at which to draw the sprite.
          */
         void draw(
-            sf::IntRect sprite,
+            Rectangle sprite,
             glm::vec2 pos,
             glm::vec2 offset,
             float rot,
@@ -53,7 +53,7 @@ class RatBatch: public sf::Drawable {
          * @param patch is the patch to darw.
          * @param pos   is where to draw it.
          */
-        void draw(Patch const &patch, sf::FloatRect pos);
+        void draw(Patch const &patch, Rectangle pos);
 
         /**
          * Draw the given sprite into the given rectangle on the screen with
@@ -61,7 +61,7 @@ class RatBatch: public sf::Drawable {
          * @param sprite is the portion of the batch's texture to draw.
          * @param pos    is the rectangle to fit it in on the screen.
          */
-        void draw(sf::IntRect sprite, sf::FloatRect pos);
+        void draw(Rectangle sprite, Rectangle pos);
 
         /**
          * Draw the given sprite stretched as a line from one point to another
@@ -70,7 +70,7 @@ class RatBatch: public sf::Drawable {
          * @param start  is the start to start drawing from.
          * @param end    is the end to stop drawing at.
          */
-        void draw(sf::IntRect sprite, glm::vec2 start, glm::vec2 end);
+        void draw(Rectangle sprite, glm::vec2 start, glm::vec2 end);
 
         /**
          * Draws an arc from one angle to the other consisting of a hard coded
@@ -84,7 +84,7 @@ class RatBatch: public sf::Drawable {
          * @param b      is the ending angle.
          */
         void draw(
-            sf::IntRect sprite,
+            Rectangle sprite,
             glm::vec2 pos,
             float radius,
             float a,
