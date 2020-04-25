@@ -123,8 +123,9 @@ void AdventureScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
     if (this->coroutine || prev == pos) {
         return;
     }
-    this->angle.x += pos.x;
-    this->angle.y += pos.y;
+    glm::ivec2 mid = this->core.getSize() / 2;
+    this->angle.x += (float)(pos.x - mid.x) / 50;
+    this->angle.y += (float)(pos.y - mid.y) / 50;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -157,10 +158,11 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         if (!instance.alive) continue;
         if (instance.entity) {
             glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
-            glm::vec2 screen = glm::vec4(cartesian, 1) * camera;
+            glm::vec4 screen = glm::vec4(cartesian, 1) * camera;
+            if (screen.z >= 0) continue;
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                screen,
+                glm::vec2(screen.x, screen.y) * (glm::vec2)this->core.getSize(),
                 instance.entity->offset,
                 0,
                 glm::vec2(instance.size, instance.size)

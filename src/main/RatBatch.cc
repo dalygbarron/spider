@@ -34,9 +34,9 @@ void RatBatch::draw(
         glm::vec4(-sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
     glm::vec4 topRight = transform *
         glm::vec4(sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
-    glm::vec4 bottomLeft = transform *
-        glm::vec4(sprite.size.x / 2, sprite.size.y / 2, 0, 1);
     glm::vec4 bottomRight = transform *
+        glm::vec4(sprite.size.x / 2, sprite.size.y / 2, 0, 1);
+    glm::vec4 bottomLeft = transform *
         glm::vec4(-sprite.size.x / 2, sprite.size.y / 2, 0, 1);
     int nVertices = this->n * 4;
     this->reserve(nVertices + 4);
@@ -76,7 +76,7 @@ void RatBatch::draw(Patch const &p, Rectangle pos) {
     this->draw(p.topLeft, Rectangle(pos.pos, p.topLeft.size));
     this->draw(p.top, Rectangle(
         pos.pos + glm::ivec2(p.topLeft.size.x, 0),
-        pos.size - glm::ivec2(p.topLeft.size.x + p.topRight.size.x, 0)
+        glm::vec2(pos.size.x - (p.topLeft.size.x + p.topRight.size.x), p.top.size.y)
     ));
     this->draw(p.topRight, Rectangle(
         pos.pos + glm::ivec2(pos.size.x - p.topRight.size.x, 0),

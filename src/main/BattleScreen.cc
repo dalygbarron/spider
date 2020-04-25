@@ -307,7 +307,7 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
         Rectangle(
             this->core.renderer.panelPatch.left.size.x,
             this->core.renderer.panelPatch.top.size.y,
-            size.x * 0.75 - this->core.renderer.panelPatch.left.size.x * 2,
+            size.x * 0.25 - this->core.renderer.panelPatch.left.size.x * 2,
             size.y - this->core.renderer.panelPatch.top.size.y * 2
         )
     );
