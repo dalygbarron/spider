@@ -2,14 +2,15 @@
 #include "Const.hh"
 #include "spdlog/spdlog.h"
 
-Background::Background(sf::IntRect bounds) {
-    this->bounds = bounds;
-    this->buffer.create(bounds.width, bounds.height);
+Background::Background(Rectangle bounds): bounds(bounds) {
+    this->buffer.create(bounds.size.x, bounds.size.y);
     this->buffer.setSmooth(true);
-    this->back.setSize(sf::Vector2f(bounds.width, bounds.height));
-    this->back.setTextureRect(bounds);
-    this->mask.setPosition(sf::Vector2f(bounds.left, bounds.top));
-    this->mask.setSize(sf::Vector2f(bounds.width, bounds.height));
+    this->back.setSize(sf::Vector2f(bounds.size.x, bounds.size.y));
+    this->back.setTextureRect(
+        sf::IntRect(bounds.pos.x, bounds.pos.y, bounds.size.x, bounds.size.y)
+    );
+    this->mask.setPosition(sf::Vector2f(bounds.pos.x, bounds.pos.y));
+    this->mask.setSize(sf::Vector2f(bounds.size.x, bounds.size.y));
     this->mask.setTexture(&this->buffer.getTexture());
     this->shader.setUniform("texture", sf::Shader::CurrentTexture);
     this->resetUniforms();
@@ -66,11 +67,11 @@ void Background::setUniform(char const *name, sf::Color const &value) {
 void Background::resetUniforms() {
     this->shader.setUniform(
         "offset",
-        sf::Glsl::Vec2(bounds.left, bounds.top)
+        sf::Glsl::Vec2(bounds.pos.x, bounds.pos.y)
     );
     this->shader.setUniform(
         "resolution",
-        sf::Glsl::Vec2(bounds.width, bounds.height)
+        sf::Glsl::Vec2(bounds.size.y, bounds.size.x)
     );
     this->shader.setUniform("time", this->timer);
 }

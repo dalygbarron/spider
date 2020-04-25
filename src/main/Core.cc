@@ -11,7 +11,6 @@ Core::Core(int allowMusic):
     entityRepository(this->spritesheet),
     soundPlayer(16, allowMusic)
 {
-    this->transition.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     this->transitionShader.setUniform("power", this->transitionStrength);
     this->transitionShader.setUniform("picture", sf::Shader::CurrentTexture);
     if (!this->transitionShader.loadFromMemory(
@@ -27,7 +26,7 @@ Item &Core::addItem(
     char const *displayName,
     char const *description,
     char const *rat,
-    sf::IntRect sprite
+    Rectangle sprite
 ) {
     Item item;
     item.name = name;
@@ -43,10 +42,10 @@ std::unordered_map<std::string, Item> const &Core::getItems() {
     return this->items;
 }
 
-void Core::addBulletPrototype(int id, sf::IntRect rat) {
+void Core::addBulletPrototype(int id, Rectangle rat) {
     Bullet::Prototype prototype;
     prototype.rat = rat;
-    prototype.radius = (float)rat.width / 2;
+    prototype.radius = (float)rat.size.x / 2;
     this->bulletPrototypes[id] = std::move(prototype);
 }
 
@@ -92,6 +91,23 @@ void Core::setTransitionTexture(ghc::filesystem::path const &path) {
     this->transition.setTexture(&this->transitionTexture, true);
 }
 
+void Core::setFov(float fov) {
+    this->fov = fov;
+}
+
+float Core::getFov() const {
+    return this->fov;
+}
+
+void Core::setSize(glm::ivec2 size) {
+    this->size = size;
+    this->transition.setSize(sf::Vector2f(size.x, size.y));
+}
+
+glm::ivec2 Core::getSize() const {
+    return this->size;
+}
+
 Level *Core::loadLevel(ghc::filesystem::path const &path) {
     if (ghc::filesystem::exists(path)) {
         pugi::xml_document doc;
@@ -117,7 +133,7 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
                 Instance &instance = level->addInstance();
                 instance.name = child.attribute("name").value();
                 for (pugi::xml_node point: child.children("point")) {
-                    instance.mesh.addVertex(sf::Vector2f(
+                    instance.mesh.addVertex(glm::vec2(
                         point.attribute("x").as_float(),
                         point.attribute("y").as_float()
                     ));

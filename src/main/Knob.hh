@@ -3,6 +3,7 @@
 
 #include "SoundPlayer.hh"
 #include "Measurements.hh"
+#include "Rectangle.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -15,7 +16,7 @@ class Renderer;
  */
 class Knob {
     public:
-        sf::FloatRect const shape;
+        Rectangle const shape;
         int const id;
 
         /**
@@ -43,7 +44,7 @@ class Knob {
          *         contains a knob that has been activated if a knob has been
          *         activated.
          */
-        virtual Knob *update(sf::Vector2f mouse, SoundPlayer &soundPlayer);
+        virtual Knob *update(glm::ivec2 mouse, SoundPlayer &soundPlayer);
 
         /**
          * Draws the knob on the sprite batch.
@@ -88,7 +89,7 @@ class PanelKnob: public Knob {
         void addChild(Knob *child);
 
         virtual Knob *update(
-            sf::Vector2f mouse,
+            glm::ivec2 mouse,
             SoundPlayer &soundPlayer
         ) override;
 
@@ -106,7 +107,7 @@ class PanelKnob: public Knob {
  */
 class ButtonKnob: public Knob {
     public:
-        int enabled = true;
+        bool enabled = true;
 
         /**
          * Creates a button knob with an arbitrary knob as it's content.
@@ -125,7 +126,7 @@ class ButtonKnob: public Knob {
         ~ButtonKnob();
 
         virtual Knob *update(
-            sf::Vector2f mouse,
+            glm::ivec2 mouse,
             SoundPlayer &soundPlayer
         ) override;
 
@@ -136,7 +137,7 @@ class ButtonKnob: public Knob {
 
     private:
         Knob *child;
-        int depressed = false;
+        bool depressed = false;
 };
 
 /**
@@ -160,7 +161,7 @@ class TextKnob: public Knob {
             int y,
             int w,
             int h,
-            sf::IntRect font,
+            Rectangle font,
             char const *text
         );
 
@@ -171,7 +172,7 @@ class TextKnob: public Knob {
     
     private:
         std::string text;
-        sf::IntRect font;
+        Rectangle font;
 };
 
 /**
@@ -187,7 +188,7 @@ class FrameKnob: public Knob {
          * @param y   is the height.
          * @param rat is the rat to draw.
          */
-        FrameKnob(int x, int y, int w, int h, sf::IntRect rat);
+        FrameKnob(int x, int y, int w, int h, Rectangle rat);
 
         virtual void draw(
             sf::RenderTarget &target,
@@ -195,8 +196,8 @@ class FrameKnob: public Knob {
         ) const override;
 
     private:
-        sf::IntRect const rat;
-        sf::FloatRect drawPos;
+        Rectangle const rat;
+        Rectangle drawPos;
 };
 
 #endif

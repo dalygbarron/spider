@@ -20,11 +20,11 @@ void Screen::onReveal(int value) {
     // Do nothing by default.
 }
 
-void Screen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
+void Screen::onClick(sf::Mouse::Button button, glm::ivec2 pos) {
     // Do nothing by default.
 }
 
-void Screen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
+void Screen::onDrag(glm::ivec2 delta, glm::ivec2 pos) {
     // Do nothing by default.
 }
 

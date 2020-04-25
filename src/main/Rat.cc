@@ -1,7 +1,7 @@
 #include "Rat.hh"
 #include "spdlog/spdlog.h"
 
-Rat::Rat(sf::IntRect rat, sf::Vector2u dimensions) {
+Rat::Rat(Rectangle rat, glm::uvec2 dimensions) {
     this->rat = rat;
     this->dimensions = dimensions;
 }
@@ -10,14 +10,11 @@ void Rat::update() {
     if (this->rolling) this->timer++;
 }
 
-sf::Vector2u Rat::getSize() const {
-    return sf::Vector2u(
-        this->rat.width / this->dimensions.x,
-        this->rat.height / this->dimensions.y
-    );
+glm::uvec2 Rat::getSize() const {
+    return (glm::uvec2)this->rat.size / this->dimensions;
 }
 
-sf::IntRect Rat::getFrame() const {
+Rectangle Rat::getFrame() const {
     int index = 0;
     if (!this->current) {
         index = (this->timer / Rat::DEFAULT_SPEED) %
@@ -31,13 +28,11 @@ sf::IntRect Rat::getFrame() const {
             this->current->frames.size()
         )];
     }
-    return sf::IntRect(
-        this->rat.left + (index % this->dimensions.x) *
-            this->rat.width / this->dimensions.x,
-        this->rat.top + (index / this->dimensions.x) *
-            this->rat.height / this->dimensions.y,
-        this->rat.width / this->dimensions.x,
-        this->rat.height / this->dimensions.y
+    return Rectangle(
+        this->rat.pos +
+            glm::ivec2(index % dimensions.x, index / dimensions.y) *
+            this->rat.size / (glm::ivec2)this->dimensions,
+        this->rat.size / (glm::ivec2)this->dimensions
     );
 }
 

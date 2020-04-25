@@ -3,7 +3,7 @@
 
 #include "Knob.hh"
 #include "sol.hh"
-#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -24,20 +24,6 @@ namespace Util {
      * @return the new view to use.
      */
     sf::View getLetterboxView(sf::View view, sf::Vector2i dimensions);
-
-    /**
-     * Centres the mouse in the screen.
-     * @param window is the window we are using which is needed because the
-     *               center of the screen changes depending.
-     */
-    void centreMouse(sf::Window &window);
-
-    /**
-     * Converts radians to degrees.
-     * @param radians is the amount of radians to convert.
-     * @return that amount in degrees.
-     */
-    float degrees(float radians);
 
     /**
      * Gives you the distance between two float vectors.

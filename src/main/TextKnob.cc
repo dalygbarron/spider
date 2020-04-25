@@ -8,17 +8,16 @@ TextKnob::TextKnob(
     int y,
     int w,
     int h,
-    sf::IntRect font,
+    Rectangle font,
     char const *text
 ):
     Knob(x, y, w, h, -1)
 {
     this->font = font;
-    if (font.width == 0 || font.height == 0) return;
-    float characterWidth = font.width / 16;
-    float characterHeight = font.height / 16;
-    int columns = w / fmax(characterWidth - 1, 1);
-    int rows = h / characterHeight;
+    if (font.size.x == 0 || font.size.y == 0) return;
+    glm::ivec2 character = font.size / 16;
+    int columns = w / fmax(character.x - 1, 1);
+    int rows = h / character.y;
     if (columns == 0) columns = 1;
     this->text = text;
     int n = this->text.size();
@@ -37,6 +36,5 @@ TextKnob::TextKnob(
 }
 
 void TextKnob::draw(sf::RenderTarget &target, Renderer &renderer) const {
-    sf::Vector2f pos(this->shape.left, this->shape.top);
-    renderer.text(this->text.c_str(), pos, this->font);
+    renderer.text(this->text.c_str(), this->shape.pos, this->font);
 }

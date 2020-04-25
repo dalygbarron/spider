@@ -2,6 +2,7 @@
 #include "Util.hh"
 #include "Const.hh"
 #include "spdlog/spdlog.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 RatBatch::RatBatch(sf::Texture const &texture): texture(texture) {
     this->clear();
@@ -13,7 +14,10 @@ void RatBatch::clear() {
 }
 
 void RatBatch::draw(Rectangle sprite, glm::vec2 pos) {
-    this->draw(sprite, Rectangle(pos - sprite.size / 2, sprite.size));
+    this->draw(
+        sprite,
+        Rectangle(pos - (glm::vec2)sprite.size * glm::vec2(0.5, 0.5), sprite.size)
+    );
 }
 
 void RatBatch::draw(
@@ -23,41 +27,47 @@ void RatBatch::draw(
     float rot,
     glm::vec2 scale
 ) {
-    sf::Transform transform;
-    transform.translate(pos)
-        .rotate(Util::degrees(rot))
-        .scale(scale)
-        .translate(offset);
+    glm::mat4 transform = glm::rotate(glm::mat4(1), rot, glm::vec3(0, 0, -1));
+    transform = glm::scale(transform, glm::vec3(scale.x, scale.y, 1));
+    transform = glm::translate(transform, glm::vec3(pos.x, pos.y, 0));
+    glm::vec4 topLeft = transform *
+        glm::vec4(-sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
+    glm::vec4 topRight = transform *
+        glm::vec4(sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
+    glm::vec4 bottomLeft = transform *
+        glm::vec4(sprite.size.x / 2, sprite.size.y / 2, 0, 1);
+    glm::vec4 bottomRight = transform *
+        glm::vec4(-sprite.size.x / 2, sprite.size.y / 2, 0, 1);
     int nVertices = this->n * 4;
     this->reserve(nVertices + 4);
-    this->vertices[nVertices].position = transform.transformPoint(
-        -sprite.width / 2,
-        -sprite.height / 2
+    this->vertices[nVertices].position = sf::Vector2f(topLeft.x, topLeft.y);
+    this->vertices[nVertices].texCoords = sf::Vector2f(
+        sprite.pos.x,
+        sprite.pos.y
     );
-    this->vertices[nVertices].texCoords = glm::vec2(sprite.left, sprite.top);
-    this->vertices[nVertices + 1].position = transform.transformPoint(
-        sprite.width / 2,
-        -sprite.height / 2
+    this->vertices[nVertices + 1].position = sf::Vector2f(
+        topRight.x,
+        topRight.y
     );
-    this->vertices[nVertices + 1].texCoords = glm::vec2(
-        sprite.left + sprite.width,
-        sprite.top
+    this->vertices[nVertices + 1].texCoords = sf::Vector2f(
+        sprite.pos.x + sprite.size.x,
+        sprite.pos.y
     );
-    this->vertices[nVertices + 2].position = transform.transformPoint(
-        sprite.width / 2,
-        sprite.height / 2
+    this->vertices[nVertices + 2].position = sf::Vector2f(
+        bottomRight.x,
+        bottomRight.y
     );
-    this->vertices[nVertices + 2].texCoords = glm::vec2(
-        sprite.left + sprite.width,
-        sprite.top + sprite.height
+    this->vertices[nVertices + 2].texCoords = sf::Vector2f(
+        sprite.pos.x + sprite.size.x,
+        sprite.pos.y + sprite.size.y
     );
-    this->vertices[nVertices + 3].position = transform.transformPoint(
-        -sprite.width / 2,
-        sprite.height / 2
+    this->vertices[nVertices + 3].position = sf::Vector2f(
+        bottomLeft.x,
+        bottomLeft.y
     );
-    this->vertices[nVertices + 3].texCoords = glm::vec2(
-        sprite.left,
-        sprite.top + sprite.height
+    this->vertices[nVertices + 3].texCoords = sf::Vector2f(
+        sprite.pos.x,
+        sprite.pos.y + sprite.size.y
     );
     this->n++;
 }
@@ -65,45 +75,45 @@ void RatBatch::draw(
 void RatBatch::draw(Patch const &p, Rectangle pos) {
     this->draw(p.topLeft, Rectangle(pos.pos, p.topLeft.size));
     this->draw(p.top, Rectangle(
-        pos.pos + vec2(p.topLeft.size.x, 0),
-        pos.size - vec2(p.topLeft.size.x + p.topRight.size.x, 0)
+        pos.pos + glm::ivec2(p.topLeft.size.x, 0),
+        pos.size - glm::ivec2(p.topLeft.size.x + p.topRight.size.x, 0)
     ));
     this->draw(p.topRight, Rectangle(
-        pos.pos + glm::vec2(pos.size.x - p.topRight.size.x, 0),
+        pos.pos + glm::ivec2(pos.size.x - p.topRight.size.x, 0),
         p.topRight.size
     ));
     this->draw(p.right, Rectangle(
-        pos.pos + glm::vec2(pos.size.x - p.right.size.x, p.topRight.size.y),
-        vec2(
+        pos.pos + glm::ivec2(pos.size.x - p.right.size.x, p.topRight.size.y),
+        glm::ivec2(
             p.right.size.x,
             pos.size.y - (p.topRight.size.y + p.topLeft.size.y)
         )
     ));
     this->draw(p.bottomRight, Rectangle(
-        pos.pos + pos.size - glm::vec2(p.right.size.x, p.bottomRight.size.y),
+        pos.pos + pos.size - glm::ivec2(p.right.size.x, p.bottomRight.size.y),
         p.bottomRight.size
     ));
     this->draw(p.bottom, Rectangle(
-        pos.pos + glm::vec2(p.bottomLeft.size.x, pos.size.y - p.bottom.size.y),
-        vec2(
+        pos.pos + glm::ivec2(p.bottomLeft.size.x, pos.size.y - p.bottom.size.y),
+        glm::ivec2(
             pos.size.x - (p.bottomLeft.size.x + p.bottomRight.size.x),
             p.bottom.size.y
         )
     ));
     this->draw(p.bottomLeft, Rectangle(
-        pos.pos + glm::vec2(0, pos.size.y - p.bottomLeft.size.y),
-        patch.bottomLeft.size
+        pos.pos + glm::ivec2(0, pos.size.y - p.bottomLeft.size.y),
+        p.bottomLeft.size
     ));
     this->draw(p.left, Rectangle(
-        pos.pos + glm::vec2(0, p.topLeft.size.y),
-        vec2(
+        pos.pos + glm::ivec2(0, p.topLeft.size.y),
+        glm::ivec2(
             p.left.size.x,
             pos.size.y - (p.topLeft.size.y + p.bottomLeft.size.y)
         )
     ));
     this->draw(p.middle, Rectangle(
-        pos.pos + glm::vec2(p.left.size.x, p.top.size.y),
-        pos.size - glm::vec2(
+        pos.pos + glm::ivec2(p.left.size.x, p.top.size.y),
+        pos.size - glm::ivec2(
             p.left.size.x + p.right.size.x,
             p.top.size.y + p.bottom.size.y
         )
@@ -145,7 +155,7 @@ void RatBatch::draw(Rectangle sprite, Rectangle pos) {
     this->n++;
 }
 
-void RatBatch::draw(sf::IntRect sprite, glm::vec2 start, glm::vec2 end) {
+void RatBatch::draw(Rectangle sprite, glm::vec2 start, glm::vec2 end) {
     int nVertices = this->n * 4;
     if (nVertices + 4 > this->vertices.size()) {
         this->vertices.resize(this->vertices.size() + 4);
@@ -153,9 +163,9 @@ void RatBatch::draw(sf::IntRect sprite, glm::vec2 start, glm::vec2 end) {
     // Figure out what orientation to draw them with.
     glm::vec2 edge(0, 0);
     if (fabs(end.x - start.x) > fabs(end.y - start.y)) {
-        edge.y = sprite.height / 2;
+        edge.y = sprite.size.y / 2;
     } else {
-        edge.x = sprite.width / 2;
+        edge.x = sprite.size.x / 2;
     }
     this->vertices[nVertices].position = sf::Vector2f(
         start.x - edge.x,

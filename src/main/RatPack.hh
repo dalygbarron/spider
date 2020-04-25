@@ -1,6 +1,8 @@
 #ifndef RAT_PACK_H
 #define RAT_PACK_H
 
+#include "Rectangle.hh"
+#include "glm/vec2.hpp"
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 
@@ -30,13 +32,13 @@ class RatPack {
          * @param shape is the position and size of the rat within the overall
          *        texture.
          */
-        void add(const char *name, sf::IntRect shape);
+        void add(const char *name, Rectangle shape);
 
         /**
          * Gives you the dimensions of the given rat.
          * @return a rectangle that covers it.
          */
-        sf::IntRect get(const char *name) const;
+        Rectangle get(const char *name) const;
 
         /**
          * Gets rid of all the rats.
@@ -53,19 +55,19 @@ class RatPack {
          * Gives you an iterator to the first rat.
          * @return constant iterator to the first rat.
          */
-        std::unordered_map<std::string, sf::IntRect>::const_iterator begin(
+        std::unordered_map<std::string, Rectangle>::const_iterator begin(
         ) const;
 
         /**
          * Gives you an iterator to the last rat.
          * @return constant iterator to the last rat.
          */
-        std::unordered_map<std::string, sf::IntRect>::const_iterator end(
+        std::unordered_map<std::string, Rectangle>::const_iterator end(
         ) const;
 
 
     private:
-        std::unordered_map<std::string, sf::IntRect> rats;
+        std::unordered_map<std::string, Rectangle> rats;
         sf::Texture texture;
 };
 

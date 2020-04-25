@@ -3,6 +3,7 @@
 
 #include "Mob.hh"
 #include "Actor.hh"
+#include "Rectangle.hh"
 
 /**
  * A nice bullet flying through the air.
@@ -14,7 +15,7 @@ class Bullet: public Mob {
          */
         class Prototype {
             public:
-                sf::IntRect rat;
+                Rectangle rat;
                 float radius;
         };
 

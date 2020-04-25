@@ -12,7 +12,6 @@ LevelScreen::LevelScreen(Core &core, Level &level):
         ImGuiFileBrowserFlags_EnterNewFilename
     )
 {
-    this->back.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
     this->backgroundSelector.SetTitle("Select level background image");
     this->backgroundSelector.SetTypeFilters({".png"});
     this->entitySelector.SetTitle("Select entity to include");
@@ -20,14 +19,6 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     // TODO: this shader really ought to be kept and reused by other level
     //       screens since it is always the same stuff but I will do that
     //       later.
-    this->shader.setUniform("angle", this->camera);
-    this->shader.setUniform("picture", sf::Shader::CurrentTexture);
-    if (!this->shader.loadFromMemory(
-        Shaders::SKY_SHADER, sf::Shader::Fragment
-    )) {
-        spdlog::error("Couldn't start the sky shader");
-    }
-    this->back.setTexture(&this->level.getPic(), true);
     this->textEditor.SetLanguageDefinition(
         TextEditor::LanguageDefinition::Lua()
     );
@@ -64,7 +55,7 @@ Instance &LevelScreen::addInstance(Entity const *entity) {
         instance->pos = this->camera;
     } else {
         for (int i = 0; i < 3; i++) {
-            instance->mesh.addVertex(sf::Vector2f(
+            instance->mesh.addVertex(glm::vec2(
                 cos(i * Const::DOUBLE_PI / 3) / 4 + this->camera.x,
                 sin(i * Const::DOUBLE_PI / 3) / 4 + this->camera.y
             ));
@@ -88,7 +79,6 @@ Instance &LevelScreen::addInstance(Entity const *entity) {
 }
 
 void LevelScreen::update(sf::RenderWindow &window) {
-    this->shader.setUniform("angle", camera);
     // Now do the gui.
     ImGui::SFML::Update(window, sf::seconds(Const::FRAME_TIME));
     if (ImGui::Begin(this->level.file.c_str())) {
@@ -171,7 +161,6 @@ void LevelScreen::update(sf::RenderWindow &window) {
         ghc::filesystem::path file =
             this->backgroundSelector.GetSelected().string();
         this->level.setPic(ghc::filesystem::relative(file));
-        this->back.setTexture(&this->level.getPic(), true);
         this->backgroundSelector.ClearSelected();
     }
     // entity selector
@@ -185,9 +174,9 @@ void LevelScreen::update(sf::RenderWindow &window) {
     }
 }
 
-void LevelScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
+void LevelScreen::onClick(sf::Mouse::Button button, glm::ivec2 pos) {
     if (button == sf::Mouse::Button::Left) {
-        sf::Vector2f coordinate = sf::Vector2f(0, 0);
+        glm::vec2 coordinate = glm::vec2();
         // Find the closest thing.
         float distance = 0.2;
         this->selectedInstance = NULL;
@@ -226,7 +215,7 @@ void LevelScreen::onKey(sf::Keyboard::Key key) {
     }
 }
 
-void LevelScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
+void LevelScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         if (this->selectedInstance) {
             if (this->selectedInstance->entity) {
@@ -234,11 +223,11 @@ void LevelScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
                     this->selectedInstance->pos.x = spherePos.x;
                     this->selectedInstance->pos.y = spherePos.y;
             } else {
-                sf::Vector2f *vertex = this->selectedInstance->mesh.getVertex(
+                glm::vec2 *vertex = this->selectedInstance->mesh.getVertex(
                     this->selected
                 );
                 if (vertex) {
-                    sf::Vector2f spherePos = sf::Vector2f(0, 0);
+                    glm::vec2 spherePos;
                     vertex->x = spherePos.x;
                     vertex->y = spherePos.y;
                 }
@@ -305,13 +294,10 @@ void LevelScreen::entityMenu() {
 
 void LevelScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
-    sf::RenderStates states;
-    states.shader = &(this->shader);
-    target.draw(back, states);
     sf::Vector3f floor = sf::Vector3f();
     for (Instance const &instance: this->level.instances) {
         if (instance.entity) {
-            sf::Vector3f pos = sf::Vector3f();
+            glm::vec3 pos;
             if (pos.z < 0) continue;
             float angle;
             if (this->camera.y > 0) {
@@ -323,13 +309,13 @@ void LevelScreen::draw(sf::RenderTarget &target, int top) const {
             }
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                sf::Vector2f(pos.x, pos.y),
+                glm::vec2(pos.x, pos.y),
                 instance.entity->offset,
                 angle * ((this->camera.y > 0) ? -1 : 1),
-                sf::Vector2f(instance.size, instance.size)
+                glm::vec2(instance.size, instance.size)
             );
             this->core.renderer.point(
-                sf::Vector2f(pos.x, pos.y),
+                glm::vec2(pos.x, pos.y),
                 this->selectedInstance == &instance
             );
         } else {

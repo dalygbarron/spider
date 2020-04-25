@@ -4,7 +4,6 @@
 #include "Lindel.hh"
 #include "Util.hh"
 #include "Renderer.hh"
-#include "Background.hh"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -61,7 +60,6 @@ class World {
         sf::Vector3f gravity;
         sf::Vector2f rotation;
         sf::Shader shader;
-        Background background;
         std::vector<Lindel> lindels;
 };
 

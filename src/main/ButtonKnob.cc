@@ -11,7 +11,7 @@ ButtonKnob::~ButtonKnob() {
     if (this->child) delete this->child;
 }
 
-Knob *ButtonKnob::update(sf::Vector2f mouse, SoundPlayer &soundPlayer) {
+Knob *ButtonKnob::update(glm::ivec2 mouse, SoundPlayer &soundPlayer) {
     if (!this->enabled) return NULL;
     int pastDepression = this->depressed;
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {

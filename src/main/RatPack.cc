@@ -10,15 +10,15 @@ sf::Texture const &RatPack::getTexture() const {
     return this->texture;
 }
 
-sf::IntRect RatPack::get(const char *name) const {
+Rectangle RatPack::get(const char *name) const {
     if (!this->rats.count(name)) {
         spdlog::error("trying to get missing '{}' from rat pack", name);
-        return sf::IntRect(0, 0, 0, 0);
+        return Rectangle();
     }
     return this->rats.at(name);
 }
 
-void RatPack::add(const char *name, sf::IntRect shape) {
+void RatPack::add(const char *name, Rectangle shape) {
     if (this->rats.count(name)) {
         spdlog::error("'{}' is duplicated in rat pack", name);
     }
@@ -33,13 +33,12 @@ int RatPack::count() const {
     return this->rats.size();
 }
 
-
-std::unordered_map<std::string, sf::IntRect>::const_iterator RatPack::begin(
+std::unordered_map<std::string, Rectangle>::const_iterator RatPack::begin(
 ) const {
     return this->rats.begin();
 }
 
-std::unordered_map<std::string, sf::IntRect>::const_iterator RatPack::end(
+std::unordered_map<std::string, Rectangle>::const_iterator RatPack::end(
 ) const {
     return this->rats.end();
 }

@@ -96,16 +96,17 @@ int parseOptions(Options &options, int argc, char **argv) {
  * @return the result code the program should give after.
  */
 int process(Core &core) {
+    glm::vec2 size = core.getSize();
     sf::RenderWindow window(
-        sf::VideoMode(Const::WIDTH, Const::HEIGHT),
+        sf::VideoMode(size.x, size.y),
         Const::TITLE// TODO: add to core and get from core.
     );
     window.setMouseCursorVisible(false);
     ImGui::SFML::Init(window);
     window.resetGLStates();
     sf::View view;
-    view.setSize(sf::Vector2f(Const::WIDTH, Const::HEIGHT));
-    view.setCenter(sf::Vector2f(Const::WIDTH / 2, Const::HEIGHT / 2));
+    view.setSize(sf::Vector2f(size.x, size.y));
+    view.setCenter(sf::Vector2f(size.x / 2, size.y / 2));
     sf::Clock deltaClock;
     sf::Clock fps;
     int frame = 0;
@@ -129,7 +130,7 @@ int process(Core &core) {
             } else if (!ImGui::GetIO().WantCaptureMouse) {
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2u size = window.getSize();
-                    screen->onClick(event.mouseButton.button, sf::Vector2f(
+                    screen->onClick(event.mouseButton.button, glm::ivec2(
                         event.mouseButton.x,
                         event.mouseButton.y
                     ));
@@ -139,8 +140,8 @@ int process(Core &core) {
                 } else if (event.type == sf::Event::MouseMoved) {
                     sf::Vector2u size = window.getSize();
                     screen->onDrag(
-                        sf::Vector2f(event.mouseMove.x, event.mouseMove.y),
-                        sf::Vector2f(mouse.x, mouse.y)
+                        glm::ivec2(event.mouseMove.x, event.mouseMove.y),
+                        glm::ivec2(mouse.x, mouse.y)
                     );
                     mouse.x = event.mouseMove.x;
                     mouse.y = event.mouseMove.y;

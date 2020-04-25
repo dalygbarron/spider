@@ -17,10 +17,7 @@ void KnobScreen::update(sf::RenderWindow &window) {
     sf::Vector2i mousePos = sf::Mouse::getPosition(window);
     this->mouse.x = mousePos.x;
     this->mouse.y = mousePos.y;
-    Knob *result = this->knob->update(
-        this->mouse,
-        this->core.soundPlayer
-    );
+    Knob *result = this->knob->update(this->mouse, this->core.soundPlayer);
     if (result) this->core.popScreen(result->id);
 }
 

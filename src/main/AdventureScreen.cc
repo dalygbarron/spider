@@ -59,12 +59,13 @@ void AdventureScreen::update(sf::RenderWindow &window) {
     glm::mat4 camera = Util::camera(this->angle);
     if (this->world) this->world->update(camera);
     if (this->runScript<float>(0)) return;
-    Util::centreMouse(window);
+    glm::ivec2 mid = this->core.getSize() / 2;
+    sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
 }
 
 void AdventureScreen::onClick(
     sf::Mouse::Button button,
-    sf::Vector2f pos
+    glm::ivec2 pos
 ) {
     if (this->coroutine) return;
     glm::mat4 camera = Util::camera(this->angle);
@@ -118,7 +119,7 @@ void AdventureScreen::onReveal(int response) {
     this->runScript<int>(response);
 }
 
-void AdventureScreen::onDrag(sf::Vector2f prev, sf::Vector2f pos) {
+void AdventureScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
     if (this->coroutine || prev == pos) {
         return;
     }
@@ -171,14 +172,11 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         if (this->selected) {
             this->core.renderer.batch.draw(
                 this->selected->sprite,
-                glm::vec2(
-                    this->core.size.x + 32,
-                    this->core.size.y + 32
-                )
+                this->core.getSize() + glm::ivec2(32, 32)
             );
         }
         this->core.renderer.cursor(
-            this->core.size + this->core.renderer.cursorRats[
+            this->core.getSize() + this->core.renderer.cursorRats[
                 static_cast<int>(Renderer::CursorType::Pointer)
             ].size / 2,
             Renderer::CursorType::Pointer

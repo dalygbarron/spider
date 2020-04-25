@@ -6,7 +6,10 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     ScriptedScreen(core, path),
     bullets(Const::MAX_BULLETS),
     actors(Const::MAX_ACTORS),
-    bounds(core.size.x / 4, 0, core.size.x / 2, core.size.y),
+    bounds(
+        (glm::vec2)core.getSize() * glm::vec2(0.5, 0),
+        (glm::vec2)core.getSize() * glm::vec2(0.5, 1)
+    ),
     background(this->bounds)
 {
     // do the shade loading
@@ -103,11 +106,10 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     ) -> unsigned int {
         Rat rat(
             this->core.spritesheet.get(ratName.c_str()),
-            sf::Vector2u(ratX, ratY)
+            glm::uvec2(ratX, ratY)
         );
         rat.stop();
-        sf::Vector2u dimensions = rat.getSize();
-        float radius = fmin(dimensions.x, dimensions.y) / 2;
+        float radius = fmin(ratX, ratY) / 2;
         if (dainty) radius = Const::DAINTY_RADIUS;
         Actor actor(radius, std::move(rat));
         actor.position.x = x;
@@ -211,9 +213,8 @@ void BattleScreen::update(sf::RenderWindow &window) {
             item.content.live.actorUpdate();
             // TODO: just make it all mobs have a rat or something.
             item.content.live.rat.update();
-            item.content.live.position = Util::clampInRect(
-                item.content.live.position,
-                this->bounds
+            item.content.live.position = this->bounds.clamp(
+                item.content.live.position
             );
             for (Pool<Bullet>::Item &bulletItem:
                 this->bullets.getItemsMutable()
@@ -253,7 +254,7 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
             item.content.live.rat,
             item.content.live.position,
             0,
-            sf::Vector2f(1, 1),
+            glm::vec2(1, 1),
             item.content.live.flip
         );
     }
@@ -279,48 +280,46 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
         }
     }
     // Draw the GUI.
-    this->core.renderer.panel(sf::FloatRect(0, 0, 256, 600));
-    this->core.renderer.panel(sf::FloatRect(768, 0, 256, 600));
+    glm::vec2 size = this->core.getSize();
+    this->core.renderer.panel(Rectangle(0, 0, size.x * 0.25, size.y));
+    this->core.renderer.panel(Rectangle(size.x * 0.75, 0, size.x * 0.25, size.y));
     this->core.renderer.text(
         this->title.c_str(),
-        sf::Vector2f(this->bounds.left, this->bounds.top),
+        this->bounds.pos,
         this->core.renderer.battleFont
     );
     this->core.renderer.text(
         this->subtitle.c_str(),
-        sf::Vector2f(
-            this->bounds.left,
-            this->bounds.top + this->core.renderer.font.height / 16
-        ),
+        this->bounds.pos + glm::ivec2(0, this->core.renderer.font.size.y / 16),
         this->core.renderer.battleFont
     );
     this->core.renderer.batch.draw(
         this->core.renderer.battleRat,
-        sf::FloatRect(
-            this->bounds.left + this->bounds.width + this->core.renderer.panelPatch.left.width,
-            this->core.renderer.panelPatch.top.height,
-            256 - this->core.renderer.panelPatch.left.width * 2,
-            600 - this->core.renderer.panelPatch.top.height * 2
+        Rectangle(
+            size.x * 0.75 + this->core.renderer.panelPatch.left.size.x,
+            this->core.renderer.panelPatch.top.size.y,
+            size.x * 0.25 - this->core.renderer.panelPatch.left.size.x * 2,
+            size.y - this->core.renderer.panelPatch.top.size.y * 2
         )
     );
     this->core.renderer.batch.draw(
         this->core.renderer.battleRat,
-        sf::FloatRect(
-            this->core.renderer.panelPatch.left.width,
-            this->core.renderer.panelPatch.top.height,
-            256 - this->core.renderer.panelPatch.left.width * 2,
-            600 - this->core.renderer.panelPatch.top.height * 2
+        Rectangle(
+            this->core.renderer.panelPatch.left.size.x,
+            this->core.renderer.panelPatch.top.size.y,
+            size.x * 0.75 - this->core.renderer.panelPatch.left.size.x * 2,
+            size.y - this->core.renderer.panelPatch.top.size.y * 2
         )
     );
     Pool<Actor>::Item const *playerItem = this->actors.getConst(this->player);
     if (playerItem && playerItem->alive) {
         for (int i = 0; i < playerItem->content.live.hp; i++) {
             this->core.renderer.node(
-                sf::Vector2f(
-                    this->bounds.left + this->bounds.width -
-                        this->core.renderer.nodeHighlightRat.width / 2 -
-                        this->core.renderer.nodeHighlightRat.width * i,
-                    Const::HEIGHT - this->core.renderer.nodeHighlightRat.height / 2
+                glm::vec2(
+                    this->bounds.pos.x + this->bounds.size.x -
+                        this->core.renderer.nodeHighlightRat.size.x / 2 -
+                        this->core.renderer.nodeHighlightRat.size.x * i,
+                    size.y - this->core.renderer.nodeHighlightRat.size.y / 2
                 ),
                 true
             );

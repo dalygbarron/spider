@@ -1,6 +1,7 @@
 #ifndef BACKGROUND_H
 #define BACKGROUND_H
 
+#include "Rectangle.hh"
 #include "glm/vec2.hpp"
 #include "glm/mat4x4.hpp"
 #include <SFML/Graphics.hpp>
@@ -15,7 +16,7 @@ class Background {
          * Creates the background by setting where it's gonna draw.
          * @param bounds is the area the background will fill.
          */
-        Background(sf::IntRect bounds);
+        Background(Rectangle bounds);
 
         /**
          * Gets the background ready to draw from a file.
@@ -68,7 +69,7 @@ class Background {
         void setUniform(char const *name, sf::Color const &value);
 
     private:
-        sf::IntRect bounds;
+        Rectangle bounds;
         sf::RectangleShape back;
         sf::RectangleShape mask;
         mutable sf::RenderTexture buffer;

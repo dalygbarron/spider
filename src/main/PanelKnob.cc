@@ -18,7 +18,7 @@ void PanelKnob::addChild(Knob *child) {
 }
 
 Knob *PanelKnob::update(
-    sf::Vector2f mouse,
+    glm::ivec2 mouse,
     SoundPlayer &soundPlayer
 ) {
     for (Knob *child: this->children) {

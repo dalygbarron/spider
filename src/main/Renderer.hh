@@ -5,7 +5,6 @@
 #include "Rat.hh"
 #include "Patch.hh"
 #include "Mesh.hh"
-#include "Font.hh"
 #include "Util.hh"
 #include <SFML/Graphics.hpp>
 

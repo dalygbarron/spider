@@ -6,29 +6,28 @@ void RatScreen::Rat::update() {
     this->position += this->velocity;
     this->velocity.x += this->gravity.x;
     this->velocity.y += this->gravity.y;
-    if (this->position.x < 0) this->position.x += Const::WIDTH;
-    if (this->position.x >= Const::WIDTH) this->position.x -= Const::WIDTH;
-    if (this->position.y < 0) this->position.y += Const::HEIGHT;
-    if (this->position.y >= Const::HEIGHT) this->position.y -= Const::HEIGHT;
+    if (this->position.x < 0) this->position.x += this->bounds.size.x;
+    if (this->position.y < 0) this->position.y += bounds.size.y;
+    if (this->position.x >= this->bounds.size.x) {
+        this->position.x -= this->bounds.size.x;
+    }
+    if (this->position.y >= this->bounds.size.y) {
+        this->position.y -= this->bounds.size.y;
+    }
 }
 
 RatScreen::RatScreen(Core &core): Screen(core) {
-    spdlog::info(
-        "Creating rat screen with {} rats",
-        this->core.spritesheet.count()
-    );
+    glm::ivec2 size = core.getSize();
     this->rats.resize(this->core.spritesheet.count());
     int i = 0;
-    for (std::unordered_map<std::string, sf::IntRect>::const_iterator it =
+    for (std::unordered_map<std::string, Rectangle>::const_iterator it =
         this->core.spritesheet.begin();
         it != this->core.spritesheet.end();
         it++
     ) {
-        sf::IntRect sprite = it->second;
-        this->rats[i].sprite.left = sprite.left;
-        this->rats[i].sprite.top = sprite.top;
-        this->rats[i].sprite.width = sprite.width;
-        this->rats[i].sprite.height = sprite.height;
+        Rectangle sprite = it->second;
+        this->rats[i].sprite = sprite;
+        this->rats[i].bounds.size = size;
         float moveAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
         float gravityAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
         float rotationAngle = fmod((float)rand() / 100, Const::DOUBLE_PI);
@@ -39,7 +38,7 @@ RatScreen::RatScreen(Core &core): Screen(core) {
         this->rats[i].gravity.y = 0.01 * scale * sin(gravityAngle);
         this->rats[i].rotation = rotationAngle;
         this->rats[i].angularVelocity = (float)(rand() % 30) / 120 - 0.125;
-        this->rats[i].scale = sf::Vector2f(scale, scale);
+        this->rats[i].scale = glm::vec2(scale, scale);
         i++;
     }
     std::sort(
@@ -50,10 +49,7 @@ RatScreen::RatScreen(Core &core): Screen(core) {
         }
     );
     for (i = 0; i < 5; i++) {
-        this->mesh.addVertex(sf::Vector2f(
-            rand() % Const::WIDTH,
-            rand() % Const::HEIGHT
-        ));
+        this->mesh.addVertex(glm::vec2(rand() % size.x, rand() % size.y));
     }
 }
 
@@ -63,7 +59,7 @@ void RatScreen::update(sf::RenderWindow &window) {
 
 void RatScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
-    std::vector<sf::Vector2f> const &vertices = this->mesh.getVertices();
+    std::vector<glm::vec2> const &vertices = this->mesh.getVertices();
     for (int i = 1; i < vertices.size(); i++) {
         this->core.renderer.club(vertices[i -  1], vertices[i], false);
     }
@@ -75,7 +71,7 @@ void RatScreen::draw(sf::RenderTarget &target, int top) const {
             this->core.renderer.batch.draw(
                 this->rats[i].sprite,
                 this->rats[i].position,
-                sf::Vector2f(0, 0),
+                glm::vec2(),
                 this->rats[i].rotation,
                 this->rats[i].scale
             );

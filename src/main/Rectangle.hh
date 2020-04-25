@@ -12,6 +12,12 @@ class Rectangle {
         glm::ivec2 size;
 
         /**
+         * Default constructor creating a rectangle at origin with no
+         * dimensions.
+         */
+        Rectangle();
+
+        /**
          * Creates the rectangle by specifying each number individually.
          * @param x is the distance from the left.
          * @param y is the distance from the top.
@@ -26,6 +32,13 @@ class Rectangle {
          * @param size is the width and height of the rectangle.
          */
         Rectangle(glm::ivec2 pos, glm::ivec2 size);
+
+        /**
+         * Tells you if the given point is within this rectangle.
+         * @param point is the point to check.
+         * @return true if it's in there and false otherwise.
+         */
+        bool contains(glm::vec2 point) const;
 
         /**
          * Takes a point and clamps it within this rectangle so like it's not

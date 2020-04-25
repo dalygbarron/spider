@@ -5,7 +5,7 @@ Renderer::Renderer(sf::Texture const &sprites): batch(sprites) {
     // does nothing else.
 }
 
-void Renderer::setCursorRat(sf::IntRect rat, Renderer::CursorType type) {
+void Renderer::setCursorRat(Rectangle rat, Renderer::CursorType type) {
     this->cursorRats[static_cast<int>(type)] = rat;
 }
 
@@ -24,18 +24,18 @@ void Renderer::cursor(glm::vec2 pos, Renderer::CursorType cursor) const {
     this->batch.draw(this->cursorRats[static_cast<int>(cursor)], pos);
 }
 
-void Renderer::box(sf::FloatRect pos, int highlight) const {
+void Renderer::box(Rectangle pos, int highlight) const {
     this->batch.draw(
         highlight ? this->boxHighlightPatch : this->boxPatch,
         pos
     );
 }
 
-void Renderer::panel(sf::FloatRect pos) const {
+void Renderer::panel(Rectangle pos) const {
     this->batch.draw(this->panelPatch, pos);
 }
 
-void Renderer::button(sf::FloatRect pos, int depressed) const {
+void Renderer::button(Rectangle pos, int depressed) const {
     this->batch.draw(
         depressed ? this->buttonDepressedPatch : this->buttonPatch,
         pos
@@ -106,33 +106,25 @@ void Renderer::text(char const *content, glm::vec2 pos) const {
 void Renderer::text(
     char const *content,
     glm::vec2 pos,
-    sf::IntRect font
+    Rectangle font
 ) const {
     float originX = pos.x;
-    int characterWidth = font.width / 16;
-    int characterHeight = font.height / 16;
+    glm::ivec2 character = font.size / 16;
     for (int i = 0; content[i]; i++) {
         char c = content[i];
         if (c == '\n') {
             pos.x = originX;
-            pos.y += characterHeight;
+            pos.y += character.y;
             continue;
         }
         this->batch.draw(
-            sf::IntRect(
-                font.left + (c % 16) * characterWidth,
-                font.top + (c / 16) * characterHeight,
-                characterWidth,
-                characterHeight
+            Rectangle(
+                font.pos + character * glm::ivec2(c % 16, c / 16),
+                character
             ),
-            sf::FloatRect(
-                pos.x,
-                pos.y,
-                characterWidth,
-                characterHeight
-            )
+            Rectangle(pos, character)
         );
-        pos.x += characterWidth - 1;
+        pos.x += character.x - 1;
     }
 }
 

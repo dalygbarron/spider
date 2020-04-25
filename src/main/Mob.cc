@@ -6,7 +6,7 @@ Mob::Mob(float radius): radius(radius)
     // nothing else.
 }
 
-voidsf::Vector2f Mob::update() {
+void Mob::update() {
     this->position += this->velocity;
     this->velocity += this->gravity;
 }

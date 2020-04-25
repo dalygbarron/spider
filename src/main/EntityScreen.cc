@@ -54,7 +54,7 @@ void EntityScreen::update(sf::RenderWindow &window) {
             EntityScreen::BUFFER_SIZE
         );
         ImGui::BeginChild("Sprites");
-        for (std::unordered_map<std::string, sf::IntRect>::const_iterator it =
+        for (std::unordered_map<std::string, Rectangle>::const_iterator it =
             this->core.spritesheet.begin(); it != this->core.spritesheet.end();
             it++
         ) {
@@ -72,9 +72,9 @@ void EntityScreen::update(sf::RenderWindow &window) {
     ImGui::End();
 }
 
-void EntityScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
+void EntityScreen::onDrag(glm::ivec2 delta, glm::ivec2 pos) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        sf::Vector2f *vertex = this->entity.mesh.getVertex(this->selected);
+        glm::vec2 *vertex = this->entity.mesh.getVertex(this->selected);
         if (vertex) {
             vertex->x += delta.x / this->camera.z;
             vertex->y += delta.y / this->camera.z;
@@ -86,7 +86,7 @@ void EntityScreen::onDrag(sf::Vector2f delta, sf::Vector2f pos) {
     }
 }
 
-void EntityScreen::onClick(sf::Mouse::Button button, sf::Vector2f pos) {
+void EntityScreen::onClick(sf::Mouse::Button button, glm::ivec2 pos) {
     if (button == sf::Mouse::Button::Left) {
         pos.x /= this->camera.z;
         pos.y /= this->camera.z;
@@ -118,39 +118,37 @@ void EntityScreen::onKey(sf::Keyboard::Key key) {
 }
 
 void EntityScreen::refocus() {
-    this->camera.x = Const::WIDTH / 2;
-    this->camera.y = Const::WIDTH / 2;
-    this->camera.z = 1;
+    this->camera = glm::vec3(this->core.getSize() / 2, 1);
 }
 
 void EntityScreen::draw(sf::RenderTarget &target, int top) const {
     target.clear(this->background);
     this->core.renderer.batch.clear();
+    glm::vec2 cameraPos(this->camera.x, this->camera.y);
     // Draw the sprite.
     this->core.renderer.batch.draw(
         this->entity.sprite,
-        sf::Vector2f(this->camera.x, this->camera.y),
-        sf::Vector2f(0, 0),
+        cameraPos,
+        glm::vec2(),
         0,
-        sf::Vector2f(this->camera.z, this->camera.z)
+        cameraPos
     );
     // Draw the bounds of the sprite.
-    this->core.renderer.box(sf::FloatRect(
-        this->camera.x - this->entity.sprite.width / 2 * this->camera.z,
-        this->camera.y - this->entity.sprite.height / 2 * this->camera.z,
-        this->entity.sprite.width * this->camera.z,
-        this->entity.sprite.height * this->camera.z
+    this->core.renderer.box(Rectangle(
+        cameraPos - (glm::vec2)this->entity.sprite.size *
+            glm::vec2(this->camera.z / 2, this->camera.z / 2),
+        (glm::vec2)this->entity.sprite.size * this->camera.z
     ), false);
     // Draw the Outline.
-    std::vector<sf::Vector2f> const &vertices = this->entity.mesh.getVertices();
+    std::vector<glm::vec2> const &vertices = this->entity.mesh.getVertices();
     int n = vertices.size();
     for (int i = 1; i < n; i++) {
         this->core.renderer.club(
-            sf::Vector2f(
+            glm::vec2(
                 vertices[i - 1].x * this->camera.z + this->camera.x,
                 vertices[i - 1].y * this->camera.z + this->camera.y
             ),
-            sf::Vector2f(
+            glm::vec2(
                 vertices[i].x * this->camera.z + this->camera.x,
                 vertices[i].y * this->camera.z + this->camera.y
             ),
@@ -159,11 +157,11 @@ void EntityScreen::draw(sf::RenderTarget &target, int top) const {
     }
     if (n > 0) {
         this->core.renderer.club(
-            sf::Vector2f(
+            glm::vec2(
                 vertices[n - 1].x * this->camera.z + this->camera.x,
                 vertices[n - 1].y * this->camera.z + this->camera.y
             ),
-            sf::Vector2f(
+            glm::vec2(
                 vertices[0].x * this->camera.z + this->camera.x,
                 vertices[0].y * this->camera.z + this->camera.y
             ),

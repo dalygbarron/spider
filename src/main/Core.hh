@@ -43,8 +43,6 @@ class Core {
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
         sf::Texture transitionTexture;
-        glm::ivec2 size;
-        float fov;
 
         /**
          * Initialises the core.
@@ -66,7 +64,7 @@ class Core {
             char const *displayName,
             char const *description,
             char const *rat,
-            sf::IntRect sprite
+            Rectangle sprite
         );
 
         /**
@@ -82,7 +80,7 @@ class Core {
          * @param id  is the id to give the prototype.
          * @param rat is the rat to draw the bullets of this type with.
          */
-        void addBulletPrototype(int id, sf::IntRect rat);
+        void addBulletPrototype(int id, Rectangle rat);
 
         /**
          * Gives you a pointer to a given bullet prototype if it exists.
@@ -141,6 +139,33 @@ class Core {
         void setTransitionTexture(ghc::filesystem::path const &path);
 
         /**
+         * Set's the game's 3d rendering vertical fov.
+         * @param fov is the vertical fov. the horizontal fov is calculated
+         *            from this.
+         */
+        void setFov(float fov);
+
+        /**
+         * Gives you the vertical field of view.
+         * @return the field of view vertically.
+         */
+        float getFov() const;
+
+        /**
+         * Sets the logical window size. Technically this won't change anything
+         * except screwing everything up if you do it after creation of the
+         * window.
+         * @param size is the x, y size to set it to.
+         */
+        void setSize(glm::ivec2 size);
+
+        /**
+         * Gives you the logical window size.
+         * @return the x, y window logical size.
+         */
+        glm::ivec2 getSize() const;
+
+        /**
          * Loads in a level making use of the entity repository for putting in
          * it's entities. There is no repository for levels because they use
          * a lot of memory.
@@ -193,6 +218,8 @@ class Core {
         std::vector<Screen *> screens;
         sf::Shader transitionShader;
         sf::RectangleShape transition;
+        glm::ivec2 size;
+        float fov;
         int firstVisible = 0;
         int nScreens = 0;
         float transitionStrength = 0;

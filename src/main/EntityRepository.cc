@@ -1,6 +1,7 @@
 #include "Repository.hh"
 #include "Const.hh"
 #include "pugixml.hpp"
+#include "glm/vec2.hpp"
 
 EntityRepository::EntityRepository(RatPack const &spritesheet):
     spritesheet(spritesheet)
@@ -12,7 +13,7 @@ Entity *EntityRepository::create(ghc::filesystem::path const &path) const {
     Entity *entity = new Entity();
     entity->file = path;
     for (int i = 0; i < 3; i++) {
-        entity->mesh.addVertex(sf::Vector2f(
+        entity->mesh.addVertex(glm::vec2(
             cos(i * Const::DOUBLE_PI / 3) * 50,
             sin(i * Const::DOUBLE_PI / 3) * 50
         ));
@@ -41,7 +42,7 @@ Entity *EntityRepository::parse(
     for (pugi::xml_node point = node.child("point"); point;
         point = point.next_sibling("point")
     ) {
-        entity->mesh.addVertex(sf::Vector2f(
+        entity->mesh.addVertex(glm::vec2(
             point.attribute("x").as_float(),
             point.attribute("y").as_float()
         ));

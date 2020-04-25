@@ -1,8 +1,9 @@
 #ifndef RAT_H
 #define RAT_H
 
-#include <SFML/Graphics.hpp>
-#include <unordered_map>
+#include "Rectangle.hh"
+#include "glm/vec2.hpp"
+#include <vector>
 
 /**
  * takes a single rat from a rat pack, and allows you to treat that one rat as
@@ -28,7 +29,7 @@ class Rat {
          * @param rat        is the full spritesheet.
          * @param dimensions the number of sprites along each axis.
          */
-        Rat(sf::IntRect rat, sf::Vector2u dimensions);
+        Rat(Rectangle rat, glm::uvec2 dimensions);
 
         /**
          * Moves the rat forward in time one frame's worth. this should be done
@@ -40,14 +41,14 @@ class Rat {
          * Gives you the size of a single item from this.
          * @return the size in each dimension.
          */
-        sf::Vector2u getSize() const;
+        glm::uvec2 getSize() const;
 
         /**
          * Gives you the right frame to show for the current time and the rat's
          * state.
          * @return the rectangle of texture to show on the screen.
          */
-        sf::IntRect getFrame() const;
+        Rectangle getFrame() const;
 
         /**
          * Gives you a pointer to the currently playing animation if there is
@@ -82,8 +83,8 @@ class Rat {
         int rolling = true;
         int priority = INT_MIN;
         Rat::Animation const *current = NULL;
-        sf::IntRect rat;
-        sf::Vector2u dimensions;
+        Rectangle rat;
+        glm::uvec2 dimensions;
 };
 
 #endif

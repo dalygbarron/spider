@@ -74,14 +74,14 @@ class Screen {
          * Called when the user clicks on the screen.
          * @param button is the button that they clicked.
          */
-        virtual void onClick(sf::Mouse::Button button, sf::Vector2f pos);
+        virtual void onClick(sf::Mouse::Button button, glm::ivec2 pos);
 
         /**
          * Called when the user drags the mouse on the screen.
          * @param prev is the previous position on the screen.
          * @param pos  is the new location of the screen.
          */
-        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos);
+        virtual void onDrag(glm::ivec2 prev, glm::ivec2 pos);
 
         /**
          * Called when the user does the scrolling.
@@ -147,12 +147,12 @@ class LevelScreen: public Screen {
 
         virtual void onClick(
             sf::Mouse::Button button,
-            sf::Vector2f pos
+            glm::ivec2 pos
         ) override;
 
         virtual void onKey(sf::Keyboard::Key key) override;
 
-        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos) override;
+        virtual void onDrag(glm::ivec2 prev, glm::ivec2 pos) override;
 
         virtual void onScroll(int delta) override;
 
@@ -162,9 +162,7 @@ class LevelScreen: public Screen {
         int selected;
         int selectedEntity;
         std::vector<std::string> entities;
-        sf::Vector2f camera;
-        sf::Shader shader;
-        sf::RectangleShape back;
+        glm::vec2 camera;
         sf::Texture texture;
         TextEditor textEditor;
         ImGui::FileBrowser backgroundSelector;
@@ -213,11 +211,11 @@ class EntityScreen: public Screen {
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
-        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos) override;
+        virtual void onDrag(glm::ivec2 prev, glm::ivec2 pos) override;
 
         virtual void onClick(
             sf::Mouse::Button button,
-            sf::Vector2f pos
+            glm::ivec2 pos
         ) override;
 
         virtual void onScroll(int delta) override;
@@ -228,7 +226,7 @@ class EntityScreen: public Screen {
         char nameBuffer[EntityScreen::BUFFER_SIZE];
         char spriteBuffer[EntityScreen::BUFFER_SIZE];
         Entity &entity;
-        sf::Vector3f camera;
+        glm::vec3 camera;
         sf::Color background;
         int selected = -1;
 
@@ -251,11 +249,12 @@ class RatScreen: public Screen {
             public:
                 float rotation;
                 float angularVelocity;
-                sf::IntRect sprite;
-                sf::Vector2f position;
-                sf::Vector2f velocity;
-                sf::Vector2f gravity;
-                sf::Vector2f scale;
+                Rectangle sprite;
+                glm::vec2 position;
+                glm::vec2 velocity;
+                glm::vec2 gravity;
+                glm::vec2 scale;
+                Rectangle bounds;
 
                 /**
                  * Updates the velocity and position.
@@ -307,7 +306,7 @@ class KnobScreen: public Screen {
 
     private:
         Knob *knob;
-        sf::Vector2f mouse;
+        glm::ivec2 mouse;
 };
 
 /**
@@ -411,14 +410,14 @@ class AdventureScreen: public ScriptedScreen {
 
         virtual void onClick(
             sf::Mouse::Button button,
-            sf::Vector2f pos
+            glm::ivec2 pos
         ) override;
 
         virtual void onStart() override;
 
         virtual void onReveal(int response) override;
 
-        virtual void onDrag(sf::Vector2f prev, sf::Vector2f pos) override;
+        virtual void onDrag(glm::ivec2 prev, glm::ivec2 pos) override;
 
         virtual void onKey(sf::Keyboard::Key key) override;
 
@@ -459,7 +458,7 @@ class BattleScreen: public ScriptedScreen {
         Pool<Bullet> bullets;
         Pool<Actor> actors;
         std::list<Rat::Animation> animations;
-        sf::FloatRect const bounds;
+        Rectangle const bounds;
         Background background;
         std::string title;
         std::string subtitle;

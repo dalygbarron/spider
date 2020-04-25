@@ -198,7 +198,7 @@ void FileIO::saveEntity(Entity const &entity) {
     node.append_attribute("rat") = entity.spriteName.c_str();
     node.append_attribute("offset-x") = entity.offset.x;
     node.append_attribute("offset-y") = entity.offset.y;
-    std::vector<sf::Vector2f> const &vertices = entity.mesh.getVertices();
+    std::vector<glm::vec2> const &vertices = entity.mesh.getVertices();
     for (int i = 0; i < vertices.size(); i++) {
         pugi::xml_node point = node.append_child("point");
         point.append_attribute("x") = vertices[i].x;
@@ -232,7 +232,7 @@ void FileIO::saveLevel(Level const &level) {
         } else {
             pugi::xml_node shapeNode = node.append_child("shapeInstance");
             shapeNode.append_attribute("name") = instance.name.c_str();
-            for (sf::Vector2f const &point: instance.mesh.getVertices()) {
+            for (glm::vec2 const &point: instance.mesh.getVertices()) {
                 pugi::xml_node pointNode = shapeNode.append_child("point");
                 pointNode.append_attribute("x") = point.x;
                 pointNode.append_attribute("y") = point.y;
@@ -280,7 +280,7 @@ void FileIO::initRatPackFromFile(
     for (pugi::xml_node rat = node.child("rat"); rat;
         rat = rat.next_sibling("rat")
     ) {
-        pack.add(rat.attribute("name").value(), sf::IntRect(
+        pack.add(rat.attribute("name").value(), Rectangle(
             rat.attribute("x").as_int(),
             rat.attribute("y").as_int(),
             rat.attribute("w").as_int(),
@@ -332,9 +332,11 @@ Core *FileIO::loadCoreFromFile(
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());
     // load display params.
-    core->size.x = node.attribute("width").as_int();
-    core->size.y = node.attribute("height").as_int();
-    core->fov = node.attribute("fov").as_float();
+    core->setSize(glm::ivec2(
+        node.attribute("width").as_int(),
+        node.attribute("height").as_int()
+    ));
+    core->setFov(node.attribute("fov").as_float());
     // load sprite related stuff.
     core->defaultFont = node.attribute("default-font").value();
     core->setTransitionTexture(node.attribute("transition").value());

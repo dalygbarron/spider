@@ -1,8 +1,8 @@
 #include "Util.hh"
 #include "Const.hh"
 #include "spdlog/spdlog.h"
+#include "glm/gtc/matrix_transform.hpp"
 #include <SFML/Graphics.hpp>
-#include <glm/ext.hpp>
 #include <stdio.h>
 #include <cmath>
 
@@ -36,14 +36,6 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     }
     view.setViewport(sf::FloatRect(posX, posY, sizeX, sizeY));
     return view;
-}
-
-void Util::centreMouse(sf::Window &window) {
-    sf::Mouse::setPosition(Const::MOUSE_ORIGIN, window);
-}
-
-float Util::degrees(float radians) {
-    return fmod(radians, Const::DOUBLE_PI) * Const::RADIAN_CONVERT;
 }
 
 float Util::distance(sf::Vector2f a, sf::Vector2f b) {
@@ -189,7 +181,7 @@ glm::vec2 Util::rotateAround(
 }
 
 glm::mat4 Util::camera(glm::vec2 angle) {
-    glm::mat4 projection = glm::perspective(Const::FOV, 1.5, 0.1, 100);
+    glm::mat4 projection = glm::perspective(Const::FOV, 1.5f, 0.1f, 100.0f);
     glm::mat4 view = glm::rotate(glm::mat4(1), angle.y, glm::vec3(-1, 0, 0));
     view = glm::rotate(view, angle.x, glm::vec3(0, 1, 0));
     return projection * view;
