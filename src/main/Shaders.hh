@@ -6,6 +6,26 @@
  * recompiling a million files to change these shaders.
  */
 namespace Shaders {
+    static char const *SKY_SHADER = R"~~~(
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+        #define PI 3.14159265
+        #define DOUBLE_PI 6.28318530718
+        uniform sampler2D texture;
+        uniform vec2 offset;
+        uniform vec2 resolution;
+        uniform int time;
+        uniform mat4 camera;
+        void main() {
+            vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
+            vec4 cameraPoint = vec4(uv.x, uv.y, 0.0, 1.0) * camera;
+            vec2 cameraAngle = vec2(
+                atan(cameraPoint.z, cameraPoint.x) + PI,
+                acos(cameraPoint.y)
+            );
+            gl_FragColor = texture2D(texture, cameraAngle / vec2(DOUBLE_PI, PI));
+        })~~~";
     static char const *TRANSITION_SHADER = R"~~~(
         #ifdef GL_ES
         precision mediump float;

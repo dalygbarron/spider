@@ -8,10 +8,13 @@
 #include "glm/mat4x4.hpp"
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
-    ScriptedScreen(core, level->script)
+    ScriptedScreen(core, level->script),
+    background(Rectangle(glm::vec2(), core.getSize()))
 {
     this->level = level;
     this->angle = glm::vec2(Const::PI, Const::PI);
+    this->background.initFromString(Shaders::SKY_SHADER);
+    this->background.setTexture(&level->getPic());
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -58,6 +61,8 @@ AdventureScreen::~AdventureScreen() {
 void AdventureScreen::update(sf::RenderWindow &window) {
     glm::mat4 camera = Util::camera(this->angle);
     if (this->world) this->world->update(camera);
+    this->background.setUniform("camera", camera);
+    this->background.update();
     if (this->runScript<float>(0)) return;
     glm::ivec2 mid = this->core.getSize() / 2;
     sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
@@ -151,8 +156,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     target.draw(this->core.renderer.batch);
     this->core.renderer.batch.clear();
     // draw the level.
-    // TODO: create a skybox class or something since I am gonna draw them as
-    //       6 textured quads with a cubemap type of thing.
+    this->background.draw(target);
     // drawing entity instances.
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;

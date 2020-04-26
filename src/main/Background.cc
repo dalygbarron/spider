@@ -1,6 +1,7 @@
 #include "Background.hh"
 #include "Const.hh"
 #include "spdlog/spdlog.h"
+#include "glm/ext.hpp"
 
 Background::Background(Rectangle bounds): bounds(bounds) {
     this->buffer.create(bounds.size.x, bounds.size.y);
@@ -62,6 +63,11 @@ void Background::setUniform(char const *name, sf::Vector3f const &value) {
 
 void Background::setUniform(char const *name, sf::Color const &value) {
     this->shader.setUniform(name, (sf::Glsl::Vec4 const &)value);
+}
+
+void Background::setUniform(char const *name, glm::mat4 const &value) {
+    sf::Glsl::Mat4 matrix(glm::value_ptr(value));
+    this->shader.setUniform(name, matrix);
 }
 
 void Background::resetUniforms() {

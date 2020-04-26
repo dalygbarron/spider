@@ -68,6 +68,13 @@ class Background {
          */
         void setUniform(char const *name, sf::Color const &value);
 
+        /**
+         * Sets a 4x4 matrix uniform on the background shader.
+         * @oaram name  is the name of the uniform.
+         * @param value is the value to set the uniform to.
+         */
+        void setUniform(char const *name, glm::mat4 const &avalue);
+
     private:
         Rectangle bounds;
         sf::RectangleShape back;
