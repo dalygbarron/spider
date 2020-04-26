@@ -181,10 +181,14 @@ glm::vec2 Util::rotateAround(
 }
 
 glm::mat4 Util::camera(glm::vec2 angle) {
-    glm::mat4 projection = glm::perspective(Const::FOV, 1.5f, 0.1f, 100.0f);
     glm::mat4 view = glm::rotate(glm::mat4(1), angle.y, glm::vec3(-1, 0, 0));
     view = glm::rotate(view, angle.x, glm::vec3(0, 1, 0));
-    return projection * view;
+    return view;
+}
+
+glm::mat4 Util::projection(glm::vec2 angle) {
+    glm::mat4 projection = glm::perspective(Const::FOV, 1.5f, 0.1f, 100.0f);
+    return projection * Util::camera(angle);
 }
 
 glm::vec3 Util::sphericalToCartesian(glm::vec2 spherical) {

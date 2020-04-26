@@ -167,6 +167,13 @@ namespace Util {
     glm::mat4 camera(glm::vec2 angle);
 
     /**
+     * Creates a camera projection matrix with altitude and rotatude angles.
+     * @param angle is the angles.
+     * @return the projection matrix.
+     */
+    glm::mat4 projection(glm::vec2 angle);
+
+    /**
      * Converts spherical coordinates to cartesian coordinates.
      * @param spherical is the spherical coordinates to convert.
      * @return the relevant cartesian coordinates assuming that the sphere had

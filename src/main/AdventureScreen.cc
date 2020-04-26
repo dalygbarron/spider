@@ -129,8 +129,8 @@ void AdventureScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
         return;
     }
     glm::ivec2 mid = this->core.getSize() / 2;
-    this->angle.x += (float)(pos.x - mid.x) / 50;
-    this->angle.y += (float)(pos.y - mid.y) / 50;
+    this->angle.x -= (float)(pos.x - mid.x) / mid.x * Const::FOV;
+    this->angle.y -= (float)(pos.y - mid.y) / mid.y * Const::FOV;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -148,7 +148,7 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
-    glm::mat camera = Util::camera(this->angle);
+    glm::mat camera = Util::projection(this->angle);
     // draw the behind world if applicable.
     if (this->world) {
         this->world->draw(target, this->core.renderer, camera);
@@ -158,15 +158,16 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.
+    glm::vec2 size = this->core.getSize();
     for (Instance const &instance: this->level->instances) {
         if (!instance.alive) continue;
         if (instance.entity) {
             glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
-            glm::vec4 screen = glm::vec4(cartesian, 1) * camera;
+            glm::vec4 screen = glm::vec4(cartesian, 0) * camera;
             if (screen.z >= 0) continue;
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                glm::vec2(screen.x, screen.y) * (glm::vec2)this->core.getSize(),
+                glm::vec2(screen.x, screen.y) * size + size / 2.0f,
                 instance.entity->offset,
                 0,
                 glm::vec2(instance.size, instance.size)
