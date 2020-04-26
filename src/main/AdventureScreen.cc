@@ -167,7 +167,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
             if (screen.z >= 0) continue;
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                glm::vec2(screen.x, screen.y) * size + size / 2.0f,
+                glm::vec2(screen.x, screen.y) / screen.z * size + size / 2.0f,
                 instance.entity->offset,
                 0,
                 glm::vec2(instance.size, instance.size)
