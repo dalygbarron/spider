@@ -462,10 +462,10 @@ World *FileIO::parseWorld(
     ground->setSmooth(true);
     sf::Color col(strtoul(node.attribute("horizon").value(), NULL, 16));
     World *world = new World(
-        ground,
-        sf::Color(strtoul(node.attribute("horizon").value(), NULL, 16)),
-        sf::Color(strtoul(node.attribute("bottomSky").value(), NULL, 16)),
-        sf::Color(strtoul(node.attribute("topSky").value(), NULL, 16))
+        // ground,
+        // sf::Color(strtoul(node.attribute("horizon").value(), NULL, 16)),
+        // sf::Color(strtoul(node.attribute("bottomSky").value(), NULL, 16)),
+        // sf::Color(strtoul(node.attribute("topSky").value(), NULL, 16))
     );
     for (pugi::xml_node child: node.children()) {
         Entity const *entity = entityRepository.get(

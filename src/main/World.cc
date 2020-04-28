@@ -1,16 +1,31 @@
 #include "World.hh"
 #include "Const.hh"
+#include "Shaders.hh"
 #include "spdlog/spdlog.h"
 
-World::World(
-    sf::Texture const *ground,
-    sf::Color horizon,
-    sf::Color bottomSky,
-    sf::Color topSky
-) {
-    this->position.z = 1;
-    this->velocity.y = -0.03;
-    this->gravity.z = -0.02;
+static GLfloat const vertexData[] = {
+    -1.0f, -1.0f, 0.0f,
+    1.0f, -1.0f, 0.0f,
+    0.5f, 1.0f, 0.0f
+};
+
+World::World() {
+    glGenVertexArrays(1, &this->vao);
+    glBindVertexArray(this->vao);
+    glGenBuffers(1, &this->skyVB);
+    glBindBuffer(GL_ARRAY_BUFFER, this->skyVB);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+    if (!this->shader.loadFromMemory(Shaders::COLOUR_SHADER, sf::Shader::Fragment)) {
+        spdlog::error("Couldn't read colour shader.");
+    }
+}
+
+World::~World() {
+    glDeleteBuffers(1, &this->skyVB);
+}
+
+void World::setShell(sf::Texture const *texture) {
+    // TODO: stuff.
 }
 
 std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
@@ -39,24 +54,11 @@ void World::draw(
     Renderer &renderer,
     glm::mat4 const &c
 ) const {
-    // Draw the lindels.
-    for (Lindel const &lindel: this->lindels) {
-        if (!lindel.alive) continue;
-        glm::vec4 screen = glm::vec4(
-            lindel.position.x,
-            lindel.position.y,
-            lindel.position.z,
-            1
-        ) * c;
-        float scale = 1;
-        renderer.batch.draw(
-            lindel.entity.sprite,
-            glm::vec2(screen.x, screen.y),
-            lindel.entity.offset,
-            0,
-            glm::vec2(scale, scale)
-        );
-    }
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, this->skyVB);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDisableVertexAttribArray(0);
 }
 
 void World::addLindel(Entity const &entity, sf::Vector3f position) {

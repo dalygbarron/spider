@@ -1,0 +1,10 @@
+yeah so the window is needed to initialise those thingies I think because
+otherwise it does not know what context it is creating them in I think. So that
+they can also hypothetically switch to different screens it will have to keep
+track of whether it is initialised, and also keep track of the reference of the
+screen it was initialised to and when there is a different screen to what it
+had before or it's the first one then it reinitialises. Yes. If you swap
+screens that would cause a leak of GPU memory though which kind of sucks. No
+maybe when it switches it can go and take it off the old one yeah it probably
+can hopefully. I mean it's kinda academic because I don't intend to have
+multiple screens showing the same thing or even multiple screens at all.

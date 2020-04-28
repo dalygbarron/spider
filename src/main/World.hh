@@ -5,6 +5,12 @@
 #include "Util.hh"
 #include "Renderer.hh"
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
+#ifdef __APPLE__
+#define glGenVertexArrays glGenVertexArraysAPPLE
+#define glBindVertexArray glBindVertexArrayAPPLE
+#define glDeleteVertexArrays glDeleteVertexArraysAPPLE
+#endif
 
 /**
  * Represents a 3d world that goes behind the main bit of the level in an
@@ -13,18 +19,38 @@
 class World {
     public:
         /**
-         * Creates and empty world that has a ground texture and a sky texture.
-         * @param ground    is the ground texture.
-         * @param bottomSky is the colour to put at the bottom of the sky
-         *                  gradient.
-         * @param topSky    is the colour to put at the top of the sky.
+         * Constructor sets up some stuff.
          */
-        World(
-            sf::Texture const *ground,
-            sf::Color horizon,
-            sf::Color bottomSky,
-            sf::Color topSky
-        );
+        World();
+
+        /**
+         * Destructor does opengl stuff.
+         */
+        ~World();
+
+        /**
+         * Sets the shell that goes around the player's view.
+         * @param texture is the skybox.
+         */
+        void setShell(sf::Texture const *texture);
+
+        /**
+         * Sets the texture of the grounde plane.
+         * @param texture is the texture to draw it with.
+         */
+        void setPlane(sf::Texture const *texture);
+
+        /**
+         * Sets the sky colour at the horizon.
+         * @param colour is the colour.
+         */
+        void setHorizon(sf::Color colour);
+
+        /**
+         * Sets the sky colour at the top of the sky.
+         * @param colour is the colour.
+         */
+        void setSky(sf::Color colour);
 
         /**
          * Updates the world, and if something has been interacted with then it
@@ -55,12 +81,14 @@ class World {
         void addLindel(Entity const &entity, sf::Vector3f position);
 
     private:
-        sf::Vector3f position;
-        sf::Vector3f velocity;
-        sf::Vector3f gravity;
-        sf::Vector2f rotation;
+        glm::vec3 position;
+        glm::vec3 velocity;
+        glm::vec3 gravity;
+        glm::vec2 rotation;
         sf::Shader shader;
         std::vector<Lindel> lindels;
+        GLuint vao;
+        GLuint skyVB;
 };
 
 #endif

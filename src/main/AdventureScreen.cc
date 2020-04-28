@@ -8,13 +8,11 @@
 #include "glm/mat4x4.hpp"
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
-    ScriptedScreen(core, level->script),
-    background(Rectangle(glm::vec2(), core.getSize()))
+    ScriptedScreen(core, level->script)
 {
     this->level = level;
+    this->world.setShell(&level->getPic());
     this->angle = glm::vec2(Const::PI, Const::PI);
-    this->background.initFromString(Shaders::SKY_SHADER);
-    this->background.setTexture(&level->getPic());
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -41,14 +39,14 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
         this->angle.x = x;
         this->angle.y = y;
     };
-    this->script["_world"] = [this](std::string const &xml) {
-        spdlog::info("Adding world xml: {}", xml.c_str());
-        this->world = FileIO::readXml<World, EntityRepository &>(
-            xml.c_str(),
-            FileIO::parseWorld,
-            this->core.entityRepository
-        );
-    };
+    // this->script["_world"] = [this](std::string const &xml) {
+    //     spdlog::info("Adding world xml: {}", xml.c_str());
+    //     this->world = FileIO::readXml<World, EntityRepository &>(
+    //         xml.c_str(),
+    //         FileIO::parseWorld,
+    //         this->core.entityRepository
+    //     );
+    // };
     this->setScript("_start");
     // Check switches.
     this->refresh();
@@ -61,9 +59,7 @@ AdventureScreen::~AdventureScreen() {
 void AdventureScreen::update(sf::RenderWindow &window) {
     glm::mat4 camera = Util::camera(this->angle);
     glm::mat4 projection = Util::projection(this->angle);
-    if (this->world) this->world->update(projection * camera);
-    this->background.setUniform("camera", glm::inverse(camera));
-    this->background.update();
+    this->world.update(projection * camera);
     if (this->runScript<float>(0)) return;
     glm::ivec2 mid = this->core.getSize() / 2;
     sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
@@ -149,36 +145,10 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
+    // draw the worlde.
     glm::mat4 camera = Util::camera(this->angle);
     glm::mat4 projection = Util::projection(this->angle);
-    // draw the behind world if applicable.
-    if (this->world) {
-        this->world->draw(target, this->core.renderer, camera);
-    }
-    target.draw(this->core.renderer.batch);
-    this->core.renderer.batch.clear();
-    // draw the level.
-    this->background.draw(target);
-    // drawing entity instances.
-    glm::vec2 size = this->core.getSize();
-    for (Instance const &instance: this->level->instances) {
-        if (!instance.alive) continue;
-        if (instance.entity) {
-            glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
-            glm::vec4 p = projection * camera * glm::vec4(cartesian, 0);
-            if (p.x < -1 || p.x > 1 || p.y < -1 || p.y > 1 || p.z < 0) {
-                continue;
-            }
-            glm::vec2 screen = glm::vec2(p.x * 2 + 1, 1 - (p.y * 2 + 1)) * 0.5f * size; 
-            this->core.renderer.batch.draw(
-                instance.entity->sprite,
-                screen,
-                instance.entity->offset,
-                0,
-                glm::vec2(1, 1)
-            );
-        }
-    }
+    this->world.draw(target, this->core.renderer, projection * camera);
     // Cursor and stuff.
     if (top) {
         if (this->selected) {

@@ -95,16 +95,12 @@ int parseOptions(Options &options, int argc, char **argv) {
  * @param core is the core game stuff.
  * @return the result code the program should give after.
  */
-int process(Core &core) {
-    glm::vec2 size = core.getSize();
-    sf::RenderWindow window(
-        sf::VideoMode(size.x, size.y),
-        Const::TITLE// TODO: add to core and get from core.
-    );
+int process(sf::RenderWindow &window, Core &core) {
     window.setMouseCursorVisible(false);
     ImGui::SFML::Init(window);
     window.resetGLStates();
     sf::View view;
+    glm::vec2 size = core.getSize();
     view.setSize(sf::Vector2f(size.x, size.y));
     view.setCenter(sf::Vector2f(size.x / 2, size.y / 2));
     sf::Clock deltaClock;
@@ -127,6 +123,7 @@ int process(Core &core) {
                     view,
                     sf::Vector2i(event.size.width, event.size.height)
                 );
+                glViewport(0, 0, event.size.width, event.size.height);
             } else if (!ImGui::GetIO().WantCaptureMouse) {
                 if (event.type == sf::Event::MouseButtonPressed) {
                     sf::Vector2u size = window.getSize();
@@ -155,8 +152,8 @@ int process(Core &core) {
         // Update Screen.
         screen->update(window);
         // Render.
+        glClear(GL_COLOR_BUFFER_BIT);
         window.setView(view);
-        window.clear();
         core.drawScreens(window);
         window.display();
         // frame rate.
@@ -209,7 +206,16 @@ int main(int argc, char **argv) {
     root.remove_filename();
     ghc::filesystem::current_path(root);
     Core *core = FileIO::loadCoreFromFile(coreFile, !options.muteFlag);
-    // set up the first screen.
+    // set up window.
+    glm::vec2 size = core->getSize();
+    sf::RenderWindow window(
+        sf::VideoMode(size.x, size.y),
+        Const::TITLE,// TODO: add to core and get from core.
+        sf::Style::Default,
+        sf::ContextSettings(0, 0, 0, 3, 3)
+    );
+    window.setActive(true);
+    // set up first screen.
     Screen *screen = NULL;
     Level *level = NULL;
     Entity *entity = NULL;
@@ -230,7 +236,7 @@ int main(int argc, char **argv) {
         ));
     }
     core->performTransitions();
-    result = process(*core);
+    result = process(window, *core);
     // Clean up.
     ImGui::SFML::Shutdown();
     delete core;

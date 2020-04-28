@@ -395,7 +395,7 @@ class AdventureScreen: public ScriptedScreen {
          * @param core  is the core screen dependencies.
          * @param level is the level the screen takes place in. Once you give
          *              this to the screen it will delete it when it is
-         *              deleted. beware.
+         *              deleted. beware. Don't fucking pass NULL.
          */
         AdventureScreen(Core &core, Level *level);
 
@@ -425,8 +425,7 @@ class AdventureScreen: public ScriptedScreen {
 
     private:
         Level *level;
-        Background background;
-        World *world = NULL;
+        World world;
         glm::vec2 angle;
         Item const *selected = NULL;
 };

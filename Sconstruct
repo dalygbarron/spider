@@ -13,7 +13,7 @@ cflags = [
     '-std=c++17',
     '-fdiagnostics-color=always',
     '-I/usr/include/luajit-2.1',
-    '-I/usr/local/include/luajit-2.0',
+    '-I/usr/local/include/luajit-2.0'
 ]
 lflags = []
 
