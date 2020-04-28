@@ -49,7 +49,7 @@ void Background::draw(sf::RenderTarget &target) const {
 }
 
 void Background::setTexture(sf::Texture const *texture) {
-    this->back.setTexture(texture, true);
+    this->back.setTexture(texture, false);
     this->resetUniforms();
 }
 
@@ -77,7 +77,7 @@ void Background::resetUniforms() {
     );
     this->shader.setUniform(
         "resolution",
-        sf::Glsl::Vec2(bounds.size.y, bounds.size.x)
+        sf::Glsl::Vec2(bounds.size.x, bounds.size.y)
     );
     this->shader.setUniform("time", this->timer);
 }

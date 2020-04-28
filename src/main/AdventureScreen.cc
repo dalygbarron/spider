@@ -60,8 +60,9 @@ AdventureScreen::~AdventureScreen() {
 
 void AdventureScreen::update(sf::RenderWindow &window) {
     glm::mat4 camera = Util::camera(this->angle);
-    if (this->world) this->world->update(camera);
-    this->background.setUniform("camera", camera);
+    glm::mat4 projection = Util::projection(this->angle);
+    if (this->world) this->world->update(projection * camera);
+    this->background.setUniform("camera", glm::inverse(camera));
     this->background.update();
     if (this->runScript<float>(0)) return;
     glm::ivec2 mid = this->core.getSize() / 2;
@@ -130,7 +131,7 @@ void AdventureScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
     }
     glm::ivec2 mid = this->core.getSize() / 2;
     this->angle.x -= (float)(pos.x - mid.x) / mid.x * Const::FOV;
-    this->angle.y -= (float)(pos.y - mid.y) / mid.y * Const::FOV;
+    this->angle.y += (float)(pos.y - mid.y) / mid.y * Const::FOV;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -148,7 +149,8 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
-    glm::mat camera = Util::projection(this->angle);
+    glm::mat4 camera = Util::camera(this->angle);
+    glm::mat4 projection = Util::projection(this->angle);
     // draw the behind world if applicable.
     if (this->world) {
         this->world->draw(target, this->core.renderer, camera);
@@ -163,14 +165,17 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         if (!instance.alive) continue;
         if (instance.entity) {
             glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
-            glm::vec4 screen = glm::vec4(cartesian, 0) * camera;
-            if (screen.z >= 0) continue;
+            glm::vec4 p = projection * camera * glm::vec4(cartesian, 0);
+            if (p.x < -1 || p.x > 1 || p.y < -1 || p.y > 1 || p.z < 0) {
+                continue;
+            }
+            glm::vec2 screen = glm::vec2(p.x * 2 + 1, 1 - (p.y * 2 + 1)) * 0.5f * size; 
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                glm::vec2(screen.x, screen.y) / screen.z * size + size / 2.0f,
+                screen,
                 instance.entity->offset,
                 0,
-                glm::vec2(instance.size, instance.size)
+                glm::vec2(1, 1)
             );
         }
     }

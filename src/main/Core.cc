@@ -143,7 +143,7 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
                     Instance &instance = level->addInstance();
                     instance.name = child.attribute("name").value();
                     instance.pos.x = (float)(rand() % 50) / 50 * Const::DOUBLE_PI;
-                    instance.pos.y = (float)(rand() % 50) / 50 * Const::PI;
+                    instance.pos.y = (float)(rand() % 50) / 50 * Const::PI - Const::HALF_PI;
                     instance.size = child.attribute("size").as_float();
                     instance.lifeSwitch = FileIO::parseSwitchExpression(
                         child.attribute("switch").value()

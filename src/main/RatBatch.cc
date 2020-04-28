@@ -27,17 +27,14 @@ void RatBatch::draw(
     float rot,
     glm::vec2 scale
 ) {
-    glm::mat4 transform = glm::rotate(glm::mat4(1), rot, glm::vec3(0, 0, -1));
+    glm::mat4 transform(1);
+    transform = glm::translate(transform, glm::vec3(pos.x - offset.x, pos.y - offset.y, 0));
+    transform = glm::rotate(transform, rot, glm::vec3(0, 0, -1));
     transform = glm::scale(transform, glm::vec3(scale.x, scale.y, 1));
-    transform = glm::translate(transform, glm::vec3(pos.x, pos.y, 0));
-    glm::vec4 topLeft = transform *
-        glm::vec4(-sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
-    glm::vec4 topRight = transform *
-        glm::vec4(sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
-    glm::vec4 bottomRight = transform *
-        glm::vec4(sprite.size.x / 2, sprite.size.y / 2, 0, 1);
-    glm::vec4 bottomLeft = transform *
-        glm::vec4(-sprite.size.x / 2, sprite.size.y / 2, 0, 1);
+    glm::vec4 topLeft = transform * glm::vec4(-sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
+    glm::vec4 topRight = transform * glm::vec4(sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
+    glm::vec4 bottomRight = transform * glm::vec4(sprite.size.x / 2, sprite.size.y / 2, 0, 1);
+    glm::vec4 bottomLeft = transform * glm::vec4(-sprite.size.x / 2, sprite.size.y / 2, 0, 1);
     int nVertices = this->n * 4;
     this->reserve(nVertices + 4);
     this->vertices[nVertices].position = sf::Vector2f(topLeft.x, topLeft.y);
