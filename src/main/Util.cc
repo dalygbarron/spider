@@ -207,3 +207,64 @@ glm::vec2 Util::cartesianToSpherical(glm::vec3 cartesian) {
         asin(cartesian.y)
     );
 }
+
+GLuint Util::loadShader(char const *vertex, char const *fragment) {
+    // Create shaders.
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    GLint result = GL_FALSE;
+    int infoLogLength;
+    // Compile vertex shader.
+    glShaderSource(vertexShader, 1, &vertex, NULL);
+    glCompileShader(vertexShader);
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0) {
+        std::vector<char> vertexShaderErrorMessage(infoLogLength + 1);
+        glGetShaderInfoLog(
+            vertexShader,
+            infoLogLength,
+            NULL,
+            vertexShaderErrorMessage.data()
+        );
+        spdlog::error("{}", vertexShaderErrorMessage.data());
+    }
+    // Compile fragment shader.
+    glShaderSource(fragmentShader, 1, &fragment, NULL);
+    glCompileShader(fragmentShader);
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &result);
+    glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0) {
+        std::vector<char> fragmentShaderErrorMessage(infoLogLength + 1);
+        glGetShaderInfoLog(
+            fragmentShader,
+            infoLogLength,
+            NULL,
+            fragmentShaderErrorMessage.data()
+        );
+        spdlog::error("{}", fragmentShaderErrorMessage.data());
+    }
+    // Link and check the program.
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+    glLinkProgram(program);
+    glGetProgramiv(program, GL_LINK_STATUS, &result);
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+    if (infoLogLength > 0) {
+        std::vector<char> programErrorMessage(infoLogLength + 1);
+        glGetProgramInfoLog(
+            program,
+            infoLogLength,
+            NULL,
+            programErrorMessage.data()
+        );
+        spdlog::error("{}", programErrorMessage.data());
+    }
+    // clean up junk and return program.
+    glDetachShader(program, vertexShader);
+    glDetachShader(program, fragmentShader);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+    return program;
+}

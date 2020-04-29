@@ -85,10 +85,10 @@ class World {
         glm::vec3 velocity;
         glm::vec3 gravity;
         glm::vec2 rotation;
-        sf::Shader shader;
         std::vector<Lindel> lindels;
         GLuint vao;
         GLuint skyVB;
+        GLuint skyShader;
 };
 
 #endif

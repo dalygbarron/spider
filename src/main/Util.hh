@@ -5,6 +5,7 @@
 #include "sol.hh"
 #include "glm/gtc/matrix_transform.hpp"
 #include <SFML/Graphics.hpp>
+#include <SFML/OpenGL.hpp>
 
 /**
  * Contains random utility functions for your pleasure.
@@ -188,6 +189,14 @@ namespace Util {
      * @return the spherical coordinates.
      */
     glm::vec2 cartesianToSpherical(glm::vec3 cartesian);
+
+    /**
+     * Reads a vertex shader and a fragment shader from a string.
+     * @param vertex   is the vertex shader to use.
+     * @param fragment is the fragment shader.
+     * @return the id of the created shader program.
+     */
+    GLuint loadShader(char const *vertex, char const *fragment);
 };
 
 #endif

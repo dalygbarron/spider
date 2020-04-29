@@ -15,9 +15,10 @@ World::World() {
     glGenBuffers(1, &this->skyVB);
     glBindBuffer(GL_ARRAY_BUFFER, this->skyVB);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-    if (!this->shader.loadFromMemory(Shaders::COLOUR_SHADER, sf::Shader::Fragment)) {
-        spdlog::error("Couldn't read colour shader.");
-    }
+    this->skyShader = Util::loadShader(
+        Shaders::VERTEX_SHADER,
+        Shaders::COLOUR_SHADER
+    );
 }
 
 World::~World() {
@@ -57,6 +58,7 @@ void World::draw(
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, this->skyVB);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glUseProgram(this->skyShader);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glDisableVertexAttribArray(0);
 }

@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
         sf::VideoMode(size.x, size.y),
         Const::TITLE,// TODO: add to core and get from core.
         sf::Style::Default,
-        sf::ContextSettings(0, 0, 0, 3, 3)
+        sf::ContextSettings(0, 0, 0, 3, 3, sf::ContextSettings::Attribute::Core)
     );
     window.setActive(true);
     // set up first screen.
