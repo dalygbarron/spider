@@ -18,7 +18,7 @@ namespace Shaders {
         uniform int time;
         uniform mat4 camera;
 
-        vec2 fov = vec2(2.0, 1.3);
+        vec2 fov = vec2(1.95, 1.3);
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
