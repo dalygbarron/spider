@@ -25,8 +25,8 @@ namespace Shaders {
             vec2 angle = uv * fov;
             vec4 point = vec4(
                 normalize(vec3(
-                    -angle.x,
-                    -angle.y,
+                    -1.0 * uv.x * tan(fov.x * 0.5),
+                    -1.0 * uv.y * tan(fov.y * 0.5),
                     1
                 )),
                 0
