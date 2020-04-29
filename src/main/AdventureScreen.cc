@@ -166,10 +166,12 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         if (instance.entity) {
             glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
             glm::vec4 p = projection * camera * glm::vec4(cartesian, 0);
-            if (p.x < -1 || p.x > 1 || p.y < -1 || p.y > 1 || p.z < 0) {
+            p.x /= p.w;
+            p.y /= p.w;
+            if (p.z > 0) {
                 continue;
             }
-            glm::vec2 screen = glm::vec2(p.x * 2 + 1, 1 - (p.y * 2 + 1)) * 0.5f * size; 
+            glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f * size; 
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
                 screen,

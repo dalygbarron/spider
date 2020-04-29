@@ -22,8 +22,15 @@ namespace Shaders {
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
-            vec2 angle = uv * vec2(tan(fov.x * 0.5), tan(fov.y * 0.5));
-            vec4 point = vec4(normalize(vec3(-angle.x, -angle.y, 1.0)), 1.0);
+            vec2 angle = uv * fov;
+            vec4 point = vec4(
+                normalize(vec3(
+                    -angle.x,
+                    -angle.y,
+                    1
+                )),
+                0
+            );
             vec4 cameraPoint = camera * point;
             vec2 cameraAngle = vec2(
                 atan(cameraPoint.z, cameraPoint.x) + PI,

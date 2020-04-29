@@ -188,7 +188,6 @@ glm::mat4 Util::camera(glm::vec2 angle) {
 }
 
 glm::mat4 Util::projection(glm::vec2 angle) {
-    // TODO: take care of aspect ratio.
     glm::mat4 projection = glm::perspective(Const::FOV, 1.5f, 0.1f, 100.0f);
     return projection;
 }

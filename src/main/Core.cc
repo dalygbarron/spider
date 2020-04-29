@@ -139,19 +139,17 @@ Level *Core::loadLevel(ghc::filesystem::path const &path) {
                     ));
                 }
             } else if (strcmp(type, "entityInstance") == 0) {
-                for (int i = 0; i < 20; i++) {
-                    Instance &instance = level->addInstance();
-                    instance.name = child.attribute("name").value();
-                    instance.pos.x = (float)(rand() % 50) / 50 * Const::DOUBLE_PI;
-                    instance.pos.y = (float)(rand() % 50) / 50 * Const::PI - Const::HALF_PI;
-                    instance.size = child.attribute("size").as_float();
-                    instance.lifeSwitch = FileIO::parseSwitchExpression(
-                        child.attribute("switch").value()
-                    );
-                    instance.entity = this->entityRepository.get(
-                        child.attribute("entity").value()
-                    );
-                }
+                Instance &instance = level->addInstance();
+                instance.name = child.attribute("name").value();
+                instance.pos.x = child.attribute("x").as_float();
+                instance.pos.y = child.attribute("y").as_float();
+                instance.size = child.attribute("size").as_float();
+                instance.lifeSwitch = FileIO::parseSwitchExpression(
+                    child.attribute("switch").value()
+                );
+                instance.entity = this->entityRepository.get(
+                    child.attribute("entity").value()
+                );
             } else if (strcmp(type, "script") == 0) {
                 level->script = child.child_value();
             } else {
