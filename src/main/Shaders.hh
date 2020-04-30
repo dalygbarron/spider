@@ -18,17 +18,12 @@ namespace Shaders {
         uniform int time;
         uniform mat4 camera;
 
-        vec2 fov = vec2(1.95, 1.3);
+        vec2 fov = vec2(1.8 * 1.5, 1.3974433277821559);
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
-            vec2 angle = uv * fov;
             vec4 point = vec4(
-                normalize(vec3(
-                    -1.0 * uv.x * tan(fov.x * 0.5),
-                    -1.0 * uv.y * tan(fov.y * 0.5),
-                    1
-                )),
+                normalize(vec3(-uv.x * fov.x, -uv.y * fov.y, 1.0)),
                 0
             );
             vec4 cameraPoint = camera * point;

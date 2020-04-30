@@ -1,4 +1,5 @@
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#define GLM_FORCE_RADIANS
 #include "main/Level.hh"
 #include "main/Entity.hh"
 #include "main/Options.hh"

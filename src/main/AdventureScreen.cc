@@ -59,6 +59,7 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(sf::RenderWindow &window) {
+    // this->angle = glm::vec2(Const::PI, Const::PI);
     glm::mat4 camera = Util::camera(this->angle);
     glm::mat4 projection = Util::projection(this->angle);
     if (this->world) this->world->update(projection * camera);
@@ -166,19 +167,15 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         if (instance.entity) {
             glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
             glm::vec4 p = projection * camera * glm::vec4(cartesian, 0);
-            p.x /= p.w;
-            p.y /= p.w;
-            p.z /= p.w;
-            if (p.z < 0) {
-                continue;
-            }
+            if (p.w < 0) continue;
+            p = p / p.w;
             glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f * size; 
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
                 screen,
                 instance.entity->offset,
                 0,
-                glm::vec2(1, 1)
+                glm::vec2(1.0f, 1.0f)
             );
         }
     }
