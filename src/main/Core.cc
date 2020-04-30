@@ -91,21 +91,25 @@ void Core::setTransitionTexture(ghc::filesystem::path const &path) {
     this->transition.setTexture(&this->transitionTexture, true);
 }
 
-void Core::setFov(float fov) {
-    this->fov = fov;
-}
-
-float Core::getFov() const {
-    return this->fov;
-}
-
-void Core::setSize(glm::ivec2 size) {
+void Core::setDisplay(glm::ivec2 size, float fov) {
+    float aspect = (float)size.x / (float)size.y;
     this->size = size;
     this->transition.setSize(sf::Vector2f(size.x, size.y));
+    this->projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
+    this->fov.y = fov;
+    this->fov.x = fov * aspect;
+}
+
+glm::vec2 Core::getFov() const {
+    return this->fov;
 }
 
 glm::ivec2 Core::getSize() const {
     return this->size;
+}
+
+glm::mat4 const &Core::getProjection() const {
+    return this->projection;
 }
 
 Level *Core::loadLevel(ghc::filesystem::path const &path) {
@@ -219,7 +223,7 @@ void Core::performTransitions() {
     }
 }
 
-void Core::drawScreens(sf::RenderTarget &target) {
+void Core::drawScreens(sf::RenderTarget &target) const {
     // Draw the screens.
     if (this->nScreens > 0) {
         auto start = this->screens.begin() + this->firstVisible;

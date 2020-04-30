@@ -1,3 +1,10 @@
+Add a screenshot button.
+    It's handy for testing the projections because macs include the top bar in
+    screenshots which I do not desire.
+
+Make entity and level screens work again.
+    Yeah I screwed them up epic style.
+
 Animated Sprites in Adventure Screen
     Yep should have animated sprites. Can either be controlled by script or
     autolooping animations that play as soon as you enter the level.

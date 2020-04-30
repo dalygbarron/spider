@@ -17,6 +17,22 @@
 #include <unistd.h>
 
 /**
+ * Saves the core's current screen stack render to a file with a timestamp
+ * based name. If the file already exists it skips but generally it should not
+ * exist.
+ * @param core is the core to render.
+ */
+void screenshot(Core const &core) {
+    sf::RenderTexture buffer;
+    glm::ivec2 size = core.getSize();
+    buffer.create(size.x, size.y);
+    buffer.clear(sf::Color::Black);
+    core.drawScreens(buffer);
+    buffer.display();
+    buffer.getTexture().copyToImage().saveToFile("bongo.png");
+}
+
+/**
  * Prints out the version of the program to stdout.
  */
 void version() {
@@ -149,7 +165,11 @@ int process(Core &core) {
                 } else if (event.type == sf::Event::MouseWheelScrolled) {
                     screen->onScroll(event.mouseWheelScroll.delta);
                 } else if (event.type == sf::Event::KeyPressed) {
-                    screen->onKey(event.key.code);
+                    if (event.key.code == sf::Keyboard::Key::F2) {
+                        screenshot(core);
+                    } else {
+                        screen->onKey(event.key.code);
+                    }
                 }
             }
         }

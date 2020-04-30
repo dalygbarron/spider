@@ -332,11 +332,13 @@ Core *FileIO::loadCoreFromFile(
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());
     // load display params.
-    core->setSize(glm::ivec2(
-        node.attribute("width").as_int(),
-        node.attribute("height").as_int()
-    ));
-    core->setFov(node.attribute("fov").as_float());
+    core->setDisplay(
+        glm::ivec2(
+            node.attribute("width").as_int(),
+            node.attribute("height").as_int()
+        ),
+        node.attribute("fov").as_float()
+    );
     // load sprite related stuff.
     core->defaultFont = node.attribute("default-font").value();
     core->setTransitionTexture(node.attribute("transition").value());

@@ -15,6 +15,7 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     this->angle = glm::vec2(Const::PI, Const::PI);
     this->background.initFromString(Shaders::SKY_SHADER);
     this->background.setTexture(&level->getPic());
+    this->background.setUniform("fov", this->core.getFov());
     // Add some new things to the script.
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
@@ -61,7 +62,7 @@ AdventureScreen::~AdventureScreen() {
 void AdventureScreen::update(sf::RenderWindow &window) {
     // this->angle = glm::vec2(Const::PI, Const::PI);
     glm::mat4 camera = Util::camera(this->angle);
-    glm::mat4 projection = Util::projection(this->angle);
+    glm::mat4 const &projection = this->core.getProjection();
     if (this->world) this->world->update(projection * camera);
     this->background.setUniform("camera", glm::inverse(camera));
     this->background.update();
@@ -130,9 +131,8 @@ void AdventureScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
     if (this->coroutine || prev == pos) {
         return;
     }
-    glm::ivec2 mid = this->core.getSize() / 2;
-    this->angle.x -= (float)(pos.x - mid.x) / mid.x * Const::FOV;
-    this->angle.y += (float)(pos.y - mid.y) / mid.y * Const::FOV;
+    glm::vec2 mid = (glm::vec2)this->core.getSize() / 2.0f;
+    this->angle += ((glm::vec2)pos - mid) / mid * this->core.getFov() * glm::vec2(-1, 1);
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -151,7 +151,6 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     glm::mat4 camera = Util::camera(this->angle);
-    glm::mat4 projection = Util::projection(this->angle);
     // draw the behind world if applicable.
     if (this->world) {
         this->world->draw(target, this->core.renderer, camera);
@@ -166,7 +165,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
         if (!instance.alive) continue;
         if (instance.entity) {
             glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
-            glm::vec4 p = projection * camera * glm::vec4(cartesian, 0);
+            glm::vec4 p = this->core.getProjection() * camera * glm::vec4(cartesian, 0);
             if (p.w < 0) continue;
             p = p / p.w;
             glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f * size; 

@@ -10,6 +10,7 @@
 #include "Item.hh"
 #include "Memory.hh"
 #include "glm/vec2.hpp"
+#include "glm/mat4x4.hpp"
 #include <queue>
 
 /**
@@ -139,31 +140,31 @@ class Core {
         void setTransitionTexture(ghc::filesystem::path const &path);
 
         /**
-         * Set's the game's 3d rendering vertical fov.
-         * @param fov is the vertical fov. the horizontal fov is calculated
-         *            from this.
+         * Sets the parameters of the game's display.
+         * @param size is the logical size of the window which is also the real
+         *             size before the user resizes it.
+         * @param fov  is the vertical field of view to do 3d projection with.
          */
-        void setFov(float fov);
-
-        /**
-         * Gives you the vertical field of view.
-         * @return the field of view vertically.
-         */
-        float getFov() const;
-
-        /**
-         * Sets the logical window size. Technically this won't change anything
-         * except screwing everything up if you do it after creation of the
-         * window.
-         * @param size is the x, y size to set it to.
-         */
-        void setSize(glm::ivec2 size);
+        void setDisplay(glm::ivec2 size, float fov);
 
         /**
          * Gives you the logical window size.
          * @return the x, y window logical size.
          */
         glm::ivec2 getSize() const;
+
+        /**
+         * Gives you the horizontal and vertical field of view.
+         * @return the field of view.
+         */
+        glm::vec2 getFov() const;
+
+        /**
+         * Gives you the game's current projection matrix based on the current
+         * field of view and size.
+         * @return a reference to the projection matrix.
+         */
+        glm::mat4 const &getProjection() const;
 
         /**
          * Loads in a level making use of the entity repository for putting in
@@ -208,7 +209,7 @@ class Core {
          * Draw all the screens one by one.
          * @param target is the target to draw to.
          */
-        void drawScreens(sf::RenderTarget &target);
+        void drawScreens(sf::RenderTarget &target) const;
 
     private:
         Memory memory = Memory(0);
@@ -219,7 +220,8 @@ class Core {
         sf::Shader transitionShader;
         sf::RectangleShape transition;
         glm::ivec2 size;
-        float fov;
+        glm::vec2 fov;
+        glm::mat4 projection;
         int firstVisible = 0;
         int nScreens = 0;
         float transitionStrength = 0;

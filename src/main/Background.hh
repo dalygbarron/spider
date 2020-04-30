@@ -52,7 +52,7 @@ class Background {
          * @param name  is the name of the uniform to set.
          * @param value is the value to give it.
          */
-        void setUniform(char const *name, sf::Vector2f const &value);
+        void setUniform(char const *name, glm::vec2 const &value);
 
         /**
          * Sets a uniform for the background shader.

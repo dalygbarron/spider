@@ -53,8 +53,8 @@ void Background::setTexture(sf::Texture const *texture) {
     this->resetUniforms();
 }
 
-void Background::setUniform(char const *name, sf::Vector2f const &value) {
-    this->shader.setUniform(name, (sf::Glsl::Vec2)value);
+void Background::setUniform(char const *name, glm::vec2 const &value) {
+    this->shader.setUniform(name, sf::Glsl::Vec2 {value.x, value.y});
 }
 
 void Background::setUniform(char const *name, sf::Vector3f const &value) {

@@ -93,6 +93,16 @@ namespace FileIO {
     World *parseWorld(pugi::xml_node node, EntityRepository &entityRepository);
 
     /**
+     * Screenshots one screen. I know that this means it doesn't do when one
+     * screen is on top of another but whatever, I don't need that right now
+     * and it's hard to implement so who cares. It saves it to a filename that
+     * doesn't exist and that is based on the current time. If the name it made
+     * up actually exists somehow it just does nothing.
+     * @param screen is the screen to render.
+     */
+    void screenshot(Screen const &screen);
+
+    /**
      * Loads in XML from a file, then parses it into your desired type using
      * your desired parsing function.
      * @param filename is the name of the file to load.

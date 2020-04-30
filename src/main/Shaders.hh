@@ -17,13 +17,12 @@ namespace Shaders {
         uniform vec2 resolution;
         uniform int time;
         uniform mat4 camera;
-
-        vec2 fov = vec2(1.8 * 1.5, 1.3974433277821559);
+        uniform vec2 fov;
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
             vec4 point = vec4(
-                normalize(vec3(-uv.x * fov.x, -uv.y * fov.y, 1.0)),
+                normalize(vec3(-uv.x * fov.x, -uv.y * fov.y, 0.9)),
                 0
             );
             vec4 cameraPoint = camera * point;
@@ -31,7 +30,6 @@ namespace Shaders {
                 atan(cameraPoint.z, cameraPoint.x) + PI,
                 acos(cameraPoint.y)
             );
-            //gl_FragColor = vec4(mod(gl_FragCoord.x / resolution.x, 1.0), mod(cameraAngle.y, 1.0), 1.0, 1.0);
             gl_FragColor = texture2D(texture, cameraAngle / vec2(DOUBLE_PI, PI));
         })~~~";
     static char const *TRANSITION_SHADER = R"~~~(
