@@ -33,7 +33,6 @@ std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
     char const *function = NULL;
     char const *argument = NULL;
     // Update the backgorund.
-    spdlog::info("{} {} {}", this->position.x, this->position.y, this->position.z);
     this->background.setUniform("camera", glm::inverse(c));
     this->background.setUniform("position", this->position);
     this->background.update();
@@ -68,12 +67,13 @@ void World::draw(
         if (p.w < 0) continue;
         float scale = p.w;
         p = p / p.w;
+        glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f * glm::vec2(1008, 672);
         renderer.batch.draw(
             lindel.entity.sprite,
-            glm::vec2(p.x, p.y),
+            screen,
             lindel.entity.offset,
             0,
-            glm::vec2(scale, scale)
+            glm::vec2(1, 1)
         );
     }
 }
