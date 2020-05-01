@@ -1,28 +1,48 @@
 #include "World.hh"
 #include "Const.hh"
+#include "Shaders.hh"
 #include "spdlog/spdlog.h"
 
 World::World(
     sf::Texture const *ground,
     sf::Color horizon,
     sf::Color bottomSky,
-    sf::Color topSky
-) {
-    this->position.z = 1;
-    this->velocity.y = -0.03;
-    this->gravity.z = -0.02;
+    sf::Color topSky,
+    float waves,
+    glm::ivec2 size,
+    glm::vec2 fov
+): background(Rectangle(glm::vec2(), size)) {
+    this->position.x = 0;
+    this->position.y = 1;
+    this->position.z = 0;
+    this->gravity.x = 0;
+    this->gravity.y = 0;
+    this->gravity.z = 0;
+    this->velocity.x = 0;
+    this->velocity.y = 0;
+    this->velocity.z = 0.09;
+    this->background.initFromString(Shaders::WORLD_SHADER);
+    this->background.setTexture(ground);
+    this->background.setUniform("fov", fov);
+    this->background.setUniform("position", this->position);
+    this->background.setUniform("waves", waves);
 }
 
 std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
     // TODO: make camera and position into one 4x4 matrix
     char const *function = NULL;
     char const *argument = NULL;
+    // Update the backgorund.
+    spdlog::info("{} {} {}", this->position.x, this->position.y, this->position.z);
+    this->background.setUniform("camera", glm::inverse(c));
+    this->background.setUniform("position", this->position);
+    this->background.update();
     // Update the lindels.
     for (Lindel &lindel: this->lindels) {
         lindel.update();
         // TODO: collisions and that kind of thing maybe.
     }
-    if (this->position.z < 0.5) this->velocity.z = 0.3;
+    if (this->position.y < 0.5) this->velocity.y = 0.04;
     // Update the player.
     this->position.x += this->velocity.x;
     this->position.y += this->velocity.y;
@@ -39,19 +59,18 @@ void World::draw(
     Renderer &renderer,
     glm::mat4 const &c
 ) const {
+    // Draw the background.
+    this->background.draw(target);
     // Draw the lindels.
     for (Lindel const &lindel: this->lindels) {
         if (!lindel.alive) continue;
-        glm::vec4 screen = glm::vec4(
-            lindel.position.x,
-            lindel.position.y,
-            lindel.position.z,
-            1
-        ) * c;
-        float scale = 1;
+        glm::vec4 p = c * glm::vec4(lindel.position, 0);
+        if (p.w < 0) continue;
+        float scale = p.w;
+        p = p / p.w;
         renderer.batch.draw(
             lindel.entity.sprite,
-            glm::vec2(screen.x, screen.y),
+            glm::vec2(p.x, p.y),
             lindel.entity.offset,
             0,
             glm::vec2(scale, scale)
@@ -59,7 +78,7 @@ void World::draw(
     }
 }
 
-void World::addLindel(Entity const &entity, sf::Vector3f position) {
+void World::addLindel(Entity const &entity, glm::vec3 position) {
     Lindel lindel(entity);
     lindel.position = position;
     lindel.alive = true;

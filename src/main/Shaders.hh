@@ -32,6 +32,51 @@ namespace Shaders {
             );
             gl_FragColor = texture2D(texture, cameraAngle / vec2(DOUBLE_PI, PI));
         })~~~";
+    static char const *WORLD_SHADER = R"~~~(
+        #ifdef GL_ES
+        precision mediump float;
+        #endif
+        #define QUARTER_PI 0.7853981633
+        #define HALF_PI 1.5707963267
+        #define PI 3.14159265
+        #define DOUBLE_PI 6.28318530718
+        uniform sampler2D texture;
+        uniform vec2 offset;
+        uniform vec2 resolution;
+        uniform int time;
+        uniform mat4 camera;
+        uniform vec2 fov;
+        uniform vec3 position;
+        uniform float waves;
+
+        void main() {
+            vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
+            vec4 point = vec4(
+                normalize(vec3(-uv.x * fov.x, -uv.y * fov.y, 0.9)),
+                0
+            );
+            vec4 cameraPoint = camera * point;
+            vec2 cameraAngle = vec2(
+                atan(cameraPoint.z, cameraPoint.x) + PI,
+                acos(cameraPoint.y)
+            );
+            if (cameraAngle.y >= HALF_PI) {
+                float distance = (position.y) * tan(cameraAngle.y);
+                vec2 groundPoint = vec2(
+                    position.x + sin(cameraAngle.x) * distance,
+                    position.z + cos(cameraAngle.x) * distance
+                );
+                groundPoint.x += sin(float(time) / 60.0 + groundPoint.y) * waves;
+                groundPoint.y += sin(float(time) / 60.0 + groundPoint.x) * waves;
+                gl_FragColor = texture2D(texture, groundPoint);
+            } else {
+                gl_FragColor = mix(
+                    vec4(0.2, 0.4, 0.5, 1.0),
+                    vec4(0.8, 0.8, 0.9, 1.0),
+                    cameraAngle.y / 2.0 / QUARTER_PI
+                );
+            }
+    })~~~";
     static char const *TRANSITION_SHADER = R"~~~(
         #ifdef GL_ES
         precision mediump float;

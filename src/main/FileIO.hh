@@ -86,11 +86,11 @@ namespace FileIO {
 
     /**
      * Parses a 3d world out of xml.
-     * @param node             is the xml node to load from.
-     * @param entityRepository is thing for getting entities and all that.
+     * @param node is the xml node to load from.
+     * @param core gives access to the display params and entity repo.
      * @return the world that was created or null if there was a fuckup.
      */
-    World *parseWorld(pugi::xml_node node, EntityRepository &entityRepository);
+    World *parseWorld(pugi::xml_node node, Core &core);
 
     /**
      * Screenshots one screen. I know that this means it doesn't do when one

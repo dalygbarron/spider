@@ -45,6 +45,18 @@ Put save files in home
     This is necessary because otherwise when they update their save file will
     be lost, and they need to be able to update.
 
+Add an option tag to the game.xml file
+    This can be used to provide defaults and things which get used in the
+    standard library. Whenever a script is created, the full dictionary of
+    options should be made available to it. First usage I can think of is in
+    battle.lua it should control the names of the sound effects that are used.
+    And in gui.lua it should control the text that appears on the next button.
+
+Allow any aspect ratio for battles.
+    Yeah so it adds those panels to the sides of a battle to make the aspect
+    ratio be something in battles, well that should be configurable in the
+    game.xml file. Actually maybe it should be configurable all the time.
+
 -------------------- complete to here before bwotd 2 --------------------------
 
 Screen where you can browse files and choose to edit entities or levels

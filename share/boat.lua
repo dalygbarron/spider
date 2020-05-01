@@ -62,13 +62,14 @@ function boat.xml(item, x, y)
     end
 end
 
-function boat.worldXml(ground, horizon, skyBottom, skyTop, lindels)
+function boat.worldXml(ground, horizon, skyBottom, skyTop, waves, lindels)
     return string.format(
-        "<world ground=\"%s\" horizon=\"%s\" bottomSky=\"%s\" "..
+        "<world ground=\"%s\" horizon=\"%s\" bottomSky=\"%s\" waves=\"%f\" "..
             "topSky=\"%s\">%s</world>",
         ground,
         horizon,
         skyBottom,
+        waves,
         skyTop,
         boat.xml(lindels)
     )

@@ -451,7 +451,7 @@ Knob *FileIO::parseKnob(pugi::xml_node node, RatPack const &spritesheet) {
 
 World *FileIO::parseWorld(
     pugi::xml_node node,
-    EntityRepository &entityRepository
+    Core &core
 ) {
     sf::Texture *ground = new sf::Texture();
     if (!ground->loadFromFile(node.attribute("ground").value())) {
@@ -462,19 +462,23 @@ World *FileIO::parseWorld(
     }
     ground->setRepeated(true);
     ground->setSmooth(true);
+    ground->generateMipmap();
     sf::Color col(strtoul(node.attribute("horizon").value(), NULL, 16));
     World *world = new World(
         ground,
         sf::Color(strtoul(node.attribute("horizon").value(), NULL, 16)),
         sf::Color(strtoul(node.attribute("bottomSky").value(), NULL, 16)),
-        sf::Color(strtoul(node.attribute("topSky").value(), NULL, 16))
+        sf::Color(strtoul(node.attribute("topSky").value(), NULL, 16)),
+        node.attribute("waves").as_float(),
+        core.getSize(),
+        core.getFov()
     );
     for (pugi::xml_node child: node.children()) {
-        Entity const *entity = entityRepository.get(
+        Entity const *entity = core.entityRepository.get(
             child.attribute("name").value()
         );
         if (entity) {
-            world->addLindel(*entity, sf::Vector3f(
+            world->addLindel(*entity, glm::vec3(
                 child.attribute("x").as_float(),
                 child.attribute("y").as_float(),
                 child.attribute("z").as_float()

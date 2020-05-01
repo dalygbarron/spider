@@ -44,10 +44,10 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     };
     this->script["_world"] = [this](std::string const &xml) {
         spdlog::info("Adding world xml: {}", xml.c_str());
-        this->world = FileIO::readXml<World, EntityRepository &>(
+        this->world = FileIO::readXml<World, Core &>(
             xml.c_str(),
             FileIO::parseWorld,
-            this->core.entityRepository
+            this->core
         );
     };
     this->setScript("_start");
@@ -60,10 +60,9 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(sf::RenderWindow &window) {
-    // this->angle = glm::vec2(Const::PI, Const::PI);
     glm::mat4 camera = Util::camera(this->angle);
     glm::mat4 const &projection = this->core.getProjection();
-    if (this->world) this->world->update(projection * camera);
+    if (this->world) this->world->update(camera);
     this->background.setUniform("camera", glm::inverse(camera));
     this->background.update();
     if (this->runScript<float>(0)) return;
@@ -153,7 +152,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     glm::mat4 camera = Util::camera(this->angle);
     // draw the behind world if applicable.
     if (this->world) {
-        this->world->draw(target, this->core.renderer, camera);
+        this->world->draw(target, this->core.renderer, this->core.getProjection() * camera);
     }
     target.draw(this->core.renderer.batch);
     this->core.renderer.batch.clear();

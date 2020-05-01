@@ -3,6 +3,7 @@
 
 #include "Lindel.hh"
 #include "Util.hh"
+#include "Background.hh"
 #include "Renderer.hh"
 #include <SFML/Graphics.hpp>
 
@@ -18,12 +19,17 @@ class World {
          * @param bottomSky is the colour to put at the bottom of the sky
          *                  gradient.
          * @param topSky    is the colour to put at the top of the sky.
+         * @param size      is the size of the screen which it needs to know.
+         * @param fov       is the field of view which it needs to know.
          */
         World(
             sf::Texture const *ground,
             sf::Color horizon,
             sf::Color bottomSky,
-            sf::Color topSky
+            sf::Color topSky,
+            float waves,
+            glm::ivec2 size,
+            glm::vec2 fov
         );
 
         /**
@@ -52,14 +58,14 @@ class World {
          * @param entity   is the entity that the lindel is ripping off.
          * @param position is the position that the lindel will have.
          */
-        void addLindel(Entity const &entity, sf::Vector3f position);
+        void addLindel(Entity const &entity, glm::vec3 position);
 
     private:
-        sf::Vector3f position;
-        sf::Vector3f velocity;
-        sf::Vector3f gravity;
-        sf::Vector2f rotation;
-        sf::Shader shader;
+        glm::vec3 position;
+        glm::vec3 velocity;
+        glm::vec3 gravity;
+        glm::vec2 rotation;
+        Background background;
         std::vector<Lindel> lindels;
 };
 

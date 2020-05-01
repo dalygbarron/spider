@@ -2,6 +2,7 @@
 #define LINDEL_H
 
 #include "Entity.hh"
+#include "glm/vec3.hpp"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -10,9 +11,9 @@
 class Lindel {
     public:
         Entity const &entity;
-        sf::Vector3f position;
-        sf::Vector3f velocity;
-        sf::Vector3f gravity;
+        glm::vec3 position;
+        glm::vec3 velocity;
+        glm::vec3 gravity;
         int alive = true;
 
         /**

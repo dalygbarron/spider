@@ -59,7 +59,7 @@ class Background {
          * @param name  is the name of the uniform to set.
          * @param value is the value to give the uniform.
          */
-        void setUniform(char const *name, sf::Vector3f const &value);
+        void setUniform(char const *name, glm::vec3 const &value);
 
         /**
          * Sets a colour uniform on the background shader.
@@ -73,7 +73,14 @@ class Background {
          * @oaram name  is the name of the uniform.
          * @param value is the value to set the uniform to.
          */
-        void setUniform(char const *name, glm::mat4 const &avalue);
+        void setUniform(char const *name, glm::mat4 const &value);
+
+        /**
+         * Sets a float uniform on the background shader.
+         * @oaram name  is the name of the uniform.
+         * @param value is the value to set the uniform to.
+         */
+        void setUniform(char const *name, float value);
 
     private:
         Rectangle bounds;

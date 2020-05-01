@@ -57,8 +57,8 @@ void Background::setUniform(char const *name, glm::vec2 const &value) {
     this->shader.setUniform(name, sf::Glsl::Vec2 {value.x, value.y});
 }
 
-void Background::setUniform(char const *name, sf::Vector3f const &value) {
-    this->shader.setUniform(name, value);
+void Background::setUniform(char const *name, glm::vec3 const &value) {
+    this->shader.setUniform(name, sf::Glsl::Vec3 {value.x, value.y, value.z});
 }
 
 void Background::setUniform(char const *name, sf::Color const &value) {
@@ -68,6 +68,10 @@ void Background::setUniform(char const *name, sf::Color const &value) {
 void Background::setUniform(char const *name, glm::mat4 const &value) {
     sf::Glsl::Mat4 matrix(glm::value_ptr(value));
     this->shader.setUniform(name, matrix);
+}
+
+void Background::setUniform(char const *name, float value) {
+    this->shader.setUniform(name, value);
 }
 
 void Background::resetUniforms() {
