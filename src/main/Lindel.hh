@@ -10,7 +10,7 @@
  */
 class Lindel {
     public:
-        Entity const &entity;
+        Entity const *entity;
         glm::vec3 position;
         glm::vec3 velocity;
         glm::vec3 gravity;
@@ -20,7 +20,7 @@ class Lindel {
          * Constructor based on the entity that it is a rip off of.
          * @param entity the entity that is it .
          */
-        Lindel(Entity const &entity);
+        Lindel(Entity const *entity);
 
         /**
          * Updates the lindel's location for 1 frame.

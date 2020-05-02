@@ -20,7 +20,7 @@ EntityScreen::~EntityScreen() {
 }
 
 void EntityScreen::update(sf::RenderWindow &window) {
-    ImGui::SFML::Update(window, sf::seconds(0));
+    ImGui::SFML::Update(window, sf::seconds(Const::FRAME_TIME));
     if (ImGui::Begin("Entity")) {
         if (ImGui::Button("save")) {
             this->entity.name = this->nameBuffer;

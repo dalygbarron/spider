@@ -10,6 +10,7 @@ namespace Shaders {
         #ifdef GL_ES
         precision mediump float;
         #endif
+        #define HALF_PI 1.5707963267
         #define PI 3.14159265
         #define DOUBLE_PI 6.28318530718
         uniform sampler2D texture;
@@ -27,7 +28,7 @@ namespace Shaders {
             );
             vec4 cameraPoint = camera * point;
             vec2 cameraAngle = vec2(
-                atan(cameraPoint.z, cameraPoint.x) + PI,
+                atan(cameraPoint.z, cameraPoint.x) + HALF_PI,
                 acos(cameraPoint.y)
             );
             gl_FragColor = texture2D(texture, cameraAngle / vec2(DOUBLE_PI, PI));
@@ -57,7 +58,7 @@ namespace Shaders {
             );
             vec4 cameraPoint = camera * point;
             vec2 cameraAngle = vec2(
-                atan(cameraPoint.z, cameraPoint.x) + PI,
+                atan(cameraPoint.z, cameraPoint.x) + HALF_PI,
                 acos(cameraPoint.y)
             );
             if (cameraAngle.y >= HALF_PI) {
@@ -71,8 +72,8 @@ namespace Shaders {
                 gl_FragColor = texture2D(texture, groundPoint);
             } else {
                 gl_FragColor = mix(
-                    vec4(0.2, 0.4, 0.5, 1.0),
-                    vec4(0.8, 0.8, 0.9, 1.0),
+                    vec4(0.0, 0.12, 0.34, 1.0),
+                    vec4(0.4, 0.6, 0.7, 1.0),
                     cameraAngle.y / 2.0 / QUARTER_PI
                 );
             }

@@ -122,7 +122,7 @@ namespace Util {
      * @param b is the second point.
      * @return the manhattan distance between the two 3d points.
      */
-    float manhattan3(sf::Vector3f a, sf::Vector3f b);
+    float manhattan3(glm::vec3 a, glm::vec3 b);
 
     /**
      * Converts a 3d position to a location on the surface of a sphere that

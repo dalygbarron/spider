@@ -1,7 +1,3 @@
-Add a screenshot button.
-    It's handy for testing the projections because macs include the top bar in
-    screenshots which I do not desire.
-
 Make entity and level screens work again.
     Yeah I screwed them up epic style.
 
@@ -56,6 +52,10 @@ Allow any aspect ratio for battles.
     Yeah so it adds those panels to the sides of a battle to make the aspect
     ratio be something in battles, well that should be configurable in the
     game.xml file. Actually maybe it should be configurable all the time.
+
+Make it that screenshots have got names that come from a timestamp.
+    Just make it a unix timestamp or something so that it does not cover over
+    old pics.
 
 -------------------- complete to here before bwotd 2 --------------------------
 

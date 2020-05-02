@@ -29,7 +29,8 @@ class World {
             sf::Color topSky,
             float waves,
             glm::ivec2 size,
-            glm::vec2 fov
+            glm::vec2 fov,
+            glm::mat4 projection
         );
 
         /**
@@ -58,13 +59,16 @@ class World {
          * @param entity   is the entity that the lindel is ripping off.
          * @param position is the position that the lindel will have.
          */
-        void addLindel(Entity const &entity, glm::vec3 position);
+        void addLindel(Entity const *entity, glm::vec3 position);
 
     private:
         glm::vec3 position;
         glm::vec3 velocity;
         glm::vec3 gravity;
         glm::vec2 rotation;
+        glm::ivec2 size;
+        glm::vec2 fov;
+        glm::mat4 projection;
         Background background;
         std::vector<Lindel> lindels;
 };

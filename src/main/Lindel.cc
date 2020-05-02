@@ -1,6 +1,11 @@
 #include "Lindel.hh"
 
-Lindel::Lindel(Entity const &entity): entity(entity) {
+Lindel::Lindel(Entity const *entity):
+    entity(entity),
+    position(0),
+    velocity(0),
+    gravity(0)
+{
     // nothing else.
 }
 

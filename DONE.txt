@@ -163,3 +163,7 @@ Fix weird animations at start of battle screen
     When the battle screen first starts, actors play their entire animation set
     until the transition ends at which point they get proper animations set.
 
+Add a screenshot button.
+    It's handy for testing the projections because macs include the top bar in
+    screenshots which I do not desire.
+

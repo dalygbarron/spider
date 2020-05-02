@@ -136,7 +136,7 @@ float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
     return fabs(a.x - b.x) + fabs(a.y - b.y);
 }
 
-float Util::manhattan3(sf::Vector3f a, sf::Vector3f b) {
+float Util::manhattan3(glm::vec3 a, glm::vec3 b) {
     return fabs(a.x - b.x) + fabs(a.y - b.y) + fabs(a.z - b.z);
 }
 

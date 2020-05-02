@@ -21,6 +21,7 @@ class Entity {
         Rectangle sprite;
         glm::vec2 offset;
         Mesh mesh;
+        float scale;
 };
 
 #endif

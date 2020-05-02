@@ -152,7 +152,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     glm::mat4 camera = Util::camera(this->angle);
     // draw the behind world if applicable.
     if (this->world) {
-        this->world->draw(target, this->core.renderer, this->core.getProjection() * camera);
+        this->world->draw(target, this->core.renderer, camera);
     }
     target.draw(this->core.renderer.batch);
     this->core.renderer.batch.clear();
@@ -167,13 +167,14 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
             glm::vec4 p = this->core.getProjection() * camera * glm::vec4(cartesian, 0);
             if (p.w < 0) continue;
             p = p / p.w;
+            float scale = instance.entity->scale * instance.size;
             glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f * size; 
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
                 screen,
                 instance.entity->offset,
                 0,
-                glm::vec2(1.0f, 1.0f)
+                glm::vec2(scale, scale)
             );
         }
     }

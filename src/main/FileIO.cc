@@ -471,14 +471,15 @@ World *FileIO::parseWorld(
         sf::Color(strtoul(node.attribute("topSky").value(), NULL, 16)),
         node.attribute("waves").as_float(),
         core.getSize(),
-        core.getFov()
+        core.getFov(),
+        core.getProjection()
     );
     for (pugi::xml_node child: node.children()) {
         Entity const *entity = core.entityRepository.get(
             child.attribute("name").value()
         );
         if (entity) {
-            world->addLindel(*entity, glm::vec3(
+            world->addLindel(entity, glm::vec3(
                 child.attribute("x").as_float(),
                 child.attribute("y").as_float(),
                 child.attribute("z").as_float()

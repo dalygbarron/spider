@@ -39,6 +39,7 @@ Entity *EntityRepository::parse(
     entity->sprite = this->spritesheet.get(entity->spriteName.c_str());
     entity->offset.x = node.attribute("offset-x").as_float();
     entity->offset.y = node.attribute("offset-y").as_float();
+    entity->scale = node.attribute("scale").as_float();
     for (pugi::xml_node point = node.child("point"); point;
         point = point.next_sibling("point")
     ) {
