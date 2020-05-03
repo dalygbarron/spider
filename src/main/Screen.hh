@@ -429,6 +429,7 @@ class AdventureScreen: public ScriptedScreen {
         World *world = NULL;
         glm::vec2 angle;
         Item const *selected = NULL;
+        sol::function tick;
 };
 
 /**

@@ -72,7 +72,7 @@ namespace Shaders {
                 gl_FragColor = texture2D(texture, groundPoint);
             } else {
                 gl_FragColor = mix(
-                    vec4(0.0, 0.12, 0.34, 1.0),
+                    vec4(0.0, 0.1, 0.3, 1.0),
                     vec4(0.4, 0.6, 0.7, 1.0),
                     cameraAngle.y / 2.0 / QUARTER_PI
                 );

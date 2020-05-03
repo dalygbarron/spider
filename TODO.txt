@@ -57,6 +57,10 @@ Make it that screenshots have got names that come from a timestamp.
     Just make it a unix timestamp or something so that it does not cover over
     old pics.
 
+Make it so script errors are outputted properly
+    Sometimes it just says "error in string [...]" or something which is a shit
+    error message.
+
 -------------------- complete to here before bwotd 2 --------------------------
 
 Screen where you can browse files and choose to edit entities or levels

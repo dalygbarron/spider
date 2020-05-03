@@ -26,59 +26,6 @@ namespace Util {
     sf::View getLetterboxView(sf::View view, sf::Vector2i dimensions);
 
     /**
-     * Gives you the distance between two float vectors.
-     * @param a is the first position.
-     * @param b is the second position.
-     * @return float the distance between these two positions.
-     */
-    float distance(sf::Vector2f a, sf::Vector2f b);
-
-    /**
-     * Gives you the distance between two 3d points.
-     * @param a is the first point.
-     * @param b is the second point.
-     * @return the distance between them.
-     */
-    float distance3(sf::Vector3f a, sf::Vector3f b);
-
-    /**
-     * Gives you the length of the given vector.
-     * @param vector is the vector to measure.
-     * @return the length.
-     */
-    float length(sf::Vector3f vector);
-
-    /**
-     * Gives you the dot product of two vectors.
-     * @param a is the first vector.
-     * @param b is the second vector.
-     * @return their dot product.
-     */
-    float dotProduct(sf::Vector3f a, sf::Vector3f b);
-
-    /**
-     * Gives you the normalised version fo a given vector.
-     * @param in is the vector.
-     * @return the normalised version.
-     */
-    sf::Vector2f normalise(sf::Vector2f in);
-
-    /**
-     * Gives you the normalised version of a given vector.
-     * @param in is the vector to normalise.
-     * @return the normalised version.
-     */
-    sf::Vector3f normalise(sf::Vector3f in);
-
-    /**
-     * Gives you the cross product of two vectors.
-     * @param a is the first vector.
-     * @param b is the second vector.
-     * @return the cross product of them.
-     */
-    sf::Vector3f crossProduct(sf::Vector3f a, sf::Vector3f b);
-
-    /**
      * Tells you if a given latitude is between two other latitudes, under the
      * assumption that the "inner" part between the latitudes is the shorter
      * part.
@@ -123,16 +70,6 @@ namespace Util {
      * @return the manhattan distance between the two 3d points.
      */
     float manhattan3(glm::vec3 a, glm::vec3 b);
-
-    /**
-     * Converts a 3d position to a location on the surface of a sphere that
-     * corresponds to it, with the third parameter being the distance from the
-     * centre of the sphere.
-     * @param pos is the position to convert.
-     * @param camera is the location of the camera.
-     * @return the longitude, latitude, and radius of the point from camera.
-     */
-    sf::Vector3f toSphere(sf::Vector3f pos, sf::Vector3f camera);
 
     /**
      * Gives you the angle that images should be given thus that they appear to

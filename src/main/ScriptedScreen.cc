@@ -2,15 +2,22 @@
 #include "FileIO.hh"
 #include "Knob.hh"
 
+inline void panic(sol::optional<std::string> message) {
+    if (message) spdlog::error("Script Error: {}", message.value());
+    else spdlog::error("Script Error!");
+}
+
 ScriptedScreen::ScriptedScreen(Core &core, std::string const &code):
-    Screen(core)
+    Screen(core),
+    script(sol::c_call<decltype(&panic), &panic>)
 {
     this->initScript();
     this->script.script(code);
 }
 
 ScriptedScreen::ScriptedScreen(Core &core, ghc::filesystem::path const &path):
-    Screen(core)
+    Screen(core),
+    script(sol::c_call<decltype(&panic), &panic>)
 {
     this->initScript();
     this->script.script_file(path.c_str());
@@ -37,12 +44,19 @@ void ScriptedScreen::initScript() {
         sol::lib::table,
         sol::lib::string
     );
-    sol::usertype<sf::Vector2f> vectorType = this->script.new_usertype<sf::Vector2f>(
-        "Vector2f",
-        sol::constructors<sf::Vector2f(), sf::Vector2f(float, float)>()
+    sol::usertype<glm::vec2> vec2Type = this->script.new_usertype<glm::vec2>(
+        "vec2",
+        sol::constructors<glm::vec2(), glm::vec2(float, float)>()
     );
-    vectorType["x"] = &sf::Vector2f::x;
-    vectorType["y"] = &sf::Vector2f::y;
+    vec2Type["x"] = &glm::vec2::x;
+    vec2Type["y"] = &glm::vec2::y;
+    sol::usertype<glm::vec3> vec3Type = this->script.new_usertype<glm::vec3>(
+        "vec3",
+        sol::constructors<glm::vec3(), glm::vec3(float), glm::vec3(float, float, float)>()
+    );
+    vec3Type["x"] = &glm::vec3::x;
+    vec3Type["y"] = &glm::vec3::y;
+    vec3Type["z"] = &glm::vec3::z;
     sol::usertype<Item> itemType = this->script.new_usertype<Item>(
         "Item",
         sol::constructors<Item()>()

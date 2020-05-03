@@ -65,7 +65,7 @@ function _programMenu()
     else
         gui.say("saveer", "saving and quitting")
         _saveGame()
-        _go("menu.xml")
+        _go("level/menu.xml")
     end
 end
 

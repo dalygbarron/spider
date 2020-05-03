@@ -38,58 +38,6 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     return view;
 }
 
-float Util::distance(sf::Vector2f a, sf::Vector2f b) {
-    float dX = fabs(a.x - b.x);
-    float dY = fabs(a.y - b.y);
-    return sqrt(dX * dX + dY * dY);
-}
-
-float Util::distance3(sf::Vector3f a, sf::Vector3f b) {
-    float dX = fabs(a.x - b.x);
-    float dY = fabs(a.y - b.y);
-    float dZ = fabs(a.z - b.z);
-    return sqrt(dX * dX + dY * dY + dZ * dZ);
-}
-
-float Util::length(sf::Vector3f vector) {
-    return sqrt(
-        vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
-    );
-}
-
-float Util::dotProduct(sf::Vector3f a, sf::Vector3f b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
-}
-
-sf::Vector2f Util::normalise(sf::Vector2f in) {
-    float length = sqrt(in.x * in.x + in.y * in.y);
-    if (length > 0) {
-        float inverseLength = 1 / length;
-        in.x *= inverseLength;
-        in.y *= inverseLength;
-    }
-    return in;
-}
-
-sf::Vector3f Util::normalise(sf::Vector3f in) {
-    float squareLength = Util::dotProduct(in, in);
-    if (squareLength > 0) {
-        float inverseLength(1 / sqrt(squareLength));
-        in.x *= inverseLength;
-        in.y *= inverseLength;
-        in.z *= inverseLength;
-    }
-    return in;
-}
-
-sf::Vector3f Util::crossProduct(sf::Vector3f a, sf::Vector3f b) {
-    return sf::Vector3f(
-        a.y * b.z - a.z * b.y,
-        a.z * b.x - a.x * b.z,
-        a.x * b.y - a.y * b.x
-    );
-}
-
 int Util::inSlice(float a, float b, float point) {
     a = fmod(a, Const::DOUBLE_PI);
     b = fmod(b, Const::DOUBLE_PI);
@@ -138,17 +86,6 @@ float Util::manhattan(sf::Vector2f a, sf::Vector2f b) {
 
 float Util::manhattan3(glm::vec3 a, glm::vec3 b) {
     return fabs(a.x - b.x) + fabs(a.y - b.y) + fabs(a.z - b.z);
-}
-
-sf::Vector3f Util::toSphere(sf::Vector3f pos, sf::Vector3f camera) {
-    sf::Vector3f delta = pos - camera;
-    float distance = Util::distance3(pos, camera);
-    if (distance == 0) return sf::Vector3f(0, 0, 0);
-    return sf::Vector3f(
-        atan2(delta.y, delta.x),
-        asin(delta.z / distance),
-        distance
-    );
 }
 
 float Util::upAngle(

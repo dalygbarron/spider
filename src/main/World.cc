@@ -2,6 +2,7 @@
 #include "Const.hh"
 #include "Shaders.hh"
 #include "spdlog/spdlog.h"
+#include "glm/gtx/fast_square_root.hpp"
 
 World::World(
     sf::Texture const *ground,
@@ -12,18 +13,13 @@ World::World(
     glm::ivec2 size,
     glm::vec2 fov,
     glm::mat4 projection
-): background(Rectangle(glm::vec2(), size)) {
-    this->position.x = 0;
-    this->position.y = 1;
-    this->position.z = 0;
-    this->gravity.x = 0;
-    this->gravity.y = 0;
-    this->gravity.z = 0;
-    this->velocity.x = 0;
-    this->velocity.y = 0;
-    this->velocity.z = 0.09;
-    this->rotation.x = 0;
-    this->rotation.y = 0;
+):
+    background(Rectangle(glm::vec2(), size)),
+    position(0, 1, 0),
+    velocity(0),
+    gravity(0),
+    rotation(0)
+{
     this->size = size;
     this->fov = fov;
     this->projection = projection;
@@ -50,8 +46,6 @@ std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
         lindel.update();
         // TODO: collisions and that kind of thing maybe.
     }
-    this->rotation.x += 0.004;
-    if (this->position.y < 0.5) this->velocity.y = 0.04;
     // Update the player.
     this->position.x += this->velocity.x;
     this->position.y += this->velocity.y;
@@ -64,8 +58,8 @@ std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
         Lindel const &a,
         Lindel const &b
     ) {
-        return Util::manhattan3(a.position, this->position) >
-            Util::manhattan3(b.position, this->position);
+        return glm::fastDistance(a.position, this->position) >
+            glm::fastDistance(b.position, this->position);
     });
     // Return something.
     return std::pair(function, argument);

@@ -17,6 +17,7 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     this->background.setTexture(&level->getPic());
     this->background.setUniform("fov", this->core.getFov());
     // Add some new things to the script.
+    this->script["_input"] = this->script.create_table();
     this->script["_useItem"] = [this](std::string name) {
         std::unordered_map<std::string, Item> const &items =
             this->core.getItems();
@@ -50,6 +51,35 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
             this->core
         );
     };
+    this->script["_getWorldPosition"] = [this]() -> glm::vec3 {
+        if (this->world) return this->world->position;
+        return glm::vec3(0);
+    };
+    this->script["_setWorldPosition"] = [this](glm::vec3 const &position) {
+        if (this->world) this->world->position = position;
+    };
+    this->script["_getWorldVelocity"] = [this]() -> glm::vec3 {
+        if (this->world) return this->world->velocity;
+        return glm::vec3(0);
+    };
+    this->script["_setWorldVelocity"] = [this](glm::vec3 const &velocity) {
+        if (this->world) this->world->velocity = velocity;
+    };
+    this->script["_getWorldGravity"] = [this]() -> glm::vec3 {
+        if (this->world) return this->world->gravity;
+        return glm::vec3(0);
+    };
+    this->script["_setWorldGravity"] = [this](glm::vec3 const &gravity) {
+        if (this->world) this->world->gravity = gravity;
+    };
+    this->script["_getWorldRotation"] = [this]() -> glm::vec2 {
+        if (this->world) return this->world->rotation;
+        return glm::vec2(0);
+    };
+    this->script["_setWorldRotation"] = [this](glm::vec2 const &rotation) {
+        if (this->world) this->world->rotation = rotation;
+    };
+    this->tick = this->script["_update"];
     this->setScript("_start");
     // Check switches.
     this->refresh();
@@ -62,6 +92,27 @@ AdventureScreen::~AdventureScreen() {
 void AdventureScreen::update(sf::RenderWindow &window) {
     glm::mat4 camera = Util::camera(this->angle);
     glm::mat4 const &projection = this->core.getProjection();
+    if (this->tick) {
+        this->script["_input"][0] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Left
+        );
+        this->script["_input"][1] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Right
+        );
+        this->script["_input"][2] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Up
+        );
+        this->script["_input"][3] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Down
+        );
+        this->script["_input"][4] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::LShift
+        );
+        this->script["_input"][5] = sf::Keyboard::isKeyPressed(
+            sf::Keyboard::Z
+        );
+        this->tick();
+    }
     if (this->world) this->world->update(camera);
     this->background.setUniform("camera", glm::inverse(camera));
     this->background.update();

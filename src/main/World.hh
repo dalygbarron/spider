@@ -13,6 +13,11 @@
  */
 class World {
     public:
+        glm::vec3 position;
+        glm::vec3 velocity;
+        glm::vec3 gravity;
+        glm::vec2 rotation;
+
         /**
          * Creates and empty world that has a ground texture and a sky texture.
          * @param ground    is the ground texture.
@@ -62,10 +67,6 @@ class World {
         void addLindel(Entity const *entity, glm::vec3 position);
 
     private:
-        glm::vec3 position;
-        glm::vec3 velocity;
-        glm::vec3 gravity;
-        glm::vec2 rotation;
         glm::ivec2 size;
         glm::vec2 fov;
         glm::mat4 projection;
