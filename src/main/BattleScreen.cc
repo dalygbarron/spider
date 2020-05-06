@@ -177,25 +177,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
 void BattleScreen::update(sf::RenderWindow &window) {
     this->background.update();
     if (this->coroutine) {
-        // Update the input records.
-        this->script["_input"][0] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Left
-        );
-        this->script["_input"][1] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Right
-        );
-        this->script["_input"][2] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Up
-        );
-        this->script["_input"][3] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Down
-        );
-        this->script["_input"][4] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::LShift
-        );
-        this->script["_input"][5] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Z
-        );
+        this->sendInput();
         // run the script.
         this->runScript<float>(0);
         // update the bullets.

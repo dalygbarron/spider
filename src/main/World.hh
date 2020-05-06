@@ -13,6 +13,9 @@
  */
 class World {
     public:
+        static unsigned int const SORT_PHASES = 15;
+        constexpr static float const SIGHT_DISTANCE = 1000;
+
         glm::vec3 position;
         glm::vec3 velocity;
         glm::vec3 gravity;
@@ -66,12 +69,38 @@ class World {
          */
         void addLindel(Entity const *entity, glm::vec3 position);
 
+        /**
+         * Adds a behaviour to the map of the world's behaviours that there are
+         * in there.
+         * @param name      is the name by which lindels will try to find the
+         *                  behaviour.
+         * @param behaviour is the behaviour to add.
+         */
+        void addBehaviour(char const *name, Behaviour behaviour);
+
+        /**
+         * Find a behaviour that is in the world.
+         * @param name is the name of the behaviour to find.
+         * @return a pointer to the behaviour if it is found, or null if it is
+         *         not found.
+         */
+        Behaviour const *getBehaviour(char const *name) const;
+
     private:
         glm::ivec2 size;
         glm::vec2 fov;
         glm::mat4 projection;
         Background background;
         std::vector<Lindel> lindels;
+        std::unordered_map<std::string, Behaviour> behaviours;
+        int phase = 0;
+
+        /**
+         * Makes a lindel do the stuff which lindels are supposed to do with
+         * the whole behaviour thing.
+         * @param lindel is the lindel to control.
+         */
+        void lindelBehaviour(Lindel &lindel);
 };
 
 #endif

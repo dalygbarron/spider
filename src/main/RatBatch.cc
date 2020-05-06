@@ -28,13 +28,20 @@ void RatBatch::draw(
     glm::vec2 scale
 ) {
     glm::mat4 transform(1);
-    transform = glm::translate(transform, glm::vec3(pos.x - offset.x, pos.y - offset.y, 0));
+    transform = glm::translate(
+        transform,
+        glm::vec3(pos.x - offset.x, pos.y - offset.y, 0)
+    );
     transform = glm::rotate(transform, rot, glm::vec3(0, 0, -1));
     transform = glm::scale(transform, glm::vec3(scale.x, scale.y, 1));
-    glm::vec4 topLeft = transform * glm::vec4(-sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
-    glm::vec4 topRight = transform * glm::vec4(sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
-    glm::vec4 bottomRight = transform * glm::vec4(sprite.size.x / 2, sprite.size.y / 2, 0, 1);
-    glm::vec4 bottomLeft = transform * glm::vec4(-sprite.size.x / 2, sprite.size.y / 2, 0, 1);
+    glm::vec4 topLeft = transform *
+        glm::vec4(-sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
+    glm::vec4 topRight = transform *
+        glm::vec4(sprite.size.x / 2, -sprite.size.y / 2, 0, 1);
+    glm::vec4 bottomRight = transform *
+        glm::vec4(sprite.size.x / 2, sprite.size.y / 2, 0, 1);
+    glm::vec4 bottomLeft = transform *
+        glm::vec4(-sprite.size.x / 2, sprite.size.y / 2, 0, 1);
     int nVertices = this->n * 4;
     this->reserve(nVertices + 4);
     this->vertices[nVertices].position = sf::Vector2f(topLeft.x, topLeft.y);
@@ -73,7 +80,10 @@ void RatBatch::draw(Patch const &p, Rectangle pos) {
     this->draw(p.topLeft, Rectangle(pos.pos, p.topLeft.size));
     this->draw(p.top, Rectangle(
         pos.pos + glm::ivec2(p.topLeft.size.x, 0),
-        glm::vec2(pos.size.x - (p.topLeft.size.x + p.topRight.size.x), p.top.size.y)
+        glm::vec2(
+            pos.size.x - (p.topLeft.size.x + p.topRight.size.x),
+            p.top.size.y
+        )
     ));
     this->draw(p.topRight, Rectangle(
         pos.pos + glm::ivec2(pos.size.x - p.topRight.size.x, 0),
@@ -91,7 +101,10 @@ void RatBatch::draw(Patch const &p, Rectangle pos) {
         p.bottomRight.size
     ));
     this->draw(p.bottom, Rectangle(
-        pos.pos + glm::ivec2(p.bottomLeft.size.x, pos.size.y - p.bottom.size.y),
+        pos.pos + glm::ivec2(
+            p.bottomLeft.size.x,
+            pos.size.y - p.bottom.size.y
+        ),
         glm::ivec2(
             pos.size.x - (p.bottomLeft.size.x + p.bottomRight.size.x),
             p.bottom.size.y

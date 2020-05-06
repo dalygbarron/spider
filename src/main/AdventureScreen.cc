@@ -79,7 +79,7 @@ AdventureScreen::AdventureScreen(Core &core, Level *level):
     this->script["_setWorldRotation"] = [this](glm::vec2 const &rotation) {
         if (this->world) this->world->rotation = rotation;
     };
-    this->tick = this->script["_update"];
+    this->ticker = this->script["_update"];
     this->setScript("_start");
     // Check switches.
     this->refresh();
@@ -92,26 +92,10 @@ AdventureScreen::~AdventureScreen() {
 void AdventureScreen::update(sf::RenderWindow &window) {
     glm::mat4 camera = Util::camera(this->angle);
     glm::mat4 const &projection = this->core.getProjection();
-    if (this->tick) {
-        this->script["_input"][0] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Left
-        );
-        this->script["_input"][1] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Right
-        );
-        this->script["_input"][2] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Up
-        );
-        this->script["_input"][3] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Down
-        );
-        this->script["_input"][4] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::LShift
-        );
-        this->script["_input"][5] = sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Z
-        );
-        this->tick();
+    this->tick = (this->tick + 1) % AdventureScreen::TICK_RATE;
+    if (this->ticker && this->tick == 0) {
+        this->sendInput();
+        this->ticker();
     }
     if (this->world) this->world->update(camera);
     this->background.setUniform("camera", glm::inverse(camera));
@@ -247,7 +231,6 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     }
     target.draw(this->core.renderer.batch);
 }
-
 
 void AdventureScreen::refresh() {
     Memory const &memory = this->core.getMemory();

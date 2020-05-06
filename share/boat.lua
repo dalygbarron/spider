@@ -31,7 +31,7 @@ local xmlConversions = {
     end,
     lindel = function(item, x, y, z)
         return string.format(
-            "<lindel name=\"%s\" x=\"%f\" y=\"%f\" z=\"%f\" />",
+            "<l name=\"%s\" x=\"%.3f\" y=\"%.3f\" z=\"%.3f\" />",
             item.name,
             x,
             y,

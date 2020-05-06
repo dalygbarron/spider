@@ -167,3 +167,8 @@ Add a screenshot button.
     It's handy for testing the projections because macs include the top bar in
     screenshots which I do not desire.
 
+Cyclical world draw ordering
+    sorting the whole world list every frame is unsurprisingly way too slow, so
+    we need to do it in overlapping portions. I think the cycle should be about
+    10 frames long.
+

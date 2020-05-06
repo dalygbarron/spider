@@ -35,6 +35,27 @@ void ScriptedScreen::refresh() {
     // By default this does nothing.
 }
 
+void ScriptedScreen::sendInput() {
+    this->script["_input"][0] = sf::Keyboard::isKeyPressed(
+        sf::Keyboard::A
+    );
+    this->script["_input"][1] = sf::Keyboard::isKeyPressed(
+        sf::Keyboard::D
+    );
+    this->script["_input"][2] = sf::Keyboard::isKeyPressed(
+        sf::Keyboard::W
+    );
+    this->script["_input"][3] = sf::Keyboard::isKeyPressed(
+        sf::Keyboard::S
+    );
+    this->script["_input"][4] = sf::Mouse::isButtonPressed(
+        sf::Mouse::Button::Right
+    );
+    this->script["_input"][5] = sf::Mouse::isButtonPressed(
+        sf::Mouse::Button::Left
+    );
+}
+
 void ScriptedScreen::initScript() {
     this->script.open_libraries(
         sol::lib::base,

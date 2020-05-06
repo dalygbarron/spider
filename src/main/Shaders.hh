@@ -64,8 +64,8 @@ namespace Shaders {
             if (cameraAngle.y >= HALF_PI) {
                 float distance = position.y * tan(cameraAngle.y);
                 vec2 groundPoint = vec2(
-                    position.x + sin(cameraAngle.x) * distance,
-                    position.z + cos(cameraAngle.x) * distance
+                    position.x + cos(cameraAngle.x + HALF_PI) * distance,
+                    position.z + sin(cameraAngle.x + HALF_PI) * distance
                 );
                 groundPoint.x += sin(float(time) / 60.0 + groundPoint.y) * waves;
                 groundPoint.y += sin(float(time) / 60.0 + groundPoint.x) * waves;

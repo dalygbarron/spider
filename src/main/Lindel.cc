@@ -1,12 +1,13 @@
 #include "Lindel.hh"
 
-Lindel::Lindel(Entity const *entity):
+Lindel::Lindel(Entity const *entity, Behaviour const *behaviour):
     entity(entity),
     position(0),
     velocity(0),
     gravity(0)
 {
-    // nothing else.
+    this->behaviour = behaviour;
+    this->state = behaviour->start;
 }
 
 void Lindel::update() {

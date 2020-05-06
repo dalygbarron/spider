@@ -376,6 +376,11 @@ class ScriptedScreen: public Screen {
         sol::state script;
         sol::coroutine coroutine;
 
+        /**
+         * Writes down user input so that the script can read it.
+         */
+        void sendInput();
+
     private:
         int response;
 
@@ -390,6 +395,8 @@ class ScriptedScreen: public Screen {
  */
 class AdventureScreen: public ScriptedScreen {
     public:
+        static int const TICK_RATE = 2;
+
         /**
          * Creates the screen by giving it it's dependencies.
          * @param core  is the core screen dependencies.
@@ -429,7 +436,8 @@ class AdventureScreen: public ScriptedScreen {
         World *world = NULL;
         glm::vec2 angle;
         Item const *selected = NULL;
-        sol::function tick;
+        sol::function ticker;
+        int tick = 0;
 };
 
 /**

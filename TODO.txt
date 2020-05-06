@@ -48,11 +48,6 @@ Add an option tag to the game.xml file
     battle.lua it should control the names of the sound effects that are used.
     And in gui.lua it should control the text that appears on the next button.
 
-Allow any aspect ratio for battles.
-    Yeah so it adds those panels to the sides of a battle to make the aspect
-    ratio be something in battles, well that should be configurable in the
-    game.xml file. Actually maybe it should be configurable all the time.
-
 Make it that screenshots have got names that come from a timestamp.
     Just make it a unix timestamp or something so that it does not cover over
     old pics.
@@ -61,7 +56,32 @@ Make it so script errors are outputted properly
     Sometimes it just says "error in string [...]" or something which is a shit
     error message.
 
--------------------- complete to here before bwotd 2 --------------------------
+Optimise the rat draw functions
+    They get called a fair bit and seem kinda shitty, so it would be good if
+    I could find a way of optimising them. Though now I think of it I dunno
+    how.
+
+3D sound effects for boat screen
+    Yeah need to hear sounds from where they come from you know.
+
+Cool ocean shader.
+    Yeah I dunno if I could be bothered but it would be nice to have a water
+    shader that can do dirty brown water and specular highlights and sky
+    reflection.
+
+Multiple timesteps
+    Yeah so it would be good if the main program and rendering had a variable
+    timestep kept on vsync, and then you could set things up to be run at
+    a given rate where every frame it sees how many frames should have been run
+    in total based on the current time and then does enough frames to catch it
+    up to that amount.
+
+Lindel Behaviour State machine
+    Yeah lindel behaviour cannot be controlled through the script because it
+    would require an obscene number of engine calls and thus we are gonna use a 
+    state machine to get reasonably fancy actions but fully inside the engine.
+
+-------------------- complete to here before bug game -------------------------
 
 Screen where you can browse files and choose to edit entities or levels
     Maybe also let them edit the general config here but I am not sure I will
@@ -78,11 +98,6 @@ Hotkeys for buttons
     the fact that gui stuff is running in it's own screen. Would also be nice
     for knob based puzzles.
 
-Look into making the projection better fit with the equirectangular shader
-    Or vice versa, but it will at some point be necessary that they rightly
-    match each other. Possibly I could write my own equirectangular thing
-    projector, but I might have trouble doing the rotation part.
-
 Remove ghc::filesystem when c++17 is better supported
     Yes do that, dunno when that is gonna be doable though.
 
@@ -98,5 +113,15 @@ Indicate FPS on battle screen
     Yeah it is necessary to show the frame rate so people can't cheat, but it
     seems kinda wasteful to convert the FPS to a string every frame.
     THen again, does it really stop cheating anyway??
+
+Particle system
+    Will add a seperate list/pool to the world object that stores particle
+    effects that are currently running. If they are found to not be on the
+    screen they will be immediately killed.
+
+Allow any aspect ratio for battles.
+    Yeah so it adds those panels to the sides of a battle to make the aspect
+    ratio be something in battles, well that should be configurable in the
+    game.xml file. Actually maybe it should be configurable all the time.
 
 ------------------ complete to here before piss 2 -----------------------------

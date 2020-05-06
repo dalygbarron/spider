@@ -474,6 +474,35 @@ World *FileIO::parseWorld(
         core.getFov(),
         core.getProjection()
     );
+    // Load behaviours.
+    pugi::xml_node behaviours = node.child("behaviours");
+    if (behaviours) {
+        for (pugi::xml_node behaviourNode: behaviours.children()) {
+            Behaviour behaviour;
+            behaviour.start = behaviourNode.attribute("start").value();
+            for (pugi::xml_node stateNode: behaviourNode.children()) {
+                Behaviour::State state;
+                state.style = Behaviour::stringToStyle(
+                    stateNode.attribute("style").value()
+                );
+                state.param = stateNode.attribute("param").as_float();
+                for (pugi::xml_node transitionNode: stateNode.children()) {
+                    Behaviour::Transition transition;
+                    transition.condition = Behaviour::stringToCondition(
+                        transitionNode.attribute("condition").value()
+                    );
+                    transition.param = transitionNode.attribute(
+                        "param"
+                    ).as_float();
+                    transition.state = transitionNode.attribute(
+                        "state"
+                    ).value();
+                    state.transitions.push_back(std::move(transition));
+                }
+            }
+        }
+    }
+    // Load lindels.
     for (pugi::xml_node child: node.children()) {
         Entity const *entity = core.entityRepository.get(
             child.attribute("name").value()

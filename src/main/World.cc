@@ -43,6 +43,7 @@ std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
     this->background.update();
     // Update the lindels.
     for (Lindel &lindel: this->lindels) {
+        this->lindelBehaviour(lindel);
         lindel.update();
         // TODO: collisions and that kind of thing maybe.
     }
@@ -54,13 +55,21 @@ std::pair<char const *, char const *> World::update(glm::mat4 const &c) {
     this->velocity.y += this->gravity.y;
     this->velocity.z += this->gravity.z;
     // order the lindels.
-    std::sort(this->lindels.begin(), this->lindels.end(), [this](
-        Lindel const &a,
-        Lindel const &b
-    ) {
-        return glm::fastDistance(a.position, this->position) >
-            glm::fastDistance(b.position, this->position);
+    int n = this->lindels.size();
+    int portions = n / World::SORT_PHASES;
+    std::vector<Lindel>::iterator start = this->lindels.begin() + portions *
+        (World::SORT_PHASES - (this->phase + 2));
+    std::vector<Lindel>::iterator end;
+    if (this->phase == 0) {
+        end = this->lindels.end();
+    } else {
+        end = this->lindels.begin() + portions *
+            (World::SORT_PHASES - this->phase);
+    }
+    std::sort(start, end, [this](Lindel const &a, Lindel const &b) {
+        return a.z > b.z;
     });
+    this->phase = (this->phase + 1) % (World::SORT_PHASES - 1);
     // Return something.
     return std::pair(function, argument);
 }
@@ -77,7 +86,10 @@ void World::draw(
     clipper = this->projection * glm::translate(clipper, this->position);
     for (Lindel const &lindel: this->lindels) {
         if (!lindel.alive) continue;
+        float distance = Util::manhattan3(this->position, lindel.position);
+        if (distance >= World::SIGHT_DISTANCE) continue;
         glm::vec4 p = clipper * glm::vec4(lindel.position, 1);
+        lindel.z = p.w;
         if (p.w < 0) continue;
         float scale = 2 / p.w * lindel.entity->scale;
         p = p / p.w;
@@ -97,4 +109,17 @@ void World::addLindel(Entity const *entity, glm::vec3 position) {
     lindel.position = position;
     lindel.alive = true;
     this->lindels.push_back(lindel);
+}
+
+void World::addBehaviour(const const *name, Behaviour behaviour) {
+    this->behaviours[name] = behaviour;
+}
+
+Behaviour const *World::getBehaviour(char const *name) const {
+    if (this->behaviours.count(name) > 0) return this->behaviours.at(name);
+    return NULL;
+}
+
+void World::lindelBehaviour(Lindel &lindel) {
+
 }
