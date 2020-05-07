@@ -479,7 +479,6 @@ World *FileIO::parseWorld(
     if (behaviours) {
         for (pugi::xml_node behaviourNode: behaviours.children()) {
             Behaviour behaviour;
-            behaviour.start = behaviourNode.attribute("start").value();
             for (pugi::xml_node stateNode: behaviourNode.children()) {
                 Behaviour::State state;
                 state.style = Behaviour::stringToStyle(
@@ -499,7 +498,12 @@ World *FileIO::parseWorld(
                     ).value();
                     state.transitions.push_back(std::move(transition));
                 }
+                behaviour.states[stateNode.attribute("id").value()] =
+                    std::move(state);
             }
+            behaviour.start = &behaviour.states.at(
+                behaviourNode.attribute("start").value()
+            );
         }
     }
     // Load lindels.

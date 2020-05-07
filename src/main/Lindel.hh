@@ -2,6 +2,7 @@
 #define LINDEL_H
 
 #include "Entity.hh"
+#include "Behaviour.hh"
 #include "glm/vec3.hpp"
 #include <SFML/Graphics.hpp>
 

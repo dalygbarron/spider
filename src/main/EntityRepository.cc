@@ -49,34 +49,5 @@ Entity *EntityRepository::parse(
             point.attribute("y").as_float()
         ));
     }
-    // load routine.
-    pugi::xml_node routineNode = node.child("routine");
-    if (routineNode) {
-        entity->routineStart = routineNode.attribute("start").value();
-        for (pugi::xml_node stateNode = routineNode.child("state"); stateNode;
-            stateNode = stateNode.next_sibling("state")
-        ) {
-            Entity::State state;
-            state.behaviour = Entity::stringToBehaviour(
-                stateNode.attribute("behaviour").value()
-            );
-            state.param = stateNode.attribute("param").as_float();
-            for (pugi::xml_node transitionNode = stateNode.child("transition");
-                transitionNode;
-                transitionNode = transitionNode.next_sibling("transition")
-            ) {
-                Entity::Transition transition;
-                transition.condition = Entity::stringToCondition(
-                    transitionNode.attribute("condition").value()
-                );
-                transition.param = transitionNode.attribute(
-                    "param"
-                ).as_float();
-                transition.state = transitionNode.attribute("state").value();
-                state.transitions.push_back(transition);
-            }
-            entity->states[stateNode.attribute("id".value()] = state;
-        }
-    }
     return entity;
 }

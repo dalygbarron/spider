@@ -1,6 +1,10 @@
 #ifndef BEHAVIOUR_H
 #define BEHAVIOUR_H
 
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 /**
  * Used to make a lindel do what it should do.
  */
@@ -69,7 +73,7 @@ class Behaviour {
          * @param string is the string to convert to a style.
          * @return the style which defaults to static if you give shit.
          */
-        static Behaviour::Behaviour stringToStyle(char const *string);
+        static Behaviour::Style stringToStyle(char const *string);
 
         /**
          * Converts a string to a condition enum.

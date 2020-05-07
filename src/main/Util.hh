@@ -17,6 +17,18 @@ namespace Util {
     void sleep(double delta);
 
     /**
+     * Finds at what index if any a given string appears in an array of
+     * strings. Also, it should be case insensitive but I have not bothered to
+     * do that yet.
+     * @param string is the string to look for.
+     * @param in     is the array to look in.
+     * @param n      is the number of strings in the array.
+     * @return the index of the string in the array if it is in there, and -1
+     *         if it is not in there.
+     */
+    int findString(char const *string, char const * const *in, int n);
+
+    /**
      * Gives you a view that makes the screen letterbox so it scales stuff and
      * does blah blah blah you know.
      * @param view       is the view that was currently on.

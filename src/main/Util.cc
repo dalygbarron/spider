@@ -18,6 +18,13 @@ void Util::sleep(double delta) {
     }
 }
 
+int Util::findString(char const *string, char const * const *in, int n) {
+    for (int i = 0; i < n; i++) {
+        if (strcmp(string, in[i]) == 0) return i;
+    }
+    return -1;
+}
+
 sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     float windowRatio = dimensions.x / (float)dimensions.y;
     float viewRatio = view.getSize().x / (float)view.getSize().y;
