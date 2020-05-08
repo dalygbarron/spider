@@ -130,7 +130,7 @@ Behaviour const *World::getBehaviour(char const *name) const {
 }
 
 void World::lindelBehaviour(Lindel &lindel) {
-    if (!lindel.behaviour || !lindel.state) continue;
+    if (!lindel.behaviour || !lindel.state) return;
     switch (lindel.state->style) {
         case Behaviour::Style::Static:
             lindel.velocity.x = 0;
@@ -139,7 +139,9 @@ void World::lindelBehaviour(Lindel &lindel) {
             break;
         case Behaviour::Style::Flap:
             // TODO: this.
+            break;
         case Behaviour::Style::Jump:
-            brexit();
+            // TODO: this.
+            break;
     }
 }

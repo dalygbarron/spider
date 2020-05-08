@@ -5,7 +5,6 @@
 
 Background::Background(Rectangle bounds): bounds(bounds) {
     this->buffer.create(bounds.size.x, bounds.size.y);
-    this->buffer.setSmooth(true);
     this->back.setSize(sf::Vector2f(bounds.size.x, bounds.size.y));
     this->back.setTextureRect(
         sf::IntRect(bounds.pos.x, bounds.pos.y, bounds.size.x, bounds.size.y)

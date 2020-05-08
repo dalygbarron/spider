@@ -505,7 +505,7 @@ World *FileIO::parseWorld(
             if (behaviour.states.count(startName) > 0) {
                 behaviour.start = &behaviour.states.at(startName);
             } else {
-                behaviour.start = &(*behaviour.states.begin());
+                behaviour.start = &behaviour.states.begin()->second;
             }
         }
     }

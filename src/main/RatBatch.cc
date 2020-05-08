@@ -261,13 +261,13 @@ void RatBatch::draw(
 }
 
 void RatBatch::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    if (this->n == 0) return;
     if (!this->clean) {
         spdlog::critical("RatBatch not cleared between draw calls. Abort.");
         exit(1);
     }
     this->clean = false;
     states.texture = &this->texture;
-    sf::Vector2u size = this->texture.getSize();
     target.draw(
         this->vertices.data(),
         this->n * 4,

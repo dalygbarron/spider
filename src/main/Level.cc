@@ -9,7 +9,6 @@ Level::Level() {
 void Level::setPic(ghc::filesystem::path const &path) {
     this->pic.loadFromFile(path.c_str());
     this->pic.setRepeated(true);
-    this->pic.setSmooth(true);
     this->picFile = path;
 }
 
