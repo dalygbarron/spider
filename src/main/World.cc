@@ -93,7 +93,8 @@ void World::draw(
         if (p.w < 0) continue;
         float scale = 2 / p.w * lindel.entity->scale;
         p = p / p.w;
-        glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f * (glm::vec2)this->size;
+        glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f *
+            (glm::vec2)this->size;
         renderer.batch.draw(
             lindel.entity->sprite,
             screen,
@@ -104,22 +105,41 @@ void World::draw(
     }
 }
 
-void World::addLindel(Entity const *entity, glm::vec3 position) {
-    Lindel lindel(entity);
+void World::addLindel(
+    Entity const *entity,
+    glm::vec3 position,
+    char const *behaviourName
+) {
+    Behaviour const *behaviour = NULL;
+    if (behaviourName && this->behaviours.count(behaviourName) > 0) {
+        behaviour = &(this->behaviours.at(behaviourName));
+    }
+    Lindel lindel(entity, behaviour);
     lindel.position = position;
     lindel.alive = true;
-    this->lindels.push_back(lindel);
+    this->lindels.push_back(std::move(lindel));
 }
 
-void World::addBehaviour(const const *name, Behaviour behaviour) {
+void World::addBehaviour(char const *name, Behaviour behaviour) {
     this->behaviours[name] = behaviour;
 }
 
 Behaviour const *World::getBehaviour(char const *name) const {
-    if (this->behaviours.count(name) > 0) return this->behaviours.at(name);
+    if (this->behaviours.count(name) > 0) return &(this->behaviours.at(name));
     return NULL;
 }
 
 void World::lindelBehaviour(Lindel &lindel) {
-
+    if (!lindel.behaviour || !lindel.state) continue;
+    switch (lindel.state->style) {
+        case Behaviour::Style::Static:
+            lindel.velocity.x = 0;
+            lindel.velocity.y = 0;
+            lindel.velocity.z = 0;
+            break;
+        case Behaviour::Style::Flap:
+            // TODO: this.
+        case Behaviour::Style::Jump:
+            brexit();
+    }
 }

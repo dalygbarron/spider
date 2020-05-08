@@ -64,10 +64,18 @@ class World {
 
         /**
          * Adds a lindel into the world.
-         * @param entity   is the entity that the lindel is ripping off.
-         * @param position is the position that the lindel will have.
+         * @param entity        is the entity that the lindel is ripping off.
+         * @param position      is the position that the lindel will have.
+         * @param behaviourName is the name of the behaviour to give to the
+         *                      lindel. If it is not the name of a present
+         *                      behaviour or it is null the lindel will get no
+         *                      behaviour and stay still.
          */
-        void addLindel(Entity const *entity, glm::vec3 position);
+        void addLindel(
+            Entity const *entity,
+            glm::vec3 position,
+            char const *behaviourName
+        );
 
         /**
          * Adds a behaviour to the map of the world's behaviours that there are

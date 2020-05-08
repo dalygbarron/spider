@@ -7,7 +7,7 @@ Lindel::Lindel(Entity const *entity, Behaviour const *behaviour):
     gravity(0)
 {
     this->behaviour = behaviour;
-    this->state = behaviour->start;
+    if (this->behaviour) this->state = behaviour->start;
 }
 
 void Lindel::update() {

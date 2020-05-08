@@ -501,27 +501,33 @@ World *FileIO::parseWorld(
                 behaviour.states[stateNode.attribute("id").value()] =
                     std::move(state);
             }
-            behaviour.start = &behaviour.states.at(
-                behaviourNode.attribute("start").value()
-            );
+            char const *startName = behaviourNode.attribute("start").value();
+            if (behaviour.states.count(startName) > 0) {
+                behaviour.start = &behaviour.states.at(startName);
+            } else {
+                behaviour.start = &(*behaviour.states.begin());
+            }
         }
     }
     // Load lindels.
-    for (pugi::xml_node child: node.children()) {
-        Entity const *entity = core.entityRepository.get(
-            child.attribute("name").value()
-        );
-        if (entity) {
-            world->addLindel(entity, glm::vec3(
-                child.attribute("x").as_float(),
-                child.attribute("y").as_float(),
-                child.attribute("z").as_float()
-            ));
-        } else {
-            spdlog::error(
-                "'{}' does not name an entity",
+    pugi::xml_node lindels = node.child("lindels");
+    if (lindels) {
+        for (pugi::xml_node child: lindels.children()) {
+            Entity const *entity = core.entityRepository.get(
                 child.attribute("name").value()
             );
+            if (entity) {
+                world->addLindel(entity, glm::vec3(
+                    child.attribute("x").as_float(),
+                    child.attribute("y").as_float(),
+                    child.attribute("z").as_float()
+                ), child.attribute("behaviour").value());
+            } else {
+                spdlog::error(
+                    "'{}' does not name an entity",
+                    child.attribute("name").value()
+                );
+            }
         }
     }
     return world;

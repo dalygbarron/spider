@@ -29,7 +29,7 @@ static char const *conditionStrings[] = {
     "Random"
 };
 
-Behaviour::Style stringToStyle(char const *string) {
+Behaviour::Style Behaviour::stringToStyle(char const *string) {
     int find = Util::findString(
         string,
         styleStrings,
@@ -39,7 +39,7 @@ Behaviour::Style stringToStyle(char const *string) {
     return Behaviour::Style::Static;
 }
 
-Behaviour::Condition stringToCondition(char const *string) {
+Behaviour::Condition Behaviour::stringToCondition(char const *string) {
     int find = Util::findString(
         string,
         conditionStrings,

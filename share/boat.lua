@@ -131,6 +131,76 @@ function boat.xml(item, x, y, z)
     end
 end
 
+--- Creates an xml string representing a lindel state transition.
+-- @param condition is the condition on which the transition will occur, which
+--                  is one of a set of pre determined strings which you can
+--                  find somewhere.
+-- @param param     is a parameter to the condition that tweaks it's behaviour
+--                  in a way unique to that condition.
+-- @param state     is the name of the state to transition to.
+-- @return an xml string of a lindel state transition.
+function boat.transition(condition, param, state)
+    return string.format(
+        "<transition state=\"%s\" condition=\"%s\" param=\"%f\" />",
+        state,
+        condition,
+        param
+    )
+end
+
+--- Creates an xml string representing a lindel state of behaviour.
+-- @param id    is the id string of the state to identify it within the
+--              behaviour.
+-- @param style is the style of behaviour lindels will exhibit while in this
+--              state given as the string name of the style which you will have
+--              to look up somewhere.
+-- @param param is a parameter to fine tune the behaviour style which is
+--              dependent on the given style.
+-- @param ...   is all of the state transitions that can occur while in this
+--              state.
+-- @return xml string of a lindel behaviour state.
+function boat.state(id, style, param, ...)
+    local transitions = ""
+    for i, transition in ipairs({...}) do
+        transitions = transitions..transition
+    end
+    return string.format(
+        "<state id=\"%s\" style=\"%s\" param=\"%f\">%s</state>",
+        id,
+        style,
+        param,
+        transitions
+    )
+end
+
+--- Creates a short state that immediately transitions to something else.
+-- @param id is the name of the state.
+-- @param style is the style of behaviour it does.
+-- @param param is a parameter to tweak the style.
+-- @param to    is the name of the state to transition to right away.
+-- @return xml string of the state.
+function boat.shortState(id, style, param, to)
+    return boat.state(id, style, param, boat.transition("Now", 0, to))
+end
+
+--- Wraps up a set of states into a single lindel behaviour.
+-- @param id    is the name of the behaviour.
+-- @param start is the name of the state to start in.
+-- @param ...   is all the states.
+-- @return xml string of a lindel behaviour.
+function boat.behaviour(id, start, ...)
+    local states = ""
+    for i, state in ipairs({...}) do
+        states = states..state
+    end
+    return string.format(
+        "<behaviour id=\"%s\" start=\"%s\">%s</behaviour>",
+        id,
+        start,
+        states
+    )
+end
+
 --- Creates an xml representation of an entire world which the spider engine
 -- can ingest.
 -- @param ground is the name of the ground texture to use.
@@ -142,17 +212,32 @@ end
 --                  waves, pass 0, if you want normal waves pass 1.
 -- @param lindels   all of the lindels in prototype form that will be put in
 --                  the level.
+-- @param ...       is all of the behaviour strings.
 -- @return the full xml as a string.
-function boat.worldXml(ground, horizon, skyBottom, skyTop, waves, lindels)
+function boat.worldXml(
+    ground,
+    horizon,
+    skyBottom,
+    skyTop,
+    waves,
+    lindels,
+    ...
+)
+    local behaviours = ""
+    for i, behaviour in ipairs({...}) do
+        behaviours = behaviours..behaviour
+    end
     return string.format(
         "<world ground=\"%s\" horizon=\"%s\" bottomSky=\"%s\" waves=\"%f\" "..
-            "topSky=\"%s\">%s</world>",
+            "topSky=\"%s\"><lindels>%s</lindels><behaviours>%s"..
+            "</behaviours></world>",
         ground,
         horizon,
         skyBottom,
         waves,
         skyTop,
-        boat.xml(lindels)
+        boat.xml(lindels),
+        behaviours
     )
 end
 

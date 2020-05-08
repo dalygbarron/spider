@@ -124,4 +124,7 @@ Allow any aspect ratio for battles.
     ratio be something in battles, well that should be configurable in the
     game.xml file. Actually maybe it should be configurable all the time.
 
+Validate xml input more so that people know when they have fucked up.
+    DONT segfault on bad input for god's sake.
+
 ------------------ complete to here before piss 2 -----------------------------
