@@ -119,6 +119,7 @@ int process(Core &core) {
         Const::TITLE// TODO: add to core and get from core.
     );
     window.setMouseCursorVisible(false);
+    window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
     window.resetGLStates();
     sf::View view;
@@ -174,7 +175,7 @@ int process(Core &core) {
             }
         }
         // Update Screen.
-        screen->update(window);
+        screen->update(deltaClock.restart().asSeconds(), window);
         // Render.
         window.setView(view);
         window.clear();
@@ -190,10 +191,6 @@ int process(Core &core) {
         // Re get the screen for if there has been a transition.
         core.performTransitions();
         screen = core.getTopScreen();
-        // Lock framerate.
-        sf::Time delta = deltaClock.restart();
-        float sleepTime = Const::FRAME_TIME - delta.asSeconds();
-        if (sleepTime > 0) Util::sleep(sleepTime);
     }
     return 0;
 }

@@ -78,9 +78,9 @@ Instance &LevelScreen::addInstance(Entity const *entity) {
     return *instance;
 }
 
-void LevelScreen::update(sf::RenderWindow &window) {
+void LevelScreen::update(float delta, sf::RenderWindow &window) {
     // Now do the gui.
-    ImGui::SFML::Update(window, sf::seconds(Const::FRAME_TIME));
+    ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin(this->level.file.c_str())) {
         if (ImGui::Button("Save")) {
             this->level.script = this->textEditor.GetText();

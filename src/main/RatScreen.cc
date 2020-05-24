@@ -53,7 +53,7 @@ RatScreen::RatScreen(Core &core): Screen(core) {
     }
 }
 
-void RatScreen::update(sf::RenderWindow &window) {
+void RatScreen::update(float delta, sf::RenderWindow &window) {
     for (int i = 0; i < this->rats.size(); i++) this->rats[i].update();
 }
 

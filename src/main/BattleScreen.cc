@@ -174,7 +174,7 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     this->setScript("_main");
 }
 
-void BattleScreen::update(sf::RenderWindow &window) {
+void BattleScreen::update(float delta, sf::RenderWindow &window) {
     this->background.update();
     if (this->coroutine) {
         this->sendInput();

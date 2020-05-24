@@ -8,7 +8,7 @@ KnobScreen::~KnobScreen() {
     if (this->knob) delete this->knob;
 }
 
-void KnobScreen::update(sf::RenderWindow &window) {
+void KnobScreen::update(float delta, sf::RenderWindow &window) {
     if (!this->knob) {
         spdlog::warn("Popping control screen because control is null");
         this->core.popScreen(-1);

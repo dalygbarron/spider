@@ -11,6 +11,7 @@
 #include "Pool.hh"
 #include "Bullet.hh"
 #include "World.hh"
+#include "Limiter.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
@@ -37,10 +38,11 @@ class Screen {
 
         /**
          * Updates the status of the screen.
+         * @param delta  is the time since last frame in seconds.
          * @param window is the window so that you can mess around with it and
          *               get stuff that is needed.
          */
-        virtual void update(sf::RenderWindow &window) = 0;
+        virtual void update(float delta, sf::RenderWindow &window) = 0;
 
         /**
          * Draw the screen.
@@ -141,7 +143,7 @@ class LevelScreen: public Screen {
          */
         Instance &addInstance(Entity const *entity);
 
-        virtual void update(sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
@@ -207,7 +209,7 @@ class EntityScreen: public Screen {
          */
         virtual ~EntityScreen();
 
-        virtual void update(sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
@@ -268,7 +270,7 @@ class RatScreen: public Screen {
          */
         RatScreen(Core &core);
 
-        virtual void update(sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
@@ -298,7 +300,7 @@ class KnobScreen: public Screen {
          */
         ~KnobScreen();
 
-        virtual void update(sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
@@ -411,7 +413,7 @@ class AdventureScreen: public ScriptedScreen {
          */
         ~AdventureScreen();
 
-        virtual void update(sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
@@ -437,7 +439,7 @@ class AdventureScreen: public ScriptedScreen {
         glm::vec2 angle;
         Item const *selected = NULL;
         sol::function ticker;
-        int tick = 0;
+        Limiter limiter;
 };
 
 /**
@@ -454,7 +456,7 @@ class BattleScreen: public ScriptedScreen {
          */
         BattleScreen(Core &core, ghc::filesystem::path const &path);
 
-        virtual void update(sf::RenderWindow &window) override;
+        virtual void update(float delta, sf::RenderWindow &window) override;
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 

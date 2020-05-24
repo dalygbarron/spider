@@ -9,7 +9,8 @@
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
     ScriptedScreen(core, level->script),
-    background(Rectangle(glm::vec2(), core.getSize()))
+    background(Rectangle(glm::vec2(), core.getSize())),
+    limiter(30)
 {
     this->level = level;
     this->angle = glm::vec2(Const::PI, Const::PI);
@@ -89,20 +90,19 @@ AdventureScreen::~AdventureScreen() {
     delete this->level;
 }
 
-void AdventureScreen::update(sf::RenderWindow &window) {
-    glm::mat4 camera = Util::camera(this->angle);
-    glm::mat4 const &projection = this->core.getProjection();
-    this->tick = (this->tick + 1) % AdventureScreen::TICK_RATE;
-    if (this->ticker && this->tick == 0) {
+void AdventureScreen::update(float delta, sf::RenderWindow &window) {
+    this->limiter.update(delta, [this](float delta) {
+        glm::mat4 camera = Util::camera(this->angle);
+        glm::mat4 const &projection = this->core.getProjection();
         this->sendInput();
         this->ticker();
-    }
-    if (this->world) this->world->update(camera);
-    this->background.setUniform("camera", glm::inverse(camera));
-    this->background.update();
-    if (this->runScript<float>(0)) return;
-    glm::ivec2 mid = this->core.getSize() / 2;
-    sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
+        if (this->world) this->world->update(camera);
+        this->background.setUniform("camera", glm::inverse(camera));
+        this->background.update();
+        if (this->runScript<float>(0)) return;
+        glm::ivec2 mid = this->core.getSize() / 2;
+        // sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
+    });
 }
 
 void AdventureScreen::onClick(
