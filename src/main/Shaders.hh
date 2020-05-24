@@ -69,7 +69,7 @@ namespace Shaders {
                 );
                 groundPoint.x += sin(float(time) / 60.0 + groundPoint.y) * waves;
                 groundPoint.y += sin(float(time) / 60.0 + groundPoint.x) * waves;
-                gl_FragColor = texture2D(texture, groundPoint);
+                gl_FragColor = texture2D(texture, groundPoint * 0.1);
             } else {
                 gl_FragColor = mix(
                     vec4(0.0, 0.1, 0.3, 1.0),

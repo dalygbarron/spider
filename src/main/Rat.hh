@@ -21,7 +21,7 @@ class Rat {
             public:
                 std::vector<int> frames;
                 unsigned int frameTime = Rat::DEFAULT_SPEED;
-                int loop = true;
+                bool loop = true;
         };
 
         /**
@@ -76,7 +76,7 @@ class Rat {
          * Tells you if an animation is playing.
          * @return true iff it is.
          */
-        int isPlaying() const;
+        bool isPlaying() const;
 
     private:
         unsigned int timer = 0;

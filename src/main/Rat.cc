@@ -56,7 +56,7 @@ void Rat::stop() {
     this->priority = INT_MIN;
 }
 
-int Rat::isPlaying() const {
+bool Rat::isPlaying() const {
     if (!this->rolling) {
         return false;
     } else if (!this->current) {

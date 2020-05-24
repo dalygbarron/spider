@@ -8,10 +8,10 @@
 class Creature {
     public:
         bool edible;
-        Rectangle frontRat;
-        Rectangle backRat;
+        Rat rat;
+        Rat::Animation front;
+        Rat::Animation back;
         glm::vec2 offset;
-
 };
 
 #endif

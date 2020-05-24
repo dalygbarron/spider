@@ -228,7 +228,7 @@ int main(int argc, char **argv) {
     ghc::filesystem::path root = options.game;
     ghc::filesystem::path coreFile = options.game.filename();
     root.remove_filename();
-    ghc::filesystem::current_path(root);
+    if (!root.empty()) ghc::filesystem::current_path(root);
     Core *core = FileIO::loadCoreFromFile(coreFile, !options.muteFlag);
     // set up the first screen.
     Screen *screen = NULL;
