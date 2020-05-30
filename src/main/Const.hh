@@ -17,6 +17,7 @@ namespace Const {
     static float const HALF_PI = 1.570796326794897;
     static float const FRAME_TIME = 0.016666666666667;
     static float const DAINTY_RADIUS = 6;
+    static char const *DEFAULT_GAME_FILE = "game.xml";
     static char const *TITLE = "Spider";
     static char const *LOGO = R"~~~(
           #######                          ##

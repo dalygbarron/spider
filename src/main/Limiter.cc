@@ -1,16 +1,16 @@
 #include "Limiter.hh"
+#include <cmath>
 
 Limiter::Limiter(float rate):
     rate(rate),
-    interval(1 / rate)
+    interval(1.0f / rate)
 {
     // all done.
 }
 
-void Limiter::update(float delta, std::function<void(float)> const &action) {
-    time += delta;
-    while (i < time / interval) {
-        action(interval);
-        i++;
-    }
+int Limiter::update(float delta) {
+    this->time += delta;
+    int oldI = this->i;
+    this->i = floor(this->time / this->interval);
+    return this->i - oldI;
 }

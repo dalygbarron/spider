@@ -91,18 +91,19 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
-    this->limiter.update(delta, [this](float delta) {
+    int frames = this->limiter.update(delta);
+    for (int i = 0; i < frames; i++) {
         glm::mat4 camera = Util::camera(this->angle);
         glm::mat4 const &projection = this->core.getProjection();
         this->sendInput();
-        this->ticker();
+        if (this->ticker) this->ticker();
         if (this->world) this->world->update(camera);
         this->background.setUniform("camera", glm::inverse(camera));
         this->background.update();
         if (this->runScript<float>(0)) return;
         glm::ivec2 mid = this->core.getSize() / 2;
-        // sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
-    });
+        sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
+    }
 }
 
 void AdventureScreen::onClick(

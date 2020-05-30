@@ -165,7 +165,7 @@ class LevelScreen: public Screen {
         int selectedEntity;
         std::vector<std::string> entities;
         glm::vec2 camera;
-        sf::Texture texture;
+        Background background;
         TextEditor textEditor;
         ImGui::FileBrowser backgroundSelector;
         ImGui::FileBrowser entitySelector;

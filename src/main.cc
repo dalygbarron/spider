@@ -133,7 +133,6 @@ int process(Core &core) {
     for (int i = 0; i < sf::Mouse::Button::ButtonCount; i++) buttons[i] = 0;
     Screen *screen = core.getTopScreen();
     while (window.isOpen() && screen) {
-        deltaClock.restart();
         // Handle Events.
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -224,6 +223,10 @@ int main(int argc, char **argv) {
     // Change directory to be at game core file.
     ghc::filesystem::path root = options.game;
     ghc::filesystem::path coreFile = options.game.filename();
+    if (!ghc::filesystem::exists(root)) {
+        fprintf(stderr, "Game file %s does not exist.\n", root.c_str());
+        return 1;
+    }
     root.remove_filename();
     if (!root.empty()) ghc::filesystem::current_path(root);
     Core *core = FileIO::loadCoreFromFile(coreFile, !options.muteFlag);

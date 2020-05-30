@@ -7,11 +7,16 @@
 LevelScreen::LevelScreen(Core &core, Level &level):
     Screen(core),
     level(level),
+    camera(0),
+    background(Rectangle(glm::vec2(), core.getSize())),
     entitySelector(
         ImGuiFileBrowserFlags_EnterNewFilename |
         ImGuiFileBrowserFlags_EnterNewFilename
     )
 {
+    this->background.initFromString(Shaders::SKY_SHADER);
+    this->background.setTexture(&level.getPic());
+    this->background.setUniform("fov", this->core.getFov());
     this->backgroundSelector.SetTitle("Select level background image");
     this->backgroundSelector.SetTypeFilters({".png"});
     this->entitySelector.SetTitle("Select entity to include");
@@ -79,6 +84,10 @@ Instance &LevelScreen::addInstance(Entity const *entity) {
 }
 
 void LevelScreen::update(float delta, sf::RenderWindow &window) {
+    // Update the backgorund.
+    glm::mat4 cameraMatrix = Util::camera(this->camera);
+    this->background.setUniform("camera", glm::inverse(cameraMatrix));
+    this->background.update();
     // Now do the gui.
     ImGui::SFML::Update(window, sf::seconds(delta));
     if (ImGui::Begin(this->level.file.c_str())) {
@@ -235,13 +244,8 @@ void LevelScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
         }
     }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
-        sf::Vector2f current = sf::Vector2f(0, 0);
-        sf::Vector2f previous = sf::Vector2f(0, 0);
-        this->camera.x += current.x - previous.x;
-        this->camera.y += current.y - previous.y;
+        this->camera += (glm::vec2)(pos - prev) * glm::vec2(-0.01, 0.01);
     }
-    if (this->camera.y > Const::HALF_PI) this->camera.y = Const::HALF_PI;
-    if (this->camera.y < -Const::HALF_PI) this->camera.y = -Const::HALF_PI;
 }
 
 void LevelScreen::onScroll(int delta) {
@@ -294,6 +298,7 @@ void LevelScreen::entityMenu() {
 
 void LevelScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
+    this->background.draw(target);
     sf::Vector3f floor = sf::Vector3f();
     for (Instance const &instance: this->level.instances) {
         if (instance.entity) {
