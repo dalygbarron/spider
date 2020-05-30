@@ -4,6 +4,7 @@
 #include "Rectangle.hh"
 #include "glm/vec2.hpp"
 #include <vector>
+#include <climits>
 
 /**
  * takes a single rat from a rat pack, and allows you to treat that one rat as
