@@ -128,27 +128,6 @@ void Renderer::text(
     }
 }
 
-void Renderer::rat(Rat const &rat, glm::vec2 pos) {
-    this->batch.draw(rat.getFrame(), pos);
-}
-
-void Renderer::rat(
-    Rat const &rat,
-    glm::vec2 position,
-    float rotation,
-    glm::vec2 scale,
-    int flip
-) {
-    if (flip) scale.x *= -1;
-    this->batch.draw(
-        rat.getFrame(),
-        position,
-        glm::vec2(0, 0),
-        rotation,
-        scale
-    );
-}
-
 void Renderer::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(this->batch);
 }

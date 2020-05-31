@@ -244,7 +244,7 @@ void LevelScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
         }
     }
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right)) {
-        this->camera += (glm::vec2)(pos - prev) * glm::vec2(-0.01, 0.01);
+        this->camera += (glm::vec2)(pos - prev) * 0.005f;
     }
 }
 
@@ -299,6 +299,7 @@ void LevelScreen::entityMenu() {
 void LevelScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     this->background.draw(target);
+    glm::mat4 cameraMatrix = Util::camera(this->camera);
     sf::Vector3f floor = sf::Vector3f();
     for (Instance const &instance: this->level.instances) {
         if (instance.entity) {

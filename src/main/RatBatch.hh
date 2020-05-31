@@ -49,6 +49,26 @@ class RatBatch: public sf::Drawable {
         );
 
         /**
+         * Draw the given sprite at a 3d position projected into 2d with the
+         * given projection matrix.
+         * @param sprite   is the sprite to draw.
+         * @param pos      is it's 3d position.
+         * @param offset   is the offset from the middle of the sprite for
+         *                 rotation.
+         * @param rotation is the rotation of the sprite.
+         * @param scale    is the scale to multiply foreshortening by.
+         * @param camera   is the combined camera projection matrix.
+         */
+        void draw(
+            Rectangle sprite,
+            glm::vec3 pos,
+            glm::vec2 offset,
+            float rotation,
+            glm::vec2 scale,
+            glm::mat4 camera
+        );
+
+        /**
          * Draw a patch somewhere.
          * @param patch is the patch to darw.
          * @param pos   is where to draw it.

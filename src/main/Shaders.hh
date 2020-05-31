@@ -23,7 +23,7 @@ namespace Shaders {
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution - vec2(0.5, 0.5);
             vec4 point = vec4(
-                normalize(vec3(-uv.x * fov.x, -uv.y * fov.y, 0.9)),
+                normalize(vec3(uv.x * fov.x, -uv.y * fov.y, 0.9)),
                 0
             );
             vec4 cameraPoint = camera * point;

@@ -2,8 +2,9 @@ Make entity and level screens work again.
     Yeah I screwed them up epic style.
 
 Animated Sprites in Adventure Screen
-    Yep should have animated sprites. Can either be controlled by script or
-    autolooping animations that play as soon as you enter the level.
+    Yeah just need to make them rats rather than just pics, but I will need to
+    figure out where the animations are configured. Probably need to add it to
+    the entity editor.
 
 Make sure bullet and actor ids start at 1 not 0
     Yeah I need 0 to represent no valid bullet so there must not be anything
@@ -20,13 +21,6 @@ EntityScreen zooming
     Make it that the zoom centres around the current middle of the screen.
     Also make it that the mesh vertex selection zone doesn't get bigger when
     zoom.
-
-Boating screen
-    Yeah so the boating screen is a special kind of adventure screen where you
-    can also have things moving around in 3d behind the photosphere as well as
-    a floor and sky which are drawn with a shader.
-    So in order to enable the boating screen, you will just need to call some
-    kind of script endpoint 
 
 Alt text on buttons
     Yeah so far have been too lazy but it should be easy enough to do and thus
@@ -68,13 +62,6 @@ Cool ocean shader.
     Yeah I dunno if I could be bothered but it would be nice to have a water
     shader that can do dirty brown water and specular highlights and sky
     reflection.
-
-Multiple timesteps
-    Yeah so it would be good if the main program and rendering had a variable
-    timestep kept on vsync, and then you could set things up to be run at
-    a given rate where every frame it sees how many frames should have been run
-    in total based on the current time and then does enough frames to catch it
-    up to that amount.
 
 Lindel Behaviour State machine
     Yeah lindel behaviour cannot be controlled through the script because it
@@ -128,3 +115,12 @@ Validate xml input more so that people know when they have fucked up.
     DONT segfault on bad input for god's sake.
 
 ------------------ complete to here before piss 2 -----------------------------
+
+Boating screen
+    Yeah so the boating screen is a special kind of adventure screen where you
+    can also have things moving around in 3d behind the photosphere as well as
+    a floor and sky which are drawn with a shader.
+    So in order to enable the boating screen, you will just need to call some
+    kind of script endpoint 
+
+------------------ complete to here before piss 2 major update ----------------

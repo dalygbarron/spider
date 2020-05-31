@@ -160,31 +160,7 @@ class Renderer: public sf::Drawable {
             Rectangle font
         ) const;
 
-        /**
-         * Renders the given rat in the given spot.
-         * @param rat is the rat to render.
-         * @param pos is the place on the screen to render it.
-         */
-        void rat(Rat const &rat, glm::vec2 pos);
-
-        /**
-         * Renders the given rat in the given spot with rotation and shit.
-         * @param rat      is the rat to render.
-         * @param position is the position on the screen to render it.
-         * @param rotation is the rotation to give it.
-         * @param scale    is the scale to draw it at.
-         * @param flip     is whether to flip it around the vertical axis.
-         */
-        void rat(
-            Rat const &rat,
-            glm::vec2 pos,
-            float rotation,
-            glm::vec2 scale,
-            int flip
-        );
-
     private:
-
         void draw(
             sf::RenderTarget &target,
             sf::RenderStates states

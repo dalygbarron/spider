@@ -184,14 +184,7 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 }
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
-    this->core.renderer.batch.clear();
-    glm::mat4 camera = Util::camera(this->angle);
-    // draw the behind world if applicable.
-    if (this->world) {
-        this->world->draw(target, this->core.renderer, camera);
-    }
-    target.draw(this->core.renderer.batch);
-    this->core.renderer.batch.clear();
+    glm::mat4 camera = Util::camera(this->angle) * this->core.getProjection();
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.

@@ -172,3 +172,15 @@ Cyclical world draw ordering
     we need to do it in overlapping portions. I think the cycle should be about
     10 frames long.
 
+Multiple timesteps
+    Yeah so it would be good if the main program and rendering had a variable
+    timestep kept on vsync, and then you could set things up to be run at
+    a given rate where every frame it sees how many frames should have been run
+    in total based on the current time and then does enough frames to catch it
+    up to that amount.
+
+Take the rat functions out of the renderer
+    The don't do anything at all except call getFrame() on the rat which you
+    could do yourself and then use the normal functions which would save a lot
+    of pointless code.
+
