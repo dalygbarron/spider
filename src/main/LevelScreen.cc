@@ -8,7 +8,7 @@ LevelScreen::LevelScreen(Core &core, Level &level):
     Screen(core),
     level(level),
     camera(0),
-    background(Rectangle(glm::vec2(), core.getSize())),
+    background(Rectangle(glm::vec2(), core.size)),
     entitySelector(
         ImGuiFileBrowserFlags_EnterNewFilename |
         ImGuiFileBrowserFlags_EnterNewFilename
@@ -16,7 +16,7 @@ LevelScreen::LevelScreen(Core &core, Level &level):
 {
     this->background.initFromString(Shaders::SKY_SHADER);
     this->background.setTexture(&level.getPic());
-    this->background.setUniform("fov", this->core.getFov());
+    this->background.setUniform("fov", this->core.fov);
     this->backgroundSelector.SetTitle("Select level background image");
     this->backgroundSelector.SetTypeFilters({".png"});
     this->entitySelector.SetTitle("Select entity to include");

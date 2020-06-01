@@ -1,7 +1,9 @@
 #include "Renderer.hh"
 #include "spdlog/spdlog.h"
 
-Renderer::Renderer(sf::Texture const &sprites): batch(sprites) {
+Renderer::Renderer(sf::Texture const &sprites, glm::ivec2 size):
+    batch(sprites, size)
+{
     // does nothing else.
 }
 

@@ -304,7 +304,7 @@ Core *FileIO::loadCoreFromFile(
     if (!ghc::filesystem::exists(path)) {
         spdlog::info("Creating new game core at '{}'", path.c_str());
         // TODO: is this still ok?
-        Core *core = new Core(allowMusic);
+        Core *core = new Core(allowMusic, glm::ivec2(1024, 600), 1);
         core->filename = path;
         return core;
     }
@@ -324,21 +324,18 @@ Core *FileIO::loadCoreFromFile(
         return NULL;
     }
     // Load names of sprites.
-    Core *core = new Core(allowMusic);
+    glm::ivec2 size(
+        node.attribute("width").as_int(),
+        node.attribute("height").as_int()
+    );
+    float fov = node.attribute("fov").as_float();
+    Core *core = new Core(allowMusic, size, fov);
     core->filename = path;
     core->name = node.attribute("name").value();
     core->start = node.attribute("start").value();
     // load spritesheet.
     pugi::xml_attribute ratPack = node.attribute("rat");
     if (ratPack) FileIO::initRatPackFromFile(core->spritesheet, ratPack.value());
-    // load display params.
-    core->setDisplay(
-        glm::ivec2(
-            node.attribute("width").as_int(),
-            node.attribute("height").as_int()
-        ),
-        node.attribute("fov").as_float()
-    );
     // load sprite related stuff.
     core->defaultFont = node.attribute("default-font").value();
     core->setTransitionTexture(node.attribute("transition").value());
@@ -470,8 +467,8 @@ World *FileIO::parseWorld(
         sf::Color(strtoul(node.attribute("bottomSky").value(), NULL, 16)),
         sf::Color(strtoul(node.attribute("topSky").value(), NULL, 16)),
         node.attribute("waves").as_float(),
-        core.getSize(),
-        core.getFov(),
+        core.size,
+        core.fov,
         core.getProjection()
     );
     // Load behaviours.

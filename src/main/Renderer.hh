@@ -49,8 +49,9 @@ class Renderer: public sf::Drawable {
          * Passes in the texture of the spritesheet, and also the rectangles
          * containing certain nice things.
          * @param sprites is the spritesheet texture.
+         * @param size    is the window size.
          */
-        Renderer(sf::Texture const &sprites);
+        Renderer(sf::Texture const &sprites, glm::ivec2 size);
 
         /**
          * Sets the cursor rat for a certain type of cursor.

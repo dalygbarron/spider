@@ -118,7 +118,7 @@ void EntityScreen::onKey(sf::Keyboard::Key key) {
 }
 
 void EntityScreen::refocus() {
-    this->camera = glm::vec3(this->core.getSize() / 2, 1);
+    this->camera = glm::vec3(this->core.size / 2, 1);
 }
 
 void EntityScreen::draw(sf::RenderTarget &target, int top) const {

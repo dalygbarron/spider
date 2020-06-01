@@ -4,7 +4,10 @@
 #include "spdlog/spdlog.h"
 #include "glm/gtc/matrix_transform.hpp"
 
-RatBatch::RatBatch(sf::Texture const &texture): texture(texture) {
+RatBatch::RatBatch(sf::Texture const &texture, glm::ivec2 size):
+    texture(texture),
+    size(size)
+{
     this->clear();
 }
 
@@ -74,6 +77,23 @@ void RatBatch::draw(
         sprite.pos.y + sprite.size.y
     );
     this->n++;
+}
+
+void RatBatch::draw(
+    Rectangle sprite,
+    glm::vec3 pos,
+    glm::vec2 offset,
+    float rotation,
+    glm::vec2 scale,
+    glm::mat4 camera
+) {
+    glm::vec4 p = camera * glm::vec4(pos, 1);
+    if (p.w < 0) return;
+    scale *= 2 / p.w;
+    p = p / p.w;
+    glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f *
+        (glm::vec2)this->size;
+    this->draw(sprite, screen, offset * scale, rotation, scale);
 }
 
 void RatBatch::draw(Patch const &p, Rectangle pos) {

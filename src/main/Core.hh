@@ -34,6 +34,8 @@ class Core {
                 Screen *screen;
         };
 
+        glm::ivec2 const size;
+        glm::vec2 const fov;
         std::string name;
         std::string start;
         std::string defaultFont;
@@ -48,8 +50,10 @@ class Core {
         /**
          * Initialises the core.
          * @param allowMusic is whether to allow music to be played.
+         * @param size       is the size of the game window.
+         * @param fov        is the vertical field of view.
          */
-        Core(int allowMusic);
+        Core(int allowMusic, glm::ivec2 size, float fov);
 
         /**
          * Adds an item to the game, and returns a nice reference to it.
@@ -140,26 +144,6 @@ class Core {
         void setTransitionTexture(ghc::filesystem::path const &path);
 
         /**
-         * Sets the parameters of the game's display.
-         * @param size is the logical size of the window which is also the real
-         *             size before the user resizes it.
-         * @param fov  is the vertical field of view to do 3d projection with.
-         */
-        void setDisplay(glm::ivec2 size, float fov);
-
-        /**
-         * Gives you the logical window size.
-         * @return the x, y window logical size.
-         */
-        glm::ivec2 getSize() const;
-
-        /**
-         * Gives you the horizontal and vertical field of view.
-         * @return the field of view.
-         */
-        glm::vec2 getFov() const;
-
-        /**
          * Gives you the game's current projection matrix based on the current
          * field of view and size.
          * @return a reference to the projection matrix.
@@ -219,8 +203,6 @@ class Core {
         std::vector<Screen *> screens;
         sf::Shader transitionShader;
         sf::RectangleShape transition;
-        glm::ivec2 size;
-        glm::vec2 fov;
         glm::mat4 projection;
         int firstVisible = 0;
         int nScreens = 0;

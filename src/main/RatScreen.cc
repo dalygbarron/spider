@@ -17,7 +17,7 @@ void RatScreen::Rat::update() {
 }
 
 RatScreen::RatScreen(Core &core): Screen(core) {
-    glm::ivec2 size = core.getSize();
+    glm::ivec2 size = core.size;
     this->rats.resize(this->core.spritesheet.count());
     int i = 0;
     for (std::unordered_map<std::string, Rectangle>::const_iterator it =

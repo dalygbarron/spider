@@ -2,6 +2,8 @@
 #define RAT_BATCH_H
 
 #include "Patch.hh"
+#include "glm/vec3.hpp"
+#include "glm/mat4x4.hpp"
 #include <SFML/Graphics.hpp>
 
 /**
@@ -16,8 +18,9 @@ class RatBatch: public sf::Drawable {
         /**
          * Create the rat batch by telling it what texture to draw with.
          * @param texture is the texture that the given sprites will belong to.
+         * @param size    is the size of the game window.
          */
-        RatBatch(sf::Texture const &texture);
+        RatBatch(sf::Texture const &texture, glm::ivec2 size);
 
         /**
          * Clear everything off the batch.
@@ -115,6 +118,7 @@ class RatBatch: public sf::Drawable {
         int n;
         mutable int clean;
         sf::Texture const &texture;
+        glm::ivec2 const size;
         std::vector<sf::Vertex> vertices;
 
         void draw(sf::RenderTarget &target, sf::RenderStates states) const;

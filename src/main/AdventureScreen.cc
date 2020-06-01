@@ -9,14 +9,14 @@
 
 AdventureScreen::AdventureScreen(Core &core, Level *level):
     ScriptedScreen(core, level->script),
-    background(Rectangle(glm::vec2(), core.getSize())),
+    background(Rectangle(glm::vec2(), core.size)),
     limiter(30)
 {
     this->level = level;
     this->angle = glm::vec2(Const::PI, Const::PI);
     this->background.initFromString(Shaders::SKY_SHADER);
     this->background.setTexture(&level->getPic());
-    this->background.setUniform("fov", this->core.getFov());
+    this->background.setUniform("fov", this->core.fov);
     // Add some new things to the script.
     this->script["_input"] = this->script.create_table();
     this->script["_useItem"] = [this](std::string name) {
@@ -101,7 +101,7 @@ void AdventureScreen::update(float delta, sf::RenderWindow &window) {
         this->background.setUniform("camera", glm::inverse(camera));
         this->background.update();
         if (this->runScript<float>(0)) return;
-        glm::ivec2 mid = this->core.getSize() / 2;
+        glm::ivec2 mid = this->core.size / 2;
         sf::Mouse::setPosition(sf::Vector2i(mid.x, mid.y), window);
     }
 }
@@ -166,8 +166,9 @@ void AdventureScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
     if (this->coroutine || prev == pos) {
         return;
     }
-    glm::vec2 mid = (glm::vec2)this->core.getSize() / 2.0f;
-    this->angle += ((glm::vec2)pos - mid) / mid * this->core.getFov() * glm::vec2(-1, 1);
+    glm::vec2 mid = (glm::vec2)this->core.size * 0.5f;
+    this->angle += ((glm::vec2)pos - mid) / mid * this->core.fov *
+        glm::vec2(-1, 1);
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -188,35 +189,30 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.
-    glm::vec2 size = this->core.getSize();
+    glm::vec2 size = this->core.size;
     for (Instance const &instance: this->level->instances) {
-        if (!instance.alive) continue;
-        if (instance.entity) {
-            glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
-            glm::vec4 p = this->core.getProjection() * camera * glm::vec4(cartesian, 0);
-            if (p.w < 0) continue;
-            p = p / p.w;
-            float scale = instance.entity->scale * instance.size;
-            glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f * size; 
-            this->core.renderer.batch.draw(
-                instance.entity->sprite,
-                screen,
-                instance.entity->offset,
-                0,
-                glm::vec2(scale, scale)
-            );
-        }
+        if (!instance.alive || !instance.entity) continue;
+        glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
+        float scale = instance.entity->scale * instance.size;
+        this->core.renderer.batch.draw(
+            instance.entity->sprite,
+            cartesian,
+            instance.entity->offset,
+            0,
+            glm::vec2(scale, scale),
+            camera
+        );
     }
     // Cursor and stuff.
     if (top) {
         if (this->selected) {
             this->core.renderer.batch.draw(
                 this->selected->sprite,
-                this->core.getSize() + glm::ivec2(32, 32)
+                this->core.size + glm::ivec2(32, 32)
             );
         }
         this->core.renderer.cursor(
-            this->core.getSize() + this->core.renderer.cursorRats[
+            this->core.size + this->core.renderer.cursorRats[
                 static_cast<int>(Renderer::CursorType::Pointer)
             ].size / 2,
             Renderer::CursorType::Pointer

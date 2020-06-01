@@ -14,6 +14,10 @@ Invalid level file causes segfault
     Program should not segfault in any circumstances. Same thing when passing
     a battle script too.
 
+Hunt Down Remaining Magic Numbers
+    Yeah there are still a few magic numbers in things like gui padding and the
+    size of the mouse so all of those should be hunted down and destroyed.
+
 Set Origin in EntityScreen
     Yeah I forgot to do that last time so I need to do it now.
 

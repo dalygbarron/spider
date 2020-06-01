@@ -7,8 +7,8 @@ BattleScreen::BattleScreen(Core &core, ghc::filesystem::path const &path):
     bullets(Const::MAX_BULLETS),
     actors(Const::MAX_ACTORS),
     bounds(
-        (glm::vec2)core.getSize() * glm::vec2(0.5, 0),
-        (glm::vec2)core.getSize() * glm::vec2(0.5, 1)
+        (glm::vec2)core.size * glm::vec2(0.5, 0),
+        (glm::vec2)core.size * glm::vec2(0.5, 1)
     ),
     background(this->bounds)
 {
@@ -232,12 +232,12 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
                     * Const::DOUBLE_PI - Const::HALF_PI
             );
         }
-        this->core.renderer.rat(
-            item.content.live.rat,
+        this->core.renderer.batch.draw(
+            item.content.live.rat.getFrame(),
             item.content.live.position,
+            glm::vec2(0, 0),
             0,
-            glm::vec2(1, 1),
-            item.content.live.flip
+            glm::vec2(item.content.live.flip ? -1 : 1, 1)
         );
     }
     // Draw the bullets.
@@ -262,7 +262,7 @@ void BattleScreen::draw(sf::RenderTarget &target, int top) const {
         }
     }
     // Draw the GUI.
-    glm::vec2 size = this->core.getSize();
+    glm::vec2 size = this->core.size;
     this->core.renderer.panel(Rectangle(0, 0, size.x * 0.25, size.y));
     this->core.renderer.panel(Rectangle(size.x * 0.75, 0, size.x * 0.25, size.y));
     this->core.renderer.text(

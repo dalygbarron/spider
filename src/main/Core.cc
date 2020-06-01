@@ -6,11 +6,16 @@
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
-Core::Core(int allowMusic):
-    renderer(this->spritesheet.getTexture()),
+Core::Core(int allowMusic, glm::ivec2 size, float fov):
+    renderer(this->spritesheet.getTexture(), size),
     entityRepository(this->spritesheet),
-    soundPlayer(16, allowMusic)
+    soundPlayer(16, allowMusic),
+    size(size),
+    fov(fov * (float)size.x / (float)size.y, fov)
 {
+    float aspect = (float)size.x / (float)size.y;
+    this->projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
+    this->transition.setSize(sf::Vector2f(size.x, size.y));
     this->transitionShader.setUniform("power", this->transitionStrength);
     this->transitionShader.setUniform("picture", sf::Shader::CurrentTexture);
     if (!this->transitionShader.loadFromMemory(
@@ -89,23 +94,6 @@ void Core::setTransitionTexture(ghc::filesystem::path const &path) {
         );
     }
     this->transition.setTexture(&this->transitionTexture, true);
-}
-
-void Core::setDisplay(glm::ivec2 size, float fov) {
-    float aspect = (float)size.x / (float)size.y;
-    this->size = size;
-    this->transition.setSize(sf::Vector2f(size.x, size.y));
-    this->projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
-    this->fov.y = fov;
-    this->fov.x = fov * aspect;
-}
-
-glm::vec2 Core::getFov() const {
-    return this->fov;
-}
-
-glm::ivec2 Core::getSize() const {
-    return this->size;
 }
 
 glm::mat4 const &Core::getProjection() const {

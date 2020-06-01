@@ -24,7 +24,7 @@
  */
 void screenshot(Core const &core) {
     sf::RenderTexture buffer;
-    glm::ivec2 size = core.getSize();
+    glm::ivec2 size = core.size;
     buffer.create(size.x, size.y);
     buffer.clear(sf::Color::Black);
     core.drawScreens(buffer);
@@ -113,11 +113,8 @@ int parseOptions(Options &options, int argc, char **argv) {
  * @return the result code the program should give after.
  */
 int process(Core &core) {
-    glm::vec2 size = core.getSize();
-    sf::RenderWindow window(
-        sf::VideoMode(size.x, size.y),
-        Const::TITLE// TODO: add to core and get from core.
-    );
+    glm::vec2 size = core.size;
+    sf::RenderWindow window(sf::VideoMode(size.x, size.y), core.name.c_str());
     window.setMouseCursorVisible(false);
     window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
