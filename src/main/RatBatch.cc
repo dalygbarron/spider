@@ -91,7 +91,7 @@ void RatBatch::draw(
     if (p.w < 0) return;
     scale *= 2 / p.w;
     p = p / p.w;
-    glm::vec2 screen = glm::vec2(p.x + 1, 1 - p.y) * 0.5f *
+    glm::vec2 screen = glm::vec2(1 - p.x, 1 - p.y) * 0.5f *
         (glm::vec2)this->size;
     this->draw(sprite, screen, offset * scale, rotation, scale);
 }

@@ -167,8 +167,7 @@ void AdventureScreen::onDrag(glm::ivec2 prev, glm::ivec2 pos) {
         return;
     }
     glm::vec2 mid = (glm::vec2)this->core.size * 0.5f;
-    this->angle += ((glm::vec2)pos - mid) / mid * this->core.fov *
-        glm::vec2(-1, 1);
+    this->angle += ((glm::vec2)pos - mid) / mid * this->core.fov;
 }
 
 void AdventureScreen::onKey(sf::Keyboard::Key key) {
@@ -185,7 +184,8 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
 }
 
 void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
-    glm::mat4 camera = Util::camera(this->angle) * this->core.getProjection();
+    this->core.renderer.batch.clear();
+    glm::mat4 camera = this->core.getProjection() * Util::camera(this->angle);
     // draw the level.
     this->background.draw(target);
     // drawing entity instances.

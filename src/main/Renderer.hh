@@ -43,6 +43,7 @@ class Renderer: public sf::Drawable {
         Patch panelPatch;
         Patch buttonPatch;
         Patch buttonDepressedPatch;
+        glm::ivec2 const size;
         mutable RatBatch batch;
 
         /**
@@ -128,7 +129,7 @@ class Renderer: public sf::Drawable {
          */
         void sphereMesh(
             Mesh const &mesh,
-            glm::vec2 camera,
+            glm::mat4 camera,
             int highlight
         ) const;
 

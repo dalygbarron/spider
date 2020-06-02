@@ -2,7 +2,8 @@
 #include "spdlog/spdlog.h"
 
 Renderer::Renderer(sf::Texture const &sprites, glm::ivec2 size):
-    batch(sprites, size)
+    batch(sprites, size),
+    size(size)
 {
     // does nothing else.
 }
@@ -67,33 +68,40 @@ void Renderer::club(
 
 void Renderer::sphereMesh(
     Mesh const &mesh,
-    glm::vec2 camera,
+    glm::mat4 camera,
     int highlight
 ) const {
     std::vector<glm::vec2> const &vertices = mesh.getVertices();
     int n = vertices.size();
     for (int i = 0; i < n; i++) {
         int next = (i == n - 1) ? 0 : i + 1;
-        glm::vec2 delta = vertices[next] - vertices[i];
-        delta.x /= Renderer::SPHERE_INTERPOLATION;
-        delta.y /= Renderer::SPHERE_INTERPOLATION;
+        glm::vec2 delta = (vertices[next] - vertices[i]) /
+            (float)Renderer::SPHERE_INTERPOLATION;
         for (int j = 0; j < Renderer::SPHERE_INTERPOLATION; j++) {
-            glm::vec2 multipliedDelta = glm::vec2(
-                delta.x * j,
-                delta.y * j
+            glm::vec3 start = Util::sphericalToCartesian(
+                vertices[i] + delta * (float)j
             );
-            sf::Vector3f start = sf::Vector3f(0, 0, 0);
-            sf::Vector3f end = sf::Vector3f(0, 0, 0);
-            if (start.z < 0) continue;
-            this->line(
-                glm::vec2(start.x, start.y),
-                glm::vec2(end.x, end.y),
-                i == highlight
+            glm::vec3 end = Util::sphericalToCartesian(
+                vertices[i] + delta * (j + 1.0f)
             );
+            glm::vec4 startP = camera * glm::vec4(start, 0);
+            glm::vec4 endP = camera * glm::vec4(end, 0);
+            if (startP.w < 0 || endP.w < 0) continue;
+            startP = startP / startP.w;
+            endP = endP / endP.w;
+            glm::vec2 startScreen = glm::vec2(1 - startP.x, 1 - startP.y) *
+                0.5f * (glm::vec2)this->size;
+            glm::vec2 endScreen = glm::vec2(1 - endP.x, 1 - endP.y) *
+                0.5f * (glm::vec2)this->size;
+            this->line(startScreen, endScreen, i == highlight);
         }
-        sf::Vector3f nodePos = sf::Vector3f(0, 0, 0);
-        if (nodePos.z < 0) continue;
-        this->node(glm::vec2(nodePos.x, nodePos.y), i == highlight);
+        glm::vec3 nodePos = Util::sphericalToCartesian(vertices[i]);
+        glm::vec4 nodeP = camera * glm::vec4(nodePos, 0);
+        if (nodeP.w < 0) continue;
+        nodeP = nodeP / nodeP.w;
+        glm::vec2 nodeScreen = glm::vec2(1 - nodeP.x, 1 - nodeP.y) * 0.5f *
+            (glm::vec2)this->size;
+        this->node(nodeScreen, i == highlight);
     }
 }
 

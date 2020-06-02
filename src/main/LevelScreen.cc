@@ -299,35 +299,32 @@ void LevelScreen::entityMenu() {
 void LevelScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     this->background.draw(target);
-    glm::mat4 cameraMatrix = Util::camera(this->camera);
+    glm::mat4 cameraMatrix = this->core.getProjection() *
+        Util::camera(this->camera);
     sf::Vector3f floor = sf::Vector3f();
     for (Instance const &instance: this->level.instances) {
         if (instance.entity) {
-            glm::vec3 pos;
-            if (pos.z < 0) continue;
-            float angle;
-            if (this->camera.y > 0) {
-                angle = atan2(floor.x - pos.x, floor.y - pos.y) *
-                    sin(this->camera.y);
-            } else {
-                angle = atan2(pos.x - floor.x, pos.y - floor.y) *
-                    sin(this->camera.y);
-            }
+            glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
             this->core.renderer.batch.draw(
                 instance.entity->sprite,
-                glm::vec2(pos.x, pos.y),
+                cartesian,
                 instance.entity->offset,
-                angle * ((this->camera.y > 0) ? -1 : 1),
-                glm::vec2(instance.size, instance.size)
+                0,
+                glm::vec2(1),
+                cameraMatrix
             );
-            this->core.renderer.point(
-                glm::vec2(pos.x, pos.y),
-                this->selectedInstance == &instance
+            this->core.renderer.batch.draw(
+                this->core.renderer.pointRat,
+                cartesian,
+                glm::vec2(0),
+                0,
+                glm::vec2(1),
+                cameraMatrix
             );
         } else {
             this->core.renderer.sphereMesh(
                 instance.mesh,
-                this->camera,
+                cameraMatrix,
                 (this->selectedInstance == &instance) ? this->selected : -1 
             );
         }
