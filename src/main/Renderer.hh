@@ -15,7 +15,7 @@
  */
 class Renderer: public sf::Drawable {
     public:
-        static int const SPHERE_INTERPOLATION = 5;
+        static int const SPHERE_INTERPOLATION = 3;
 
         /**
          * A mouse cursor type.

@@ -130,6 +130,20 @@ namespace Util {
      * @return the spherical coordinates.
      */
     glm::vec2 cartesianToSpherical(glm::vec3 cartesian);
+
+    /**
+     * Takes a point on the screen and converts it to spherical
+     * coordinates.
+     * @param screen is the position on the screen which should be normalised
+     *               to be between -0.5 and 0.5.
+     * @param camera is the camera rotation matrix.
+     * @param projection is the projection matrix.
+     */
+    glm::vec2 screenToSpherical(
+        glm::vec2 screen,
+        glm::mat4 camera,
+        glm::mat4 projection
+    );
 };
 
 #endif

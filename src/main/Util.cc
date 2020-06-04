@@ -145,3 +145,17 @@ glm::vec2 Util::cartesianToSpherical(glm::vec3 cartesian) {
         asin(cartesian.y)
     );
 }
+
+glm::vec2 Util::screenToSpherical(
+    glm::vec2 screen,
+    glm::mat4 camera,
+    glm::mat4 projection
+) {
+    glm::vec3 cartesian = glm::unProject(
+        glm::vec3(screen, 1.0f),
+        camera,
+        projection,
+        glm::vec4(0, 0, 1, 1)
+    );
+    return Util::cartesianToSpherical(cartesian);
+}

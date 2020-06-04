@@ -185,7 +185,12 @@ void LevelScreen::update(float delta, sf::RenderWindow &window) {
 
 void LevelScreen::onClick(sf::Mouse::Button button, glm::ivec2 pos) {
     if (button == sf::Mouse::Button::Left) {
-        glm::vec2 coordinate = glm::vec2();
+        glm::vec2 coordinate = Util::screenToSpherical(
+            (glm::vec2)pos / (glm::vec2)this->core.size,
+            Util::camera(this->camera),
+            this->core.getProjection()
+        );
+        spdlog::info("{} {}", coordinate.x, coordinate.y);
         // Find the closest thing.
         float distance = 0.2;
         this->selectedInstance = NULL;
