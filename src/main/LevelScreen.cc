@@ -195,6 +195,7 @@ void LevelScreen::onClick(sf::Mouse::Button button, glm::ivec2 pos) {
         float distance = 0.2;
         this->selectedInstance = NULL;
         for (Instance &instance: this->level.instances) {
+            instance.pos = coordinate;
             float newDistance = instance.distance(coordinate);
             if (newDistance < distance) {
                 distance = newDistance;

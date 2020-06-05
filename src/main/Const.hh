@@ -12,6 +12,8 @@ namespace Const {
     static int const VERSION_REV = 0;
     static int const MAX_BULLETS = 1024;
     static int const MAX_ACTORS = 32;
+    static float const MIN_CLIP = 0.1;
+    static float const MAX_CLIP = 100;
     static float const PI = 3.141592653589793;
     static float const DOUBLE_PI = 6.283185307179586;
     static float const HALF_PI = 1.570796326794897;

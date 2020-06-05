@@ -14,7 +14,12 @@ Core::Core(int allowMusic, glm::ivec2 size, float fov):
     fov(fov * (float)size.x / (float)size.y, fov)
 {
     float aspect = (float)size.x / (float)size.y;
-    this->projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
+    this->projection = glm::perspective(
+        fov,
+        aspect,
+        Const::MIN_CLIP,
+        Const::MAX_CLIP
+    );
     this->transition.setSize(sf::Vector2f(size.x, size.y));
     this->transitionShader.setUniform("power", this->transitionStrength);
     this->transitionShader.setUniform("picture", sf::Shader::CurrentTexture);
