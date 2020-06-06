@@ -151,12 +151,12 @@ glm::vec2 Util::screenToSpherical(
     glm::mat4 camera,
     glm::mat4 projection
 ) {
+    spdlog::info("{} {}", screen.x, screen.y);
     glm::vec3 cartesian = glm::unProject(
-        glm::vec3(screen, 1),
+        glm::vec3(glm::vec2(1, 1) - screen, 0),
         camera,
         projection,
         glm::vec4(0, 0, 1, 1)
     );
-    spdlog::info("{} {} {}", cartesian.x, cartesian.y, cartesian.z);
     return Util::cartesianToSpherical(glm::normalize(cartesian));
 }

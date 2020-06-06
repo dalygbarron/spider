@@ -143,19 +143,29 @@ int process(Core &core) {
                 );
             } else if (!ImGui::GetIO().WantCaptureMouse) {
                 if (event.type == sf::Event::MouseButtonPressed) {
-                    sf::Vector2u size = window.getSize();
+                    sf::Vector2u windowSize = window.getSize();
+                    windowSize.x /= size.x;
+                    windowSize.y /= size.y;
                     screen->onClick(event.mouseButton.button, glm::ivec2(
-                        event.mouseButton.x,
-                        event.mouseButton.y
+                        event.mouseButton.x / windowSize.x,
+                        event.mouseButton.y / windowSize.y
                     ));
                     buttons[event.mouseButton.button] = true;
                 } else if (event.type == sf::Event::MouseButtonReleased) {
                     buttons[event.mouseButton.button] = false;
                 } else if (event.type == sf::Event::MouseMoved) {
-                    sf::Vector2u size = window.getSize();
+                    sf::Vector2u windowSize = window.getSize();
+                    windowSize.x /= size.x;
+                    windowSize.y /= size.y;
                     screen->onDrag(
-                        glm::ivec2(event.mouseMove.x, event.mouseMove.y),
-                        glm::ivec2(mouse.x, mouse.y)
+                        glm::ivec2(
+                            event.mouseMove.x / windowSize.x,
+                            event.mouseMove.y / windowSize.y
+                        ),
+                        glm::ivec2(
+                            mouse.x / windowSize.x,
+                            mouse.y / windowSize.y
+                        )
                     );
                     mouse.x = event.mouseMove.x;
                     mouse.y = event.mouseMove.y;

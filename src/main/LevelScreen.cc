@@ -190,7 +190,6 @@ void LevelScreen::onClick(sf::Mouse::Button button, glm::ivec2 pos) {
             Util::camera(this->camera),
             this->core.getProjection()
         );
-        spdlog::info("{} {}", coordinate.x, coordinate.y);
         // Find the closest thing.
         float distance = 0.2;
         this->selectedInstance = NULL;
