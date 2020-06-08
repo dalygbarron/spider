@@ -38,6 +38,16 @@ namespace Util {
     sf::View getLetterboxView(sf::View view, sf::Vector2i dimensions);
 
     /**
+     * Gives you the current rendering window's size as a proportion of the
+     * logical screen size.
+     * @param window is the rendering window to get the size of.
+     * @param size   is the logical size.
+     * @return the real window size as a proportion of the logical size in each
+     *         dimension.
+     */
+    glm::vec2 screenScale(sf::Window const &window, glm::ivec2 size);
+
+    /**
      * Tells you if a given latitude is between two other latitudes, under the
      * assumption that the "inner" part between the latitudes is the shorter
      * part.

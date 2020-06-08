@@ -45,6 +45,14 @@ sf::View Util::getLetterboxView(sf::View view, sf::Vector2i dimensions) {
     return view;
 }
 
+glm::vec2 Util::screenScale(sf::Window const &window, glm::ivec2 size) {
+    sf::Vector2u windowSize = window.getSize();
+    return glm::vec2(
+        (float)windowSize.x / size.x,
+        (float)windowSize.y / size.y
+    );
+}
+
 int Util::inSlice(float a, float b, float point) {
     a = fmod(a, Const::DOUBLE_PI);
     b = fmod(b, Const::DOUBLE_PI);
@@ -151,9 +159,8 @@ glm::vec2 Util::screenToSpherical(
     glm::mat4 camera,
     glm::mat4 projection
 ) {
-    spdlog::info("{} {}", screen.x, screen.y);
     glm::vec3 cartesian = glm::unProject(
-        glm::vec3(glm::vec2(1, 1) - screen, 0),
+        glm::vec3(glm::vec2(1, 1) - screen, 1),
         camera,
         projection,
         glm::vec4(0, 0, 1, 1)
