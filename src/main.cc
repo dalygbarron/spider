@@ -143,25 +143,25 @@ int process(Core &core) {
                 );
             } else if (!ImGui::GetIO().WantCaptureMouse) {
                 if (event.type == sf::Event::MouseButtonPressed) {
-                    glm::vec2 scale = Util::screenScale(window, size);
+                    sf::Vector2f point = window.mapPixelToCoords(
+                        sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
+                    );
                     screen->onClick(event.mouseButton.button, glm::ivec2(
-                        event.mouseButton.x / scale.x,
-                        event.mouseButton.y / scale.y
+                        point.x,
+                        point.y
                     ));
                     buttons[event.mouseButton.button] = true;
                 } else if (event.type == sf::Event::MouseButtonReleased) {
                     buttons[event.mouseButton.button] = false;
                 } else if (event.type == sf::Event::MouseMoved) {
-                    glm::vec2 scale = Util::screenScale(window, size);
-                    screen->onDrag(
-                        glm::ivec2(
-                            event.mouseMove.x / scale.x,
-                            event.mouseMove.y / scale.y
-                        ),
-                        glm::ivec2(mouse.x * scale.x, mouse.y * scale.y)
+                    sf::Vector2f point = window.mapPixelToCoords(
+                        sf::Vector2i(event.mouseMove.x, event.mouseMove.y)
                     );
-                    mouse.x = event.mouseMove.x;
-                    mouse.y = event.mouseMove.y;
+                    screen->onDrag(
+                        glm::ivec2(point.x, point.y),
+                        glm::ivec2(mouse.x, mouse.y)
+                    );
+                    mouse = sf::Vector2i(point.x, point.y);
                 } else if (event.type == sf::Event::MouseWheelScrolled) {
                     screen->onScroll(event.mouseWheelScroll.delta);
                 } else if (event.type == sf::Event::KeyPressed) {
