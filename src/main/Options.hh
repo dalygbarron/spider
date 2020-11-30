@@ -8,13 +8,7 @@
 class Options {
     public:
         ghc::filesystem::path game = "game.xml";
-        ghc::filesystem::path file;
-        int entityFlag = false;
-        int levelFlag = false;
-        int battleFlag = false;
-        int ratFlag = false;
-        int helpFlag = false;
-        int versionFlag = false;
+        int editorFlag = false;
         int muteFlag = false;
 };
 

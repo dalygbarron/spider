@@ -102,181 +102,23 @@ class Screen {
 };
 
 /**
- * Screen in which a level is edited.
+ * A screen which contains tabs where you can select files, edit levels, edit
+ * entities, and potentially even more.
  */
-class LevelScreen: public Screen {
+class EditorScreen: public Screen {
     public:
-        static int const NAME_BUFFER_SIZE = 64;
-
         /**
-         * Creates the level screen and gives it it's level. It then becomes
-         * responsible for this level and destoys it when it is done.
-         * @param core  is the main dependencies of screens.
-         * @param level is the level to edit.
+         * Creates the screen by giving it the core stuff. At the start it will
+         * just contain a file browser tab.
+         * @param core is the core.
          */
-        LevelScreen(Core &core, Level &level);
-
-        /**
-         * Destructor which does little to noghitn.
-         */
-        ~LevelScreen();
-
-        /**
-         * Gives you the instance with the given name.
-         * @param name is the name of the instance to get.
-         * @return the instance if there is one or null.
-         */
-        Instance const *getInstanceWithName(char const *name) const;
-
-        /**
-         * Remove an entity instance from the level and free it.
-         * @param index is the index of the entity to remove.
-         */
-        void removeInstance(int index);
-
-        /**
-         * Creates an instance in the level and returns a reference to it.
-         * @param entity is what to set the instance's entity field to, if you
-         *               choose null, that is ok because it means it is a shape
-         *               instance not an entity instance.
-         * @return the created instance.
-         */
-        Instance &addInstance(Entity const *entity);
+        EditorScreen(Core &core);
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
-        virtual void onClick(
-            sf::Mouse::Button button,
-            glm::ivec2 pos
-        ) override;
-
-        virtual void onKey(sf::Keyboard::Key key) override;
-
-        virtual void onDrag(glm::ivec2 prev, glm::ivec2 pos) override;
-
-        virtual void onScroll(int delta) override;
-
-    private:
-        Level &level;
-        Instance *selectedInstance = NULL;
-        int selected;
-        int selectedEntity;
-        std::vector<std::string> entities;
-        glm::vec2 camera;
-        Background background;
-        TextEditor textEditor;
-        ImGui::FileBrowser backgroundSelector;
-        ImGui::FileBrowser entitySelector;
-
-        /**
-         * Loads an entity into the entity repository and at the same time
-         * saves it's key to the level so that it remembers that it is a thing
-         * for it.
-         * @param key is the key of the entity to load.
-         * @return whatever the entity repo loaded.
-         */
-        Entity *loadEntity(char const *key);
-
-        /**
-         * Does the menu for when an entity is selected.
-         */
-        void entityMenu();
-
-        /**
-         * Does the menu for when a shape is selected.
-         */
-        void shapeMenu();
-};
-
-/**
- * Screen in which an entity is edited.
- */
-class EntityScreen: public Screen {
-    public:
-        static int const BUFFER_SIZE = 128;
-
-        /**
-         * Creates the screen.
-         * @param core  is the main dependencies of screens.
-         * @param entity is the entity that the screen shall edit.
-         */
-        EntityScreen(Core &core, Entity &entity);
-
-        /**
-         * Frees the entity.
-         */
-        virtual ~EntityScreen();
-
-        virtual void update(float delta, sf::RenderWindow &window) override;
-
-        virtual void draw(sf::RenderTarget &target, int top) const override;
-
-        virtual void onDrag(glm::ivec2 prev, glm::ivec2 pos) override;
-
-        virtual void onClick(
-            sf::Mouse::Button button,
-            glm::ivec2 pos
-        ) override;
-
-        virtual void onScroll(int delta) override;
-
-        virtual void onKey(sf::Keyboard::Key key) override;
-
-    private:
-        char nameBuffer[EntityScreen::BUFFER_SIZE];
-        char spriteBuffer[EntityScreen::BUFFER_SIZE];
-        Entity &entity;
-        glm::vec3 camera;
-        sf::Color background;
-        int selected = -1;
-
-        /**
-         * Put the entity back in the middle of the screen at normal size.
-         */
-        void refocus();
-};
-
-/**
- * Screen that shows a bunch of stuff from the ratpack onto the screen just for
- * a nice little test.
- */
-class RatScreen: public Screen {
-    public:
-        /**
-         * A little test class that moves about.
-         */
-        class Rat {
-            public:
-                float rotation;
-                float angularVelocity;
-                Rectangle sprite;
-                glm::vec2 position;
-                glm::vec2 velocity;
-                glm::vec2 gravity;
-                glm::vec2 scale;
-                Rectangle bounds;
-
-                /**
-                 * Updates the velocity and position.
-                 */
-                void update();
-        };
-
-        /**
-         * Creates the screen.
-         * @param core is the core stuff which contains the ratpack.
-         */
-        RatScreen(Core &core);
-
-        virtual void update(float delta, sf::RenderWindow &window) override;
-
-        virtual void draw(sf::RenderTarget &target, int top) const override;
-
-    private:
-        std::vector<Rat> rats;
-        Mesh mesh;
+        virtual int isTransparent() const override;
 };
 
 /**

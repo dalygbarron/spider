@@ -59,19 +59,6 @@ Optimise the rat draw functions
     I could find a way of optimising them. Though now I think of it I dunno
     how.
 
-3D sound effects for boat screen
-    Yeah need to hear sounds from where they come from you know.
-
-Cool ocean shader.
-    Yeah I dunno if I could be bothered but it would be nice to have a water
-    shader that can do dirty brown water and specular highlights and sky
-    reflection.
-
-Lindel Behaviour State machine
-    Yeah lindel behaviour cannot be controlled through the script because it
-    would require an obscene number of engine calls and thus we are gonna use a 
-    state machine to get reasonably fancy actions but fully inside the engine.
-
 -------------------- complete to here before bug game -------------------------
 
 Screen where you can browse files and choose to edit entities or levels
@@ -119,6 +106,19 @@ Validate xml input more so that people know when they have fucked up.
     DONT segfault on bad input for god's sake.
 
 ------------------ complete to here before piss 2 -----------------------------
+
+3D sound effects for boat screen
+    Yeah need to hear sounds from where they come from you know.
+
+Cool ocean shader.
+    Yeah I dunno if I could be bothered but it would be nice to have a water
+    shader that can do dirty brown water and specular highlights and sky
+    reflection.
+
+Lindel Behaviour State machine
+    Yeah lindel behaviour cannot be controlled through the script because it
+    would require an obscene number of engine calls and thus we are gonna use a 
+    state machine to get reasonably fancy actions but fully inside the engine.
 
 Boating screen
     Yeah so the boating screen is a special kind of adventure screen where you

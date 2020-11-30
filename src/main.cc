@@ -33,77 +33,23 @@ void screenshot(Core const &core) {
 }
 
 /**
- * Prints out the version of the program to stdout.
- */
-void version() {
-    printf(
-        "%d.%d.%d\n",
-        Const::VERSION_MAJOR,
-        Const::VERSION_MINOR,
-        Const::VERSION_REV
-    );
-}
-
-/**
- * Prints out the help documentation to stdouit.
- */
-void help() {
-    printf(
-        Const::LOGO,
-        Const::VERSION_MAJOR,
-        Const::VERSION_MINOR,
-        Const::VERSION_REV
-    );
-    printf("Usage: spider [-h] [-v] [-m] [-g=gameFile] -r|-e=entityFile|-l=levelFile|-b=battleFile\n");
-    printf(" -h means output help message and stop.\n");
-    printf(" -v means output version number and stop.\n");
-    printf(" -m means mute the music but not the sounds.\n");
-    printf(" -g means game file, it is required.\n");
-    printf(" -e means entity file to edit. It is relative to the game file.\n");
-    printf(" -l means level file to edit. It is relative to the game file\n");
-    printf(" -r means open in rat mode.\n");
-    printf(" -b means open straight into the given battle script.\n");
-    printf("To play normally, provide just a game");
-    printf("\nIf you run it and it says shaders are not available, it's fucked\n");
-}
-/**
  * Parses the commandline options.
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
     while ((opt = getopt(argc, argv, "hvmrg:e:l:b:")) != -1) {
         switch (opt) {
-            case 'h':
-                options.helpFlag = true;
-                return 0;
-            case 'v':
-                options.versionFlag = true;
-                return 0;
+            case 'e':
+                options.editorFlag = true;
+                break;
             case 'm':
                 options.muteFlag = true;
-                break;
-            case 'r':
-                options.ratFlag = true;
-                break;
-            case 'g':
-                options.game = optarg;
-                break;
-            case 'e':
-                options.file = optarg;
-                options.entityFlag = true;
-                break;
-            case 'l':
-                options.file = optarg;
-                options.levelFlag = true;
-                break;
-            case 'b':
-                options.file = optarg;
-                options.battleFlag = true;
                 break;
             default:
                 return 1;
         }
     }
+    if (optind < argc) options.game = argv[optind];
     return 0;
 }
 
@@ -119,6 +65,7 @@ int process(Core &core) {
     window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
     window.resetGLStates();
+    sf::ContextSettings settings = window.getSettings();
     sf::View view;
     view.setSize(sf::Vector2f(size.x, size.y));
     view.setCenter(sf::Vector2f(size.x / 2, size.y / 2));
@@ -207,16 +154,7 @@ int main(int argc, char **argv) {
     Options options;
     int result = parseOptions(options, argc, argv);
     if (result != 0) return result;
-    if (options.helpFlag) {
-        help();
-        return 0;
-    } else if (options.versionFlag) {
-        version();
-        return 0;
-    } else if (options.entityFlag && options.levelFlag) {
-        fprintf(stderr, "Cannot edit entity and level at same time.\n");
-        return 1;
-    } else if (!sf::Shader::isAvailable()) {
+    if (!sf::Shader::isAvailable()) {
         fprintf(stderr, "Shaders not available. Goodbye.\n");
         return 1;
     }
@@ -234,16 +172,8 @@ int main(int argc, char **argv) {
     Screen *screen = NULL;
     Level *level = NULL;
     Entity *entity = NULL;
-    if (options.ratFlag) {
-        core->pushScreen(new RatScreen(*core));
-    } else if (options.levelFlag) {
-        Level *level = core->loadLevel(options.file);
-        core->pushScreen(new LevelScreen(*core, *level));
-    } else if (options.entityFlag) {
-        Entity *entity = core->entityRepository.get(options.file.c_str());
-        core->pushScreen(new EntityScreen(*core, *entity));
-    } else if (options.battleFlag) {
-        core->pushScreen(new BattleScreen(*core, options.file));
+    if (options.editorFlag) {
+        core->pushScreen(new EditorScreen(*core));
     } else {
         core->pushScreen(new AdventureScreen(
             *core,
