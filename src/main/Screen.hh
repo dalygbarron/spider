@@ -125,6 +125,8 @@ class EditorScreen: public Screen {
          * Runs the imgui file browser thing.
          */
         void fileBrowser();
+
+        std::vector<FileEditor *> openFiles;
 };
 
 /**
