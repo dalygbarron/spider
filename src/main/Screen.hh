@@ -12,6 +12,7 @@
 #include "Bullet.hh"
 #include "World.hh"
 #include "Limiter.hh"
+#include "FileEditor.hh"
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "imfilebrowser.h"
