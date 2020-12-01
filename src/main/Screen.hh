@@ -119,6 +119,12 @@ class EditorScreen: public Screen {
         virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual int isTransparent() const override;
+
+    private:
+        /**
+         * Runs the imgui file browser thing.
+         */
+        void fileBrowser();
 };
 
 /**

@@ -6,6 +6,8 @@ EditorScreen::EditorScreen(Core &core): Screen(core) {
 
 void EditorScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
+    ImGui::ShowDemoWindow();
+    return;
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("New Game")) {
@@ -27,22 +29,21 @@ void EditorScreen::update(float delta, sf::RenderWindow &window) {
         }
         ImGui::EndMainMenuBar();
     }
-    if (!ImGui::Begin("Editor")) {
-        ImGui::End();
-        return;
-    }
-    if (ImGui::BeginTabBar("tabs")) {
-        if (ImGui::BeginTabItem("start.plx")) {
-            ImGui::Text("Hnelli");
-            ImGui::EndTabItem();
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginTabBar("tabs")) {
+            if (ImGui::BeginTabItem("start.plx")) {
+                ImGui::Text("Hnelli");
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("cirno.pex")) {
+                ImGui::Text("Idiota");
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
         }
-        if (ImGui::BeginTabItem("cirno.pex")) {
-            ImGui::Text("Idiota");
-            ImGui::EndTabItem();
-        }
-        ImGui::EndTabBar();
+        ImGui::EndMainMenuBar();
     }
-    ImGui::End();
+    this->fileBrowser();
 }
 
 void EditorScreen::draw(sf::RenderTarget &target, int top) const {
@@ -51,4 +52,10 @@ void EditorScreen::draw(sf::RenderTarget &target, int top) const {
 
 int EditorScreen::isTransparent() const {
     return false;
+}
+
+void EditorScreen::fileBrowser() {
+    ImGui::Begin("Files");
+    ImGui::Text("Some File");
+    ImGui::End();
 }
