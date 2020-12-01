@@ -55,7 +55,5 @@ prod = goodEnv.Program(
     'spider',
     Glob('gen-prod/main/*.cc') + ['gen-prod/main.cc']
 )
-install = goodEnv.Install('/usr/bin', prod)
-goodEnv.Alias('install', '/usr/bin')
 
 Default(prod)

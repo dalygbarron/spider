@@ -37,7 +37,7 @@ void screenshot(Core const &core) {
  */
 int parseOptions(Options &options, int argc, char **argv) {
     int opt;
-    while ((opt = getopt(argc, argv, "hvmrg:e:l:b:")) != -1) {
+    while ((opt = getopt(argc, argv, "em")) != -1) {
         switch (opt) {
             case 'e':
                 options.editorFlag = true;
