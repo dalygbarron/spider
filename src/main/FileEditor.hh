@@ -10,16 +10,14 @@ class FileEditor {
          * Takes a path to a file and returns an editor for that specific file
          * which will be the correct type based on file extension. If there is
          * no correct editor for the given extension it will return null.
+         * @param core is used to access repos and stuff at time of creation.
          * @param path is the path to the file to edit.
          * @return the created file editor if one was created ya know.
          */
-        static FileEditor *createForFile(ghc::filesystem::path path);
-
-        /**
-         * Creates it by giving access to the core.
-         * @param core is the core thingy that gives access to shiet.
-         */
-        FileEditor(Core &core);
+        static FileEditor *createForFile(
+            Core &core,
+            ghc::filesystem::path path
+        );
 
         /**
          * Deletes it. Might be needed for some subclass.
@@ -46,6 +44,45 @@ class FileEditor {
          *              something or nothing.
          */
         virtual void onScroll(int delta);
+
+        /**
+         * Draws the editor upon the given render target.
+         * @param target is the screen to render onto.
+         */
+        virtual void draw(sf::RenderTarget &target) const = 0;
+};
+
+/**
+ * Editor for entities.
+ */
+class EntityFileEditor: public FileEditor {
+    public:
+        /**
+         * Creates the editor.
+         * @param entity is a mutable reference to the entity we are editing.
+         */
+        EntityFileEditor(Entity &entity);
+
+        virtual void draw(sf::RenderTarget &target) const override;
+
+    private:
+        Entity &entity;
+};
+
+/**
+ * Editor for levels.
+ */
+class LevelFileEditor: public FileEditor {
+    public:
+        /**
+         * Creates the editor.
+         * @param level is a mutable reference to the level that we are
+         *        editing.
+         */
+        LevelFileEditor(Level &level);
+
+    private:
+        Level &level;
 };
 
 /**
@@ -53,7 +90,30 @@ class FileEditor {
  * also yeiiesiiise.
  */
 class TextFileEditor: public FileEditor {
+    public:
+        enum class TextFileType {
+            PLAIN,
+            LUA,
+            XML
+        };
 
+        /**
+         * Creates the text file editor.
+         * @param core is used to access the text file repo so changes
+         *        permeate the program as soon as possible.
+         * @param path     is the path to the text file.
+         * @param type     is the file type which determines how highlighting
+         *                 will work if there is any.
+         */
+        TextFileEditor(
+            Core &core,
+            ghc::filesystem::path path,
+            TextFileType type
+        );
+
+    private:
+        TextFileType type;
+        
 };
 
 #endif

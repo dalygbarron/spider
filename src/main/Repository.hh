@@ -169,4 +169,15 @@ class EntityRepository: public XmlRepository<Entity> {
         ) const override;
 };
 
+/**
+ * This repository takes care of strings. The idea with this is mostly so that
+ * the editor can edit a string in memory and then other thingos will load it.
+ */
+class StringRepository: public Repository<std::string> {
+    private:
+        virtual std::string *create(
+            ghc::filesystem::path const &path
+        ) const override;
+};
+
 #endif
