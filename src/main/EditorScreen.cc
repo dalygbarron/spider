@@ -6,10 +6,7 @@ EditorScreen::EditorScreen(Core &core): Screen(core) {
 
 void EditorScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
-}
-
-void EditorScreen::draw(sf::RenderTarget &target, int top) {
-    if (this->active) this->active->draw(target);
+    if (this->active) this->active->update(delta);
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Save")) {
@@ -23,6 +20,9 @@ void EditorScreen::draw(sf::RenderTarget &target, int top) {
         ImGui::EndMainMenuBar();
     }
     this->fileBrowser();
+}
+
+void EditorScreen::draw(sf::RenderTarget &target, int top) const {
     ImGui::SFML::Render(target);
 }
 
@@ -30,22 +30,23 @@ int EditorScreen::isTransparent() const {
     return false;
 }
 
-void directoryTree(ghc::filesystem::path path, bool top) {
+void EditorScreen::directoryTree(ghc::filesystem::path path, bool top) {
     if (!ghc::filesystem::exists(path)) return;
     if (top || ImGui::TreeNode(path.filename().c_str())) {
         ghc::filesystem::directory_iterator filesEnd;
         for (ghc::filesystem::directory_iterator it(path);
-                it != filesEnd;
-                ++it
+            it != filesEnd;
+            ++it
         ) {
             if (ghc::filesystem::is_directory(it->status())) {
                 directoryTree(it->path(), false);
             } else {
-                if (ImGui::Button(ghc::filesystem::relative(
-                    it->path(),
-                    path
-                ).c_str())) {
-                    printf("Clicked something\n");
+                if (ImGui::Button(it->path().filename().c_str())) {
+                    if (this->active) delete this->active;
+                    this->active = FileEditor::createForFile(
+                        this->core,
+                        it->path()
+                    );
                 }
             }
         }

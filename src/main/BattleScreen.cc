@@ -216,7 +216,7 @@ void BattleScreen::update(float delta, sf::RenderWindow &window) {
     this->frame++;
 }
 
-void BattleScreen::draw(sf::RenderTarget &target, int top) {
+void BattleScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     // Draw the background.
     this->background.draw(target);

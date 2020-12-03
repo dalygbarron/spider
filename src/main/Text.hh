@@ -1,6 +1,8 @@
 #ifndef TEXT_H
 #define TEXT_H
 
+#include "filesystem.hh"
+
 /**
  * Represents text from a file which can be changed and can be saved to etc.
  */

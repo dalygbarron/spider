@@ -10,17 +10,22 @@ TextFileEditor::TextFileEditor(Text &text, TextFileType type):
             );
             break;
         case TextFileType::XML:
-            this->textEditor.SetLanguageDefinition(
-                TextEditor::LanguageDefinition::Xml()
-            );
+            break;
+            //this->textEditor.SetLanguageDefinition(
+            //    TextEditor::LanguageDefinition::Xml()
+            //);
+        default:
+            break;
     }
-    this->textEditor.setText(text.get());
+    this->textEditor.SetText(text.get());
 }
 
-void TextFileEditor::draw(sf::RenderTarget &target) {
+void TextFileEditor::update(float delta) {
     auto cpos = this->textEditor.GetCursorPosition();
     if (ImGui::Begin("Script Editor")) {
         this->textEditor.Render("brexit");
+        ImGui::End();
     }
-    ImGui::End();
 }
+
+void TextFileEditor::draw(sf::RenderTarget &target) const {}

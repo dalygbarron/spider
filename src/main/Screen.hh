@@ -50,7 +50,7 @@ class Screen {
          * @param target is the window to draw it to.
          * @param top    is whether this screen is being drawn on the top.
          */
-        virtual void draw(sf::RenderTarget &target, int top) = 0;
+        virtual void draw(sf::RenderTarget &target, int top) const = 0;
 
         /**
          * Tells you if the screen under this one in the screen stack can be
@@ -117,11 +117,20 @@ class EditorScreen: public Screen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) override;
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual int isTransparent() const override;
 
     private:
+        /**
+         * Recursively does a whole directory tree in imgui in an existing
+         * window and when you click one it sets that as the active editor if
+         * possible.
+         * @param path is the path that we are doing right now.
+         * @param top  is whether this is the top level directory.
+         */
+        void directoryTree(ghc::filesystem::path path, bool top);
+
         /**
          * Runs the imgui file browser thing.
          */
@@ -155,7 +164,7 @@ class KnobScreen: public Screen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) override;
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual int isTransparent() const override;
 
@@ -268,7 +277,7 @@ class AdventureScreen: public ScriptedScreen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) override;
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual void onClick(
             sf::Mouse::Button button,
@@ -311,7 +320,7 @@ class BattleScreen: public ScriptedScreen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) override;
+        virtual void draw(sf::RenderTarget &target, int top) const override;
 
         virtual void onStart() override;
 

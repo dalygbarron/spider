@@ -3,6 +3,22 @@
 #include <iostream>
 #include <cstdlib>
 
+char const *FileIO::readFile(ghc::filesystem::path path) {
+    FILE *file = fopen(path.c_str(), "rb");
+    if (file) {
+        fseek(file, 0, SEEK_END);
+        long size = ftell(file);
+        fseek(file, 0, SEEK_SET);
+        char *text = new char[size + 1];
+        fread(text, 1, size, file);
+        fclose(file);
+        text[size] = 0;
+        return text;
+    }
+    spdlog::error("Can't read text from file {}", path.c_str());
+    return NULL;
+}
+
 Memory::SwitchExpression *FileIO::parseSwitchExpression(char const *string) {
     std::stringstream stream(string);
     std::string token;

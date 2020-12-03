@@ -1,35 +1,32 @@
 #include "FileEditor.hh"
 
-static FileEditor *FileEditor::createForFile(
+FileEditor *FileEditor::createForFile(
     Core &core,
     ghc::filesystem::path path
 ) {
     char const *ext = path.extension().c_str();
+    TextFileEditor::TextFileType textType = TextFileEditor::TextFileType::TXT;
     if (strcmp(ext, "pex") == 0) {
-        return new EntityFileEditor(core, path);
-    } else if (strcmp(ext, "plx") == 0) {
-        return new LevelFileEditor(core, path);
-    } else if (strcmp(ext, "lua") == 0) {
-        return new TextFileEditor(
-            core,
-            path,
-            TextFileEditor::TextFileType::LUA
-        );
-    } else if (strcmp(ext, "xml") == 0) {
-        return new TextFileEditor(
-            core,
-            path,
-            TextFileEditor::TextFileType::XML
-        );
-    } else if (strcmp(ext, "txt") == 0) {
-        return new TextFileEditor(
-            core,
-            path,
-            TextFileEditor::TextFileType::PLAIN
-        );
+        Entity *entity = core.entityRepository.get(path.c_str());
+        if (entity) return new EntityFileEditor(*entity);
+        return NULL;
+    } else if (strcmp(ext, ".plx") == 0) {
+        return NULL;//return new LevelFileEditor(core, path);
+    } else if (strcmp(ext, ".lua") == 0) {
+        textType = TextFileEditor::TextFileType::LUA;
+        goto textTime;
+    } else if (strcmp(ext, ".xml") == 0) {
+        textType = TextFileEditor::TextFileType::XML;
+        goto textTime;
+    } else if (strcmp(ext, ".txt") == 0) {
+        goto textTime;
     }
-    spdlog::warning("{} is not a supported file type", ext);
+    spdlog::warn("{} is not a supported file type", ext);
     return NULL;
+    textTime:
+        Text *text = core.textRepository.get(path.c_str());
+        if (text) return new TextFileEditor(*text, textType);
+        return NULL;
 }
 
 FileEditor::~FileEditor() {}

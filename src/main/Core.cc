@@ -216,7 +216,7 @@ void Core::performTransitions() {
     }
 }
 
-void Core::drawScreens(sf::RenderTarget &target) {
+void Core::drawScreens(sf::RenderTarget &target) const {
     // Draw the screens.
     if (this->nScreens > 0) {
         auto start = this->screens.begin() + this->firstVisible;

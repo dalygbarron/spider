@@ -50,10 +50,16 @@ class FileEditor {
         virtual void onScroll(int delta);
 
         /**
+         * Updates this shiet.
+         * @param delta  is the time since before.
+         */
+        virtual void update(float delta) = 0;
+
+        /**
          * Draws the editor upon the given render target.
          * @param target is the screen to render onto.
          */
-        virtual void draw(sf::RenderTarget &target) = 0;
+        virtual void draw(sf::RenderTarget &target) const = 0;
 };
 
 /**
@@ -67,7 +73,9 @@ class EntityFileEditor: public FileEditor {
          */
         EntityFileEditor(Entity &entity);
 
-        virtual void draw(sf::RenderTarget &target) override;
+        virtual void update(float delta) override;
+
+        virtual void draw(sf::RenderTarget &target) const override;
 
     private:
         Entity &entity;
@@ -85,7 +93,9 @@ class LevelFileEditor: public FileEditor {
          */
         LevelFileEditor(Level &level);
 
-        virtual void draw(sf::RenderTarget &target) override;
+        virtual void update(float delta) override;
+
+        virtual void draw(sf::RenderTarget &target) const override;
 
     private:
         Level &level;
@@ -98,7 +108,7 @@ class LevelFileEditor: public FileEditor {
 class TextFileEditor: public FileEditor {
     public:
         enum class TextFileType {
-            PLAIN,
+            TXT,
             LUA,
             XML
         };
@@ -111,7 +121,9 @@ class TextFileEditor: public FileEditor {
          */
         TextFileEditor(Text &text, TextFileType type);
 
-        virtual void draw(sf::RenderTarget &target) override;
+        virtual void update(float delta) override;
+
+        virtual void draw(sf::RenderTarget &target) const override;
 
     private:
         TextEditor textEditor;

@@ -45,6 +45,7 @@ class Core {
         SoundPlayer soundPlayer;
         SoundBufferRepository soundBufferRepository;
         EntityRepository entityRepository;
+        TextRepository textRepository;
         sf::Texture transitionTexture;
 
         /**
@@ -193,7 +194,7 @@ class Core {
          * Draw all the screens one by one.
          * @param target is the target to draw to.
          */
-        void drawScreens(sf::RenderTarget &target);
+        void drawScreens(sf::RenderTarget &target) const;
 
     private:
         Memory memory = Memory(0);

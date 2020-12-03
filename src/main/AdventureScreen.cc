@@ -183,7 +183,7 @@ void AdventureScreen::onKey(sf::Keyboard::Key key) {
     }
 }
 
-void AdventureScreen::draw(sf::RenderTarget &target, int top) {
+void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->core.renderer.batch.clear();
     glm::mat4 camera = this->core.getProjection() * Util::camera(this->angle);
     // draw the level.
