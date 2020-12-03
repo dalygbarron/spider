@@ -123,6 +123,13 @@ class EditorScreen: public Screen {
 
     private:
         /**
+         * Makes it start editing a given file (if possible), and updates the
+         * list of active files etc.
+         * @param path is the path to the file to edit.
+         */
+        void openFile(ghc::filesystem::path path);
+
+        /**
          * Recursively does a whole directory tree in imgui in an existing
          * window and when you click one it sets that as the active editor if
          * possible.
@@ -136,7 +143,7 @@ class EditorScreen: public Screen {
          */
         void fileBrowser();
 
-        std::vector<FileEditor *> openFiles;
+        std::queue<ghc::filesystem::path path> latest;
         FileEditor *active = NULL;
         float timer = 0;
 };

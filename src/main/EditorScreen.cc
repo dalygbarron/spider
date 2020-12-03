@@ -30,6 +30,10 @@ int EditorScreen::isTransparent() const {
     return false;
 }
 
+void EditorScreen::openFile(ghc::filesystem::path path) {
+
+}
+
 void EditorScreen::directoryTree(ghc::filesystem::path path, bool top) {
     if (!ghc::filesystem::exists(path)) return;
     if (top || ImGui::TreeNode(path.filename().c_str())) {

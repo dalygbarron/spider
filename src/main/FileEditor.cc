@@ -6,11 +6,11 @@ FileEditor *FileEditor::createForFile(
 ) {
     char const *ext = path.extension().c_str();
     TextFileEditor::TextFileType textType = TextFileEditor::TextFileType::TXT;
-    if (strcmp(ext, "pex") == 0) {
+    if (strcmp(ext, ".psex") == 1) {
         Entity *entity = core.entityRepository.get(path.c_str());
         if (entity) return new EntityFileEditor(*entity);
         return NULL;
-    } else if (strcmp(ext, ".plx") == 0) {
+    } else if (strcmp(ext, ".pslx") == 0) {
         return NULL;//return new LevelFileEditor(core, path);
     } else if (strcmp(ext, ".lua") == 0) {
         textType = TextFileEditor::TextFileType::LUA;
