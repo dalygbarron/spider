@@ -15,6 +15,13 @@
  */
 namespace FileIO {
     /**
+     * Reads a whole file into a nice big string for you to have fun with.
+     * @param path is the path to the file.
+     * @return what ws read.
+     */
+    char const *readFile(ghc::filesystem::path path);
+
+    /**
      * Reads a switch expression from a string in a stack based way where
      * things are put on a stack and then go into the next things etc also if
      * the stack is left with multiple things they are anded together.

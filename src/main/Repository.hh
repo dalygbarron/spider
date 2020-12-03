@@ -4,6 +4,7 @@
 #include "Entity.hh"
 #include "Level.hh"
 #include "RatPack.hh"
+#include "Text.hh"
 #include "spdlog/spdlog.h"
 #include "pugixml.hpp"
 #include <SFML/Audio.hpp>
@@ -173,11 +174,9 @@ class EntityRepository: public XmlRepository<Entity> {
  * This repository takes care of strings. The idea with this is mostly so that
  * the editor can edit a string in memory and then other thingos will load it.
  */
-class StringRepository: public Repository<std::string> {
+class TextRepository: public Repository<Text> {
     private:
-        virtual std::string *create(
-            ghc::filesystem::path const &path
-        ) const override;
+        virtual Text *load(char const *key) const override;
 };
 
 #endif

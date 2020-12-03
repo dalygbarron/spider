@@ -12,7 +12,23 @@ class Text {
          */
         Text(ghc::filesystem::path path);
 
+        /**
+         * Sets the content of the text thing for all it's users.
+         * @param string is the value to set it to.
+         */
+        void set(char const *string);
 
+        /**
+         * Gets the value of the text for your enjoyment.
+         * @return a c string of it.
+         */
+        char const *get() const;
+
+        /**
+         * Saves the text in it's latest form to the file it came from.
+         * @return true if it all went find and false if there was a fuckup.
+         */
+        bool save() const;
 
     private:
         ghc::filesystem::path path;

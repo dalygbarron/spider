@@ -193,7 +193,7 @@ class Core {
          * Draw all the screens one by one.
          * @param target is the target to draw to.
          */
-        void drawScreens(sf::RenderTarget &target) const;
+        void drawScreens(sf::RenderTarget &target);
 
     private:
         Memory memory = Memory(0);

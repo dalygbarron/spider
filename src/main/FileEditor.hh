@@ -1,6 +1,10 @@
 #ifndef FILE_EDITOR_H
 #define FILE_EDITOR_H
 
+#include "Core.hh"
+#include "Text.hh"
+#include "TextEditor.h"
+
 /**
  * Kind of like a subscreen type thing for editing a certain type of asset.
  */
@@ -49,7 +53,7 @@ class FileEditor {
          * Draws the editor upon the given render target.
          * @param target is the screen to render onto.
          */
-        virtual void draw(sf::RenderTarget &target) const = 0;
+        virtual void draw(sf::RenderTarget &target) = 0;
 };
 
 /**
@@ -63,7 +67,7 @@ class EntityFileEditor: public FileEditor {
          */
         EntityFileEditor(Entity &entity);
 
-        virtual void draw(sf::RenderTarget &target) const override;
+        virtual void draw(sf::RenderTarget &target) override;
 
     private:
         Entity &entity;
@@ -80,6 +84,8 @@ class LevelFileEditor: public FileEditor {
          *        editing.
          */
         LevelFileEditor(Level &level);
+
+        virtual void draw(sf::RenderTarget &target) override;
 
     private:
         Level &level;
@@ -99,19 +105,17 @@ class TextFileEditor: public FileEditor {
 
         /**
          * Creates the text file editor.
-         * @param core is used to access the text file repo so changes
-         *        permeate the program as soon as possible.
-         * @param path     is the path to the text file.
-         * @param type     is the file type which determines how highlighting
-         *                 will work if there is any.
+         * @param text is the text object it is editing.
+         * @param type is the file type which determines how highlighting
+         *             will work if there is any.
          */
-        TextFileEditor(
-            Core &core,
-            ghc::filesystem::path path,
-            TextFileType type
-        );
+        TextFileEditor(Text &text, TextFileType type);
+
+        virtual void draw(sf::RenderTarget &target) override;
 
     private:
+        TextEditor textEditor;
+        Text &text;
         TextFileType type;
         
 };

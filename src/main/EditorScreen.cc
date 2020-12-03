@@ -6,6 +6,10 @@ EditorScreen::EditorScreen(Core &core): Screen(core) {
 
 void EditorScreen::update(float delta, sf::RenderWindow &window) {
     ImGui::SFML::Update(window, sf::seconds(delta));
+}
+
+void EditorScreen::draw(sf::RenderTarget &target, int top) {
+    if (this->active) this->active->draw(target);
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Save")) {
@@ -19,9 +23,6 @@ void EditorScreen::update(float delta, sf::RenderWindow &window) {
         ImGui::EndMainMenuBar();
     }
     this->fileBrowser();
-}
-
-void EditorScreen::draw(sf::RenderTarget &target, int top) const {
     ImGui::SFML::Render(target);
 }
 

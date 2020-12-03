@@ -50,7 +50,7 @@ class Screen {
          * @param target is the window to draw it to.
          * @param top    is whether this screen is being drawn on the top.
          */
-        virtual void draw(sf::RenderTarget &target, int top) const = 0;
+        virtual void draw(sf::RenderTarget &target, int top) = 0;
 
         /**
          * Tells you if the screen under this one in the screen stack can be
@@ -117,7 +117,7 @@ class EditorScreen: public Screen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) const override;
+        virtual void draw(sf::RenderTarget &target, int top) override;
 
         virtual int isTransparent() const override;
 
@@ -128,6 +128,8 @@ class EditorScreen: public Screen {
         void fileBrowser();
 
         std::vector<FileEditor *> openFiles;
+        FileEditor *active = NULL;
+        float timer = 0;
 };
 
 /**
@@ -153,7 +155,7 @@ class KnobScreen: public Screen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) const override;
+        virtual void draw(sf::RenderTarget &target, int top) override;
 
         virtual int isTransparent() const override;
 
@@ -266,7 +268,7 @@ class AdventureScreen: public ScriptedScreen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) const override;
+        virtual void draw(sf::RenderTarget &target, int top) override;
 
         virtual void onClick(
             sf::Mouse::Button button,
@@ -309,7 +311,7 @@ class BattleScreen: public ScriptedScreen {
 
         virtual void update(float delta, sf::RenderWindow &window) override;
 
-        virtual void draw(sf::RenderTarget &target, int top) const override;
+        virtual void draw(sf::RenderTarget &target, int top) override;
 
         virtual void onStart() override;
 
