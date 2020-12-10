@@ -13,7 +13,14 @@
  */
 class Level {
     public:
-        ghc::filesystem::path file;
+        class LevelInstance {
+            public:
+                Level const &level;
+                sf::Texture pic;
+
+                LevelInstance(Level const &level);
+        };
+
         std::string script;
         std::vector<Instance> instances;
 
@@ -30,12 +37,6 @@ class Level {
         void setPic(ghc::filesystem::path const &path);
 
         /**
-         * Gives you the level's background image texture.
-         * @return the texture.
-         */
-        sf::Texture const &getPic() const;
-
-        /**
          * Gives you the level's background image file path.
          * @return the file path.
          */
@@ -48,7 +49,6 @@ class Level {
         Instance &addInstance();
 
     private:
-        sf::Texture pic;
         ghc::filesystem::path picFile;
 };
 

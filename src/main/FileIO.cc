@@ -317,13 +317,6 @@ Core *FileIO::loadCoreFromFile(
     sf::IntRect arcRat(0, 0, 0, 0);
     sf::IntRect boxRat(0, 0, 0, 0);
     sf::IntRect boxHighlightRat(0, 0, 0, 0);
-    if (!ghc::filesystem::exists(path)) {
-        spdlog::info("Creating new game core at '{}'", path.c_str());
-        // TODO: is this still ok?
-        Core *core = new Core(allowMusic, glm::ivec2(1024, 600), 1);
-        core->filename = path;
-        return core;
-    }
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(path.c_str());
     if (!result) {
@@ -407,6 +400,10 @@ Core *FileIO::loadCoreFromFile(
                 child.attribute("id").as_int(),
                 core->spritesheet.get(child.attribute("rat").value())
             );
+        } else if (strcmp(type, "entity") == 0) {
+
+        } else if (strcmp(type, "level") == 0) {
+            spdlog::warn("TODO: this");
         } else {
             spdlog::warn("Unknown child type '{}' in game file", type);
         }
@@ -544,4 +541,54 @@ World *FileIO::parseWorld(
         }
     }
     return world;
+}
+
+Entity *FileIO::parseEntity(pugi::xml_node node, Core &core) {
+
+}
+
+Level *FileIO::parseLevel(pugi::xml_node node) {
+    Level *level = new Level();
+    level->script = node.attribute("script").value();
+    level->setPic(node.attribute("pic").value());
+    // Instances.
+    for (pugi::xml_node child: node.children()) {
+        char const *type = child.name();
+        if (strcmp(type, "shapeInstance") == 0) {
+            Instance &instance = level->addInstance();
+            instance.name = child.attribute("name").value();
+            for (pugi::xml_node point: child.children("point")) {
+                instance.mesh.addVertex(glm::vec2(
+                    point.attribute("x").as_float(),
+                    point.attribute("y").as_float()
+                ));
+            }
+        } else if (strcmp(type, "entityInstance") == 0) {
+            Instance &instance = level->addInstance();
+            instance.name = child.attribute("name").value();
+            instance.pos.x = child.attribute("x").as_float();
+            instance.pos.y = child.attribute("y").as_float();
+            instance.size = child.attribute("size").as_float();
+            instance.lifeSwitch = FileIO::parseSwitchExpression(
+                child.attribute("switch").value()
+            );
+            instance.entity = this->entityRepository.get(
+                child.attribute("entity").value()
+            );
+        } else if (strcmp(type, "script") == 0) {
+            level->script = child.child_value();
+        } else {
+            spdlog::warn(
+                "weird shit going on in level '{}'. Wtf is '{}'?",
+                path.c_str(),
+                type
+            );
+        }
+    }
+    return level;
+    } else {
+        Level *level = new Level();
+        level->file = path;
+        return level;
+    }
 }

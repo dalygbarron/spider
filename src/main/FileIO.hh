@@ -77,7 +77,8 @@ namespace FileIO {
     /**
      * Opens up a game xml file and adds all the info in it to the given core
      * objct, including loading a ratpack if necessary.
-     * @param path       is the path to the file to load.
+     * @param path       is the path to the file to load. It must exist or it
+     *                   will probably crash.
      * @param allowMusic is whether to allow it to play music.
      * @return the new core.
      */
@@ -98,6 +99,21 @@ namespace FileIO {
      * @return the world that was created or null if there was a fuckup.
      */
     World *parseWorld(pugi::xml_node node, Core &core);
+
+    /**
+     * Loads an entity out of xml and gives it it's sprite and stuff.
+     * @param node is the sml node to read from.
+     * @param core is the core thing which provides sprites.
+     * @return the loaded entity or null if it could not load it.
+     */
+    Entity *parseEntity(pugi::xml_node node, Core &core);
+
+    /**
+     * Loads a level out of xml.
+     * @param node is the xml node read from.
+     * @return the loaded level or null if it fucked up.
+     */
+    Level *parseLevel(pugi::xml_node node);
 
     /**
      * Screenshots one screen. I know that this means it doesn't do when one

@@ -52,6 +52,24 @@ std::unordered_map<std::string, Item> const &Core::getItems() {
     return this->items;
 }
 
+Entity &Core::createEntity(char const *name) {
+    this->entities.emplace(name);
+    return this->entities[name];
+}
+
+std::unordered_map<std::string, Entity> const &core::getEntities() const {
+    return this->entities;
+}
+
+Level &Core::createLevel(char const *name) {
+    this->levels.emplace(name);
+    return this->levels[name];
+}
+
+std::unordered_map<std::string, Level> const &core::getLevels() const {
+    return this->level;
+}
+
 void Core::addBulletPrototype(int id, Rectangle rat) {
     Bullet::Prototype prototype;
     prototype.rat = rat;
@@ -103,66 +121,6 @@ void Core::setTransitionTexture(ghc::filesystem::path const &path) {
 
 glm::mat4 const &Core::getProjection() const {
     return this->projection;
-}
-
-Level *Core::loadLevel(ghc::filesystem::path const &path) {
-    if (ghc::filesystem::exists(path)) {
-        pugi::xml_document doc;
-        pugi::xml_parse_result result = doc.load_file(path.c_str());
-        if (!result) {
-            spdlog::error("Level file '{}' cannnot be opened", path.c_str());
-            return NULL;
-        }
-        pugi::xml_node node = doc.child("level");
-        if (!node) {
-            spdlog::error("File '{}' does not contain a level.", path.c_str());
-            return NULL;
-        }
-        // Main bits.
-        Level *level = new Level();
-        level->file = path;
-        level->script = node.attribute("script").value();
-        level->setPic(node.attribute("pic").value());
-        // Instances.
-        for (pugi::xml_node child: node.children()) {
-            char const *type = child.name();
-            if (strcmp(type, "shapeInstance") == 0) {
-                Instance &instance = level->addInstance();
-                instance.name = child.attribute("name").value();
-                for (pugi::xml_node point: child.children("point")) {
-                    instance.mesh.addVertex(glm::vec2(
-                        point.attribute("x").as_float(),
-                        point.attribute("y").as_float()
-                    ));
-                }
-            } else if (strcmp(type, "entityInstance") == 0) {
-                Instance &instance = level->addInstance();
-                instance.name = child.attribute("name").value();
-                instance.pos.x = child.attribute("x").as_float();
-                instance.pos.y = child.attribute("y").as_float();
-                instance.size = child.attribute("size").as_float();
-                instance.lifeSwitch = FileIO::parseSwitchExpression(
-                    child.attribute("switch").value()
-                );
-                instance.entity = this->entityRepository.get(
-                    child.attribute("entity").value()
-                );
-            } else if (strcmp(type, "script") == 0) {
-                level->script = child.child_value();
-            } else {
-                spdlog::warn(
-                    "weird shit going on in level file '{}'. Wtf is '{}'?",
-                    path.c_str(),
-                    type
-                );
-            }
-        }
-        return level;
-    } else {
-        Level *level = new Level();
-        level->file = path;
-        return level;
-    }
 }
 
 void Core::pushScreen(Screen *screen) {

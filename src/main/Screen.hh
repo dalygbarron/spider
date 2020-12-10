@@ -143,7 +143,7 @@ class EditorScreen: public Screen {
          */
         void fileBrowser();
 
-        std::queue<ghc::filesystem::path path> latest;
+        std::queue<ghc::filesystem::path> latest;
         FileEditor *active = NULL;
         float timer = 0;
 };
@@ -266,8 +266,6 @@ class ScriptedScreen: public Screen {
  */
 class AdventureScreen: public ScriptedScreen {
     public:
-        static int const TICK_RATE = 2;
-
         /**
          * Creates the screen by giving it it's dependencies.
          * @param core  is the core screen dependencies.
@@ -275,7 +273,7 @@ class AdventureScreen: public ScriptedScreen {
          *              this to the screen it will delete it when it is
          *              deleted. beware.
          */
-        AdventureScreen(Core &core, Level *level);
+        AdventureScreen(Core &core, Level::LevelInstance &level);
 
         /**
          * Deletes the level that is stored within the screen.
@@ -302,7 +300,7 @@ class AdventureScreen: public ScriptedScreen {
         virtual void refresh() override;
 
     private:
-        Level *level;
+        Level::LevelInstance &level;
         Background background;
         World *world = NULL;
         glm::vec2 angle;

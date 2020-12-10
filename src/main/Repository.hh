@@ -1,7 +1,6 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
-#include "Entity.hh"
 #include "Level.hh"
 #include "RatPack.hh"
 #include "Text.hh"
@@ -62,112 +61,11 @@ template <class T> class Repository {
 };
 
 /**
- * A repository that is designed to load stuff out of xml files and thus does
- * so before passing on the unique logic so I don't need that usual xml file
- * fucking around.
- * \    /\
- *  )  ( ')
- * (  /  )
- *  \(__)|
- */
-template <class T> class XmlRepository: public Repository<T> {
-    public:
-        virtual T *load(char const *key) const override {
-            ghc::filesystem::path file = key;
-            if (!ghc::filesystem::exists(file)) {
-                return this->create(file);
-            }
-            pugi::xml_document doc;
-            pugi::xml_parse_result result = doc.load_file(key);
-            if (!result) {
-                spdlog::error(
-                    "couldn't open {} xml file '{}'",
-                    this->getNodeName(),
-                    key
-                );
-                return NULL;
-            }
-            pugi::xml_node node = doc.child("entity");
-            if (!node) {
-                spdlog::error(
-                    "File '{}' lacks top '{}' node",
-                    key,
-                    this->getNodeName()
-                );
-                return NULL;
-            }
-            return this->parse(node, file);
-        }
-
-    private:
-        /**
-         * Creates a new item when the given file does no exist. This is
-         * implemented by default to return null which basically means that
-         * creation is not possible so if that is what you want just don't
-         * override this.
-         * @param path is the name of the file for this thing, which is
-         *             also the key given but as a path relative to the root.
-         * @return a pointer to the thing or NULL for no thing.
-         */
-        virtual T *create(ghc::filesystem::path const &path) const {
-            return NULL;
-        }
-
-        /**
-         * Used to query the name of the top level node to be looking for.
-         * @return the name as a string.
-         */
-        virtual char const *getNodeName() const = 0;
-
-        /**
-         * function that does the actual parsing of the xml data.
-         * @param node is the xml node to parse from.
-         * @param path is the path to the file so it can be remembered.
-         * @return the created thing if it could be created.
-         */
-        virtual T *parse(
-            pugi::xml_node const &node,
-            ghc::filesystem::path const &path
-        ) const = 0;
-};
-
-/**
  * Repository for sounds.
  */
 class SoundBufferRepository: public Repository<sf::SoundBuffer> {
     public:
         virtual sf::SoundBuffer *load(char const *key) const override;
-};
-
-/**
- * Repository for entities.
- */
-class EntityRepository: public XmlRepository<Entity> {
-    public:
-        /**
-         * Puts in the ratpack.
-         * @param spritesheet is the ratpack that is used to give entities
-         *                    their sprites. This means the spritesheet must be
-         *                    fully formed from the start basically. If this
-         *                    was problematic I could put the sprite in the
-         *                    instance rather than the entity but really it's
-         *                    not.
-         */
-        EntityRepository(RatPack const &spritesheet);
-
-    private:
-        RatPack const &spritesheet;
-
-        virtual Entity *create(
-            ghc::filesystem::path const &path
-        ) const override;
-
-        virtual char const *getNodeName() const override;
-
-        virtual Entity *parse(
-            pugi::xml_node const &node,
-            ghc::filesystem::path const &path
-        ) const override;
 };
 
 /**

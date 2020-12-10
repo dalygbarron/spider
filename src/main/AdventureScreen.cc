@@ -7,8 +7,8 @@
 #include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
 
-AdventureScreen::AdventureScreen(Core &core, Level *level):
-    ScriptedScreen(core, level->script),
+AdventureScreen::AdventureScreen(Core &core, Level::LevelInstance &level):
+    ScriptedScreen(core, level.level->script),
     background(Rectangle(glm::vec2(), core.size)),
     limiter(30)
 {
@@ -91,8 +91,7 @@ AdventureScreen::~AdventureScreen() {
 }
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
-    int frames = this->limiter.update(delta);
-    for (int i = 0; i < frames; i++) {
+    for (int i = 0; i < this->limiter.update(delta); i++) {
         glm::mat4 camera = Util::camera(this->angle);
         glm::mat4 const &projection = this->core.getProjection();
         this->sendInput();

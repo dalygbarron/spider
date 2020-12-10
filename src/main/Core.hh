@@ -44,7 +44,6 @@ class Core {
         Renderer renderer;
         SoundPlayer soundPlayer;
         SoundBufferRepository soundBufferRepository;
-        EntityRepository entityRepository;
         TextRepository textRepository;
         sf::Texture transitionTexture;
 
@@ -78,7 +77,33 @@ class Core {
          * keys being their names.
          * @return a reference to the const map.
          */
-        std::unordered_map<std::string, Item> const &getItems();
+        std::unordered_map<std::string, Item> const &getItems() const;
+
+        /**
+         * Creates an entity in the entity map and names it.
+         * @param name is the name to give it.
+         * @return a reference to the created entity.
+         */
+        Entity &createEntity(char const *name);
+
+        /**
+         * Gives you access to the map of all entities in read only.
+         * @return reference to const map of entities.
+         */
+        std::unordered_map<std::string, Entity> const &getEntities() const;
+
+        /**
+         * Creates a level in the level map and names it.
+         * @param name is the name to give to it.
+         * @return the created level.
+         */
+        Level &createLevel(char const *name);
+
+        /**
+         * Gives you a const reference to a map of all the levels.
+         * @return the const reference to the map of all levels.
+         */
+        std::unordered_map<std::string, Level> const &getLevels() const;
 
         /**
          * Creates a new bullet prototype with the given id and rat. If the id
@@ -152,15 +177,6 @@ class Core {
         glm::mat4 const &getProjection() const;
 
         /**
-         * Loads in a level making use of the entity repository for putting in
-         * it's entities. There is no repository for levels because they use
-         * a lot of memory.
-         * @param path is the file from which to load the level.
-         * @return the level, probably, or null if it was in some way fucked.
-         */
-        Level *loadLevel(ghc::filesystem::path const &path);
-
-        /**
          * Puts a screen onto the screen stack.
          * @param screen is the screen to put on there.
          */
@@ -201,6 +217,8 @@ class Core {
         std::queue<Core::Transition> transitions;
         std::unordered_map<std::string, Item> items;
         std::unordered_map<int, Bullet::Prototype> bulletPrototypes;
+        std::unordered_map<std::string, Entity> entities;
+        std::unordered_map<std::string, Level> levels;
         std::vector<Screen *> screens;
         sf::Shader transitionShader;
         sf::RectangleShape transition;
