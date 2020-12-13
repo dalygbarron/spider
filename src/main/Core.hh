@@ -2,6 +2,8 @@
 #define CORE_H
 
 #include "Repository.hh"
+#include "Entity.hh"
+#include "Level.hh"
 #include "RatPack.hh"
 #include "Renderer.hh"
 #include "RatBatch.hh"
@@ -91,6 +93,13 @@ class Core {
          * @return reference to const map of entities.
          */
         std::unordered_map<std::string, Entity> const &getEntities() const;
+
+        /**
+         * Gives you a pointer to an entity if it exists.
+         * @param name is the name of the entity you are looking for.
+         * @return the entity if found or nothing.
+         */
+        Entity *getEntity(char const *name);
 
         /**
          * Creates a level in the level map and names it.

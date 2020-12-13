@@ -1,13 +1,13 @@
 #include "Core.hh"
 #include "Screen.hh"
 #include "Const.hh"
+#include "FileIO.hh"
 #include "Shaders.hh"
 #include "pugixml.hpp"
 #include <SFML/Graphics.hpp>
 
 Core::Core(int allowMusic, glm::ivec2 size, float fov):
     renderer(this->spritesheet.getTexture(), size),
-    entityRepository(this->spritesheet),
     soundPlayer(16, allowMusic),
     size(size),
     fov(fov * (float)size.x / (float)size.y, fov)
@@ -47,26 +47,28 @@ Item &Core::addItem(
     return this->items[name];
 }
 
-std::unordered_map<std::string, Item> const &Core::getItems() {
+std::unordered_map<std::string, Item> const &Core::getItems() const {
     return this->items;
 }
 
 Entity &Core::createEntity(char const *name) {
-    this->entities.emplace(name);
+    Entity entity;
+    this->entities[name] = std::move(entity);
     return this->entities[name];
 }
 
-std::unordered_map<std::string, Entity> const &core::getEntities() const {
+std::unordered_map<std::string, Entity> const &Core::getEntities() const {
     return this->entities;
 }
 
 Level &Core::createLevel(char const *name) {
-    this->levels.emplace(name);
+    Level level;
+    this->levels[name] = std::move(level);
     return this->levels[name];
 }
 
-std::unordered_map<std::string, Level> const &core::getLevels() const {
-    return this->level;
+std::unordered_map<std::string, Level> const &Core::getLevels() const {
+    return this->levels;
 }
 
 void Core::addBulletPrototype(int id, Rectangle rat) {

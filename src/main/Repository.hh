@@ -1,7 +1,6 @@
 #ifndef REPOSITORY_H
 #define REPOSITORY_H
 
-#include "Level.hh"
 #include "RatPack.hh"
 #include "Text.hh"
 #include "spdlog/spdlog.h"

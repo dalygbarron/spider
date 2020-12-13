@@ -269,11 +269,10 @@ class AdventureScreen: public ScriptedScreen {
         /**
          * Creates the screen by giving it it's dependencies.
          * @param core  is the core screen dependencies.
-         * @param level is the level the screen takes place in. Once you give
-         *              this to the screen it will delete it when it is
-         *              deleted. beware.
+         * @param level is the level the screen takes place in which it creates
+         *              an instance of but it references this so don't delete.
          */
-        AdventureScreen(Core &core, Level::LevelInstance &level);
+        AdventureScreen(Core &core, Level const &level);
 
         /**
          * Deletes the level that is stored within the screen.
@@ -300,7 +299,7 @@ class AdventureScreen: public ScriptedScreen {
         virtual void refresh() override;
 
     private:
-        Level::LevelInstance &level;
+        LevelInstance level;
         Background background;
         World *world = NULL;
         glm::vec2 angle;

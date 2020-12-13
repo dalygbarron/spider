@@ -13,21 +13,9 @@
  */
 class Level {
     public:
-        class LevelInstance {
-            public:
-                Level const &level;
-                sf::Texture pic;
-
-                LevelInstance(Level const &level);
-        };
-
+        std::string name;
         std::string script;
         std::vector<Instance> instances;
-
-        /**
-         * Initialises some stuff.
-         */
-        Level();
 
         /**
          * sets the level's pic, both loading in the texture and setting the
@@ -50,6 +38,20 @@ class Level {
 
     private:
         ghc::filesystem::path picFile;
+};
+
+/**
+ * Represents a level with it's picture actually loaded into memory.
+ */
+class LevelInstance: public Level {
+    public:
+        sf::Texture pic;
+
+        /**
+         * Constructs a level instance by copying from a level.
+         * @param level is the level to copy.
+         */
+        LevelInstance(Level const &level);
 };
 
 #endif

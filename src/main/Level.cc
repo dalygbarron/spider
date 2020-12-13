@@ -2,12 +2,6 @@
 #include "Util.hh"
 #include "spdlog/spdlog.h"
 
-LevelInstance::LevelInstance(Level const &level): level(level) {
-    this->pic.loadFromFile(level.getPicFile().c_str());
-    this->pic.setRepeated(true);
-    this->pic.setSmooth(true);
-}
-
 void Level::setPic(ghc::filesystem::path const &path) {
     this->picFile = path;
 }

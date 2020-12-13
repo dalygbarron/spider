@@ -7,15 +7,15 @@
 #include "glm/vec4.hpp"
 #include "glm/mat4x4.hpp"
 
-AdventureScreen::AdventureScreen(Core &core, Level::LevelInstance &level):
-    ScriptedScreen(core, level.level->script),
+AdventureScreen::AdventureScreen(Core &core, Level const &level):
+    ScriptedScreen(core, level.script),
+    level(level),
     background(Rectangle(glm::vec2(), core.size)),
     limiter(30)
 {
-    this->level = level;
     this->angle = glm::vec2(Const::PI, Const::PI);
     this->background.initFromString(Shaders::SKY_SHADER);
-    this->background.setTexture(&level->getPic());
+    this->background.setTexture(&this->level.pic);
     this->background.setUniform("fov", this->core.fov);
     // Add some new things to the script.
     this->script["_input"] = this->script.create_table();
@@ -29,10 +29,16 @@ AdventureScreen::AdventureScreen(Core &core, Level::LevelInstance &level):
         }
     };
     this->script["_go"] = [this](std::string const &level) {
-        this->core.replaceScreen(new AdventureScreen(
-            this->core,
-            this->core.loadLevel(level)
-        ));
+        std::unordered_map<std::string, Level> const &levels =
+            this->core.getLevels();
+        if (levels.count(level) > 0) {
+            this->core.replaceScreen(new AdventureScreen(
+                this->core,
+                levels.at(level)
+            ));
+        } else {
+            spdlog::error("{} is not the name of a level", level.c_str());
+        }
     };
     this->script["_battle"] = [this](std::string const &file) {
         this->core.pushScreen(new BattleScreen(this->core, file));
@@ -86,9 +92,7 @@ AdventureScreen::AdventureScreen(Core &core, Level::LevelInstance &level):
     this->refresh();
 }
 
-AdventureScreen::~AdventureScreen() {
-    delete this->level;
-}
+AdventureScreen::~AdventureScreen() {}
 
 void AdventureScreen::update(float delta, sf::RenderWindow &window) {
     for (int i = 0; i < this->limiter.update(delta); i++) {
@@ -111,7 +115,7 @@ void AdventureScreen::onClick(
 ) {
     if (this->coroutine) return;
     glm::mat4 camera = Util::camera(this->angle);
-    for (Instance &instance: this->level->instances) {
+    for (Instance &instance: this->level.instances) {
         if (!instance.alive) continue;
         int hit = false;
         if (instance.entity) {
@@ -152,11 +156,11 @@ void AdventureScreen::onClick(
 }
 
 void AdventureScreen::onStart() {
-    this->core.getMemory().level = this->level->file;
+    this->core.getMemory().level = this->level.name;
 }
 
 void AdventureScreen::onReveal(int response) {
-    this->core.getMemory().level = this->level->file;
+    this->core.getMemory().level = this->level.name;
     this->selected = NULL;
     this->runScript<int>(response);
 }
@@ -189,7 +193,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
     this->background.draw(target);
     // drawing entity instances.
     glm::vec2 size = this->core.size;
-    for (Instance const &instance: this->level->instances) {
+    for (Instance const &instance: this->level.instances) {
         if (!instance.alive || !instance.entity) continue;
         glm::vec3 cartesian = Util::sphericalToCartesian(instance.pos);
         float scale = instance.entity->scale * instance.size;
@@ -223,7 +227,7 @@ void AdventureScreen::draw(sf::RenderTarget &target, int top) const {
 
 void AdventureScreen::refresh() {
     Memory const &memory = this->core.getMemory();
-    for (Instance &instance: this->level->instances) {
+    for (Instance &instance: this->level.instances) {
         if (instance.entity && !instance.entity->item.empty()) {
             instance.alive = !memory.getLocalSwitch(
                 instance.entity->itemKey.c_str()

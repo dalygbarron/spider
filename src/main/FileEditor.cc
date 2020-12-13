@@ -7,7 +7,7 @@ FileEditor *FileEditor::createForFile(
     char const *ext = path.extension().c_str();
     TextFileEditor::TextFileType textType = TextFileEditor::TextFileType::TXT;
     if (strcmp(ext, ".psex") == 1) {
-        Entity *entity = core.entityRepository.get(path.c_str());
+        Entity *entity = core.getEntity(path.c_str());
         if (entity) return new EntityFileEditor(*entity);
         return NULL;
     } else if (strcmp(ext, ".pslx") == 0) {
